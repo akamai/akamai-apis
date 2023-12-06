@@ -1,0 +1,497 @@
+type: object
+description: |-
+  An upload account is used to access a specific storage group. You can list, create and get details of an account.
+  
+x-akamai:
+  file-path: schemas/pageable-get-upload-account.yaml
+additionalProperties: false
+properties:
+  accessConfig:
+    type: object
+    description: |
+      Specifies the settings for the upload directory that has been selected for this account.
+    additionalProperties: false
+    properties:
+      chrootDirectory:
+        type: string
+        description: |
+          The directory set up to serve as the Directory Limit, if applicable. This is a directory other than the storage group's actual CP code root, that has been set up as the root for the account. Access for the account is limited to this directory and any existing subdirectories.
+      cpcodes:
+        type: array
+        description: |
+          The upload directory assigned to this account. The CP code for the upload directory is set as the `cpcodeId` via the `cpcodes` array for the account.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            cpcodeId:
+              type: integer
+              description: |
+                The CP code serving as an upload directory.
+            lastModifiedBy:
+              type: string
+              description: |
+                The user who last modified this upload directory.
+            lastModifiedDate:
+              type: string
+              description: |
+                The ISO 8601 timestamp labeling when this upload directory was last modified.
+            subDirectoryRestrictions:
+              type: array
+              description: |
+                A Subdirectory Restriction limits management operations to the specified directory.  The account can only upload, download, move, or delete content within that directory, or its children.  Multiple Subdirectory Restrictions can be applied to a single account.
+              items:
+                type: string
+      hasDirectoryLimit:
+        type: boolean
+        description: |
+          Whether a Directory Limit has been established for the account.
+        default: 'false'
+      hasReadOnlyAccess:
+        type: boolean
+        description: |
+          The Read-Write vs. Read-only setting for the account. A value of `true` indicates the account can only view content in its associated storage group.
+        default: true
+      loginDirectory:
+        type: string
+        description: |
+          Specifies the default directory for the account, if configured. The directory named here is the default point of access when connecting to the storage group. If not configured, `loginDirectory` is blank.
+  asperaEnabled:
+    type: boolean
+    description: |
+      Whether Aspera Upload Acceleration was enabled as an access method during creation of the account. Aspera Upload Acceleration makes use of a third party client application from AsperaSoft that offers expedited uploads to a storage group.
+    default: 'false'
+  bruteForceAttackConfig:
+    type: object
+    description: |
+      Configures how to prevent brute force attacks over FTP. This protects the target storage group from excessive incorrect FTP login attempts.
+    additionalProperties: false
+    properties:
+      failedLoginThreshold:
+        type: number
+        description: |
+          The number of failed login attempts to trigger the lockdown for an offending client IP address.
+      lockDownDurationSeconds:
+        type: number
+        description: |
+          The number of seconds an offending IP address is blocked from FTP access once the `failedLoginThreshold` total is reached.
+  changeHistory:
+    type: array
+    description: |
+      Lists each change made to the account.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        action:
+          type: string
+          description: |
+            The action performed with the change. `ADDED` indicates the account was actually added. `DELETED` indicates the account was deleted. `ENABLED` or `DISABLED` indicates the change was made to affect the availability of the account. `ROTATED` indicates a password or key assigned to an access method was rotated to a new instance. `UPDATED` indicates an option or setting was changed in the account.
+          enum:
+          - ADDED
+          - DELETED
+          - ENABLED
+          - DISABLED
+          - ROTATED
+          - UPDATED
+        changeType:
+          type: string
+          description: |
+            The option or functionality that was modified. `CPCODE` indicates the change applied to the application of a CP code for use in an upload directory. `FTP` indicates the change applied to FTP authentication access. `SSH_KEY` indicates the change applied to SSH authentication access. `RSYNC` indicates the change applied to Rsync (password) authentication. `ASPERA` indicates the change applied to Aspera Upload Accelerations settings. `SUBDIR_RESTRICTION` indicates the change applied to a Subdirectory Restriction. `CHROOT` indicates the change applied to a Directory Limit. `LOGINDIR` indicates the change applied to a Default Directory. `CMS` indicates the change applied to settings for the Content Management (CM) Shell. `FM` indicates the change applied to FileManager access. `HTTP_UPLOAD_OPTIONS` indicates the change applied to HTTP Upload Service. `FTP_DOWNLOAD_OPTIONS` indicates the change applied to FTP Download Services. `UPLOAD_ACCOUNT` indicates the change applied to general account settings. `ACCESS` indicates the change applied to some form of access for the account. `G2O` indicates the change applied to the G2O Key used for access to the NetStorage Usage API. `RULESET` indicates the change applied to and Access Control Group (ACL) Rule Set. `BFA` indicates the change applied to BFA. `IP` indicates the change applied to IP. `SERVICE_VARIABLE` indicates the change applied to a service variable. `MFA_CONFIG` indicates the change applied to the actual configuration settings Two-factor authentication. `MFA_SECRET` indicates the change applied to the `ftpSecrets` assigned to Two-factor authentication for the account.
+          enum:
+          - CPCODE
+          - FTP
+          - SSH_KEY
+          - RSYNC
+          - ASPERA
+          - SUBDIR_RESTRICTION
+          - CHROOT
+          - LOGINDIR
+          - CMS
+          - FM
+          - HTTP_UPLOAD_OPTIONS
+          - FTP_DOWNLOAD_OPTIONS
+          - UPLOAD_ACCOUNT
+          - ACCESS
+          - G2O
+          - RULESET
+          - BFA
+          - IP
+          - SERVICE_VARIABLE
+          - MFA_CONFIG
+          - MFA_SECRET
+        lastModifiedBy:
+          type: string
+          description: |
+            The user who made the change.
+        lastModifiedDate:
+          type: string
+          description: |
+            The ISO 8601 timestamp labeling when the change occurred.
+        propagated:
+          type: boolean
+          description: |
+            Whether the change has completed propagation to the NetStorage network. Propagation can take upwards of 60 minutes.
+          default: 'false'
+  email:
+    type: string
+    description: |
+      The primary contact email address set up for the account.
+  ftpEnabled:
+    type: boolean
+    description: |
+      Whether FTP was enabled as an access method when the account was created. This allows the account to access the storage group using FTP and a unique password you've set up for use with FTP.
+    default: 'false'
+  globalUploadAccount:
+    type: boolean
+    description: |
+      Indicates the upload account is globally mapped.
+  hasFileManagerAccess:
+    type: boolean
+    description: |
+      Whether access to FileManager was enabled during creation of the account. FileManager is a NetStorage interface that allows you to perform basic file management operations from Control Center. If enabled, this account can be used to access the storage group via FileManager.
+    default: 'false'
+  hasHttpApiAccess:
+    type: boolean
+    description: |
+      Whether access to the [NetStorage Usage API](https://techdocs.akamai.com/netstorage-usage/reference/api) was enabled during creation of the account. This API is used to interact with your content, including operations such as upload, download, move and delete. If enabled, this account can be used to access the storage group via this API.
+    default: 'false'
+  hasPendingPropagation:
+    type: boolean
+    description: |
+      Whether the account is currently being propagated. Any changes made to an account needs to propagate to the NetStorage network. This can take upwards of 60 minutes.
+    default: 'false'
+  isEditable:
+    type: boolean
+    description: |
+      Whether this account is enabled for editing. Editing accounts is currently only supported in Control Center.
+  isVisible:
+    type: boolean
+  keys:
+    type: object
+    description: |
+      The various keys and passwords configured for the access methods set in this account.
+    additionalProperties: false
+    properties:
+      aspera:
+        type: array
+        description: |
+          Settings pertaining to Aspera Upload Acceleration.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: string
+              description: |
+                A unique identifier for Aspera Upload Acceleration.
+            comments:
+              type: string
+              description: |
+                Any optional notes made for the SSH key.
+            isActive:
+              type: boolean
+              description: |
+                Whether Aspera Upload Acceleration has been enabled for this account.
+              default: 'false'
+            key:
+              type: string
+              description: |
+                The SSH key applied to the account that has been assigned to Aspera. SSH-2 RSA and SSH-2 DSA formats are supported.
+            lastModifiedBy:
+              type: string
+              description: |
+                The user who last modified the SSH key.
+            lastModifiedDate:
+              type: string
+              description: |
+                The ISO 8601 timestamp labeling when the SSH key was last modified.
+      ftp:
+        type: array
+        description: |
+          Settings applied for the FTP access method.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: string
+              description: |
+                A unique identifier generated for FTP authentication.
+            comments:
+              type: string
+              description: |
+                Any optional notes made for the FTP password.
+            isActive:
+              type: boolean
+              description: |
+                Whether the FTP password is active for the account. When added to an account, an FTP password is active by default.
+              default: true
+            lastModifiedBy:
+              type: string
+              description: |
+                The user who last modified the FTP password.
+            lastModifiedDate:
+              type: string
+              description: |
+                The ISO 8601 timestamp labeling when the FTP password was last modified.
+      g2o:
+        type: array
+        description: |
+          This information applies to the G2O key applied to the account for use with the NetStorage Usage API. You can have up to three G2O keys per upload account.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: string
+              description: |
+                A unique identifier for the G2O Key.
+            isActive:
+              type: boolean
+              description: |
+                Whether the NetStorage Usage API has been enabled for use with this account.
+              default: 'false'
+            key:
+              type: string
+              description: |
+                The G2O Key. Referred to as the capitalized `Key` when used in the NetStorage Usage API.
+            lastModifiedBy:
+              type: string
+              description: |
+                The user who last modified the G2O Key settings.
+            lastModifiedDate:
+              type: string
+              description: |
+                The ISO 8601 timestamp labeling when the G2O Key settings were last modified.
+            user:
+              type: string
+              description: |
+                The name of the upload account. This is referred to as the "Id" in the Control Center interface. It serves as the `Key-name` when used in the NetStorage Usage API.
+      rsync:
+        type: array
+        description: |
+          Settings applied for the non-secure rsync access method.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: string
+              description: |
+                A unique identifier generated for rsync password authentication.
+            comments:
+              type: string
+              description: |
+                Any optional notes made for rsync password.
+            isActive:
+              type: boolean
+              description: |
+                Whether the non-secure rsync password is active for the account. When added to an account, this password is active by default.
+            lastModifiedBy:
+              type: string
+              description: |
+                The user who last modified the rsync password.
+            lastModifiedDate:
+              type: string
+              description: |
+                The ISO 8601 timestamp labeling when the rsync password was last modified.
+      ssh:
+        type: array
+        description: |
+          Settings applied for the SSH access method.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: string
+              description: |
+                A unique identifier generated for SSH authentication.
+            comments:
+              type: string
+              description: |
+                Any optional notes made for the SSH key.
+            emailId:
+              type: string
+              description: |
+                The NetStorage technical contact email address set up for this upload account.
+            isActive:
+              type: boolean
+              description: |
+                Whether the SSH key is active for the account. When added to an account, an SSH key is active by default.
+              default: true
+            key:
+              type: string
+              description: |
+                The SSH key applied to the account, if applicable. SSH-2 RSA and SSH-2 DSA formats are supported.
+            lastModifiedBy:
+              type: string
+              description: |
+                The user who last modified the SSH key.
+            lastModifiedDate:
+              type: string
+              description: |
+                The ISO 8601 timestamp labeling when the SSH key was last modified.
+  lastModifiedBy:
+    type: string
+    description: |
+      The user who last modified the account.
+  lastModifiedDate:
+    type: string
+    description: |
+      The ISO 8601 timestamp labeling when the account was last modified.
+  multiFactorAuthConfig:
+    type: object
+    description: |
+      Two-factor authentication settings for the account.
+    additionalProperties: false
+    properties:
+      ftpMode:
+        type: string
+        description: |
+          The current enabled or disabled status of Two-factor authentication for the account. `NONE` indicates it's disabled. `STRICT` Two-factor authentication is enabled. `OPTIONAL` indicates the account owner can access via FTP by providing only the FTP username and password, or providing the FTP username and password with the applicable time-based one time password (TOTP) appended to it.
+        enum:
+        - NONE
+        - STRICT
+        - OPTIONAL
+      ftpSecrets:
+        type: array
+        description: |
+          This is revealed if the shared secret for Two-factor authentication is to be generated manually.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            comment:
+              type: string
+              description: |
+                Manually defined comment text included for the key. This content is used in the generation of the shared secret, but is optional. If left out, placeholder content is automatically generated.
+            key:
+              type: string
+              description: |
+                The manual entry set to serve as the shared secret. The key is exactly 16 characters in length and uses BASE-32 alphanumeric characters. This includes uppercase letters (A-Z), and numbers within the 2 - 7 range.
+            secretGeneratedBy:
+              type: string
+              description: |
+                How the shared secret was rotated. `CLIENT` indicates it was defined manually. For example, the `key` member was used and a shared secret was manually input. `SERVER` indicates it was automatically generated. For example, the `"generateSecret": "true"` pair was used.
+              enum:
+              - CLIENT
+              - SERVER
+            secretProvisionedBy:
+              type: string
+              description: |
+                The user account that was used to generate the shared secret.
+      generateSecret:
+        type: boolean
+        description: |
+          Whether Akamai automatically generates the shared secret to be used with Two-factor authentication for this account.
+        default: 'false'
+  quickDelete:
+    type: boolean
+    description: |
+      Whether quick-delete functionality is enabled in the storage group that this account has been configured to access.
+    default: 'false'
+  rsyncEnabled:
+    type: boolean
+    description: |
+      Whether non-secure rsync was enabled as an access method during creation of the account. This allows the account to access the storage group using the rsync protocol and a unique password you've set up for use with rsync.
+    default: 'false'
+  ruleSetId:
+    type: integer
+    description: |
+      The unique ID assigned to the Access Control List (ACL) Rule Set for the account, if applicable. These rule sets are comprised of a list of IP Addresses or Geographic Regions that are allowed or blocked from access. The appropriate ID integer is set as the `type` for the `ruleSetId` object for the account.
+  sshEnabled:
+    type: boolean
+    description: |
+      Whether Secure Shell (SSH) is enabled as an access method for the account, through application of an SSH key during creation of the account. This allows access to the storage group via this account using SFTP, SecureCopy, Secure Rsync, Aspera Upload Acceleration and the NetStorage CMShell.
+    default: 'false'
+  status:
+    type: string
+    description: |
+      The activation status and availability of the account. `INACTIVE` indicates the account has been deactivated. `NEW` indicates the account is being propagated. `ACTIVATIONSENT` indicates the initial activation email has been sent to the contact on the account, and NetStorage is awaiting a confirmation it was received. `ACTIVE` indicates the account is fully propagated and available for use.
+    enum:
+    - INACTIVE
+    - NEW
+    - ACTIVATIONSENT
+    - ACTIVE
+  storageGroupId:
+    type: integer
+    description: |
+      The unique identifier for the storage group that this account has been configured to access.
+  storageGroupName:
+    type: string
+    description: |
+      The upload account has been configured to access this specific storage group.
+  storageGroupType:
+    type: string
+    description: |
+      The format or migration status of the storage group that this account has been configured to access. `FILESTORE` indicates an NS3 format group. `OBJECTSTORE` indicates an NS4 format group. `MIGRATING` indicates the group is being migrated from NS3 to NS4.
+    enum:
+    - FILESTORE
+    - OBJECTSTORE
+    - MIGRATING
+  technicalContactInfo:
+    type: object
+    description: |
+      Technical Contact information set up for the account.
+    additionalProperties: false
+    properties:
+      existingNetStorageTechnicalContact:
+        description: |
+          The NetStorage Technical Contact serves as the default contact for this upload account. Configure these contacts in the NetStorage section of the [Identity and Access Management](https://techdocs.akamai.com/iam/docs) tool in Control Center.
+        $ref: ua-existing-technical-contact.yaml
+      existingTechnicalContact:
+        type: object
+        description: |
+          A pair of existing Control Center user accounts that have been selected as [technical contacts](doc:create-a-netstorage-technical-contact) for the account. Use Control Center to set up contact information for these accounts.
+        additionalProperties: false
+        properties:
+          primarySfPin:
+            type: string
+            description: |
+              The Control Center user account selected as the primary point of contact for the account.
+          secondarySfPin:
+            type: string
+            description: |
+              The Control Center user account selected as the secondary point of contact for the account.
+      newTechnicalContact:
+        type: object
+        description: |
+          All details for the contact have been manually applied.
+        additionalProperties: false
+        properties:
+          email:
+            type: string
+            description: |
+              The email address for the contact.
+          firstName:
+            type: string
+            description: |
+              The first name of the contact.
+          lastName:
+            type: string
+            description: |
+              The last name (surname) of the contact.
+          phone:
+            type: object
+            description: |
+              Phone number details for the contact.
+            additionalProperties: false
+            properties:
+              areaCode:
+                type: string
+                description: |
+                  The applicable area code for the contact phone number.
+              countryCode:
+                type: string
+                description: |
+                  The applicable country code for the contact phone number.
+              number:
+                type: string
+                description: |
+                  The contact phone number.
+  uploadAccountId:
+    type: string
+    description: |
+      The name you've set for the account. This is referred to as the ID in Control Center.

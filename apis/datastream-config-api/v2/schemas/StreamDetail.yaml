@@ -1,0 +1,198 @@
+type: object
+description: |-
+  Provides detailed information about the latest configuration version of a stream. It provides descriptions of the data set fields selected in the version, identifiers of properties they collect logs for, configuration of the destination where they deliver logs, and structure of these log lines. It also informs whether this version is active.
+  
+x-akamai:
+  file-path: schemas/StreamDetail.yaml
+additionalProperties: false
+required:
+- contractId
+- createdBy
+- createdDate
+- datasetFields
+- deliveryConfiguration
+- destination
+- groupId
+- latestVersion
+- modifiedBy
+- modifiedDate
+- productId
+- properties
+- streamId
+- streamName
+- streamStatus
+- streamVersion
+properties:
+  properties:
+    type: array
+    description: |
+      Identifies the properties that you monitor in the stream.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - propertyId
+      - propertyName
+      properties:
+        propertyId:
+          type: integer
+          description: |
+            The identifier of the property.
+        propertyName:
+          type: string
+          description: |
+            The descriptive label for the property.
+  collectMidgress:
+    type: boolean
+    description: |
+      Indicates if you've opted to capture midgress traffic within the Akamai platform, such as between two edge servers.
+  contractId:
+    type: string
+    description: |
+      Identifies the contract that the stream belongs to.
+  createdBy:
+    type: string
+    description: |
+      The username who created the stream.
+  createdDate:
+    type: string
+    description: |
+      An ISO 8601 timestamp marking when the stream was created.
+    format: date-time
+  datasetFields:
+    type: array
+    description: |
+      A list of data set fields selected that the stream monitors in logs. The order of the identifiers define how the value for these fields appear in the log lines.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - datasetFieldId
+      - datasetFieldName
+      - datasetFieldJsonKey
+      properties:
+        datasetFieldId:
+          type: integer
+          description: |
+            Identifies the field.
+        datasetFieldJsonKey:
+          type: string
+          description: |
+            Specifies the JSON key for the field in a log line. You can get this value only when you run the [List data set fields](ref:get-dataset-fields) or [Get a stream](ref:get-stream) operation for a stream in the `JSON` format.
+        datasetFieldName:
+          type: string
+          description: |
+            A name of the data set field.
+  deliveryConfiguration:
+    type: object
+    description: |
+      The configuration of log lines, names of the files sent to a destination, and delivery frequency for these files.
+    additionalProperties: false
+    required:
+    - format
+    - frequency
+    properties:
+      format:
+        type: string
+        description: |
+          The format in which you want to receive log files. `STRUCTURED` or `JSON` are the currently available formats.
+        enum:
+        - STRUCTURED
+        - JSON
+      fieldDelimiter:
+        type: string
+        description: |
+          A delimiter that separates data set fields in the log lines, either `SPACE` or `TAB`. Set this only for the `STRUCTURED` log file `format`.
+        enum:
+        - SPACE
+        - TAB
+      frequency:
+        type: object
+        description: |
+          The frequency of collecting logs from each uploader and sending these logs to a destination.
+        additionalProperties: false
+        required:
+        - intervalInSeconds
+        properties:
+          intervalInSeconds:
+            type: integer
+            description: |
+              The interval in seconds (`30` or `60`) after which the system bundles log lines into a file and sends it to a destination.
+            enum:
+            - 30
+            - 60
+      uploadFilePrefix:
+        type: string
+        description: |
+          The prefix of the log file that you want to send to a object-based destination. It's a string of at most 200 characters. This member supports [Dynamic time variables](ref:custom-log-field#dynamic-time-variables). If unspecified, it defaults to `ak`.
+        default: ak
+      uploadFileSuffix:
+        type: string
+        description: |
+          The suffix of the log file that you want to send to a object-based destination. This member supports [Dynamic time variables](ref:custom-log-field#dynamic-time-variables). It's a static string of at most 10 characters. If unspecified, it defaults to `ds`.
+        default: ds
+  destination:
+    description: |
+      Provides detailed information about the destination's configuration in the stream to send logs.
+    oneOf:
+    - $ref: AzureSavedDestination.yaml
+    - $ref: S3SavedDestination.yaml
+    - $ref: DatadogSavedDestination.yaml
+    - $ref: SplunkSavedDestination.yaml
+    - $ref: GCSSavedDestination.yaml
+    - $ref: HTTPSSavedDestination.yaml
+    - $ref: OCSSavedDestination.yaml
+    - $ref: SumoLogicSavedDestination.yaml
+    - $ref: LogglySavedDestination.yaml
+    - $ref: ElasticsearchSavedDestination.yaml
+    - $ref: NewRelicSavedDestination.yaml
+    - $ref: S3CompatibleSavedDestination.yaml
+  groupId:
+    type: integer
+    description: |
+      Identifies the group that has access to the product and that you created the stream configuration for. When editing a stream, the value you pass is ignored as you can't change the group for an existing stream.
+  latestVersion:
+    type: integer
+    description: |
+      Identifies the latest configuration version of the stream.
+  modifiedBy:
+    type: string
+    description: |
+      The username who modified the stream.
+  modifiedDate:
+    type: string
+    description: |
+      The date and time in the ISO 8601 format when the stream was modified.
+    format: date-time
+  notificationEmails:
+    type: array
+    description: |
+      A comma-delimited list of email addresses where the system sends notifications about activations and deactivations of the stream.
+    items:
+      type: string
+  productId:
+    type: string
+    description: |
+      The ID of the product that you created stream for.
+  streamId:
+    type: integer
+    description: |
+      Identifies the stream.
+  streamName:
+    type: string
+    description: |
+      The name of the stream.
+  streamStatus:
+    type: string
+    description: |
+      Indicates if the stream is `ACTIVATED` or `DEACTIVATED`. `INACTIVE`, `ACTIVATING`, `ACTIVATED`, `DEACTIVATING`, or `DEACTIVATED`.
+    enum:
+    - INACTIVE
+    - ACTIVATING
+    - ACTIVATED
+    - DEACTIVATING
+    - DEACTIVATED
+  streamVersion:
+    type: integer
+    description: |
+      Identifies the configuration version of the stream.

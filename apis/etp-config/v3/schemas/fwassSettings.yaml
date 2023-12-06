@@ -1,0 +1,137 @@
+type: object
+description: |-
+  Configures Firewall as service.
+  
+x-akamai:
+  file-path: schemas/fwassSettings.yaml
+additionalProperties: false
+required:
+- name
+- type
+- fWaaSId
+- rank
+- enabled
+- responseId
+- sourceIp
+- destinationIp
+- ports
+- protocol
+- appIds
+- countryCodes
+- networkServiceIds
+- networkServiceInfo
+- countryCodeInfo
+- nonWebAppInfo
+properties:
+  name:
+    type: string
+    description: |
+      Name of the service.
+    minLength: 1
+  type:
+    type: string
+    description: |
+      Specifies the service type, either `IP`, `APP`, `NETWORK_SERVICE`, `GEO`, or `DEFAULT`.
+    enum:
+    - IP
+    - APP
+    - NETWORK_SERVICE
+    - GEO
+    - DEFAULT
+  appIds:
+    type: array
+    description: |
+      Lists app IDs.
+    minItems: 0
+    items:
+      type: integer
+      minimum: 1
+  countryCodeInfo:
+    type: array
+    description: |
+      Lists country code info.
+    minItems: 0
+    items:
+      $ref: fwassGeoInfo.yaml
+  countryCodes:
+    type: array
+    description: |
+      Lists country codes.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  destinationIp:
+    type: array
+    description: |
+      Lists destination IPs.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  enabled:
+    type: boolean
+    description: |
+      Enables the service.
+  fWaaSId:
+    type: integer
+    description: |
+      Unique identifier for the firewall as service.
+    minimum: 1
+  networkServiceIds:
+    type: array
+    description: |
+      Lists network service IDs.
+    minItems: 0
+    items:
+      type: integer
+      minimum: 1
+  networkServiceInfo:
+    type: array
+    description: |
+      Lists network service info details.
+    minItems: 0
+    items:
+      $ref: fwassInfo.yaml
+  nonWebAppInfo:
+    type: array
+    description: |
+      Lists non-web-app info.
+    minItems: 0
+    items:
+      $ref: avc-typeInfo.yaml
+  ports:
+    type: array
+    description: |
+      Lists ports.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  protocol:
+    type: string
+    description: |
+      Describes the protocol used by service, either `tcp`, `udp`, or `both`.
+    enum:
+    - tcp
+    - udp
+    - both
+  rank:
+    type: integer
+    description: |
+      Priority of the service.
+    minimum: 0
+  responseId:
+    type: integer
+    description: |
+      ID of the response.
+    readOnly: true
+    minimum: 1
+  sourceIp:
+    type: array
+    description: |
+      Lists source IPs.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1

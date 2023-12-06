@@ -1,0 +1,42 @@
+type: object
+description: |-
+  The status of any recent zone transfer attempts for an Edge DNS secondary zone.
+  
+x-akamai:
+  file-path: schemas/zone-transfer-status.yaml
+additionalProperties: false
+required:
+- zone
+- metadata
+- masters
+properties:
+  masters:
+    type: array
+    description: |
+      A list of customer nameservers that were contacted.
+    items:
+      $ref: zone-transfer-master.yaml
+  metadata:
+    type: object
+    description: |
+      Information about the most recent successful and failed zone transfer attempt.
+    additionalProperties: false
+    properties:
+      lastFailureTimestamp:
+        type: string
+        description: |
+          The ISO 8601 timestamp indicating when the most recent failed zone transfer occurred.
+        format: date-time
+      lastSuccessSerial:
+        type: integer
+        description: |
+          The SOA serial number that was read during the most recent successful zone transfer.
+      lastSuccessTimestamp:
+        type: string
+        description: |
+          The ISO 8601 timestamp indicating when the most recent successful zone transfer occurred.
+        format: date-time
+  zone:
+    type: string
+    description: |
+      The name of the zone.

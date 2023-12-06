@@ -1,0 +1,97 @@
+openapi: 3.0.0
+info:
+  title: Reporting groups
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/contract-api/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: reporting-groups.yaml
+paths:
+  /reportingGroups:
+    get:
+      operationId: get-reporting-groups
+      summary: List CP code reporting groups
+      tags:
+      - Reporting groups
+      description: |
+        Get the IDs of the Content Provider (CP) reporting groups that you have access to along with their names. To run this operation, your user account needs the CPCode Rep Group role. To add this role, use the [Identity and Access Management application](https://control.akamai.com/admin/?tab=CONFIGURE&type=context).
+      responses:
+        200:
+          description: |
+            The response provides a list of reporting groups.
+          content:
+            application/json:
+              example:
+                $ref: examples/repGrpIdNameList.json
+              schema:
+                $ref: schemas/reporting-group-name-list-200.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+  /reportingGroups/identifiers:
+    get:
+      operationId: get-group-ids
+      summary: List CP code reporting group IDs
+      tags:
+      - Reporting groups
+      description: |
+        Get the IDs of the Content Provider (CP) reporting groups that you have access to. To run this operation, your user account needs the CPCode Rep Group role. To add this role, use the [Identity and Access Management application](https://control.akamai.com/admin/?tab=CONFIGURE&type=context).
+      responses:
+        200:
+          description: |
+            The response provides a list of reporting group IDs.
+          content:
+            application/json:
+              example:
+                $ref: examples/repGrpList.json
+              schema:
+                $ref: schemas/reportingGroupList.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+  /reportingGroups/{reportingGroupId}/products/summaries:
+    parameters:
+    - $ref: parameters/reportingGroupId-path.yaml
+    get:
+      operationId: get-group-products-summaries
+      summary: List products per reporting group
+      tags:
+      - Products
+      description: |
+        Get the IDs and names of the products associated with the reporting group for the time frame selected. To run this operation, your user account needs the CPCode Rep Group role. To add this role, use the [Identity and Access Management application](https://control.akamai.com/admin/?tab=CONFIGURE&type=context). When a request is successful, it may return either a 200 or a 300 response. The API returns a 200 (OK) response when the CP code reporting group is associated with only one contract. You'll receive a `300 Multiple Choices` response when the request returns a list of matching contracts because the CP code reporting group is associated with multiple contracts. To retrieve product information when you receive a 300 response code, make a new GET request to the hyperlinks provided in the response.
+      parameters:
+      - $ref: parameters/from-query.yaml
+      - $ref: parameters/to-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides a list of products. This response is returned when the CP code reporting group is associated with only one contract.
+          content:
+            application/json:
+              example:
+                $ref: examples/product-summaries-200.json
+              schema:
+                $ref: schemas/product-summaries-200.yaml
+        300:
+          description: |
+            The request returned a list of matching contracts because the CP code reporting group is associated with multiple contracts. To retrieve product information, make a new GET request to a specific contract ID using the API listed in the response.
+          content:
+            application/json:
+              example:
+                $ref: examples/contract-hypermedia-list-200.json
+              schema:
+                $ref: schemas/contract-list-200.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml

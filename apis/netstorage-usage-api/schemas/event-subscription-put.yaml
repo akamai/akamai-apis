@@ -1,0 +1,96 @@
+type: object
+description: |-
+  This encapsulates the configuration for NetStorage event notifications.
+  
+x-akamai:
+  file-path: schemas/event-subscription-put.yaml
+required:
+- eventTypes
+- notificationConfig
+properties:
+  eventTypes:
+    type: array
+    description: |
+      Subscribe to event notifications for object creation, update, and delete events. Events are available for when replication is complete or a replica is deleted. * com.akamai.netstorage.object-created * com.akamai.netstorage.object-updated * com.akamai.netstorage.object-deleted * com.akamai.netstorage.object-replicated * com.akamai.netstorage.object-replica-delete
+    items:
+      type: string
+      enum:
+      - com.akamai.netstorage.object-created
+      - com.akamai.netstorage.object-updated
+      - com.akamai.netstorage.object-deleted
+      - com.akamai.netstorage.object-replicated
+      - com.akamai.netstorage.object-replica-delete
+  notificationConfig:
+    type: object
+    description: |
+      This specifies where event notifications are sent. It includes the `endPointURL` and `endPointAccessToken`.
+    required:
+    - endpointConfig
+    properties:
+      endpointConfig:
+        type: object
+        description: |
+          This encapsulates the configuration of the third-party endpoint set to receive event notifications.
+        required:
+        - endPointURL
+        properties:
+          endPointAccessToken:
+            type: string
+            description: |
+              A CloudEvents-compliant `access_token`. Include it as a query parameter in the `endPointURL` or as a header in compliance with the [CloudEvents supported authorization schemes](https://github.com/cloudevents/spec/blob/v1.0/http-webhook.md#32-uri-query-parameter).
+          endPointAttributes:
+            type: object
+            description: |
+              Specifies notification and auth scheme that determines version compatibility when publishing event notifications.
+            minProperties: 1
+            maxProperties: 2
+            properties:
+              X-Akamai-EN-Ver:
+                type: string
+                description: |
+                  This API supports version `akam-ns-en-v1.0`.
+                default: akam-ns-en-v1.0
+                enum:
+                - akam-ns-en-v1.0
+              ce-specversion:
+                type: string
+                description: |
+                  This API supports CloudEvents schema version `1.x-wip`.
+                default: 1.x-wip
+                enum:
+                - 1.x-wip
+          endPointURL:
+            type: string
+            description: |
+              This identifies the endpoint configured to receive event notifications.
+      maxRetries:
+        type: integer
+        description: |
+          Maximum number of times NetStorage event publishing systems will try to publish the event notification.
+        format: int32
+  sgZone:
+    type: string
+    description: |
+      Specify the replication zone to monitor for `eventTypes` that will trigger an event notification. If empty, subscription applies to events that are detected in any of the replica zones in the object's storage group.
+    default: null
+    nullable: true
+    enum:
+    - AU
+    - IN
+    - JP
+    - KR
+    - SG
+    - asia
+    - europe
+    - global
+    - us
+    - useast
+    - uswest
+  subscriptionEndTime:
+    type: string
+    description: |
+      An epoch timestamp that identifies when the subscription for event notification will end. If not provided, subscriptions will auto-expire 90 days from the `subscriptionStartTime`.
+  subscriptionStartTime:
+    type: string
+    description: |
+      An epoch timestamp that identifies when the subscription for event notifications will start. If not provided, the subscription will start immediately after successful subscription.

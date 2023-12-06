@@ -1,0 +1,54 @@
+type: object
+x-akamai:
+  file-path: schemas/policy-video-specific.yaml
+additionalProperties: false
+properties:
+  output:
+    type: object
+    description: |
+      Dictates the output quality for each resized video.
+    title: Output
+    additionalProperties: false
+    properties:
+      perceptualQuality:
+        description: |
+          The quality of derivative videos. High preserves video quality with reduced byte savings while low reduces video quality to increase byte savings.
+        oneOf:
+        - default: medium
+          type: string
+          title: String enum
+          enum:
+          - high
+          - mediumHigh
+          - medium
+          - mediumLow
+          - low
+        - $ref: variable-inline.yaml
+      placeholderVideoUrl:
+        description: |
+          Allows you to add a specific placeholder video that appears when a user first requests a video, but before Image & Video Manager processes the video. If not specified the original video plays during the processing time.
+        oneOf:
+        - title: String
+          type: string
+        - $ref: variable-inline.yaml
+      videoAdaptiveQuality:
+        description: |
+          Overrides the quality of video to serve when Image & Video Manager detects a slow connection with a round-trip time (RTT) of 300 ms. Specifying lower values lets users with slow connections browse your site with reduced load times without impacting the quality of videos for users with faster connections.
+        oneOf:
+        - enum:
+          - high
+          - mediumHigh
+          - medium
+          - mediumLow
+          - low
+          type: string
+          title: String enum
+        - $ref: variable-inline.yaml
+  video:
+    type: boolean
+    description: |
+      Identifies this as a video policy.
+    default: true
+    readOnly: true
+    enum:
+    - true

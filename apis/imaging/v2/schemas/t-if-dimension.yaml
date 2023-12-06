@@ -1,0 +1,54 @@
+type: object
+description: |-
+  Chooses a transformation depending on the dimensions of the source image. You need to select a dimension for comparison, which is either `width` and `height` or `both`.
+  
+x-akamai:
+  file-path: schemas/t-if-dimension.yaml
+title: IfDimension
+additionalProperties: false
+required:
+- transformation
+- value
+properties:
+  default:
+    type: object
+    description: |
+      A no-op transformation, by default.
+  value:
+    description: |
+      The value to compare against the source image dimension. Allows [variable](ref:variable) substitution.
+    oneOf:
+    - title: Integer
+      type: integer
+    - $ref: variable-inline.yaml
+  dimension:
+    description: |
+      The dimension to use to select the transformation, either `height`, `width`, or `both`. Allows [variable](ref:variable) substitution.
+    oneOf:
+    - default: width
+      type: string
+      title: String
+      enum:
+      - width
+      - height
+      - both
+    - $ref: variable-inline.yaml
+  equal:
+    type: object
+    description: |
+      The transformation performed only if the source image's dimension is equal to the `value` listed.
+  greaterThan:
+    type: object
+    description: |
+      The transformation performed if the source image's dimension is greater than the `value` listed.
+  lessThan:
+    type: object
+    description: |
+      The transformation performed if the source image's dimension is less than the `value` listed.
+  transformation:
+    type: string
+    description: |
+      Identifies the type of transformation, `IfDimension` in this case.
+    default: IfDimension
+    enum:
+    - IfDimension

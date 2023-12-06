@@ -1,0 +1,39 @@
+type: object
+description: |-
+  Collects data needed for condition matches on client lists and network lists.
+  
+x-akamai:
+  file-path: schemas/url-protection-bypass-client-list-condition.yaml
+title: NetworkListCondition
+additionalProperties: false
+required:
+- className
+- value
+properties:
+  value:
+    type: array
+    description: |
+      Identifies the client list or network list.
+    nullable: true
+    uniqueItems: true
+    items:
+      type: string
+      minLength: 1
+  checkIps:
+    type: string
+    description: |
+      Whether the connecting IP or both the connecting IP and `X-Forwarded-For` (XFF) header match on the client list or network list. URL protection bypass supports `connecting` only.
+    readOnly: true
+    enum:
+    - connecting
+  className:
+    type: string
+    description: |
+      Choose `NetworkListCondition` to match the requesting client's identifier, like IP, GEO, ASN or TLS Fingerprint, against the specified client list or network list.
+    enum:
+    - NetworkListCondition
+  positiveMatch:
+    type: boolean
+    description: |
+      Whether the condition triggers on a match or lack of match.
+    readOnly: true

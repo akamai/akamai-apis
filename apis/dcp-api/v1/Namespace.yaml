@@ -1,0 +1,411 @@
+openapi: 3.0.0
+info:
+  title: Namespace
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/dcp-api/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: Namespace.yaml
+paths:
+  /namespaces:
+    post:
+      operationId: post-namespaces
+      summary: Reserve a namespace
+      tags:
+      - Namespaces
+      description: |
+        This operation globally reserves a namespace.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/exampleReserveNamespace.json
+            schema:
+              $ref: schemas/namespaceReservationRequest.yaml
+      responses:
+        201:
+          description: |
+            The namespace has been reserved.
+        409:
+          description: |
+            A name collision has occurred.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/exampleNamespaceAlreadyReserved409ErrorRS.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    get:
+      operationId: get-namespaces
+      summary: List reserved namespaces
+      tags:
+      - Namespaces
+      description: |
+        This operation lists all namespaces reserved for the account of the user making the request, up to 100 namespaces on a page.
+      parameters:
+      - $ref: parameters/size-query.yaml
+      - $ref: parameters/page-query.yaml
+      - $ref: parameters/hostnames-query.yaml
+      responses:
+        200:
+          description: |
+            A list of all reserved namespaces.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleListNamespacesRS.json
+              schema:
+                $ref: schemas/reservationsListResponse.yaml
+  /namespaces/search:
+    get:
+      operationId: get-namespaces-search
+      summary: List all reserved namespaces
+      tags:
+      - Namespaces
+      description: |
+        This operation lists up to 30 namespaces reserved for the account of the user making the request unless additional filtering parameters are specified.
+      parameters:
+      - $ref: parameters/global-query.yaml
+      - $ref: parameters/match-query.yaml
+      - $ref: parameters/detail-query.yaml
+      responses:
+        200:
+          description: |
+            A list of all reservations.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleListNamespacesRS.json
+              schema:
+                $ref: schemas/reservationsListResponse.yaml
+  /namespaces/{namespace}:
+    parameters:
+    - $ref: parameters/namespace-path.yaml
+    delete:
+      operationId: delete-namespace
+      summary: Remove a namespace
+      tags:
+      - Namespaces
+      description: |
+        This operation removes a previously reserved namespace. To remove a namespace, [delete](ref:delete-configuration) all configurations of this namespace across jurisdictions.
+      responses:
+        200:
+          description: |
+            The namespace has been deleted.
+        403:
+          $ref: errors/403.yaml
+        404:
+          description: |
+            The namespace couldn't be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/exampleNamespaceNotFound404ErrorRS.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        409:
+          description: |
+            The namespace needs to be deprovisioned first.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/exampleNamespaceAlreadyReserved409ErrorRS.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /namespaces/{namespace}/configurations:
+    parameters:
+    - $ref: parameters/namespace-path.yaml
+    post:
+      operationId: post-configuration
+      summary: Create a namespace configuration
+      tags:
+      - Namespace configurations
+      description: |
+        This operation creates a configuration for the namespace that you specified in the URL of the request and the jurisdiction that you specified in the body of the request. For ACL configuration guidelines, see [access control lists](ref:access-control-lists) and [identity topic filters guidelines](ref:identity-topic-filters-guidelines).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/exampleNamespaceConfigurationRQ.json
+            schema:
+              $ref: schemas/namespaceConfigurationRequest.yaml
+      responses:
+        202:
+          description: |
+            The configuration has been created or updated. The configuration has been created or updated. Possible warnings about a successful configuration.
+        400:
+          description: |
+            Validation errors for topic filters, authorization groups, or both.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/exampleNamespaceConfigurationValidationFailed400ErrorRS.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          description: |
+            The namespace hasn't been reserved.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/exampleNamespaceConfigurationNotFound404ErrorRS.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        409:
+          description: |
+            The namespace and jurisdiction pair already exists.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/exampleNamespaceIsNotUnique409ErrorRS.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    get:
+      operationId: get-configurations
+      summary: List all namespace configurations
+      tags:
+      - Namespace configurations
+      description: |
+        This operation returns configurations across all jurisdictions for the namespace that you specified in the URL.
+      responses:
+        200:
+          description: |
+            A list of all namespace configurations.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleListNamespaceConfigurationInJurisdictionsRS.json
+              schema:
+                $ref: schemas/namespacesListResponse.yaml
+  /namespaces/{namespace}/configurations/{jurisdiction}:
+    parameters:
+    - $ref: parameters/jurisdiction-path.yaml
+    - $ref: parameters/namespace-path.yaml
+    get:
+      operationId: get-configuration
+      summary: Get a namespace configuration
+      tags:
+      - Namespace configurations
+      description: |
+        This operation returns the configuration for the namespace and jurisdiction that you specified in the URL of the request.
+      responses:
+        200:
+          description: |
+            The namespace in a specified jurisdiction has been found.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleGetNamespaceForJurisdiction.json
+              schema:
+                $ref: schemas/namespaceConfigurationResponse.yaml
+        404:
+          description: |
+            The namespace configuration couldn't be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/exampleNamespaceConfigurationNotFound404ErrorRS.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    put:
+      operationId: put-configuration
+      summary: Update a namespace configuration
+      tags:
+      - Namespace configurations
+      description: |
+        This operation updates the configuration for the namespace and jurisdiction that you specified in the URL of the request. For ACL configuration guidelines, see [access control lists](ref:access-control-lists) and [identity topic filters guidelines](ref:identity-topic-filters-guidelines).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/exampleNamespaceUpdateRQ.json
+            schema:
+              $ref: schemas/namespaceConfigurationUpdate.yaml
+      responses:
+        202:
+          description: |
+            The namespace configuration in a specified jurisdiction has been updated.
+        403:
+          $ref: errors/403.yaml
+        404:
+          description: |
+            The namespace configuration couldn't be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/exampleNamespaceConfigurationNotFound404ErrorRS.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    delete:
+      operationId: delete-configuration
+      summary: Delete a namespace configuration
+      tags:
+      - Namespace configurations
+      description: |
+        This operation removes all versions of the configuration for the namespace and jurisdiction that you specified in the URL of the request. To remove a configuration, [deactivate](ref:put-configuration-version-active) the active version of this configuration.
+      responses:
+        200:
+          description: |
+            The namespace has been deleted.
+        403:
+          $ref: errors/403.yaml
+        404:
+          description: |
+            The namespace configuration couldn't be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/exampleNamespaceConfigurationNotFound404ErrorRS.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        409:
+          description: |
+            The namespace configuration should be deactivated first.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/exampleNamespaceConfigurationActivationConflict409ErrorRS.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /namespaces/{namespace}/configurations/{jurisdiction}/versions:
+    parameters:
+    - $ref: parameters/jurisdiction-path.yaml
+    - $ref: parameters/namespace-path.yaml
+    post:
+      operationId: post-configuration-version
+      summary: Create a version of a namespace configuration
+      tags:
+      - Namespace configurations
+      description: |
+        This operation creates a version of the configuration for the namespace and jurisdiction that you specified in the URL of the request.
+      responses:
+        201:
+          description: |
+            The created version is returned.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleNamespaceConfigurationVersionRS.json
+              schema:
+                $ref: schemas/activationVersionResponse.yaml
+    get:
+      operationId: get-configuration-versions
+      summary: List versions of a namespace configuration
+      tags:
+      - Namespace configurations
+      description: |
+        This operation returns all versions of the configuration for the namespace and jurisdiction that you specified in the URL of the request. It also provides information about the users who created the configuration versions, times when the configuration versions were created, and operation details.
+      responses:
+        200:
+          description: |
+            A list of all configuration versions.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleListActivationsRS.json
+              schema:
+                $ref: schemas/activationsListResponse.yaml
+  /namespaces/{namespace}/configurations/{jurisdiction}/versions/activations:
+    parameters:
+    - $ref: parameters/jurisdiction-path.yaml
+    - $ref: parameters/namespace-path.yaml
+    get:
+      operationId: get-configuration-versions-actions
+      summary: List all operations for configuration versions
+      tags:
+      - Configuration versions
+      description: |
+        This operation returns all activations and deactivations of configuration versions for the namespace and jurisdiction that you specified in the URL of the request. It also provides information about the users who created the configuration versions, times when the configuration versions were created, and operation details.
+      responses:
+        200:
+          description: |
+            A list of all operations on the configuration version.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleListActivationsRS.json
+              schema:
+                $ref: schemas/activationsListResponse.yaml
+  /namespaces/{namespace}/configurations/{jurisdiction}/versions/active:
+    parameters:
+    - $ref: parameters/jurisdiction-path.yaml
+    - $ref: parameters/namespace-path.yaml
+    put:
+      operationId: put-configuration-version-active
+      summary: Deactivate a version of a namespace configuration
+      tags:
+      - Configuration versions
+      description: |
+        This operation deactivates the active configuration for the namespace and jurisdiction that you specified in the URL of the request.
+      parameters:
+      - $ref: parameters/activation-state-query.yaml
+      responses:
+        200:
+          description: |
+            The configuration version has been deactivated.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleAlreadyDeactivatedRS.json
+              schema:
+                $ref: schemas/alreadyDeactivatedResponse.yaml
+        403:
+          description: |
+            The active configuration is currently in use.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/exampleActiveConfigurationInUse403ErrorRS.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            The active configuration couldn't be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/exampleActiveConfigurationInNotFound404ErrorRS.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        409:
+          description: |
+            Deactivation of the currently active configuration version is in progress.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/exampleActiveConfigurationVersionDeactivationInProgress409ErrorRS.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /namespaces/{namespace}/configurations/{jurisdiction}/versions/{version}:
+    parameters:
+    - $ref: parameters/version-path.yaml
+    - $ref: parameters/jurisdiction-path.yaml
+    - $ref: parameters/namespace-path.yaml
+    put:
+      operationId: put-configuration-version
+      summary: Activate a version of a namespace configuration
+      tags:
+      - Configuration versions
+      description: |
+        This operation activates a specified version of the configuration for the namespace and jurisdiction that you specified in the URL of the request.
+      parameters:
+      - $ref: parameters/activation-state-query.yaml
+      responses:
+        200:
+          description: |
+            The configuration has been activated.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleAlreadyActivatedRS.json
+              schema:
+                $ref: schemas/alreadyActivatedResponse.yaml

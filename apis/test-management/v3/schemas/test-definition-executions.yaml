@@ -1,0 +1,95 @@
+type: object
+description: |-
+  Contains information about test definitions executed during a test run, including their results.
+  
+x-akamai:
+  file-path: schemas/test-definition-executions.yaml
+additionalProperties: false
+required:
+- testDefinitionExecutionId
+- testDefinitionId
+- targetHostname
+- status
+- ipVersions
+- testCaseIds
+properties:
+  completedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the test run completed.
+    format: date-time
+  diffs:
+    $ref: difference.yaml
+  ipVersions:
+    type: array
+    description: |
+      IP versions for which the test run executed. Possible values are: `IPv4`, `IPv6`, or both.
+    minItems: 1
+    maxItems: 2
+    uniqueItems: true
+    items:
+      type: string
+      enum:
+      - IPV4
+      - IPV6
+  status:
+    type: string
+    description: |
+      Execution's status. Possible values are: `IN_PROGRESS`, `FAILED`, `COMPLETED`, `COMPLETED_WITH_UNEXPECTED_RESULTS`, `SKIPPED`, `ABORRTED`, `ARCHIVED`.
+    enum:
+    - IN_PROGRESS
+    - FAILED
+    - COMPLETED
+    - COMPLETED_WITH_UNEXPECTED_RESULTS
+    - SKIPPED
+    - ABORRTED
+    - ARCHIVED
+  supportedComparisonSettings:
+    type: array
+    description: |
+      Contains attributes set for comparison between environments in the `comparisonSettings` array of each executed comparative test case. Possible values are: `responseCode`, `responseHeaders`, `cpcode`, `cachingOption`, `cacheKey`, `metadataVariables`, or `originServer`.
+    minItems: 0
+    items:
+      type: string
+      enum:
+      - responseCode
+      - responseHeaders
+      - cpcode
+      - cachingOption
+      - cacheKey
+      - metadataVariables
+      - originServer
+  targetEnvironment:
+    type: string
+    description: |
+      Environment against which Test Center executed the test run, either `production` or `staging`.
+    enum:
+    - production
+    - staging
+    maxLength: 100
+  targetHostname:
+    type: string
+    description: |
+      Target environment hostname against which the test definition was executed.
+    maxLength: 100
+    format: hostname
+  testCaseIds:
+    type: array
+    description: |
+      List of unique identifiers of comparative test cases that executed. To get details of a test case, run the [Get a comparative test case](ref:get-test-definition-test-case) operation.
+    minItems: 1
+    items:
+      type: integer
+      minimum: 0
+  testDefinitionContext:
+    $ref: test-definition.yaml
+  testDefinitionExecutionId:
+    type: integer
+    description: |
+      Unique identifier for each test definition execution.
+    minimum: 1
+  testDefinitionId:
+    type: integer
+    description: |
+      Unique identifier for each test definition that executed.
+    minimum: 1

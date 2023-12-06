@@ -1,0 +1,973 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Enhanced Content Control Utility API",
+    "url": "https://techdocs.akamai.com/eccu/reference"
+  },
+  "info": {
+    "title": "Akamai: Enhanced Content Control Utility API",
+    "version": "v1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/permissions": {
+      "get": {
+        "description": "Returns the ECCU permissions. If the response's `submitEccuRequest` member is enabled, you can run the [Create an ECCU request](https://techdocs.akamai.com/eccu/reference/post-request) operation to invalidate content.",
+        "operationId": "get-permissions",
+        "summary": "List permissions",
+        "tags": [
+          "Permissions"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Enhanced Content Control Utility API",
+          "url": "https://techdocs.akamai.com/eccu/reference/get-permissions"
+        },
+        "responses": {
+          "200": {
+            "description": "List permissions.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "submitEccuRequest": true,
+                  "viewEccuRequest": true
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Verifies your ECCU permissions. If you have `viewEccuFile` and `submitEccuFile` permissions, all API functionality is available to you.",
+                  "type": "object",
+                  "required": [
+                    "submitEccuRequest",
+                    "viewEccuRequest"
+                  ],
+                  "properties": {
+                    "submitEccuRequest": {
+                      "default": false,
+                      "description": "Verifies your permission to submit a refresh request.",
+                      "type": "boolean"
+                    },
+                    "viewEccuRequest": {
+                      "default": false,
+                      "description": "Verifies your permission to view a refresh request.",
+                      "type": "boolean"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/permissions.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/properties": {
+      "get": {
+        "description": "Returns the digital properties that you can apply ECCU refresh requests to.",
+        "operationId": "get-properties",
+        "summary": "List properties",
+        "tags": [
+          "Properties"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Enhanced Content Control Utility API",
+          "url": "https://techdocs.akamai.com/eccu/reference/get-properties"
+        },
+        "responses": {
+          "200": {
+            "description": "List properties.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "properties": [
+                    {
+                      "propertyName": "www.example.com",
+                      "propertyNameExactMatch": true,
+                      "propertyType": "HOST_HEADER"
+                    },
+                    {
+                      "propertyName": "www.another-example.com",
+                      "propertyNameExactMatch": false,
+                      "propertyType": "ARL_TOKEN"
+                    },
+                    {
+                      "propertyName": "example2.com",
+                      "propertyNameExactMatch": true,
+                      "propertyType": "ARL_TOKEN"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Contains a collection of properties.",
+                  "type": "object",
+                  "required": [
+                    "properties"
+                  ],
+                  "properties": {
+                    "properties": {
+                      "description": "Collects data about each digital property under your account that you need to make an ECCU request for.",
+                      "minItems": 0,
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Collects data about each digital property under your account that you need to make an ECCU request for.",
+                        "type": "object",
+                        "required": [
+                          "propertyName",
+                          "propertyNameExactMatch",
+                          "propertyType"
+                        ],
+                        "properties": {
+                          "propertyName": {
+                            "description": "Identifies the digital property whose content you want to refresh.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "propertyNameExactMatch": {
+                            "description": "Specifies whether to exactly match the full string of the `propertyName`, or to perform an inexact right hand side (RHS) substring match. For example, with `propertyNameExactMatch` enabled, `example.com` does not match `www.example.com`.",
+                            "type": "boolean"
+                          },
+                          "propertyType": {
+                            "description": "Specifies the type of digital property. Either `ARL_TOKEN` or `HOST_HEADER`. This tells the edge network whether the purge information is contained in the ARL, or in a configuration file. The ARL is similar to the URL, but the ARL is specifically defined for objects to be served by the edge network. There are two types of ARLs, v1 and v2. For details, see the [Purge Cache documentation](https://techdocs.akamai.com/purge-cache/docs/digital-props).",
+                            "type": "string",
+                            "enum": [
+                              "ARL_TOKEN",
+                              "HOST_HEADER"
+                            ]
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/property.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/properties.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/requests": {
+      "post": {
+        "description": "Creates a new ECCU refresh request.",
+        "operationId": "post-request",
+        "summary": "Create an ECCU request",
+        "tags": [
+          "ECCU requests"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Enhanced Content Control Utility API",
+          "url": "https://techdocs.akamai.com/eccu/reference/post-request"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "metadata": "<?xml version=\"1.0\"?>\n <eccu>\n  <match:recursive-dirs value=\"store\">\n    <match:recursive-dirs value=\"images\">\n      <revalidate>now</revalidate>\n    </match:recursive-dirs>\n  </match:recursive-dirs>\n</eccu>",
+                "notes": "Invalidate images in store ahead of holiday",
+                "propertyName": "www.example.com",
+                "propertyNameExactMatch": true,
+                "propertyType": "HOST_HEADER",
+                "requestName": "Invalidate Images",
+                "statusUpdateEmails": [
+                  "john-doe@example.com"
+                ]
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Collects all of the data that you need to make an ECCU request for.",
+                "type": "object",
+                "required": [
+                  "propertyName",
+                  "propertyType",
+                  "propertyNameExactMatch",
+                  "metadata"
+                ],
+                "properties": {
+                  "metadata": {
+                    "description": "Contains tags that define a refresh request based on request parameters such as directory path and file extension. Use only ASCII characters. For more information on the format of an ECCU request file and metadata tag usage, see [Enhanced CCU Request Format](https://techdocs.akamai.com/purge-cache/docs/create-eccu-req-file).",
+                    "example": "{{metadata}}",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "notes": {
+                    "description": "In addition to the `requestName`, this provides information to help you track the refresh request.",
+                    "example": "{{notes}}",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "propertyName": {
+                    "description": "Identifies the digital property whose content you want to refresh.",
+                    "example": "{{propertyName}}",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "propertyNameExactMatch": {
+                    "description": "Specifies whether to exactly match the full string of the `propertyName`, or to perform an inexact right hand side (RHS) substring match. For example, with `propertyNameExactMatch` enabled, `example.com` doesn't match `www.example.com`.",
+                    "example": "{{propertyNameExactMatch}}",
+                    "type": "boolean"
+                  },
+                  "propertyType": {
+                    "description": "Specifies the type of digital property. Either `ARL_TOKEN` or `HOST_HEADER`. This tells the edge network whether the purge information is contained in the ARL, or in a configuration file. The ARL is similar to the URL, but the ARL is specifically defined for objects to be served by the edge network. There are two types of ARLs, v1 and v2. For details, see the [Purge Cache documentation](https://techdocs.akamai.com/purge-cache/docs/digital-props).",
+                    "example": "{{propertyType}}",
+                    "type": "string",
+                    "enum": [
+                      "ARL_TOKEN",
+                      "HOST_HEADER"
+                    ]
+                  },
+                  "requestName": {
+                    "description": "The name that you give to the refresh request.",
+                    "example": "{{requestName}}",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "statusUpdateEmails": {
+                    "description": "A list of email addresses to notify when the `status` of the refresh request changes.",
+                    "minItems": 0,
+                    "type": "array",
+                    "items": {
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "version": {
+                    "description": "Use this to mark differences in your refresh requests.",
+                    "example": "{{version}}",
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/request-post.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The operation was successful.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "metadata": "<?xml version=\"1.0\"?>\n <eccu>\n  <match:recursive-dirs value=\"store\">\n    <match:recursive-dirs value=\"images\">\n      <revalidate>now</revalidate>\n    </match:recursive-dirs>\n  </match:recursive-dirs>\n</eccu>",
+                  "notes": "Invalidate images in store",
+                  "propertyName": "www.example.com",
+                  "propertyNameExactMatch": true,
+                  "propertyType": "HOST_HEADER",
+                  "requestDate": "2018-11-30T16:25:15.000+0000",
+                  "requestId": 263529762,
+                  "requestName": "Invalidate Images",
+                  "requestor": "john-doe@example.com",
+                  "status": "PENDING",
+                  "statusMessage": "File uploaded and awaiting validation",
+                  "statusUpdateDate": "2018-11-30T16:25:15.000+0000",
+                  "statusUpdateEmails": [
+                    "john-doe@example.com"
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Provides information about an ECCU request.",
+                  "type": "object",
+                  "required": [
+                    "propertyName",
+                    "propertyNameExactMatch",
+                    "propertyType",
+                    "requestDate",
+                    "requestId",
+                    "status",
+                    "statusUpdateDate"
+                  ],
+                  "properties": {
+                    "extendedStatusMessage": {
+                      "description": "Further detail about the status of a request. Typically there is more information provided for a failed refresh request.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "metadata": {
+                      "description": "Contains tags that define a refresh request based on request parameters such as directory path and file extension. Use only ASCII characters. For more information on the format of an ECCU request file and metadata tag usage, see [Enhanced CCU Request Format](https://techdocs.akamai.com/eccu/docs/eccu-request-format).",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "notes": {
+                      "description": "In addition to the `requestName`, this provides information to help you track the refresh request.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "propertyName": {
+                      "description": "Identifies the digital property whose content you want to refresh.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "propertyNameExactMatch": {
+                      "description": "Specifies whether to exactly match the full string of the `propertyName`, or to perform an inexact right hand side (RHS) substring match. For example, with `propertyNameExactMatch` enabled, `example.com` doesn't match `www.example.com`.",
+                      "type": "boolean"
+                    },
+                    "propertyType": {
+                      "description": "Specifies the type of digital property. Either `ARL_TOKEN` or `HOST_HEADER`. This tells the edge network whether the purge information is contained in the ARL, or in a configuration file. The ARL is similar to the URL, but the ARL is specifically defined for objects to be served by the edge network. There are two types of ARLs, v1 and v2. For details, see the [Purge Cache documentation](https://techdocs.akamai.com/purge-cache/docs/digital-props).",
+                      "type": "string",
+                      "enum": [
+                        "ARL_TOKEN",
+                        "HOST_HEADER"
+                      ]
+                    },
+                    "requestDate": {
+                      "description": "The time the refresh request was submitted, in ISO 8601 format.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "A unique identifier for the refresh request. Use this to track issues with the request.",
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "requestName": {
+                      "description": "The name that you give to the refresh request.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "requestor": {
+                      "description": "The username of the person who submitted the request. For example, `john-doe@example.com`.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Specifies the condition of the refresh request. Possible values are `PENDING`, `SUCCEEDED`, `FAILED`, or `IGNORED`. If you form the `metadata` incorrectly, the refresh request will fail.",
+                      "type": "string",
+                      "enum": [
+                        "FAILED",
+                        "IGNORED",
+                        "PENDING",
+                        "SUCCEEDED"
+                      ]
+                    },
+                    "statusMessage": {
+                      "description": "Details about the `status` of the refresh request.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "statusUpdateDate": {
+                      "description": "The time the refresh request's `status` last changed, in ISO 8601 format.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "statusUpdateEmails": {
+                      "description": "A list of email addresses to notify when the `status` of the refresh request changes.",
+                      "minItems": 0,
+                      "type": "array",
+                      "items": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "version": {
+                      "description": "Use this to mark differences in your refresh requests.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/request.yaml"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "The path to the newly created ECCU request.",
+                "schema": {
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/Location.yaml"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem with the request.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Property specified by propertyName, propertyType, and propertyNameExactMatch could not be found",
+                  "instance": "/eccu-api/error-instances/b39849c6-02ac-4084-9627-174e91a8fecd",
+                  "method": "POST",
+                  "requestTime": "2023-04-17T08:11:55.482297Z",
+                  "status": 400,
+                  "title": "Property Not Found",
+                  "type": "https://problems.luna.akamaiapis.net/eccu-api/property-not-found",
+                  "errors": []
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "A problem object.",
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "description": "Specifies more details and indicates the cause of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "errors": {
+                      "description": "A nested problem object.",
+                      "minItems": 0,
+                      "type": "array",
+                      "items": {
+                        "description": "A nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "description": "Links to the error instance.",
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Specifies the HTTP status code. ",
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Summarizes the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Non-navigable URI that identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "get": {
+        "description": "Returns a summary of submitted  ECCU refresh requests under your account. Use this to view the `status` of all refresh requests.",
+        "operationId": "get-requests",
+        "summary": "List ECCU requests",
+        "tags": [
+          "ECCU requests"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Enhanced Content Control Utility API",
+          "url": "https://techdocs.akamai.com/eccu/reference/get-requests"
+        },
+        "responses": {
+          "200": {
+            "description": "List ECCU requests.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "requests": [
+                    {
+                      "notes": "Invalidate images in store",
+                      "propertyName": "www.example.com",
+                      "propertyNameExactMatch": true,
+                      "propertyType": "HOST_HEADER",
+                      "requestDate": "2018-11-30T16:25:15.000+0000",
+                      "requestId": 263529762,
+                      "requestName": "Invalidate Images",
+                      "requestor": "john-doe@example.com",
+                      "status": "PENDING",
+                      "statusMessage": "File uploaded and awaiting validation",
+                      "statusUpdateDate": "2018-11-30T16:25:15.000+0000",
+                      "statusUpdateEmails": [
+                        "john-doe@example.com"
+                      ]
+                    },
+                    {
+                      "notes": "Invalidate more images",
+                      "propertyName": "www.another-example.com",
+                      "propertyNameExactMatch": true,
+                      "propertyType": "HOST_HEADER",
+                      "requestDate": "2018-12-11T16:25:15.000+0000",
+                      "requestId": 263529762,
+                      "requestName": "Invalidate Images",
+                      "requestor": "john-doe@example.com",
+                      "status": "PENDING",
+                      "statusMessage": "File uploaded and awaiting validation",
+                      "statusUpdateDate": "2018-12-11T16:25:15.000+0000",
+                      "statusUpdateEmails": [
+                        "john-doe@example.com"
+                      ]
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Contains a collection of ECCU requests.",
+                  "type": "object",
+                  "required": [
+                    "requests"
+                  ],
+                  "properties": {
+                    "requests": {
+                      "description": "Provides information about an ECCU request.",
+                      "minItems": 0,
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Provides information about an ECCU request.",
+                        "type": "object",
+                        "required": [
+                          "propertyName",
+                          "propertyNameExactMatch",
+                          "propertyType"
+                        ],
+                        "properties": {
+                          "extendedStatusMessage": {
+                            "description": "Further detail about the status of a request. Typically there is more information provided for a failed refresh request.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "notes": {
+                            "description": "Contains tags that define a refresh request based on request parameters such as directory path and file extension. Use only ASCII characters. For more information on the format of an ECCU request file and metadata tag usage, see [Create the ECCU request file](https://techdocs.akamai.com/purge-cache/docs/create-eccu-req-file).",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "propertyName": {
+                            "description": "Identifies the digital property whose content you want to refresh.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "propertyNameExactMatch": {
+                            "description": "Specifies whether to exactly match the full string of the `propertyName`, or to perform an inexact right hand side (RHS) substring match. For example, with `propertyNameExactMatch` enabled, `example.com` doesn't match `www.example.com`.",
+                            "type": "boolean"
+                          },
+                          "propertyType": {
+                            "description": "Specifies the type of digital property. Either `ARL_TOKEN` or `HOST_HEADER`. This tells the edge network whether the purge information is contained in the ARL, or in a configuration file. The ARL is similar to the URL, but the ARL is specifically defined for objects to be served by the edge network. There are two types of ARLs, v1 and v2. For details, see the [Purge Cache documentation](https://techdocs.akamai.com/purge-cache/docs/digital-props).",
+                            "type": "string",
+                            "enum": [
+                              "ARL_TOKEN",
+                              "HOST_HEADER"
+                            ]
+                          },
+                          "requestDate": {
+                            "description": "The time the refresh request was submitted, in ISO 8601 format.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "requestId": {
+                            "description": "A unique identifier for the refresh request. Use this to track issues with the request.",
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "requestName": {
+                            "description": "The name that you give to the refresh request.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "requestor": {
+                            "description": "The username of the person who submitted the request. For example, `john-doe@example.com`.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "status": {
+                            "description": "Specifies the condition of the refresh request. Possible values are `PENDING`, `SUCCEEDED`, `FAILED`, or `IGNORED`. If you form the `metadata` incorrectly, the refresh request fails.",
+                            "type": "string",
+                            "enum": [
+                              "FAILED",
+                              "IGNORED",
+                              "PENDING",
+                              "SUCCEEDED"
+                            ]
+                          },
+                          "statusMessage": {
+                            "description": "Details about the `status` of the refresh request.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "statusUpdateDate": {
+                            "description": "The time the refresh request's `status` last changed, in ISO 8601 format.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "statusUpdateEmails": {
+                            "description": "A list of email addresses to notify when the `status` of the refresh request changes.",
+                            "minItems": 0,
+                            "type": "array",
+                            "items": {
+                              "minLength": 1,
+                              "type": "string"
+                            }
+                          },
+                          "version": {
+                            "description": "Use this to mark differences in your refresh requests.",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/request-list-item.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/request-list.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/requests/{requestId}": {
+      "get": {
+        "description": "Returns a submitted refresh request. Run this operation if you want details on the request's `metadata`. Otherwise, you can run [List ECCU requests](https://techdocs.akamai.com/eccu/reference/get-requests) to check the `status` of all refresh requests.",
+        "operationId": "get-request",
+        "summary": "Get an ECCU request",
+        "tags": [
+          "ECCU requests"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Enhanced Content Control Utility API",
+          "url": "https://techdocs.akamai.com/eccu/reference/get-request"
+        },
+        "responses": {
+          "200": {
+            "description": "The operation was successful.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "metadata": "<?xml version=\"1.0\"?>\n <eccu>\n  <match:recursive-dirs value=\"store\">\n    <match:recursive-dirs value=\"images\">\n      <revalidate>now</revalidate>\n    </match:recursive-dirs>\n  </match:recursive-dirs>\n</eccu>",
+                  "notes": "Invalidate images in store",
+                  "propertyName": "www.example.com",
+                  "propertyNameExactMatch": true,
+                  "propertyType": "HOST_HEADER",
+                  "requestDate": "2018-11-30T16:25:15.000+0000",
+                  "requestId": 263529762,
+                  "requestName": "Invalidate Images",
+                  "requestor": "john-doe@example.com",
+                  "status": "PENDING",
+                  "statusMessage": "File uploaded and awaiting validation",
+                  "statusUpdateDate": "2018-11-30T16:25:15.000+0000",
+                  "statusUpdateEmails": [
+                    "john-doe@example.com"
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Provides information about an ECCU request.",
+                  "type": "object",
+                  "required": [
+                    "propertyName",
+                    "propertyNameExactMatch",
+                    "propertyType",
+                    "requestDate",
+                    "requestId",
+                    "status",
+                    "statusUpdateDate"
+                  ],
+                  "properties": {
+                    "extendedStatusMessage": {
+                      "description": "Further detail about the status of a request. Typically there is more information provided for a failed refresh request.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "metadata": {
+                      "description": "Contains tags that define a refresh request based on request parameters such as directory path and file extension. Use only ASCII characters. For more information on the format of an ECCU request file and metadata tag usage, see [Enhanced CCU Request Format](https://techdocs.akamai.com/eccu/docs/eccu-request-format).",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "notes": {
+                      "description": "In addition to the `requestName`, this provides information to help you track the refresh request.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "propertyName": {
+                      "description": "Identifies the digital property whose content you want to refresh.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "propertyNameExactMatch": {
+                      "description": "Specifies whether to exactly match the full string of the `propertyName`, or to perform an inexact right hand side (RHS) substring match. For example, with `propertyNameExactMatch` enabled, `example.com` doesn't match `www.example.com`.",
+                      "type": "boolean"
+                    },
+                    "propertyType": {
+                      "description": "Specifies the type of digital property. Either `ARL_TOKEN` or `HOST_HEADER`. This tells the edge network whether the purge information is contained in the ARL, or in a configuration file. The ARL is similar to the URL, but the ARL is specifically defined for objects to be served by the edge network. There are two types of ARLs, v1 and v2. For details, see the [Purge Cache documentation](https://techdocs.akamai.com/purge-cache/docs/digital-props).",
+                      "type": "string",
+                      "enum": [
+                        "ARL_TOKEN",
+                        "HOST_HEADER"
+                      ]
+                    },
+                    "requestDate": {
+                      "description": "The time the refresh request was submitted, in ISO 8601 format.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "A unique identifier for the refresh request. Use this to track issues with the request.",
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "requestName": {
+                      "description": "The name that you give to the refresh request.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "requestor": {
+                      "description": "The username of the person who submitted the request. For example, `john-doe@example.com`.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Specifies the condition of the refresh request. Possible values are `PENDING`, `SUCCEEDED`, `FAILED`, or `IGNORED`. If you form the `metadata` incorrectly, the refresh request will fail.",
+                      "type": "string",
+                      "enum": [
+                        "FAILED",
+                        "IGNORED",
+                        "PENDING",
+                        "SUCCEEDED"
+                      ]
+                    },
+                    "statusMessage": {
+                      "description": "Details about the `status` of the refresh request.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "statusUpdateDate": {
+                      "description": "The time the refresh request's `status` last changed, in ISO 8601 format.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "statusUpdateEmails": {
+                      "description": "A list of email addresses to notify when the `status` of the refresh request changes.",
+                      "minItems": 0,
+                      "type": "array",
+                      "items": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "version": {
+                      "description": "Use this to mark differences in your refresh requests.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/request.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Could not find ECCU Request for specified requestId",
+                  "instance": "/eccu-api/error-instances/b39849c6-02ac-4084-9627-174e91a8fecd",
+                  "method": "GET",
+                  "requestTime": "2023-04-17T08:13:20.172527Z",
+                  "status": 404,
+                  "title": "ECCU Request For ID Not Found ",
+                  "type": "https://problems.luna.akamaiapis.net/eccu-api/eccu-request-for-id-not-found",
+                  "errors": []
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "A problem object.",
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "description": "Specifies more details and indicates the cause of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "errors": {
+                      "description": "A nested problem object.",
+                      "minItems": 0,
+                      "type": "array",
+                      "items": {
+                        "description": "A nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "description": "Links to the error instance.",
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Specifies the HTTP status code. ",
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Summarizes the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Non-navigable URI that identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "description": "Removes the refresh request from the  list of submitted requests only. This operation doesn't stop the refresh request from being processed.",
+        "operationId": "delete-request",
+        "summary": "Remove an ECCU request",
+        "tags": [
+          "ECCU requests"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Enhanced Content Control Utility API",
+          "url": "https://techdocs.akamai.com/eccu/reference/delete-request"
+        },
+        "responses": {
+          "204": {
+            "description": "Remove an ECCU request.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Unique identifier for an ECCU request.",
+          "example": "{{requestId}}",
+          "in": "path",
+          "name": "requestId",
+          "required": true,
+          "schema": {
+            "example": 263529539,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/requestId-path.yaml"
+          }
+        }
+      ]
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/eccu-api/v1"
+    }
+  ]
+}

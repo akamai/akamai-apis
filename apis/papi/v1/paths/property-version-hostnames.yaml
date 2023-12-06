@@ -1,0 +1,185 @@
+x-akamai:
+  file-path: paths/property-version-hostnames.yaml
+  path-for-file: /properties/{propertyId}/versions/{propertyVersion}/hostnames
+parameters:
+- $ref: ../parameters/propertyId-path.yaml
+- $ref: ../parameters/propertyVersion-path.yaml
+get:
+  operationId: get-property-version-hostnames
+  summary: List hostnames for a property version
+  tags:
+  - Property version hostnames
+  description: |
+    List all hostnames whose requests are handled by the rules in this property version.
+  parameters:
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  - $ref: ../parameters/validateHostnames-query.yaml
+  - $ref: ../parameters/includeCertStatus-query.yaml
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  responses:
+    200:
+      description: |
+        The response lists hostnames for a specified property version.
+      headers:
+        ETag:
+          $ref: ../headers/Etag.yaml
+        X-Limit-Hosts-Per-Property-Limit:
+          $ref: ../headers/X-Limit-Hosts-Per-Property-Limit.yaml
+        X-Limit-Hosts-Per-Property-Remaining:
+          $ref: ../headers/X-Limit-Hosts-Per-Property-Remaining.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/property-version-hostnames-get-response.json
+          schema:
+            $ref: ../schemas/property-version-hostnames-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+put:
+  operationId: put-property-version-hostnames
+  summary: Update hostnames for a property version
+  tags:
+  - Property version hostnames
+  description: |
+    Modify the set of hostnames for a property version. For each hostname entry, set headers indicating their [limits](ref:rate-and-resource-limiting).
+
+    **Note**: If you're using a new account, first register it on the Akamai network by activating any property version on either staging or production. Otherwise, your attempts to create or specify certificates will fail with a [403](ref:403) error.
+  parameters:
+  - $ref: ../parameters/If-Match-header.yaml
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  - $ref: ../parameters/validateHostnames-query.yaml
+  - $ref: ../parameters/includeCertStatus-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/property-version-hostnames-set-request.json
+        schema:
+          $ref: ../schemas/property-version-hostnames-set-request.yaml
+  responses:
+    200:
+      description: |
+        The response lists the property version's updated set of hostnames.
+      headers:
+        ETag:
+          $ref: ../headers/Etag.yaml
+        X-Limit-Default-Certs-Per-Contract-Limit:
+          $ref: ../headers/X-Limit-Default-Certs-Per-Contract-Limit.yaml
+        X-Limit-Default-Certs-Per-Contract-Remaining:
+          $ref: ../headers/X-Limit-Default-Certs-Per-Contract-Remaining.yaml
+        X-Limit-Hosts-Per-Property-Limit:
+          $ref: ../headers/X-Limit-Hosts-Per-Property-Limit.yaml
+        X-Limit-Hosts-Per-Property-Remaining:
+          $ref: ../headers/X-Limit-Hosts-Per-Property-Remaining.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/property-version-hostnames-get-response.json
+          schema:
+            $ref: ../schemas/property-version-hostnames-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    412:
+      $ref: ../errors/412.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+patch:
+  operationId: patch-property-version-hostnames
+  summary: Add or remove hostnames for a property version
+  tags:
+  - Property version hostnames
+  description: |
+    Modify the set of hostnames for a property version. For new entries, specify an `add` array with a `cnameFrom` set to the hostname your end users see as `Host` headers. In either `cnameTo` or `edgeHostnameId`, specify an existing edge hostname you want to redirect your hostname to. If you're using Secure by Default, you can set the `cnameTo` to an edge hostname that doesn't exist yet, and PAPI creates it automatically when you activate the property version. To remove a hostname, specify a `remove` array with the address of the hostname you don't want to use with this property version anymore. If you remove an edge hostname from an active property configuration, use the [Edge Hostname API](https://techdocs.akamai.com/edge-hostnames/reference/delete-edgehostname) (HAPI) to delete it entirely. If you modify hostnames with default certificates, the response includes additional `X-Limit-Default-Certs-Per-Contract-Limit` and `X-Limit-Default-Certs-Per-Contract-Remaining` headers indicating their [limits](ref:rate-and-resource-limiting).
+
+    **Note**: If you're using a new account, first register it on the Akamai network by activating any property version on either staging or production. Otherwise, your attempts to create or specify certificates will fail with a [403](ref:403) error.
+  parameters:
+  - $ref: ../parameters/If-Match-header.yaml
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  - $ref: ../parameters/validateHostnames-query.yaml
+  - $ref: ../parameters/includeCertStatus-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/property-version-hostnames-edit-request.json
+        schema:
+          $ref: ../schemas/property-version-hostnames-edit-request.yaml
+  responses:
+    200:
+      description: |
+        The response lists the property version's updated set of hostnames.
+      headers:
+        ETag:
+          $ref: ../headers/Etag.yaml
+        X-Limit-Default-Certs-Per-Contract-Limit:
+          $ref: ../headers/X-Limit-Default-Certs-Per-Contract-Limit.yaml
+        X-Limit-Default-Certs-Per-Contract-Remaining:
+          $ref: ../headers/X-Limit-Default-Certs-Per-Contract-Remaining.yaml
+        X-Limit-Hosts-Per-Property-Limit:
+          $ref: ../headers/X-Limit-Hosts-Per-Property-Limit.yaml
+        X-Limit-Hosts-Per-Property-Remaining:
+          $ref: ../headers/X-Limit-Hosts-Per-Property-Remaining.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/property-version-hostnames-get-response.json
+          schema:
+            $ref: ../schemas/property-version-hostnames-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    412:
+      $ref: ../errors/412.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: propertyVersionHostnames
+  group: Property version hostnames

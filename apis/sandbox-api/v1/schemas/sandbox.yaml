@@ -1,0 +1,96 @@
+type: object
+description: |-
+  A sandbox is an isolated development environment used for testing. Each sandbox has a unique identifier, or `sandboxId`. If you create a sandbox with `isClonable` enabled, another developer can quickly create a sandbox with the same configuration settings. When you create a sandbox, give it a meaningful `name`.
+  
+x-akamai:
+  file-path: schemas/sandbox.yaml
+additionalProperties: false
+required:
+- sandboxId
+- createdBy
+- createdOn
+- name
+- isClonable
+- properties
+properties:
+  name:
+    type: string
+    description: |
+      The name of the sandbox defined by the developer when the sandbox was created. If you do not specify a name, the default is the `sandboxId`.
+  properties:
+    type: array
+    description: |
+      A list of the properties available for testing in the sandbox environment. A sandbox can contain more than one property, but a given hostname may only be associated to one property within a sandbox.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        _links:
+          description: |
+            HAL-formatted hypermedia links relating to the sandbox's properties. See [Hypermedia](ref:hypermedia) for more information.
+          $ref: Links.yaml
+        additionalRequestHostnamesInProperty:
+          type: array
+          description: |
+            A list of hostnames that are associated with the property referenced in the create sandbox POST request that were not included as request hostnames in the JSON body.
+          items:
+            type: string
+        editedRuleBehaviors:
+          type: array
+          description: |
+            Behaviors in the rule tree that were modified for use in the Sandbox.
+          items:
+            type: string
+        filteredRuleBehaviors:
+          type: array
+          description: |
+            Behaviors in the rule tree that were removed because they are not supported by Sandbox.
+          items:
+            type: string
+        requestHostnames:
+          type: array
+          description: |
+            A set of hostnames you can use for testing requests within your sandbox.
+          items:
+            type: string
+        sandboxPropertyId:
+          type: string
+          description: |
+            The unique identifier for the sandbox.
+        validationWarnings:
+          description: |
+            Contains warnings related to validating the rule tree when a sandbox is created or a property is added.
+          $ref: ValidationWarnings.yaml
+  _links:
+    description: |
+      HAL-formatted hypermedia links relating to the sandbox. See [Hypermedia](ref:hypermedia) for more information.
+    $ref: Links.yaml
+  createdBy:
+    type: string
+    description: |
+      The identifier for the developer who created the sandbox.
+  createdOn:
+    type: string
+    description: |
+      A timestamp representing when the system created the sandbox.
+    format: date-time
+  isClonable:
+    type: boolean
+    description: |
+      Indicates whether the sandbox can be copied for another developer's use.
+  jwtToken:
+    type: string
+    description: |
+      Java Web Token that is returned in the JSON response when you create a sandbox and is used for authentication. You need this string value to configure the Sandbox Client.
+  sandboxId:
+    type: string
+    description: |
+      The unique identifier for the sandbox.
+  status:
+    type: string
+    description: |
+      The status of the sandbox. `OK` indicates that the sandbox is able to send traffic.
+  statusReason:
+    type: string
+    description: |
+      Provides more information when the status field is `ERROR`.

@@ -1,0 +1,45 @@
+openapi: 3.0.0
+info:
+  title: Access control data
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/alerts/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: AccessControlData.yaml
+paths:
+  /access-control-data:
+    get:
+      operationId: get-access-control-data
+      summary: List access control data
+      tags:
+      - Access control data
+      description: |
+        Lists items of relevant data available to you at runtime to apply to an alert definition. For example, when creating an alert about traffic levels for a set of CP codes, you can use this operation to list the set of CP codes to which you have access.
+      parameters:
+      - $ref: parameters/type-query.yaml
+      - $ref: parameters/templateId-query.yaml
+      - $ref: parameters/filter-query.yaml
+      responses:
+        200:
+          description: |
+            The response lists access cotrol data.
+          content:
+            application/json:
+              example:
+                $ref: examples/access-control-data-get-200.json
+              schema:
+                $ref: schemas/access-control-data.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml

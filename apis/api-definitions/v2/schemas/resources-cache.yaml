@@ -1,0 +1,72 @@
+type: object
+description: |-
+  Contains information about caching settings for each resource.
+  
+x-akamai:
+  file-path: schemas/resources-cache.yaml
+title: Resource's caching settings
+additionalProperties: false
+required:
+- path
+- methods
+- option
+- maxAge
+- serveStale
+- cacheKey
+- preRefreshing
+- inheritsFromEndpoint
+properties:
+  cacheKey:
+    description: |
+      Contains information about cache key settings.
+    $ref: cacheKeyDto.yaml
+  inheritsFromEndpoint:
+    type: boolean
+    description: |
+      Whether the resource inherits the top-level API caching settings.
+  maxAge:
+    description: |
+      Contains information about the maximum duration of keeping content in a cache. If set, overwrites the max age instructions set at the endpoint level.
+    $ref: durationDto.yaml
+  methods:
+    type: array
+    description: |
+      The methods assigned to the resource, either `POST`, `GET`, `PUT`, `DELETE`, `HEAD`, `OPTIONS`, or `PATCH`.
+    nullable: true
+    readOnly: true
+    minItems: 0
+    items:
+      type: string
+      enum:
+      - HEAD
+      - DELETE
+      - POST
+      - GET
+      - OPTIONS
+      - PUT
+      - PATCH
+  option:
+    type: string
+    description: |
+      The resource caching option, either `CACHE` to enable caching in Akamai platform servers according to the instructions you specify, `BYPASS_CACHE` to send requests straight to origin and disallow caching in downstream caches, `NO_STORE` to disallow caching in Akamai platform servers, `HONOR_ORIGIN_CACHE_CONTROL` to apply caching instructions specified in your origin's `Cache-Control` header, `HONOR_ORIGIN_EXPIRES` to apply caching instructions specified in your origin's `Expires` header, or `HONOR_ORIGIN_CACHE_CONTROL_AND_EXPIRES` to apply caching instructions specified in your origin's `Cache-Control` and `Expires` headers. If set, overwrites the caching instructions set at the endpoint level.
+    default: CACHE
+    enum:
+    - CACHE
+    - NO_STORE
+    - BYPASS_CACHE
+    - HONOR_ORIGIN_CACHE_CONTROL
+    - HONOR_ORIGIN_CACHE_CONTROL_AND_EXPIRES
+    - HONOR_ORIGIN_EXPIRES
+  path:
+    type: string
+    description: |
+      The URL path relative to the hostnames on which the resource resides.
+    readOnly: true
+    minLength: 1
+  preRefreshing:
+    nullable: true
+    $ref: preRefreshing.yaml
+  serveStale:
+    type: boolean
+    description: |
+      Whether to serve stale objects when the origin is unreachable and content revalidation is not possible.

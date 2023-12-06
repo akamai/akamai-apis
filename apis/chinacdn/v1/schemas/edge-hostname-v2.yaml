@@ -1,0 +1,29 @@
+type: object
+description: |-
+  Provides information about the edge hostnames provided for use on the China CDN.
+  
+x-akamai:
+  file-path: schemas/edge-hostname-v2.yaml
+additionalProperties: true
+required:
+- edgeHostname
+properties:
+  edgeHostname:
+    type: string
+    description: |
+      This hostname is typically your original origin hostname, suffixed with a DNS zone such as `.edgesuite.net` or `.edgekey.net`.
+    maxLength: 4000
+  propertyHostnames:
+    type: integer
+    description: |
+      The number of property hostnames which use this edge hostname.
+  status:
+    type: string
+    description: |
+      Indicates the status of the edge hostname. `READY` means that you can use the edge hostname to deploy a property hostname in China. `NOT_READY` means the edge hostname isn't configured properly. For example, if the edge hostname doesn't have a product ID specified, the API can't use the edge hostname until you resolve the issue. [Learn more](https://techdocs.akamai.com/edge-hostnames/reference/get-edgehostnameid). `NOT_SUPPORTED` means the API doesn't automatically manage mapping or unmapping for the DNS zone of the edge hostname. `null` means the edge hostname isn't needed for the provision state change. For example, if you're only whitelisting your property hostname.
+    nullable: true
+    maxLength: 50
+  unmapSharedEdgeHostname:
+    type: boolean
+    description: |
+      Whether the deprovision policy unmaps the shared edge hostname during the deprovision process.

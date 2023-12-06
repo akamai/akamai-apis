@@ -1,0 +1,142 @@
+type: object
+description: |-
+  Enterprise Access Application user data.
+  
+x-akamai:
+  file-path: schemas/user.yaml
+additionalProperties: true
+required:
+- country_code
+- display_name
+- first_name
+- last_admin_login
+- last_name
+- mfa
+- normalized_attributes
+- user_type
+- uuid_url
+properties:
+  country_code:
+    type: integer
+    description: |
+      The user's two-digit [ISO 3166](https://countrycode.org/) country code.
+    nullable: true
+    minimum: 10
+  display_name:
+    type: string
+    description: |
+      The user's display name.
+    minLength: 1
+  first_name:
+    type: string
+    description: |
+      The user's first name.
+    minLength: 1
+  last_admin_login:
+    type: string
+    description: |
+      ISO 8601 timestamp marking the admin user's last login.
+    format: date-time
+  last_name:
+    type: string
+    description: |
+      The user's last name.
+    minLength: 1
+  mfa:
+    type: object
+    description: |
+      Multifactor authentication settings for the user.
+    additionalProperties: false
+    required:
+    - admin_mfa
+    - login_mfa
+    properties:
+      admin_mfa:
+        type: boolean
+        description: |
+          Enables administrator MFA.
+      login_mfa:
+        type: boolean
+        description: |
+          Enables login MFA.
+  normalized_attributes:
+    type: object
+    description: |
+      The user's normalized attributes.
+    additionalProperties: true
+    properties:
+      eaa.demo:
+        type: string
+        description: |
+          The user's EAA demo name.
+      eaa.test:
+        type: string
+        description: |
+          The user's EAA test name.
+      eaa.userName:
+        type: string
+        description: |
+          The user name.
+      user.countryCode:
+        type: integer
+        description: |
+          The user's two-digit country code.
+        minimum: 10
+      user.email:
+        type: string
+        description: |
+          The user name.
+      user.firstName:
+        type: string
+        description: |
+          The user name.
+      user.groups:
+        type: array
+        description: |
+          The groups the user belongs to.
+        minItems: 0
+        items:
+          type: string
+      user.lastName:
+        type: string
+        description: |
+          The user's last name.
+      user.netbios:
+        type: string
+        description: |
+          The user's NetBIOS name.
+      user.persistentId:
+        type: string
+        description: |
+          The user's unique persistent ID.
+      user.phoneNumber:
+        type: string
+        description: |
+          The user's phone number.
+      user.samAccountName:
+        type: string
+        description: |
+          The user's kerberos client principal name.
+      user.userName:
+        type: string
+        description: |
+          The user name.
+      user.userPrincipleName:
+        type: string
+        description: |
+          The user's principle name.
+  user_type:
+    type: integer
+    description: |
+      The type of user. Either `1` for cloud, `2` for enterprise, `3` for Akamai, or `4` for Akamai MSP.
+    default: 1
+    enum:
+    - 1
+    - 2
+    - 3
+    - 4
+  uuid_url:
+    type: string
+    description: |
+      A unique ID for the user account.
+    minLength: 1

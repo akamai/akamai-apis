@@ -1,0 +1,118 @@
+id: resource:/descriptors/papi/v1/schemas/GetPropertyHostnamesDiffResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array.
+  
+x-akamai:
+  file-path: schemas/property-hostnames-diff-get-response.yaml
+additionalProperties: false
+required:
+- accountId
+- contractId
+- groupId
+- propertyId
+properties:
+  accountId:
+    type: string
+    description: |
+      Identifies the prevailing account under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+  contractId:
+    type: string
+    description: |
+      Identifies the prevailing contract under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ctr_` prefix.
+  groupId:
+    type: string
+    description: |
+      Identifies the prevailing group under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+  hostnames:
+    type: object
+    description: |
+      Active property hostnames that differ in staging and production networks.
+    additionalProperties: false
+    properties:
+      items:
+        type: array
+        description: |
+          Details of the active property hostnames that differ in staging and production networks. Relevant response objects appear within the outer envelope's `hostnames.items` array.
+        items:
+          additionalProperties: false
+          required:
+          - cnameFrom
+          - stagingCnameType
+          - stagingCertType
+          - stagingEdgeHostnameId
+          - stagingCnameTo
+          - productionCnameType
+          - productionCertType
+          - productionEdgeHostnameId
+          - productionCnameTo
+          properties:
+            cnameFrom:
+              type: string
+              description: |
+                The hostname that your end users see, indicated by the `Host` header in end user requests.
+            productionCertType:
+              type: string
+              description: |
+                Indicates the type of the certificate used in the property hostname. Either the `CPS_MANAGED` for the custom certificates you create with the [Certificate Provisioning System API](https://techdocs.akamai.com/cps/reference) (CPS), or `DEFAULT` for certificates deployed automatically. Note that you can't specify the `DEFAULT` value if your account hostname uses the `akamaized.net` domain suffix.
+              enum:
+              - CPS_MANAGED
+              - DEFAULT
+            productionCnameTo:
+              type: string
+              description: |
+                The edge hostname you point the property hostname to so that you can start serving traffic through Akamai servers. This member corresponds to the edge hostname object's `edgeHostnameDomain` member.
+            productionCnameType:
+              type: string
+              description: |
+                Indicates the type of CNAME you used in the production network, either `EDGE_HOSTNAME` or `CUSTOM`.
+              enum:
+              - EDGE_HOSTNAME
+              - CUSTOM
+            productionEdgeHostnameId:
+              type: string
+              description: |
+                Identifies the edge hostname you mapped your traffic to on the production network. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ehn_` prefix.
+            stagingCertType:
+              type: string
+              description: |
+                Indicates the type of the certificate used in the property hostname. Either the `CPS_MANAGED` for the custom certificates you create with the [Certificate Provisioning System API](https://techdocs.akamai.com/cps/reference) (CPS), or `DEFAULT` for certificates deployed automatically. Note that you can't specify the `DEFAULT` value if your account hostname uses the `akamaized.net` domain suffix.
+              enum:
+              - CPS_MANAGED
+              - DEFAULT
+            stagingCnameTo:
+              type: string
+              description: |
+                The edge hostname you point the property hostname to so that you can start serving traffic through Akamai servers. This member corresponds to the edge hostname object's `edgeHostnameDomain` member.
+            stagingCnameType:
+              type: string
+              description: |
+                Indicates the type of CNAME you used in the staging network, either `EDGE_HOSTNAME` or `CUSTOM`.
+              enum:
+              - EDGE_HOSTNAME
+              - CUSTOM
+            stagingEdgeHostnameId:
+              type: string
+              description: |
+                Identifies the edge hostname you mapped your traffic to on the production network. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ehn_` prefix.
+      currentItemCount:
+        type: integer
+        description: |
+          The total count of items present in the current response body for requested criteria.
+      nextLink:
+        type: string
+        description: |
+          The link to next set of response items for paginated response.
+      previousLink:
+        type: string
+        description: |
+          The link to previous set of response items for paginated response.
+      totalItems:
+        type: integer
+        description: |
+          The total count of items for requested criteria.
+  propertyId:
+    type: string
+    description: |
+      Unique identifier for a property. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+$schema: http://json-schema.org/draft-04/schema#

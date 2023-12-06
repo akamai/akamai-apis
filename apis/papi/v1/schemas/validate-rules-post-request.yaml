@@ -1,0 +1,51 @@
+id: resource:/descriptors/papi/v1/schemas/validate-resources-request.json#
+javaType: com.akamai.luna.papi.model.ValidateRulesResourcesRequest
+type: object
+description: |-
+  Internal schema.
+  
+x-akamai:
+  file-path: schemas/validate-rules-post-request.yaml
+required:
+- productId
+- propertyName
+properties:
+  cloneFrom:
+    type: object
+    description: |
+      Optionally identifies another property instance to clone when making a POST request to create a new property. The cloned property needs to share the same contract and group.
+    required:
+    - propertyId
+    - version
+    properties:
+      version:
+        type: integer
+        description: |
+          Specifies the version of the property to clone.
+        minimum: 1
+      copyHostnames:
+        type: boolean
+        description: |
+          Assigns the same set of hostnames to the new property, `false` by default.
+        default: false
+      propertyId:
+        type: string
+        description: |
+          Specifies the property to clone. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+  productId:
+    type: string
+    description: |
+      Internal schema.
+  propertyName:
+    type: string
+    description: |
+      Internal schema.
+  ruleFormat:
+    type: string
+    description: |
+      On GET, reflects the property's current format. Otherwise on POST, assigns a specific rule format to the property. Ignored on PUT, since you need to modify the `Content-Type` to change rule formats. For details, see [Update rules to a newer set of features](ref:manage-rules).
+  rules:
+    type: object
+    description: |
+      Represents PAPI rule tree.
+$schema: http://json-schema.org/draft-04-schema#

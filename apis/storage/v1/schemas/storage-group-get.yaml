@@ -1,0 +1,391 @@
+type: object
+description: |-
+  The basic unit within a NetStorage instance is referred to as a "storage group." A storage group is where you house your content for distribution. You can list and get details of a group.
+  
+x-akamai:
+  file-path: schemas/storage-group-get.yaml
+additionalProperties: false
+properties:
+  allowEdit:
+    type: boolean
+    description: |
+      Whether this group is enabled for editing.
+    default: true
+  asperaEnabled:
+    type: boolean
+    description: |
+      Whether Aspera Upload Acceleration has been enabled in an upload account that has access to this group.
+  comments:
+    type: array
+    description: |
+      Individual comments that briefly describe the last update made to the group.
+    items:
+      type: string
+  contractId:
+    type: string
+    description: |
+      The unique identifier set for the contract that contains your instance of NetStorage and this group.
+  cpcodes:
+    type: array
+    description: |
+      Encapsulates CP codes assigned to a group.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        ageDeletions:
+          type: array
+          description: |
+            Automatic Purge Routines that have been set up for the group.
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              ageDeletionDays:
+                type: number
+                description: |
+                  When the `ageDeletionSizeBytes` value is reached for the target directory, this number is subtracted from the current date to determine a timestamp. Files older than this timestamp are purged.
+              ageDeletionDirectory:
+                type: string
+                description: |
+                  The target directory for an Automatic Purge Routine.
+              ageDeletionExclusionRegex:
+                type: string
+                description: |
+                  POSIX regular expression pattern matching the filenames to exclude from the purge.
+              ageDeletionInclusionRegex:
+                type: string
+                description: |
+                  POSIX regular expression pattern matching the filenames to include in the purge.
+              ageDeletionRecursivePurge:
+                type: boolean
+                description: |
+                  Whether subdirectories within the target directory are also included in the purge. If `false`, only files within the target directory are purged.
+                default: 'false'
+              ageDeletionSelectionRegex:
+                type: string
+              ageDeletionSizeBytes:
+                type: number
+                description: |
+                  Automatic purge occurs when the target directory reaches this size, in bytes.
+        cpcodeId:
+          type: integer
+          description: |
+            A CP code assigned to the group, and used to identify requests to a specific upload directory. The CP code serves as the root for upload directory. This is also referred to as the CP code root.
+        dirListing:
+          type: object
+          description: |
+            Specifies the file to serve if a request doesn't end in a specific filename and extension.
+          additionalProperties: false
+          properties:
+            indexFileName:
+              type: string
+              description: |
+                If a request doesn't specifically end in a filename and extension, this specifies the default file that's served.
+            maxListSize:
+              type: integer
+              description: |
+                Whether the file path is truncated or hidden in the file path displayed in the HTML directory listing for the index name file. `-1` indicates the full path is displayed, `0` indicates directory listings aren't served, but the search for the requested index name file continues, and an integer greater than zero indicates directory listings in the path are limited to this number.
+            searchOn404:
+              type: string
+              description: |
+                The action taken in the event of a 404 error, where the client was able to access NetStorage, but not the requested content or directory. `DO_NOT_SEARCH` stops additional searches, and returns a 404 error, `LOOK_FOR_EXPLICIT_DIR_ONLY` looks for an explicit directory matching the path specified in the request, and `LOOK_FOR_IMPLICIT_AND_EXPLICIT_DIR` looks for both an explicit and implicit directory that may match a path defined in the request.
+              enum:
+              - DO_NOT_SEARCH
+              - LOOK_FOR_EXPLICIT_DIR_ONLY
+              - LOOK_FOR_IMPLICIT_AND_EXPLICIT_DIR
+        downloadSecurity:
+          type: string
+          description: |
+            The level of security to obtain download access to the group. `ALL_EDGE_SERVERS` allows requests from all edge servers. `STREAMING_SERVERS_ONLY` only allows requests from edge servers dedicated to streaming media. `G_2_O_AND_ALL_EDGE_SERVERS` allows requests from all edge servers, but a warning is issued. It also allows all requests that include a valid G2O token, `G_2_O_ONLY` requires inclusion of a valid G2O token.
+          enum:
+          - ALL_EDGE_SERVERS
+          - STREAMING_SERVERS_ONLY
+          - G_2_O_AND_ALL_EDGE_SERVERS
+          - G_2_O_ONLY
+        encodingConfig:
+          type: object
+          description: |
+            The type of encoding to use when displaying paths in XML-aware contexts.
+          additionalProperties: false
+          properties:
+            encoding:
+              type: string
+              description: |
+                The selected encoding format, either `ISO_8859_1` which are 8-bit, single-byte coded graphic character sets, or `UTF_8` which are variable length, 8-bit code units via UTF-8 character encoding.
+              enum:
+              - ISO_8859_1
+              - UTF_8
+            enforceEncoding:
+              type: boolean
+              description: |
+                Whether upload operations verify that all path values defined within the URL for target content are properly formatted using the selected encoding method.
+              default: 'false'
+        f2hConfig:
+          type: object
+          description: |
+            FTP to HTTP (F2H) conversion for FTP download efficiency.
+          additionalProperties: false
+          properties:
+            f2hCookies:
+              type: array
+              description: |
+                A listing of cookies generated in support of F2H for this group.
+              items:
+                type: string
+            f2hDirectories:
+              type: array
+              description: |
+                A listing of directories in the group that have been set up to support F2H.
+              items:
+                type: string
+        g2o:
+          type: object
+          description: |
+            Keys you can use to access the group with the NetStorage Usage API.
+          additionalProperties: false
+          properties:
+            key:
+              type: string
+              description: |
+                The G2O key. This is the `key` set in the upload account named as the `user`. Learn more about [G2O security settings](https://techdocs.akamai.com/netstorage/docs/create-a-storage-group#security-settings).
+            lastModifiedBy:
+              type: string
+              description: |
+                The user who added or last modified the key.
+            lastModifiedDate:
+              type: string
+              description: |
+                The ISO 8601 timestamp that represents when the G2O key was last modified.
+            user:
+              type: string
+              description: |
+                The G2O user upload account.  This is the name of an upload account for this group that enables access to the NetStorage Usage API.
+        lastChangesPropagated:
+          type: boolean
+          description: |
+            When you create or modify an upload directory and changes are propagated to the NetStorage network, `true` indicates propagation is complete.
+        lastModifiedBy:
+          type: string
+          description: |
+            The user who last modified the upload directory.
+        lastModifiedDate:
+          type: string
+          description: |
+            The date the upload directory was last modified.
+        numberOfBytes:
+          type: integer
+          description: |
+            The total number of bytes used by the upload directory.
+        numberOfFiles:
+          type: integer
+          description: |
+            The total number of files contained in the upload directory.
+        pathCheckAndConversion:
+          type: string
+          description: |
+            Specifies the action taken when analyzing the request path.  See the set of [available values](ref:enumerations).
+          enum:
+          - DISALLOW_ALL_IMPROPER_PATHS
+          - DISALLOW_IMPROPER_PATHS_ON_UPLOAD_ONLY
+          - TRANSLATE_TO_CANONICAL
+          - DO_NOT_CHECK_PATHS
+        queryStringConversion:
+          type: object
+          description: |
+            Specifies how query strings appended to request paths to this group are handled.
+          additionalProperties: false
+          properties:
+            queryStringConversionExclude:
+              type: string
+              description: |
+                A list of query string values that have been explicitly set to be excluded from conversion. Only applicable if `APPLY_ACS_QUERY_CONVERSION` is set as the `queryStringConversionMode`.
+            queryStringConversionKeyOrder:
+              type: string
+              description: |
+                If `APPLY_ACS_QUERY_CONVERSION` is set as the `queryStringConversionMode`, this specifies a list of query string values that should be included for ACS Query String Conversion, in the specific order they should be interpreted.
+            queryStringConversionMode:
+              type: string
+              description: |
+                Specifies how upload and download request query strings should be transformed before processing the request. With `STRIP_ALL_INCOMING_QUERY`, all query strings are stripped and ignored.  With `APPLY_ACS_QUERY_CONVERSION`, the key is reviewed and stripped down using settings defined for `queryStringConversionKeyOrder` and `queryStringConversionExclude`; a hash of the string is also applied and used for matching at request time. With `LEAVE_INCOMING_QUERY_AS_IS`, the string is left as is.
+              enum:
+              - STRIP_ALL_INCOMING_QUERY
+              - APPLY_ACS_QUERY_CONVERSION
+              - LEAVE_INCOMING_QUERY_AS_IS
+            queryStringConversionVersion:
+              type: string
+              description: |
+                The version in use for `queryStringConversion` with this group.
+        quickDelete:
+          type: boolean
+          description: |
+            Whether the `quick-delete` operation is available in the NetStorage Usage API and the CMShell.  Targets a specific directory in this group and recursively deletes all of its contents.
+          default: 'false'
+        requestUriCaseConversion:
+          type: string
+          description: |
+            Standardizes case usage for filenames uploaded to your selected upload directory. `NO_CONVERSION`, `CONVERT_TO_UPPER` and `CONVERT_TO_LOWER` are self-explanatory. `STREAM_OS` indicates case requirements are applied to support the Stream OS product. This is only seen in a very limited number of legacy groups.
+          enum:
+          - NO_CONVERSION
+          - CONVERT_TO_UPPER
+          - CONVERT_TO_LOWER
+          - STREAM_OS
+        rootDirectory:
+          type: string
+          description: |
+            The CP code root for the upload directory.
+        sendHash:
+          type: boolean
+          description: |
+            Whether a content item's MD5 digest values is sent in the HTTP `Content-MD5` response header.
+          default: 'false'
+        serveFromZip:
+          type: boolean
+          description: |
+            Whether NetStorage dynamically examines archived files to directly serve individual files from within the archive.
+          default: 'false'
+        useSsl:
+          type: boolean
+          description: |
+            Whether the contents within the upload directory are replicated securely via Secure Sockets Layer (SSL).
+          default: 'false'
+  domainPrefix:
+    type: string
+    description: |
+      Your unique domain prefix (subdomain) value that the NetStorage system applies to the Domain Names used to access the group.
+  estimatedUsageGB:
+    type: number
+    description: |
+      The current volume of the group, in gigabytes.
+  lastModifiedBy:
+    type: string
+    description: |
+      The user who last modified the group.
+  lastModifiedDate:
+    type: string
+    description: |
+      The date the group was last modified.
+  links:
+    type: array
+    description: |
+      [Hypermedia](ref:hypermedia) links to the specific group, as well as any upload accounts or geographic replication zones assigned to it.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        href:
+          type: string
+          description: |
+            A navigable path to the specific `rel` resource, once you prefix it with your hostname token.
+        rel:
+          type: string
+          description: |
+            This represents the link relation to the storage group resource.  This can be either `self` for a link referring to the storage group itself, `uploadAccounts` for a link to an associated upload account, or `zones` for a geographic replication zone that can be used with the group.
+          enum:
+          - self
+          - uploadAccounts
+          - zones
+  migrationStatus:
+    type: string
+    description: |
+      The current migration status from FileStore format to ObjectStore format, if migration has been initiated.
+  pciEnabled:
+    type: boolean
+    description: |
+      Whether Payment Card Industry (PCI) Data Security Standard support has been enabled for the storage group. These standards are designed to ensure that all companies that accept, process, store or transmit credit card information maintain a secure environment.
+  postFileDomainEnabled:
+    type: boolean
+    description: |
+      The postfile domain, `{domain prefix}.postfile.akamai.com` configured for use with this group. The `{domain prefix}` variable is set up by you during the creation of the group.
+    default: 'false'
+  propagationStatus:
+    type: object
+    description: |
+      The current propagation status of the group.
+    additionalProperties: false
+    properties:
+      status:
+        type: string
+        description: |
+          Propagation statuses can be `PENDING`  which indicates the item is in queue or `ACTIVE` which indicates the group is propagated.
+        enum:
+        - PENDING
+        - ACTIVE
+  provisionStatus:
+    type: string
+    description: |
+      The current provisioning status of the group. `PROVISIONED` indicates the group is ready for use. `MARKED_FOR_DEPROVISIONING` indicates deprovisioning has been requested, but the group is still accessible. `DEPROVISIONED`  indicates deprovisioning has completed, and the group is no longer available. `NOT_PROVISIONED` indicates the group hasn't been requested for provisioning.
+    enum:
+    - NOT_PROVISIONED
+    - PROVISIONED
+    - MARKED_FOR_DEPROVISIONING
+    - DEPROVISIONED
+  storageGroupId:
+    type: integer
+    description: |
+      The unique identifier that's automatically set for the group.
+  storageGroupName:
+    type: string
+    description: |
+      The name you've set for the group.
+  storageGroupPurpose:
+    type: string
+    description: |
+      The specific purpose defined for the storage group. See the set of [available values](ref:enumerations).
+    enum:
+      $ref: enum-storageGroupPurpose.yaml
+  uploadDomain:
+    type: string
+    description: |
+      The Upload Domain Name for this group. It's used to access the group to upload content. This is automatically constructed using the domain prefix that you define when creating the group.
+  zones:
+    type: array
+    description: |
+      The geographic replication zones configured for use with this group.  These are also referred to as replicas.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        allowDownload:
+          type: string
+          description: |
+            How this zone has been configured to support direct downloads (rather than just for replication use). `YES` download from the zone is supported, `NO` not supported, and `FAILOVER` if other zones aren't available.
+          enum:
+          - YES
+          - NO
+          - FAILOVER
+        allowUpload:
+          type: string
+          description: |
+            How this zone has been configured to support direct uploads (rather than just for replication use). `YES` indicates uploads are supported. `NO` indicates uploads aren't supported. `FAILOVER` indicates uploads are supported to this zone only if no other zones are available.
+          enum:
+          - YES
+          - NO
+          - FAILOVER
+        lastModifiedBy:
+          type: string
+          description: |
+            The user who last modified zone settings for this group.
+        lastModifiedDate:
+          type: string
+          description: |
+            The date these zone settings were last modified.
+        noCapacityAction:
+          type: string
+          description: |
+            The action taken if the zone has no capacity for additional upload content. `SPILL_OUTSIDE` indicates content is temporarily uploaded outside the zone, to another zone configured for the group. `DENY_UPLOADS` indicates the zone doesn't support uploads for a `noCapacityAction`.
+          enum:
+          - SPILL_OUTSIDE
+          - DENY_UPLOADS
+        overrideReason:
+          type: string
+          description: |
+            The reason that a zone should be overridden for another zone.
+        overrideZoneName:
+          type: string
+          description: |
+            The zone that's used for override to accommodate the `noCapacityAction` operation, if applicable.
+        zoneName:
+          type: string
+          description: |
+            The name of the geographic replication zone.

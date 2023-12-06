@@ -1,0 +1,305 @@
+openapi: 3.0.0
+info:
+  title: IoT Messages
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: public.yaml
+paths:
+  /datastore:
+    get:
+      operationId: get-datastore
+      summary: List object keys
+      tags:
+      - Objects
+      description: |
+        Returns the names of objects stored in your data set in alphabetical order. You can use the `fileName` value from the response as object.
+      parameters:
+      - $ref: parameters/from_name-query.yaml
+      - $ref: parameters/limit-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/200_bulk.json
+              schema:
+                $ref: schemas/bulk-list.yaml
+    delete:
+      operationId: delete-datastore
+      summary: Delete all objects
+      tags:
+      - Objects
+      description: |
+        Deletes all objects stored in a data set. If you want to purge the cache every time after deleting or modifying objects, enable the purge option in the [Message Store caching](https://techdocs.akamai.com/property-mgr/docs/msg-store-caching) behavior in your property.
+      responses:
+        204:
+          description: |
+            Messages in the data set have been successfully deleted.
+  /datastore/archive:
+    put:
+      operationId: put-datastore-archive
+      summary: Upload bulk objects
+      tags:
+      - Bulk objects
+      description: |
+        Uploads contents of objects as a compressed ZIP file to a specified data set. Set the `Content-Type` header to specify the media type for every object. You can use a MD5 or SHA256 hash as the `ETag` header to optimize caching. Use the `Expires` header to specify the time after when the object expires and is automatically deleted. With this operation, you can also set custom headers for the specified object. See [Add custom headers](ref:add-custom-headers). In the response, this operation returns the `Content-MD5` and `Content-SHA256` headers with an MD5 and SHA256 digest of the uploaded contents. Get and store the `X-Akamai-IEC-RequestId` header containing a request ID of the compressed ZIP file you upload.
+      parameters:
+      - $ref: parameters/Content-Type-header.yaml
+      - $ref: parameters/Expires-header.yaml
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                file:
+                  type: array
+                  description: |
+                    The contents of the file.
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        204:
+          description: |
+            Zip has been successfully uploaded.
+          headers:
+            Content-MD5:
+              description: |
+                MD5 of the uploaded zip file content.
+              schema:
+                type: string
+                example: 1a79a4d60de6718e8e5b326e338ae533
+            Content-SHA256:
+              description: |
+                SHA256 of the uploaded zip file content.
+              schema:
+                type: string
+                example: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15
+            X-Akamai-IEC-RequestId:
+              description: |
+                Uploaded zip file request ID.
+              schema:
+                type: string
+                example: 7445deaf-cc36-4897-b494-38593ab96839
+        400:
+          description: |
+            Provided archive was corrupted or metadata is invalid. For example, `Content-Length` too long.
+  /datastore/archive/{requestId}:
+    parameters:
+    - $ref: parameters/requestId-path.yaml
+    get:
+      operationId: get-datastore-request
+      summary: Check bulk upload status
+      tags:
+      - Bulk objects
+      description: |
+        Check the status of processing a ZIP file identified by request key. If you don't have the `X-Akamai-IEC-RequestId` value, run the [Upload bulk objects](ref:put-datastore-upload-key) operation. See [Bulk upload status](ref:bulk-upload-status). In the response, this operation returns the status of ZIP processing, the `size` of the object in bytes, and the `md5` and `sha256` digest of the uploaded contents.
+      responses:
+        200:
+          description: |
+            Request has succeeded and body contains full document.
+          headers:
+            Content-Type:
+              description: |
+                Media type of the object. Can be set during the [Upload an object](ref:put-datastore-upload-key) request.
+              required: false
+              schema:
+                type: string
+                example: image/png
+                default: application/octet-stream
+            X-AK-Meta-*:
+              description: |
+                Custom header that was set during upload.
+              required: false
+              schema:
+                type: string
+                example: X-AK-Meta-Permission
+          content:
+            application/zip:
+              example:
+                $ref: examples/200_zip.json
+              schema:
+                type: string
+                format: binary
+  /datastore/upload/{key}:
+    parameters:
+    - $ref: parameters/key-path.yaml
+    put:
+      operationId: put-datastore-upload-key
+      summary: Upload an object
+      tags:
+      - Objects
+      description: |
+        Uploads an object under the specified key and sets the object's headers. In case of simultaneous uploads to the same key, the upload with the last written byte wins. Set the `Content-Type` header to specify the media type for the object. You can use an MD5 or SHA256 hash as the `ETag` header for this version of the object to optimize caching. Use the `Expires` header to specify the time after when the object expires and is automatically deleted. With this operation, you can also set custom headers for the specified object. See [Add custom headers](ref:add-custom-headers).
+      parameters:
+      - $ref: parameters/X-AK-Meta-header.yaml
+      - $ref: parameters/Content-Type-header.yaml
+      - $ref: parameters/ETag-header.yaml
+      - $ref: parameters/Expires-header.yaml
+      requestBody:
+        content:
+          application/octet-stream:
+            example:
+              $ref: examples/uploadFile.txt
+            schema:
+              type: string
+              format: binary
+      responses:
+        200:
+          description: |
+            Message has been successfully uploaded and replaced existing object.
+          headers:
+            Content-MD5:
+              description: |
+                MD5 of the uploaded contents.
+              schema:
+                type: string
+            Content-SHA256:
+              description: |
+                SHA256 of the uploaded contents.
+              schema:
+                type: string
+            Content-Type:
+              description: |
+                Media type of the object.
+              schema:
+                type: string
+        201:
+          description: |
+            Message has been successfully uploaded.
+          headers:
+            Content-MD5:
+              description: |
+                MD5 of the uploaded contents.
+              schema:
+                type: string
+            Content-SHA256:
+              description: |
+                SHA256 of the uploaded contents.
+              schema:
+                type: string
+            Content-Type:
+              description: |
+                Media type of the object.
+              schema:
+                type: string
+        400:
+          description: |
+            Provided metadata was invalid (e.g. Content-Type too long).
+  /datastore/{key}:
+    parameters:
+    - $ref: parameters/key-path.yaml
+    get:
+      operationId: get-datastore-key
+      summary: Get an object
+      tags:
+      - Objects
+      description: |
+        Returns the contents of the object stored under the specified key in your data set. If you don't already have the key value for the object, run the [List object keys](ref:get-datastore) operation, select a `fileName` from the response object, and use it as the `key` in your request. You can also use the `Range` header to indicate the part of the object that you want to receive. In the response, this operation returns the `Content-Type` header for the object and any custom `X-AK-Meta-*` headers you set with the [Upload an object](ref:put-datastore-upload-key) operation.
+      parameters:
+      - $ref: parameters/If-Modified-Since-header.yaml
+      - $ref: parameters/If-None-Match-header.yaml
+      - $ref: parameters/Range-header.yaml
+      responses:
+        200:
+          description: |
+            Request has succeeded and body contains full document.
+          headers:
+            Content-Type:
+              description: |
+                Media type of the object. Can be set during the [Upload an object](ref:put-datastore-upload-key) request.
+              schema:
+                type: string
+                default: application/octet-stream
+            X-AK-Meta-*:
+              description: |
+                Custom header that was set during upload.
+              required: false
+              schema:
+                type: string
+        206:
+          description: |
+            Request has succeeded and body contains the requested ranges of the document.
+          headers:
+            Content-Type:
+              description: |
+                Media type of the object. Can be set during the [Upload an object](ref:put-datastore-upload-key) request.
+              schema:
+                type: string
+                default: application/octet-stream
+            X-AK-Meta-*:
+              description: |
+                Custom header that was set during upload.
+              schema:
+                type: string
+        304:
+          description: |
+            Condition from the request matched document's metadata (ETag or Last Modified date).
+        404:
+          description: |
+            Message does not exist.
+        416:
+          description: |
+            Server cannot serve the requested ranges. Either the document doesn't contain requested range or multiple ranges were requested.
+    head:
+      operationId: head-datastore-key
+      summary: Get object metadata
+      tags:
+      - Objects
+      description: |
+        Returns the object's metadata without downloading its contents. You can view the `Content-Type`, `Content-MD5`, `Content-SHA256`, and `ETag` headers set for the object. Use the MD5 hash and SHA256 values to verify your upload, and the `Last-Updated` timestamp to optimize caching. You can also view the custom `X-AK-Meta-*` headers you set with the Upload an object operation.
+      parameters:
+      - $ref: parameters/If-Modified-Since-header.yaml
+      - $ref: parameters/If-None-Match-header.yaml
+      responses:
+        200:
+          description: |
+            Metadata of the object.
+          headers:
+            Content-MD5:
+              description: |
+                MD5 of the stored object.
+              schema:
+                type: string
+            Content-SHA256:
+              description: |
+                SHA256 of the stored object.
+              schema:
+                type: string
+            Content-Type:
+              description: |
+                Content Type which should be returned during download.
+              schema:
+                type: string
+            ETag:
+              description: |
+                Updates entity tag.
+              schema:
+                type: string
+        404:
+          description: |
+            Message does not exist.
+    delete:
+      operationId: delete-datastore-key
+      summary: Delete an object
+      tags:
+      - Objects
+      description: |
+        Removes the object stored under the specified key from your data set. If you don't already have the key value for the object, run the [List object keys](ref:get-datastore) operation, select a `fileName` from the response object, and use it as and use it as the `key` in your request.
+      responses:
+        204:
+          description: |
+            Message has been successfully deleted.
+        404:
+          description: |
+            Message does not exist.

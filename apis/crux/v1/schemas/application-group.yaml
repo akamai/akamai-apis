@@ -1,0 +1,101 @@
+type: object
+description: |-
+  Application group information.
+  
+x-akamai:
+  file-path: schemas/application-group.yaml
+additionalProperties: false
+required:
+- status
+- user_count
+- resource
+- description
+- name
+- uuid_url
+- group_type
+- resource_uri
+properties:
+  name:
+    type: string
+    description: |
+      A unique name for this group.
+    minLength: 1
+  description:
+    type: string
+    description: |
+      A brief description for this group.
+    minLength: 1
+  created_at:
+    type: string
+    description: |
+      ISO 8601 timestamp marking this object's creation.
+    format: date-time
+  group_type:
+    type: integer
+    description: |
+      The type of group. Select `1` for Cloud, `2` for Active Directory, `3` for OU, or `4` for LDAP.
+    default: 1
+    enum:
+    - 1
+    - 2
+    - 3
+    - 4
+  modified_at:
+    type: string
+    description: |
+      ISO 8601 timestamp marking this object's last modification. If the object wasn't modified since first being created, the value matches `created_at`.
+    format: date-time
+  resource:
+    type: string
+    description: |
+      The type of resource.
+    minLength: 1
+  resource_uri:
+    type: object
+    description: |
+      Specifies resource URI details for the IDP configuration.
+    additionalProperties: false
+    required:
+    - directory
+    - href
+    - users
+    - permissions
+    properties:
+      directory:
+        type: string
+        description: |
+          The directory for the resource.
+        minLength: 1
+      href:
+        type: string
+        description: |
+          The href URI for the resource.
+        minLength: 1
+      permissions:
+        type: string
+        description: |
+          The permissions for the resource.
+        minLength: 1
+      users:
+        type: string
+        description: |
+          Users assigned to the resource.
+        minLength: 1
+  status:
+    type: integer
+    description: |
+      `0` (Disabled), `1` (Enabled).
+    default: 0
+    enum:
+    - 0
+    - 1
+  user_count:
+    type: integer
+    description: |
+      The number of users in the group.
+    minimum: 0
+  uuid_url:
+    type: string
+    description: |
+      A unique identifier for this group.
+    minLength: 1

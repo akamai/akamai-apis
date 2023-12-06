@@ -1,0 +1,181 @@
+openapi: 3.0.0
+info:
+  title: Site snapshots
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/storage/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: site-snapshot.yaml
+paths:
+  /site-snapshots:
+    post:
+      operationId: post-snapshots
+      summary: Create a site snapshot
+      tags:
+      - Snapshots
+      description: |
+        Use this operation to create a new site snapshot configuration.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/PostSiteSnapShotSample.json
+            schema:
+              $ref: schemas/site-snapshot-post.yaml
+      responses:
+        200:
+          description: |
+            Site snapshot entity created and returned.
+          content:
+            application/json:
+              example:
+                $ref: examples/PostSiteSnapShotSample.json
+              schema:
+                $ref: schemas/site-snapshot-post.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        429:
+          $ref: errors/429.yaml
+    get:
+      operationId: get-snapshots
+      summary: List all site snapshots
+      tags:
+      - Snapshots
+      description: |
+        Get a list of all site snapshots.
+      responses:
+        200:
+          description: |
+            List of site snapshot schedules.
+          content:
+            application/json:
+              example:
+                $ref: examples/GetSiteSnapShotSample.json
+              schema:
+                $ref: schemas/site-snapshots-get.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        429:
+          $ref: errors/429.yaml
+  /site-snapshots/schedule-now:
+    post:
+      operationId: post-snapshots-schedule-now
+      summary: Create an immediate site snapshot
+      tags:
+      - Snapshots
+      description: |
+        Create an immediate snapshot for a `snapshotId` and `snapshotName` you provide.
+      parameters:
+      - $ref: parameters/snapshotId-query.yaml
+      - $ref: parameters/snapshotName-query.yaml
+      responses:
+        200:
+          description: |
+            Site snapshot object created.
+          content:
+            application/json:
+              example:
+                $ref: examples/GetSiteSnapShotSample.json
+              schema:
+                $ref: schemas/site-snapshot-get.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        429:
+          $ref: errors/429.yaml
+  /site-snapshots/{snapshotId}:
+    parameters:
+    - $ref: parameters/snapshotId-path.yaml
+    get:
+      operationId: get-snapshot
+      summary: Get a site snapshot schedule
+      tags:
+      - Snapshots
+      description: |
+        Get the site snapshot schedule for a `snapshotId`.
+      responses:
+        200:
+          description: |
+            Successful Request.
+          content:
+            application/json:
+              example:
+                $ref: examples/GetSiteSnapShotSample.json
+              schema:
+                $ref: schemas/site-snapshot-get.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        429:
+          $ref: errors/429.yaml
+    put:
+      operationId: put-snapshot
+      summary: Update a site snapshot schedule
+      tags:
+      - Snapshots
+      description: |
+        Update a site snapshot schedule for a `snapshotId`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/PostSiteSnapShotSample.json
+            schema:
+              $ref: schemas/site-snapshot-post.yaml
+      responses:
+        200:
+          description: |
+            The modified snapshot schedule.
+          content:
+            application/json:
+              example:
+                $ref: examples/GetSiteSnapShotSample.json
+              schema:
+                $ref: schemas/site-snapshot-get.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        429:
+          $ref: errors/429.yaml
+    delete:
+      operationId: delete-snapshot
+      summary: Delete a site snapshot
+      tags:
+      - Snapshots
+      description: |
+        Use this operation to delete a specific site snapshot configuration using its `snapshotId`.
+      responses:
+        200:
+          description: |
+            Successful Response.
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        429:
+          $ref: errors/429.yaml

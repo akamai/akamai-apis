@@ -1,0 +1,110 @@
+type: object
+description: |-
+  Any change that you want to make to the network deployment of an enrollment.
+  
+x-akamai:
+  file-path: schemas/change.v2.yaml
+additionalProperties: false
+required:
+- allowedInput
+- statusInfo
+properties:
+  allowedInput:
+    type: array
+    description: |
+      The resource path locations of data inputs allowed by this change. These could be required or optional for this change to proceed.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - info
+      - requiredToProceed
+      - type
+      - update
+      properties:
+        info:
+          type: string
+          description: |
+            The resource location for the allowed input's description.
+        type:
+          type: string
+          description: |
+            The type input.
+        requiredToProceed:
+          type: boolean
+          description: |
+            If `true`, this input is required for the change to proceed.
+        update:
+          type: string
+          description: |
+            The resource path location that you can use to make a call for this input.
+  statusInfo:
+    type: object
+    description: |
+      The status for this change at this time.
+    additionalProperties: false
+    required:
+    - deploymentSchedule
+    - description
+    - state
+    - status
+    properties:
+      description:
+        type: string
+        description: |
+          A description of the current status of the change.
+      deploymentSchedule:
+        type: object
+        description: |
+          The schedule for when you want this change to deploy.
+        additionalProperties: false
+        properties:
+          notAfter:
+            type: string
+            description: |
+              Don't deploy the certificate after this date.
+            nullable: true
+          notBefore:
+            type: string
+            description: |
+              Don't deploy the certificate before this date.
+            nullable: true
+      error:
+        type: object
+        description: |
+          Error information for this change.
+        additionalProperties: false
+        required:
+        - code
+        - description
+        - timestamp
+        nullable: true
+        properties:
+          description:
+            type: string
+            description: |
+              The detailed description for this error.
+          code:
+            type: string
+            description: |
+              The unique identifier code for this error.
+          timestamp:
+            type: string
+            description: |
+              Indicates when this error occurred.
+      state:
+        type: string
+        description: |
+          The change request's state. A value of `new` means the certificate is processed but the renewal process is not started. `awaiting-input` means the process is waiting on a user input, for example the approval or denial of a change management item. `suspended` indicates the process didn't complete. A value of `cancelled` means the process has been cancelled permanently.
+        enum:
+        - new
+        - running
+        - awaiting-input
+        - suspended
+        - cancelled
+        - completed
+        - error
+      status:
+        type: string
+        description: |
+          The general status of the change. This is a high level of description of the status for the change. See [Status values and descriptions](ref:status-values-and-descriptions) for the list of possible status values this operation may return.

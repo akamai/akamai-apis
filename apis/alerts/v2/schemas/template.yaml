@@ -1,0 +1,69 @@
+type: object
+description: |-
+  Alert template describing a type of alert that can be defined or configured for monitoring.
+  
+x-akamai:
+  file-path: schemas/template.yaml
+additionalProperties: false
+required:
+- templateId
+- name
+- origin
+- firingFields
+- fields
+- links
+properties:
+  name:
+    type: string
+    description: |
+      Name of the template.
+    minLength: 1
+  fields:
+    type: array
+    description: |
+      Lists the set of fields required to populate an alert based on this template. This doesn't appear within template collections.
+    minItems: 1
+    items:
+      anyOf:
+      - $ref: type-adaptiveThresholdField.yaml
+      - $ref: type-booleanField.yaml
+      - $ref: type-ednsField.yaml
+      - $ref: type-emailField.yaml
+      - $ref: type-floatField.yaml
+      - $ref: type-integerField.yaml
+      - $ref: type-longField.yaml
+      - $ref: type-scheduleField.yaml
+      - $ref: type-selectMultiValueField.yaml
+      - $ref: type-selectSingleValueField.yaml
+      - $ref: type-streamField.yaml
+      - $ref: type-stringField.yaml
+  firingFields:
+    type: array
+    description: |
+      Lists field names expected in alert firing objects associated with this template. This doesn't appear within template collections.
+    minItems: 1
+    items:
+      type: string
+      minLength: 1
+      pattern: ^[a-z0-9][a-zA-Z0-9]+$
+  links:
+    $ref: links.yaml
+  origin:
+    type: string
+    description: |
+      Identifies the type of alert the template enables, either `STATIC` or `ADAPTIVE`. Static alert types specify raw values, while the adaptive alert type expresses standard deviations. The only available `ADAPTIVE` alert identifies excessive traffic, and its `templateId` is `a@1`.
+    enum:
+    - STATIC
+    - ADAPTIVE
+  products:
+    type: array
+    description: |
+      Describes products associated with each template. You can only use the template if one of the `products` is on your contract.
+    minItems: 1
+    items:
+      $ref: product.yaml
+  templateId:
+    type: string
+    description: |
+      Identifies the template. Template origin types that are `STATIC` and `ADAPTIVE` are distinguished with `s@` and `a@` prefixes.
+    minLength: 1

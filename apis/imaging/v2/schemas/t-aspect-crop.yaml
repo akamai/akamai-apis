@@ -1,0 +1,70 @@
+type: object
+description: |-
+  Changes the height or width of an image, either by cropping or expanding the area, to an aspect ratio of your choosing.
+  
+x-akamai:
+  file-path: schemas/t-aspect-crop.yaml
+title: AspectCrop
+additionalProperties: false
+required:
+- transformation
+properties:
+  allowExpansion:
+    description: |
+      Increases the size of the image canvas to achieve the requested aspect ratio instead of cropping the image. Use the Horizontal Offset and Vertical Offset settings to determine where to add the fully transparent pixels on the expanded image canvas.
+    oneOf:
+    - default: false
+      type: boolean
+      title: Boolean
+    - $ref: variable-inline.yaml
+  height:
+    description: |
+      The height term of the aspect ratio to crop.
+    oneOf:
+    - default: 1.0
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      exclusiveMinimum: true
+    - $ref: variable-inline.yaml
+  transformation:
+    type: string
+    description: |
+      Identifies the type of transformation, `AspectCrop` in this case.
+    default: AspectCrop
+    enum:
+    - AspectCrop
+  width:
+    description: |
+      The width term of the aspect ratio to crop.
+    oneOf:
+    - default: 1.0
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      exclusiveMinimum: true
+    - $ref: variable-inline.yaml
+  xPosition:
+    description: |
+      Specifies the horizontal portion of the image you want to keep when the aspect ratio cropping is applied. When using Allow Expansion this setting defines the horizontal position of the image on the new expanded image canvas.
+    oneOf:
+    - default: 0.5
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 1
+    - $ref: variable-inline.yaml
+  yPosition:
+    description: |
+      Specifies the horizontal portion of the image you want to keep when cropping by aspect ratio crop. When using `allowExpansion`, this setting defines the horizontal position of the image on the new expanded image canvas.
+    oneOf:
+    - default: 0.5
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 1
+    - $ref: variable-inline.yaml

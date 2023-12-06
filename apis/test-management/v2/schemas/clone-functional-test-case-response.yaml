@@ -1,0 +1,64 @@
+type: object
+x-akamai:
+  file-path: schemas/clone-functional-test-case-response.yaml
+additionalProperties: false
+required:
+- successes
+- failures
+properties:
+  failures:
+    type: array
+    description: |
+      Contains a list of [HTTP Problem Details](https://tools.ietf.org/html/rfc7807) objects and indicates errors together with unique identifiers of items that weren't cloned.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      - title
+      properties:
+        type:
+          type: string
+          description: |
+            Type of error.
+          minLength: 1
+        title:
+          type: string
+          description: |
+            Title of the error.
+          minLength: 1
+        existingEntities:
+          type: array
+          description: |
+            Objects included within the functional test case.
+          minItems: 1
+          items:
+            $ref: get-functional-test-case-response.yaml
+        requestField:
+          type: string
+          description: |
+            Request field name. It can be a URL or query parameter or any request payload field name.
+          minLength: 1
+        requestObjects:
+          type: array
+          description: |
+            Request objects that were invalid.
+          minItems: 1
+          items:
+            $ref: clone-functional-test-case-request-object.yaml
+        requestValues:
+          type: array
+          description: |
+            Value of `requestField`.
+          minItems: 1
+          items:
+            type: integer
+            minimum: 1
+  successes:
+    type: array
+    description: |
+      List of unique identifiers of successfully cloned functional test cases. Includes objects within them and their details.
+    minItems: 0
+    items:
+      $ref: get-functional-test-case-response.yaml

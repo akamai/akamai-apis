@@ -1,0 +1,316 @@
+openapi: 3.0.0
+info:
+  title: Identity providers (IDPs)
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/crux/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: idp.yaml
+paths:
+  /mgmt-pop/idp:
+    post:
+      operationId: post-idp
+      summary: Create an IDP
+      tags:
+      - IDPs
+      description: |
+        Creates a new IDP.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-an-idp-body.json
+            schema:
+              $ref: schemas/idp.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/create-an-idp-body-200.json
+              schema:
+                $ref: schemas/idp.yaml
+    get:
+      operationId: get-idps
+      summary: List IDPs
+      tags:
+      - IDPs
+      description: |
+        Lists IDPs.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/expand-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/pageable_offset.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-idp-list-body-200.json
+              schema:
+                $ref: schemas/idp.yaml
+  /mgmt-pop/idp/{idp_id}:
+    parameters:
+    - $ref: parameters/idp_id-path.yaml
+    get:
+      operationId: get-idp
+      summary: Get an IDP
+      tags:
+      - IDPs
+      description: |
+        Gets a single IDP.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-idp-body-200.json
+              schema:
+                $ref: schemas/idp.yaml
+    put:
+      operationId: put-idp
+      summary: Modify an IDP
+      tags:
+      - IDPs
+      description: |
+        Updates an existing IDP.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-idp-body-200.json
+              schema:
+                $ref: schemas/idp.yaml
+    delete:
+      operationId: delete-idp
+      summary: Delete an IDP
+      tags:
+      - IDPs
+      description: |
+        Deletes an existing IDP.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /mgmt-pop/idp/{idp_id}/directories_membership:
+    parameters:
+    - $ref: parameters/idp_id-path.yaml
+    get:
+      operationId: get-idp-directories-membership
+      summary: Get an IDP directory membership
+      tags:
+      - Directory membership
+      description: |
+        Retrieves associated directory membership of an IDP.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-idp-directories-membership-200.json
+              schema:
+                $ref: schemas/idp-directories-membership.yaml
+  /mgmt-pop/idp/{idp_id}/g2o:
+    parameters:
+    - $ref: parameters/idp_id-path.yaml
+    post:
+      operationId: post-idp-g2o
+      summary: Enable ghost to origin (G2O) for an IDP
+      tags:
+      - Ghost to origin
+      description: |
+        Enable G2O for an IDP.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/create-an-g2o-idp-body-200.json
+              schema:
+                $ref: schemas/need-schema-here.yaml
+  /mgmt-pop/idp/{idp_id}/metadata:
+    parameters:
+    - $ref: parameters/idp_id-path.yaml
+    post:
+      operationId: post-idp-metadata
+      summary: Upload metadata of an IDP
+      tags:
+      - Metadata
+      description: |
+        Uploads metadata to add or update to the IDP.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                metadata: '...'
+              schema:
+                $ref: schemas/need-schema-here.yaml
+  /mgmt-pop/idp/{idp_id}/status:
+    parameters:
+    - $ref: parameters/idp_id-path.yaml
+    get:
+      operationId: get-idp-status
+      summary: Get an IDP status
+      tags:
+      - Status
+      description: |
+        Retrieves the current IDP status.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-idp-status-body-200.json
+              schema:
+                $ref: schemas/idp-actions.yaml
+  /mgmt-pop/idpdirectory:
+    post:
+      operationId: post-idp-directory
+      summary: Create an IDP directory
+      tags:
+      - IDP directories
+      description: |
+        Creates a new IDP directory.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-idpdirectory-body.json
+            schema:
+              $ref: schemas/idpdirectory.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/create-idpdirectory-200.json
+              schema:
+                $ref: schemas/idpdirectory.yaml
+    get:
+      operationId: get-idp-directories
+      summary: List IDP directories
+      tags:
+      - IDP directories
+      description: |
+        Gets a list of IDP directories.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/pageable_offset.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-idp-directory-200.json
+              schema:
+                $ref: schemas/idpdirectories.yaml
+  /mgmt-pop/idpdirectory/{idpdirectory_id}:
+    parameters:
+    - $ref: parameters/idpdirectory_id-path.yaml
+    get:
+      operationId: get-idp-directory
+      summary: Get an IDP directory
+      tags:
+      - IDP directories
+      description: |
+        Gets the specified IDP directory.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-an-idpdirectory-200.json
+              schema:
+                $ref: schemas/idpdirectory.yaml
+    put:
+      operationId: put-idp-directory
+      summary: Modify an IDP directory
+      tags:
+      - IDP directories
+      description: |
+        Updates an existing IDP directory.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-idpdirectory-body.json
+            schema:
+              $ref: schemas/idpdirectory.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-idpdirectory-200.json
+              schema:
+                $ref: schemas/idpdirectory.yaml
+    delete:
+      operationId: delete-idp-directory
+      summary: Delete an IDP directory
+      tags:
+      - IDP directories
+      description: |
+        Deletes an existing IDP directory.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.

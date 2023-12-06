@@ -1,0 +1,110 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Proxy traffic transactions reports
+  version: v3
+servers:
+- url: https://{hostname}/etp-report/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: proxy-traffic-transactions.yaml
+paths:
+  /configs/{configId}/proxy-traffic/transactions/aggregate:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-proxy-traffic-transactions
+      summary: Report proxy traffic transactions totals
+      tags:
+      - Proxy traffic transactions
+      description: |
+        Lists the count of proxy traffic transaction totals, grouped by the chosen query aggregation..
+      parameters:
+      - $ref: parameters/dimension-proxy-traffic-query.yaml
+      - $ref: parameters/cardinality-query.yaml
+      - $ref: parameters/startTimeSec-query.yaml
+      - $ref: parameters/endTimeSec-query.yaml
+      - $ref: parameters/filters-proxy-traffic-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/pt-http-request-method-aggregate-200.json
+              schema:
+                $ref: schemas/proxyTrafficTransactionsAggregate.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /configs/{configId}/proxy-traffic/transactions/details:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-traffic-transaction-details
+      summary: Report proxy network traffic transaction details
+      tags:
+      - Proxy traffic transactions
+      description: |
+        Lists proxy network traffic connections for a given time period.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/events-details-postRequest.json
+            schema:
+              $ref: schemas/proxyTransactionEventsDetailsRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/proxy-traffic-details-postResponse-200.json
+              schema:
+                $ref: schemas/proxyTransactionEventsDetailsResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /configs/{configId}/proxy-traffic/transactions/time-series:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-traffic-transactions-time-series
+      summary: Report proxy traffic transactions time series
+      tags:
+      - Proxy traffic transactions
+      description: |
+        Lists proxy traffic transaction totals, aggregated by hour.
+      parameters:
+      - $ref: parameters/dimension-proxy-traffic-query.yaml
+      - $ref: parameters/startTimeSec-query.yaml
+      - $ref: parameters/endTimeSec-query.yaml
+      - $ref: parameters/filters-proxy-traffic-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/pt-http-request-method-time-series-200.json
+              schema:
+                $ref: schemas/proxyTrafficTransactionsTimeSeries.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml

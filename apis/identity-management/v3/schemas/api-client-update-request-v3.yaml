@@ -1,0 +1,186 @@
+type: object
+x-akamai:
+  file-path: schemas/api-client-update-request-v3.yaml
+additionalProperties: false
+required:
+- clientName
+- apiAccess
+- groupAccess
+- authorizedUsers
+properties:
+  allowAccountSwitch:
+    type: boolean
+    description: |
+      Indicates whether the API client can manage more than one account.
+  apiAccess:
+    type: object
+    description: |
+      The APIs the API client can access.
+    additionalProperties: false
+    required:
+    - allAccessibleApis
+    - apis
+    properties:
+      allAccessibleApis:
+        type: boolean
+        description: |
+          When enabled, the API client has access to all available APIs. Otherwise, the client's access is limited to a specific set of `apis`.
+      apis:
+        type: array
+        description: |
+          Set of APIs the API client can access when `allAccessibleApis` is disabled.
+        minItems: 0
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - description
+          - apiId
+          - apiName
+          - documentationUrl
+          - endPoint
+          - accessLevel
+          properties:
+            description:
+              type: string
+              description: |
+                Descriptive text for the API.
+              minLength: 1
+            accessLevel:
+              type: string
+              description: |
+                The API client's access level on a per API basis, either `READ-ONLY` or `READ-WRITE`.
+              enum:
+              - READ-ONLY
+              - READ-WRITE
+            apiId:
+              type: integer
+              description: |
+                Unique identifier for the API.
+              minimum: 0
+            apiName:
+              type: string
+              description: |
+                Descriptive label for the API, like Edge Diagnostic Tools, or Identity and Access Management API.
+              minLength: 1
+            documentationUrl:
+              type: string
+              description: |
+                Link to more information about the API.
+              minLength: 1
+            endPoint:
+              type: string
+              description: |
+                Specifies where the API can access resources.
+              minLength: 1
+  authorizedUsers:
+    type: array
+    description: |
+      The API client's valid users.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  canAutoCreateCredential:
+    type: boolean
+    description: |
+      When enabled, the API client can create a credential for a new API client. The default is `false`.
+    default: false
+  clientDescription:
+    type: string
+    description: |
+      Descriptive text about the API client.
+    minLength: 1
+  clientName:
+    type: string
+    description: |
+      Descriptive label for the API client.
+    minLength: 1
+  groupAccess:
+    type: object
+    description: |
+      Identifies the API client's group access.
+    additionalProperties: false
+    required:
+    - cloneAuthorizedUserGroups
+    - groups
+    properties:
+      cloneAuthorizedUserGroups:
+        type: boolean
+        description: |
+          With a `true` value, the API client's group access is the same as the authorized user.
+      groups:
+        type: array
+        description: |
+          Groups an API client can access.
+        minItems: 0
+        items:
+          $ref: groups.yaml#/definitions/groups
+  ipAcl:
+    type: object
+    description: |
+      Specifies the API client's IP list restriction.
+    additionalProperties: false
+    required:
+    - enable
+    - cidr
+    properties:
+      cidr:
+        type: array
+        description: |
+          IP addresses or CIDR blocks the API client can access.
+        minItems: 0
+        items:
+          type: string
+          minLength: 1
+      enable:
+        type: boolean
+        description: |
+          With a `true` value, the API client can access to the IP ACL.
+  notificationEmails:
+    type: array
+    description: |
+      Email addresses to notify users of expiring credentials.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  purgeOptions:
+    type: object
+    description: |
+      Configures the API client for access to the CCU API in `apis`.
+    additionalProperties: false
+    required:
+    - canPurgeByCacheTag
+    - canPurgeByCpcode
+    - cpcodeAccess
+    properties:
+      canPurgeByCacheTag:
+        type: boolean
+        description: |
+          When enabled, the API client can purge content by cache tag.
+      canPurgeByCpcode:
+        type: boolean
+        description: |
+          When enabled, the API client can purge content by CP code.
+      cpcodeAccess:
+        type: object
+        description: |
+          CP codes the API client can purge.
+        additionalProperties: false
+        required:
+        - allCurrentAndNewCpcodes
+        - cpcodes
+        properties:
+          allCurrentAndNewCpcodes:
+            type: boolean
+            description: |
+              When enabled, the API client can purge content by cache tag.
+          cpcodes:
+            type: array
+            description: |
+              CP codes the API client can purge.
+            minItems: 0
+            items:
+              type: integer
+              minimum: 0

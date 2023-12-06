@@ -1,0 +1,125 @@
+type: object
+description: |-
+  Collects context about the requested data set based on the request's parameters and contents of the query request object, and supplies presentational information for use in report output.
+  
+x-akamai:
+  file-path: schemas/metadata-schema.yaml
+additionalProperties: false
+required:
+- columns
+- filters
+- rowCount
+- interval
+- groupBy
+- end
+- availableDataEnds
+- suggestedRetryTime
+- start
+- objectIds
+properties:
+  name:
+    type: string
+    description: |
+      The name of the current report type.
+  version:
+    type: string
+    description: |
+      The version of the current report type.
+  _links:
+    type: object
+    description: |
+      Links to self/previous/next pages of data.
+  availableDataEnds:
+    type: string
+    description: |
+      If data has not been finalized, this ISO 8601 timestamp indicates for when data is no longer available. Otherwise the value is `null` for finalized data.
+    nullable: true
+  columns:
+    type: array
+    description: |
+      Provides interface labels for `data` and `summaryStatistics` items.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: |
+            The name of the `data` or `summaryStatistics` member.
+        label:
+          type: string
+          description: |
+            The interface label to assign to the corresponding `name`.
+  end:
+    type: string
+    description: |
+      The end range of the requested data in ISO 8601 format. This reflects the value of the [Generate a report](ref:post-report-version-data) operation's `end` parameter.
+  filters:
+    type: array
+    description: |
+      List of all filters (explicitly provided by user as well as implicitly resolved) used when retrieving data for this report.
+    items:
+      type: object
+      description: |
+        Reflects the set of `filters` from the query request.
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: |
+            Reflects the name of the filter specified in the request, or included in the default set for the report type.
+        value:
+          type: array
+          description: |
+            Reflects the set of requested filter values.
+          items:
+            type: string
+  groupBy:
+    type: array
+    description: |
+      Specifies the set of fields by which `data` is grouped and sorted. The `groupBy` field is specified along with the request `metrics` in each `data` row.
+    items:
+      type: string
+  interval:
+    type: string
+    description: |
+      The duration of each record in the report, either `FIVE_MINUTES`, `HOUR`, `DAY`, `WEEK`, or `MONTH`. This reflects the value of the [Generate a report](ref:post-report-version-data) operation's `interval` parameter.
+    enum:
+    - FIVE_MINUTES
+    - HOUR
+    - DAY
+    - WEEK
+    - MONTH
+  objectIds:
+    type: array
+    description: |
+      Reflects the set of `objectIds` from the query request.
+    items:
+      type: string
+  page:
+    type: integer
+    description: |
+      Current page of the data.
+  pageSize:
+    type: integer
+    description: |
+      Size of the current page.
+  rowCount:
+    type: integer
+    description: |
+      The total number of `data` records included in the report.
+    minimum: 0
+    multipleOf: 1
+  start:
+    type: string
+    description: |
+      The start range of the requested data in ISO 8601 format. This reflects the value of the [operation's](ref:post-report-version-data) `start` parameter.
+  suggestedRetryTime:
+    type: string
+    description: |
+      If data has not been finalized, this ISO 8601 timestamp indicates when it is estimated to complete. Otherwise the value is `null` for finalized data.
+    nullable: true
+  uri:
+    type: string
+    description: |
+      Reflects the URL called to retrieve this data.

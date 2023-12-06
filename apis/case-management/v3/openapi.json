@@ -1,0 +1,3391 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Case Management API",
+    "url": "https://techdocs.akamai.com/case-mgmt/reference"
+  },
+  "info": {
+    "title": "Akamai: Case Management API",
+    "version": "v1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/accounts-with-categories": {
+      "get": {
+        "description": "Lists accounts you can access. The list also includes types of cases you can create for each account. You need this data to [Get a case category details](https://techdocs.akamai.com/case-mgmt/reference/get-category) and [Create a case](https://techdocs.akamai.com/case-mgmt/reference/post-cases).",
+        "operationId": "get-accounts",
+        "summary": "List available accounts",
+        "parameters": [],
+        "tags": [
+          "Accounts"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Case Management API",
+          "url": "https://techdocs.akamai.com/case-mgmt/reference/get-accounts"
+        },
+        "responses": {
+          "200": {
+            "description": "The response lists available accounts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Lists accounts you can access and can create a support case for. The list also includes types of cases available for each account.",
+                  "type": "array",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "Details about available accounts and types of cases you can create.",
+                    "type": "object",
+                    "properties": {
+                      "accountId": {
+                        "description": "Identifier for the account.",
+                        "type": "string"
+                      },
+                      "accountName": {
+                        "description": "Name of the account.",
+                        "type": "string"
+                      },
+                      "categories": {
+                        "description": "Lists basic data about case categories you can use to create a case for the account.",
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "description": "Categories of cases you can create a case for the particular account for.",
+                          "type": "object",
+                          "properties": {
+                            "categoryId": {
+                              "description": "Identifier for the category. The possible options are `SECURITY`, `BUSINESS_SUPPORT`, `PROFESSIONAL_SERVICES`, `BILLING`, or `TECHNICAL`.",
+                              "type": "string",
+                              "enum": [
+                                "SECURITY",
+                                "BUSINESS_SUPPORT",
+                                "PROFESSIONAL_SERVICES",
+                                "BILLING",
+                                "TECHNICAL"
+                              ]
+                            },
+                            "categoryName": {
+                              "description": "Name of the case category.",
+                              "type": "string"
+                            },
+                            "links": {
+                              "description": "Lists [navigable hypermedia links](https://techdocs.akamai.com/case-mgmt/reference/hypermedia) to resources.",
+                              "type": "array",
+                              "items": {
+                                "additionalProperties": false,
+                                "type": "object",
+                                "properties": {
+                                  "href": {
+                                    "description": "Relative path to the resource.",
+                                    "type": "string"
+                                  },
+                                  "rel": {
+                                    "description": "Type of resource you can GET.",
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "x-akamai": {
+                                "file-path": "schemas/hypermedia.yaml"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/get-accounts-response.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "accountId": "A-CCT7890",
+                    "accountName": "Main Street Corporation",
+                    "categories": [
+                      {
+                        "categoryId": "SECURITY",
+                        "categoryName": "Managed Security Support",
+                        "links": [
+                          {
+                            "href": "/case-management/v3/categories/SECURITY?accountId=A-CCT3456",
+                            "rel": "self"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "accountId": "A-CCT7890",
+                    "accountName": "Internet Company",
+                    "categories": [
+                      {
+                        "categoryId": "BILLING",
+                        "categoryName": "Billing Support Issue or Question",
+                        "links": [
+                          {
+                            "href": "/case-management/v3/categories/BILLING?accountId=A-CCT3456",
+                            "rel": "self"
+                          }
+                        ]
+                      },
+                      {
+                        "categoryId": "TECHNICAL",
+                        "categoryName": "Technical Support Issue",
+                        "links": [
+                          {
+                            "href": "/case-management/v3/categories/TECHNICAL?accountId=A-CCT3456",
+                            "rel": "self"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
+      }
+    },
+    "/cases": {
+      "post": {
+        "description": "Creates a new case for the support team. Run the [Get a case category](https://techdocs.akamai.com/case-mgmt/reference/get-category) operation first to check what data you need for your case category and available options. Once you create the case, the support team responds based on the [service level agreement for initial response](https://techdocs.akamai.com/case-mgmt/docs/about-case-management#service-level-agreement-for-initial-response) or terms of your service agreement or contract.",
+        "operationId": "post-cases",
+        "summary": "Create a new case",
+        "parameters": [],
+        "tags": [
+          "Cases"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Case Management API",
+          "url": "https://techdocs.akamai.com/case-mgmt/reference/post-cases"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "accountId": "A-CCT7890",
+                "categoryId": "TECHNICAL",
+                "customerTrackingNumber": "TRACK-FSDJW000",
+                "description": "Case Description",
+                "partnerTicketNumber": "SDG000ASD00",
+                "problemName": "DDoS Attack",
+                "productName": "Ion Premier",
+                "severity": "2-Moderate Impact",
+                "subject": "Case Subject",
+                "alsoNotify": [
+                  "ram1@netfix.com",
+                  "mike@netfix.com"
+                ],
+                "alternateContact": {
+                  "company": "Netfix",
+                  "email": "email@example.com",
+                  "name": "Ram",
+                  "phone": "+91-1234567890"
+                }
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Encapsulated details of the case to create.",
+                "type": "object",
+                "required": [
+                  "subject",
+                  "description",
+                  "accountId",
+                  "categoryId"
+                ],
+                "properties": {
+                  "accountId": {
+                    "description": "Identifier for the account you want to create the case for. To get this value, run the [List available accounts](https://techdocs.akamai.com/case-mgmt/reference/get-accounts) operation.",
+                    "example": "{{accountId}}",
+                    "maxLength": 20,
+                    "type": "string"
+                  },
+                  "alsoNotify": {
+                    "description": "Lists email addresses to send case notifications to.",
+                    "minItems": 0,
+                    "type": "array",
+                    "items": {
+                      "description": "Email address to send notifications about update notifications.",
+                      "format": "email",
+                      "maxLength": 255,
+                      "type": "string"
+                    }
+                  },
+                  "alternateContact": {
+                    "additionalProperties": false,
+                    "description": "Specifies a person for the support team to contact, if you're unavailable. This person also gets notified about any updates to the case.",
+                    "type": "object",
+                    "properties": {
+                      "company": {
+                        "description": "Name of the company the person works for.",
+                        "maxLength": 255,
+                        "type": "string"
+                      },
+                      "email": {
+                        "description": "Email address.",
+                        "format": "email",
+                        "maxLength": 255,
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "Full name.",
+                        "maxLength": 255,
+                        "type": "string"
+                      },
+                      "phone": {
+                        "description": "Phone number.",
+                        "maxLength": 40,
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "areaName": {
+                    "description": "Area name the case refers to. Provide it only when the `categoryId` is set to `BILLING` or `BUSINESS_SUPPORT`. To get available values, run the [Get a case category](https://techdocs.akamai.com/case-mgmt/reference/get-category) operation.",
+                    "example": "{{areaName}}",
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "categoryId": {
+                    "description": "Identifier for the category you want to create the case for. To learn more about available case categories, see [Categories of cases](https://techdocs.akamai.com/case-mgmt/docs/about-case-management#categories-of-cases).",
+                    "example": "{{categoryId}}",
+                    "type": "string",
+                    "enum": [
+                      "SECURITY",
+                      "BUSINESS_SUPPORT",
+                      "PROFESSIONAL_SERVICES",
+                      "BILLING",
+                      "TECHNICAL"
+                    ]
+                  },
+                  "customerTrackingNumber": {
+                    "description": "Identifier for a separate customer's support ticket.",
+                    "example": "{{customerTrackingNumber}}",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "Details of your issue.",
+                    "example": "{{description}}",
+                    "maxLength": 32000,
+                    "type": "string"
+                  },
+                  "parentAccountId": {
+                    "description": "Identifier for the parent account to associate and share the case with. Provide it only when creating a `BILLING` or `BUSINESS_SUPPORT` case associated to an indirect contract. To get this value, run the [Get a case category](https://techdocs.akamai.com/case-mgmt/reference/get-category) operation.",
+                    "example": "{{parentAccountId}}",
+                    "maxLength": 20,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "partnerTicketNumber": {
+                    "description": "Identifier for a separate reseller's support ticket, up to 30 characters.",
+                    "example": "{{partnerTicketNumber}}",
+                    "maxLength": 30,
+                    "type": "string"
+                  },
+                  "policyDomainName": {
+                    "description": "Name of the policy domain the case refers to. Provide it only when the `categoryId` is set to `SECURITY`. To get available values, run the [Get a case category](https://techdocs.akamai.com/case-mgmt/reference/get-category) operation.",
+                    "example": "{{policyDomainName}}",
+                    "maxLength": 80,
+                    "type": "string"
+                  },
+                  "problemName": {
+                    "description": "Problem name the case refers to. This value depends on the `productName` value. Provide it only when the `categoryId` is set to `TECHNICAL` or `SECURITY`. To get available combinations of `productName` and `problemName` values, run the [Get a case category](https://techdocs.akamai.com/case-mgmt/reference/get-category) operation.",
+                    "example": "{{problemName}}",
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "productName": {
+                    "description": "Product name the case refers to. This value depends on the `problemName` value. Provide it only when the `categoryId` is set to `TECHNICAL` or `SECURITY`. To get available combinations of `productName` and `problemName` values, run the [Get a case category](https://techdocs.akamai.com/case-mgmt/reference/get-category) operation.",
+                    "example": "{{productName}}",
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "productSolutionName": {
+                    "description": "Product solution name the case refers to. Provide it only when the `categoryId` is set to `PROFESSIONAL_SERVICES`. To get available values, run the [Get a case category](https://techdocs.akamai.com/case-mgmt/reference/get-category) operation.",
+                    "example": "{{productSolutionName}}",
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "psPackageName": {
+                    "description": "Professional services package name the case refers to. Provide it only when the `categoryId` is set to `PROFESSIONAL_SERVICES`. To get available values, run the [Get a case category](https://techdocs.akamai.com/case-mgmt/reference/get-category) operation.",
+                    "example": "{{psPackageName}}",
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "serviceName": {
+                    "description": "Service name the case refers to. This value depends on the `areaName` value. Provide it only when the `categoryId` is set to `BILLING` or `BUSINESS_SUPPORT`. To get available combinations of `areaName` and `serviceName` values, run the [Get a case category](https://techdocs.akamai.com/case-mgmt/reference/get-category) operation.",
+                    "example": "{{serviceName}}",
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "severity": {
+                    "description": "Severity level of the case. To get available values, run the [Get a case category](https://techdocs.akamai.com/case-mgmt/reference/get-category) operation.",
+                    "example": "{{severity}}",
+                    "type": "string"
+                  },
+                  "subject": {
+                    "description": "Title of the case, up to 255 characters. Try to make it short and specific. This helps the support team to identify the case if you forget or don't have access to the case identifier.",
+                    "example": "{{subject}}",
+                    "maxLength": 255,
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/create-case-request.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The response provides the created case.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "age": 4,
+                  "areaName": null,
+                  "caseId": "F-CS-000000",
+                  "closedDate": null,
+                  "createdDate": "2020-10-01T00:00:00Z",
+                  "customerTrackingNumber": "TRACK-FSDJW000",
+                  "description": "Case Description",
+                  "modifiedDate": "2020-10-01T00:00:00Z",
+                  "nextAction": null,
+                  "partnerTicketNumber": null,
+                  "policyDomainName": null,
+                  "problemName": "DDoS Attack",
+                  "productName": "Ion Premier",
+                  "productSolutionName": null,
+                  "psPackageName": null,
+                  "resolvedDate": null,
+                  "serviceContractId": null,
+                  "serviceName": null,
+                  "severity": "2-Moderate Impact",
+                  "solutionSummary": null,
+                  "status": "CREATED",
+                  "subject": "Case Subject",
+                  "timeToInitialResponse": null,
+                  "alsoNotify": [
+                    "ram1@netfix.com",
+                    "mike@netfix.com"
+                  ],
+                  "account": {
+                    "accountId": "A-CCT7890",
+                    "accountName": "Main Street Corporation"
+                  },
+                  "alternateContact": {
+                    "company": "Netfix",
+                    "email": "email@example.com",
+                    "name": "Ram",
+                    "phone": "+91-1234567890"
+                  },
+                  "category": {
+                    "categoryId": "TECHNICAL",
+                    "categoryName": "Technical Support Issue"
+                  },
+                  "contact": {
+                    "company": "Netfix",
+                    "email": "email@example.com",
+                    "name": "John",
+                    "phone": "+1-1234567890"
+                  },
+                  "createdByAccount": {
+                    "accountId": null,
+                    "accountName": null
+                  },
+                  "parentAccount": {
+                    "accountId": null,
+                    "accountName": null
+                  },
+                  "permissions": {
+                    "addComments": true,
+                    "requestClose": true,
+                    "updateCase": true,
+                    "uploadAttachments": true
+                  },
+                  "links": [
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000/comments",
+                      "rel": "comments"
+                    },
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000/attachments",
+                      "rel": "attachments"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Collects details of the created case.",
+                  "type": "object",
+                  "properties": {
+                    "account": {
+                      "additionalProperties": false,
+                      "description": "Specifies the account the case was created for.",
+                      "type": "object",
+                      "properties": {
+                        "accountId": {
+                          "description": "Identifier for the account.",
+                          "type": "string"
+                        },
+                        "accountName": {
+                          "description": "Name of the account.",
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "age": {
+                      "description": "Case age in seconds.",
+                      "type": "integer"
+                    },
+                    "alsoNotify": {
+                      "description": "Lists email addresses to send case notifications to.",
+                      "type": "array",
+                      "items": {
+                        "description": "Email address to send update notifications to.",
+                        "format": "email",
+                        "type": "string"
+                      }
+                    },
+                    "alternateContact": {
+                      "additionalProperties": false,
+                      "description": "Specifies the alternate contact data.",
+                      "type": "object",
+                      "properties": {
+                        "company": {
+                          "description": "Company name. It's `null` if the creator didn't provide this data in the request.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "email": {
+                          "description": "Email address. It's `null` if the creator didn't provide this data in the request.",
+                          "format": "email",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "name": {
+                          "description": "Full name. It's `null` if the creator didn't provide this data in the request.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "phone": {
+                          "description": "Phone number. It's `null` if the creator didn't provide this data in the request.",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "areaName": {
+                      "description": "Area name the case refers to. It's `null` for any `categoryId` other than `BILLING` or `BUSINESS_SUPPORT`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "caseId": {
+                      "description": "Identifier for each case.",
+                      "type": "string"
+                    },
+                    "category": {
+                      "additionalProperties": false,
+                      "description": "Specifies the case category.",
+                      "type": "object",
+                      "properties": {
+                        "categoryId": {
+                          "description": "Identifier for the category. The possible options are `SECURITY`, `BUSINESS_SUPPORT`, `PROFESSIONAL_SERVICES`, `BILLING`, or `TECHNICAL`.",
+                          "type": "string",
+                          "enum": [
+                            "SECURITY",
+                            "BUSINESS_SUPPORT",
+                            "PROFESSIONAL_SERVICES",
+                            "BILLING",
+                            "TECHNICAL"
+                          ]
+                        },
+                        "categoryName": {
+                          "description": "Name of the category.",
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "closedDate": {
+                      "description": "ISO 8601 timestamp indicating when the case was closed. It's `null` for cases with any `status` other than `CLOSED`.",
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "contact": {
+                      "additionalProperties": false,
+                      "description": "Collects data about the case's creator.",
+                      "type": "object",
+                      "properties": {
+                        "company": {
+                          "description": "Name of the company the user works for. It's `null` if the creator didn't provide this data in the request.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "email": {
+                          "description": "Email address.",
+                          "format": "email",
+                          "type": "string"
+                        },
+                        "name": {
+                          "description": "Full name.",
+                          "type": "string"
+                        },
+                        "phone": {
+                          "description": "Phone number. It's `null` if the creator didn't provide this data in the request.",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "createdByAccount": {
+                      "additionalProperties": false,
+                      "description": "Specifies the reseller. ",
+                      "type": "object",
+                      "properties": {
+                        "accountId": {
+                          "description": "Identifier for the reseller's account. It's `null` if a reseller created the case for a third party.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "accountName": {
+                          "description": "Name of the reseller's account. It's `null` if a reseller created the case for a third party.",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "createdDate": {
+                      "description": "ISO 8601 timestamp indicating when the case was created.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "customerTrackingNumber": {
+                      "description": "Identifier for a separate customer's support ticket. It's `null` if the creator didn't provide this data in the request.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "description": {
+                      "description": "Description of the issue.",
+                      "type": "string"
+                    },
+                    "links": {
+                      "description": "Lists [navigable hypermedia links](https://techdocs.akamai.com/case-mgmt/reference/hypermedia) to resources.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "href": {
+                            "description": "Relative path to the resource.",
+                            "type": "string"
+                          },
+                          "rel": {
+                            "description": "Type of resource you can GET.",
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/hypermedia.yaml"
+                      }
+                    },
+                    "modifiedDate": {
+                      "description": "ISO 8601 timestamp indicating when the case was last modified.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "nextAction": {
+                      "description": "Specifies who should take the next action. The possible options are the person assigned to the case (`CASE_OWNER`) or a user (`CUSTOMER`). It's `null` for any `categoryId` other than `TECHNICAL`.",
+                      "nullable": true,
+                      "type": "string",
+                      "enum": [
+                        "CASE_OWNER",
+                        "CUSTOMER"
+                      ]
+                    },
+                    "parentAccount": {
+                      "additionalProperties": false,
+                      "description": "Specifies the parent account of the indirect contract the case is associated with.",
+                      "type": "object",
+                      "properties": {
+                        "accountId": {
+                          "description": "Identifier for the parent account. It's `null` for cases associated with an indirect contract and the `categoryId` is set to `BILLING` or `BUSINESS_SUPPORT`.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "accountName": {
+                          "description": "Name of the parent account. It's `null` for cases associated with an indirect contract and the `categoryId` is set to `BILLING` or `BUSINESS_SUPPORT`.",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "partnerTicketNumber": {
+                      "description": "Identifier for a separate reseller's support ticket. It's `null` if the creator didn't provide this data in the request.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "permissions": {
+                      "additionalProperties": false,
+                      "description": "Specifies your permissions for the case.",
+                      "type": "object",
+                      "properties": {
+                        "addComments": {
+                          "description": "Whether you can add comments to the case.",
+                          "type": "boolean"
+                        },
+                        "requestClose": {
+                          "description": "Whether you can request to close the case.",
+                          "type": "boolean"
+                        },
+                        "updateCase": {
+                          "description": "Whether you can update the case.",
+                          "type": "boolean"
+                        },
+                        "uploadAttachments": {
+                          "description": "Whether you can upload attachments.",
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "policyDomainName": {
+                      "description": "Name of the policy domain the case refers to. It's `null` for any `categoryId` other than `SECURITY`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "problemName": {
+                      "description": "Problem name the case refers to. It's `null` for any `categoryId` other than `TECHNICAL` or `SECURITY`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "productName": {
+                      "description": "Product name the case refers to. It's `null` for any `categoryId` other than `TECHNICAL` or `SECURITY`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "productSolutionName": {
+                      "description": "Product solution name the case refers to. It's `null` for any `categoryId` other than `PROFESSIONAL_SERVICES`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "psPackageName": {
+                      "description": "Professional services package name the case refers to. It's `null` for any `categoryId` other than `PROFESSIONAL_SERVICES`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "resolvedDate": {
+                      "description": "ISO 8601 timestamp indicating when the case was resolved. It's `null` for any `status` other than `CLOSED`.",
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "serviceContractId": {
+                      "description": "Identifier for the service contract. It's `null` for any `categoryId` other than `PROFESSIONAL_SERVICE`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "serviceName": {
+                      "description": "Service name the case refers to. It's `null` for any `categoryId` other than `BILLING` or `BUSINESS_SUPPORT`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "severity": {
+                      "description": "Severity level of the case.",
+                      "type": "string"
+                    },
+                    "solutionSummary": {
+                      "description": "Solution of the problem. It's `null` for any `status` other than `CLOSED`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Current status of the case. The possible options are `CREATED`, `ASSIGNED`, `IN_PROGRESS`, `MITIGATED/SOLVED`, or `CLOSED`.",
+                      "type": "string",
+                      "enum": [
+                        "CREATED",
+                        "ASSIGNED",
+                        "IN_PROGRESS",
+                        "MITIGATED/SOLVED",
+                        "CLOSED"
+                      ]
+                    },
+                    "subject": {
+                      "description": "Title of the case.",
+                      "type": "string"
+                    },
+                    "timeToInitialResponse": {
+                      "description": "Time for initial response, in minutes. To learn more about it, see [Service level agreement for initial response](https://techdocs.akamai.com/case-mgmt/docs/about-case-management#service-level-agreement-for-initial-response). It's `null` until the first communication from Akamai.",
+                      "nullable": true,
+                      "type": "integer"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/case-details-response.yaml"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Relative path to the newly created resource.",
+                "schema": {
+                  "example": "/case-management/v3/cases/F-CS-0000000",
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/Location.yaml"
+                }
+              }
+            }
+          }
+        },
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
+      },
+      "get": {
+        "description": "Lists open or closed cases. You can filter the results to fetch only your cases or cases created by all users of your account. You can also limit the request to a specific number of cases or time period.",
+        "operationId": "get-cases",
+        "summary": "List cases",
+        "tags": [
+          "Cases"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Case Management API",
+          "url": "https://techdocs.akamai.com/case-mgmt/reference/get-cases"
+        },
+        "responses": {
+          "200": {
+            "description": "The response lists cases.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "cases": [
+                    {
+                      "caseId": "F-CS-000004",
+                      "createdDate": "2020-10-01T08:00:00Z",
+                      "policyDomainName": null,
+                      "severity": "1-Major Impact",
+                      "status": "IN_PROGRESS",
+                      "subject": "Case Subject",
+                      "updatedDate": "2020-10-02T00:00:00Z",
+                      "account": {
+                        "accountId": "A-CCT7890",
+                        "accountName": "High Street Company"
+                      },
+                      "category": {
+                        "categoryId": "TECHNICAL",
+                        "categoryName": "Technical Support Issue"
+                      },
+                      "contact": {
+                        "company": "Netfix",
+                        "email": "email@example.com",
+                        "name": "John",
+                        "phone": "+1-1234567890"
+                      },
+                      "links": [
+                        {
+                          "href": "/case-management/v3/cases/F-CS-000004",
+                          "rel": "self"
+                        }
+                      ]
+                    },
+                    {
+                      "caseId": "F-CS-000003",
+                      "createdDate": "2020-10-01T00:00:00Z",
+                      "policyDomainName": "netflix_cs",
+                      "severity": "3-Low Impact",
+                      "status": "CREATED",
+                      "subject": "Case Subject",
+                      "updatedDate": "2020-10-02T00:00:00Z",
+                      "account": {
+                        "accountId": "A-CCT7890",
+                        "accountName": "Internet Company"
+                      },
+                      "category": {
+                        "categoryId": "SECURITY",
+                        "categoryName": "Managed Security Issue"
+                      },
+                      "contact": {
+                        "company": "Netfix",
+                        "email": "email@example.com",
+                        "name": "John",
+                        "phone": "+1-1234567890"
+                      },
+                      "links": [
+                        {
+                          "href": "/case-management/v3/cases/F-CS-000003",
+                          "rel": "self"
+                        }
+                      ]
+                    }
+                  ],
+                  "links": [
+                    {
+                      "href": "/case-management/v3/cases?type=MY_ACTIVE_CASES&limit=2",
+                      "rel": "self"
+                    },
+                    {
+                      "href": "/case-management/v3/cases?type=MY_ACTIVE_CASES&limit=2&cursor=F-CS-000002",
+                      "rel": "next"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Contains the list of cases matching the set filters.",
+                  "type": "object",
+                  "properties": {
+                    "cases": {
+                      "description": "Lists overview of requested cases.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Case details.",
+                        "type": "object",
+                        "required": [
+                          "account",
+                          "category",
+                          "contact"
+                        ],
+                        "properties": {
+                          "account": {
+                            "additionalProperties": false,
+                            "description": "Specifies the account the case was created for.",
+                            "type": "object",
+                            "properties": {
+                              "accountId": {
+                                "description": "Identifier for the account.",
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "accountName": {
+                                "description": "Name of the account.",
+                                "minLength": 1,
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "caseId": {
+                            "description": "Identifier for each case.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "category": {
+                            "additionalProperties": false,
+                            "description": "Specifies the case category.",
+                            "type": "object",
+                            "properties": {
+                              "categoryId": {
+                                "description": "Identifier for the case category. The possible options are `SECURITY`, `BUSINESS_SUPPORT`, `PROFESSIONAL_SERVICES`, `BILLING`, or `TECHNICAL`.",
+                                "minLength": 1,
+                                "type": "string",
+                                "enum": [
+                                  "SECURITY",
+                                  "BUSINESS_SUPPORT",
+                                  "PROFESSIONAL_SERVICES",
+                                  "BILLING",
+                                  "TECHNICAL"
+                                ]
+                              },
+                              "categoryName": {
+                                "description": "Name of the case category.",
+                                "minLength": 1,
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "contact": {
+                            "additionalProperties": false,
+                            "description": "Collects data about the case's creator.",
+                            "type": "object",
+                            "properties": {
+                              "company": {
+                                "description": "Name of the company the user works for. It's `null` if the creator didn't provide this data in the request.",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "email": {
+                                "description": "Email address.",
+                                "format": "email",
+                                "type": "string"
+                              },
+                              "name": {
+                                "description": "Full name.",
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "phone": {
+                                "description": "Phone number. It's `null` if the creator didn't provide this data in the request.",
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "createdDate": {
+                            "description": "ISO 8601 timestamp indicating when the case was created.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "links": {
+                            "description": "Lists [navigable hypermedia links](https://techdocs.akamai.com/case-mgmt/reference/hypermedia) to resources.",
+                            "type": "array",
+                            "items": {
+                              "additionalProperties": false,
+                              "type": "object",
+                              "properties": {
+                                "href": {
+                                  "description": "Relative path to the resource.",
+                                  "type": "string"
+                                },
+                                "rel": {
+                                  "description": "Type of resource you can GET.",
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/hypermedia.yaml"
+                            }
+                          },
+                          "policyDomainName": {
+                            "description": "Name of the policy domain the case refers to. It's `null` for any `categoryId` other than `SECURITY`.",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "severity": {
+                            "description": "Severity level of the case. To learn more about severity levels for different cases, see [Severity levels](https://techdocs.akamai.com/case-mgmt/docs/about-case-management#severity-levels).",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "status": {
+                            "description": "Current status of the case. The possible options are `CREATED`, `ASSIGNED`, `IN_PROGRESS`, `MITIGATED/SOLVED`, or `CLOSED`.",
+                            "minLength": 1,
+                            "type": "string",
+                            "enum": [
+                              "CREATED",
+                              "ASSIGNED",
+                              "IN_PROGRESS",
+                              "MITIGATED/SOLVED",
+                              "CLOSED"
+                            ]
+                          },
+                          "subject": {
+                            "description": "Title of the case.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "updatedDate": {
+                            "description": "ISO 8601 timestamp indicating when the case was last modified.",
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "links": {
+                      "description": "Lists [navigable hypermedia links](https://techdocs.akamai.com/case-mgmt/reference/hypermedia) to resources.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "href": {
+                            "description": "Relative path to the resource.",
+                            "type": "string"
+                          },
+                          "rel": {
+                            "description": "Type of resource you can GET.",
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/hypermedia.yaml"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/cases-list-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-akamai": {
+          "supports-account-switch-key": false
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Type of cases to fetch. You can filter the results for your cases, `MY_ACTIVE_CASES` or `MY_CLOSED_CASES`, or for all users of your account, `ALL_ACTIVE_CASES` or `ALL_CLOSED_CASES`.",
+            "example": "{{type}}",
+            "in": "query",
+            "name": "type",
+            "required": true,
+            "schema": {
+              "example": "MY_ACTIVE_CASES",
+              "type": "string",
+              "enum": [
+                "MY_ACTIVE_CASES",
+                "MY_CLOSED_CASES",
+                "ALL_ACTIVE_CASES",
+                "ALL_CLOSED_CASES"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/type-query.yaml"
+            }
+          },
+          {
+            "description": "Number of days in the past to fetch cases for. If omitted, the operation returns most recent cases matching values of the `type` and `limit` parameters.",
+            "example": "{{duration}}",
+            "in": "query",
+            "name": "duration",
+            "schema": {
+              "example": 30,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/duration-query.yaml"
+            }
+          },
+          {
+            "description": "List of accounts to fetch the cases for. To get these values, run the [List available accounts](https://techdocs.akamai.com/case-mgmt/reference/get-accounts) operation. If omitted, Case Management fetches cases for all accounts you can access.",
+            "example": "{{accountIds}}",
+            "explode": false,
+            "in": "query",
+            "name": "accountIds",
+            "style": "form",
+            "schema": {
+              "example": "A-CCT3456, A-CCT3456",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/accountIds-query.yaml"
+            }
+          },
+          {
+            "description": "Data rows to fetch starting from the most recent. The maximum number of items is `200`, `50` by default.",
+            "example": "{{limit}}",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 50,
+              "example": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/limit-query.yaml"
+            }
+          },
+          {
+            "description": "Cursor value for pagination. It occurs only if there's a `next` page of the results.",
+            "example": "{{cursor}}",
+            "in": "query",
+            "name": "cursor",
+            "examples": {
+              "attachments": {
+                "summary": "Sample cursor value for navigating to the next set of paginated attachments",
+                "value": "0690f000001y2ut"
+              },
+              "cases": {
+                "summary": "Sample cursor value for navigating to the next set of paginated cases",
+                "value": "F-CS-0000002"
+              },
+              "comments": {
+                "summary": "Sample cursor value for navigating to the next set of paginated comments",
+                "value": "F-CS-0003"
+              }
+            },
+            "schema": {
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/cursor-query.yaml"
+            }
+          }
+        ]
+      }
+    },
+    "/cases/{caseId}": {
+      "get": {
+        "description": "Fetches details for a specific case.",
+        "operationId": "get-case",
+        "summary": "Get a case",
+        "parameters": [],
+        "tags": [
+          "Cases"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Case Management API",
+          "url": "https://techdocs.akamai.com/case-mgmt/reference/get-case"
+        },
+        "responses": {
+          "200": {
+            "description": "The response provides the case details.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "age": 259200,
+                  "areaName": null,
+                  "caseId": "F-CS-000000",
+                  "closedDate": "2020-10-04T00:00:00Z",
+                  "createdDate": "2020-10-01T00:00:00Z",
+                  "customerTrackingNumber": "TRACK-FSDJW000",
+                  "description": "Case Description",
+                  "modifiedDate": "2020-10-04T00:00:00Z",
+                  "nextAction": "CUSTOMER",
+                  "partnerTicketNumber": null,
+                  "policyDomainName": null,
+                  "problemName": "DDoS Attack",
+                  "productName": "Ion Premier",
+                  "productSolutionName": null,
+                  "psPackageName": null,
+                  "resolvedDate": "2020-10-03T00:00:00Z",
+                  "serviceContractId": null,
+                  "serviceName": null,
+                  "severity": "2-Moderate Impact",
+                  "solutionSummary": "Solution Summary",
+                  "status": "CLOSED",
+                  "subject": "Case Subject",
+                  "timeToInitialResponse": 120,
+                  "alsoNotify": [
+                    "ram1@netfix.com",
+                    "mike@netfix.com"
+                  ],
+                  "account": {
+                    "accountId": "A-CCT7890",
+                    "accountName": "High Street Company"
+                  },
+                  "alternateContact": {
+                    "company": "Netfix",
+                    "email": "email@example.com",
+                    "name": "Ram",
+                    "phone": "+91-1234567890"
+                  },
+                  "category": {
+                    "categoryId": "TECHNICAL",
+                    "categoryName": "Technical Support Issue"
+                  },
+                  "contact": {
+                    "company": "Netfix",
+                    "email": "email@example.com",
+                    "name": "John",
+                    "phone": "+1-1234567890"
+                  },
+                  "createdByAccount": {
+                    "accountId": null,
+                    "accountName": null
+                  },
+                  "parentAccount": {
+                    "accountId": null,
+                    "accountName": null
+                  },
+                  "permissions": {
+                    "addComments": true,
+                    "requestClose": true,
+                    "updateCase": true,
+                    "uploadAttachments": true
+                  },
+                  "links": [
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000/comments",
+                      "rel": "comments"
+                    },
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000/attachments",
+                      "rel": "attachments"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Collects details of the created case.",
+                  "type": "object",
+                  "properties": {
+                    "account": {
+                      "additionalProperties": false,
+                      "description": "Specifies the account the case was created for.",
+                      "type": "object",
+                      "properties": {
+                        "accountId": {
+                          "description": "Identifier for the account.",
+                          "type": "string"
+                        },
+                        "accountName": {
+                          "description": "Name of the account.",
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "age": {
+                      "description": "Case age in seconds.",
+                      "type": "integer"
+                    },
+                    "alsoNotify": {
+                      "description": "Lists email addresses to send case notifications to.",
+                      "type": "array",
+                      "items": {
+                        "description": "Email address to send update notifications to.",
+                        "format": "email",
+                        "type": "string"
+                      }
+                    },
+                    "alternateContact": {
+                      "additionalProperties": false,
+                      "description": "Specifies the alternate contact data.",
+                      "type": "object",
+                      "properties": {
+                        "company": {
+                          "description": "Company name. It's `null` if the creator didn't provide this data in the request.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "email": {
+                          "description": "Email address. It's `null` if the creator didn't provide this data in the request.",
+                          "format": "email",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "name": {
+                          "description": "Full name. It's `null` if the creator didn't provide this data in the request.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "phone": {
+                          "description": "Phone number. It's `null` if the creator didn't provide this data in the request.",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "areaName": {
+                      "description": "Area name the case refers to. It's `null` for any `categoryId` other than `BILLING` or `BUSINESS_SUPPORT`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "caseId": {
+                      "description": "Identifier for each case.",
+                      "type": "string"
+                    },
+                    "category": {
+                      "additionalProperties": false,
+                      "description": "Specifies the case category.",
+                      "type": "object",
+                      "properties": {
+                        "categoryId": {
+                          "description": "Identifier for the category. The possible options are `SECURITY`, `BUSINESS_SUPPORT`, `PROFESSIONAL_SERVICES`, `BILLING`, or `TECHNICAL`.",
+                          "type": "string",
+                          "enum": [
+                            "SECURITY",
+                            "BUSINESS_SUPPORT",
+                            "PROFESSIONAL_SERVICES",
+                            "BILLING",
+                            "TECHNICAL"
+                          ]
+                        },
+                        "categoryName": {
+                          "description": "Name of the category.",
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "closedDate": {
+                      "description": "ISO 8601 timestamp indicating when the case was closed. It's `null` for cases with any `status` other than `CLOSED`.",
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "contact": {
+                      "additionalProperties": false,
+                      "description": "Collects data about the case's creator.",
+                      "type": "object",
+                      "properties": {
+                        "company": {
+                          "description": "Name of the company the user works for. It's `null` if the creator didn't provide this data in the request.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "email": {
+                          "description": "Email address.",
+                          "format": "email",
+                          "type": "string"
+                        },
+                        "name": {
+                          "description": "Full name.",
+                          "type": "string"
+                        },
+                        "phone": {
+                          "description": "Phone number. It's `null` if the creator didn't provide this data in the request.",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "createdByAccount": {
+                      "additionalProperties": false,
+                      "description": "Specifies the reseller. ",
+                      "type": "object",
+                      "properties": {
+                        "accountId": {
+                          "description": "Identifier for the reseller's account. It's `null` if a reseller created the case for a third party.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "accountName": {
+                          "description": "Name of the reseller's account. It's `null` if a reseller created the case for a third party.",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "createdDate": {
+                      "description": "ISO 8601 timestamp indicating when the case was created.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "customerTrackingNumber": {
+                      "description": "Identifier for a separate customer's support ticket. It's `null` if the creator didn't provide this data in the request.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "description": {
+                      "description": "Description of the issue.",
+                      "type": "string"
+                    },
+                    "links": {
+                      "description": "Lists [navigable hypermedia links](https://techdocs.akamai.com/case-mgmt/reference/hypermedia) to resources.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "href": {
+                            "description": "Relative path to the resource.",
+                            "type": "string"
+                          },
+                          "rel": {
+                            "description": "Type of resource you can GET.",
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/hypermedia.yaml"
+                      }
+                    },
+                    "modifiedDate": {
+                      "description": "ISO 8601 timestamp indicating when the case was last modified.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "nextAction": {
+                      "description": "Specifies who should take the next action. The possible options are the person assigned to the case (`CASE_OWNER`) or a user (`CUSTOMER`). It's `null` for any `categoryId` other than `TECHNICAL`.",
+                      "nullable": true,
+                      "type": "string",
+                      "enum": [
+                        "CASE_OWNER",
+                        "CUSTOMER"
+                      ]
+                    },
+                    "parentAccount": {
+                      "additionalProperties": false,
+                      "description": "Specifies the parent account of the indirect contract the case is associated with.",
+                      "type": "object",
+                      "properties": {
+                        "accountId": {
+                          "description": "Identifier for the parent account. It's `null` for cases associated with an indirect contract and the `categoryId` is set to `BILLING` or `BUSINESS_SUPPORT`.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "accountName": {
+                          "description": "Name of the parent account. It's `null` for cases associated with an indirect contract and the `categoryId` is set to `BILLING` or `BUSINESS_SUPPORT`.",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "partnerTicketNumber": {
+                      "description": "Identifier for a separate reseller's support ticket. It's `null` if the creator didn't provide this data in the request.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "permissions": {
+                      "additionalProperties": false,
+                      "description": "Specifies your permissions for the case.",
+                      "type": "object",
+                      "properties": {
+                        "addComments": {
+                          "description": "Whether you can add comments to the case.",
+                          "type": "boolean"
+                        },
+                        "requestClose": {
+                          "description": "Whether you can request to close the case.",
+                          "type": "boolean"
+                        },
+                        "updateCase": {
+                          "description": "Whether you can update the case.",
+                          "type": "boolean"
+                        },
+                        "uploadAttachments": {
+                          "description": "Whether you can upload attachments.",
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "policyDomainName": {
+                      "description": "Name of the policy domain the case refers to. It's `null` for any `categoryId` other than `SECURITY`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "problemName": {
+                      "description": "Problem name the case refers to. It's `null` for any `categoryId` other than `TECHNICAL` or `SECURITY`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "productName": {
+                      "description": "Product name the case refers to. It's `null` for any `categoryId` other than `TECHNICAL` or `SECURITY`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "productSolutionName": {
+                      "description": "Product solution name the case refers to. It's `null` for any `categoryId` other than `PROFESSIONAL_SERVICES`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "psPackageName": {
+                      "description": "Professional services package name the case refers to. It's `null` for any `categoryId` other than `PROFESSIONAL_SERVICES`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "resolvedDate": {
+                      "description": "ISO 8601 timestamp indicating when the case was resolved. It's `null` for any `status` other than `CLOSED`.",
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "serviceContractId": {
+                      "description": "Identifier for the service contract. It's `null` for any `categoryId` other than `PROFESSIONAL_SERVICE`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "serviceName": {
+                      "description": "Service name the case refers to. It's `null` for any `categoryId` other than `BILLING` or `BUSINESS_SUPPORT`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "severity": {
+                      "description": "Severity level of the case.",
+                      "type": "string"
+                    },
+                    "solutionSummary": {
+                      "description": "Solution of the problem. It's `null` for any `status` other than `CLOSED`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Current status of the case. The possible options are `CREATED`, `ASSIGNED`, `IN_PROGRESS`, `MITIGATED/SOLVED`, or `CLOSED`.",
+                      "type": "string",
+                      "enum": [
+                        "CREATED",
+                        "ASSIGNED",
+                        "IN_PROGRESS",
+                        "MITIGATED/SOLVED",
+                        "CLOSED"
+                      ]
+                    },
+                    "subject": {
+                      "description": "Title of the case.",
+                      "type": "string"
+                    },
+                    "timeToInitialResponse": {
+                      "description": "Time for initial response, in minutes. To learn more about it, see [Service level agreement for initial response](https://techdocs.akamai.com/case-mgmt/docs/about-case-management#service-level-agreement-for-initial-response). It's `null` until the first communication from Akamai.",
+                      "nullable": true,
+                      "type": "integer"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/case-details-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
+      },
+      "patch": {
+        "description": "Updates the list of people to contact about the case. The alternate contact is the contact person if the case's creator is unavailable. The alternate contact and set of `alsoNotify` email addresses all receive notifications. Data provided in the body of this request replace the current contact details in the case.",
+        "operationId": "patch-case",
+        "summary": "Update contact details",
+        "parameters": [],
+        "tags": [
+          "Cases"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Case Management API",
+          "url": "https://techdocs.akamai.com/case-mgmt/reference/patch-case"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "alsoNotify": [
+                  "ram1@netfix.com",
+                  "mike@netfix.com"
+                ],
+                "alternateContact": {
+                  "company": "Netfix",
+                  "email": "email@example.com",
+                  "name": "Ram",
+                  "phone": "+91-1234567890"
+                }
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Update case.",
+                "type": "object",
+                "properties": {
+                  "alsoNotify": {
+                    "description": "Lists email addresses to send case notifications to.",
+                    "minItems": 0,
+                    "type": "array",
+                    "items": {
+                      "description": "Email address to send case notifications to.",
+                      "format": "email",
+                      "maxLength": 255,
+                      "type": "string"
+                    }
+                  },
+                  "alternateContact": {
+                    "additionalProperties": false,
+                    "description": "Specifies the alternate contact data.",
+                    "type": "object",
+                    "properties": {
+                      "company": {
+                        "description": "Name of the company the person works for.",
+                        "maxLength": 255,
+                        "type": "string"
+                      },
+                      "email": {
+                        "description": "Email address.",
+                        "format": "email",
+                        "maxLength": 255,
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "Full name.",
+                        "maxLength": 255,
+                        "type": "string"
+                      },
+                      "phone": {
+                        "description": "Phone number.",
+                        "maxLength": 40,
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/update-case-request.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The response provides the details of updated case.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "age": 259200,
+                  "areaName": null,
+                  "caseId": "F-CS-000000",
+                  "closedDate": "2020-10-04T00:00:00Z",
+                  "createdDate": "2020-10-01T00:00:00Z",
+                  "customerTrackingNumber": "TRACK-FSDJW000",
+                  "description": "Case Description",
+                  "modifiedDate": "2020-10-04T00:00:00Z",
+                  "nextAction": "CUSTOMER",
+                  "partnerTicketNumber": null,
+                  "policyDomainName": null,
+                  "problemName": "DDoS Attack",
+                  "productName": "Ion Premier",
+                  "productSolutionName": null,
+                  "psPackageName": null,
+                  "resolvedDate": "2020-10-03T00:00:00Z",
+                  "serviceContractId": null,
+                  "serviceName": null,
+                  "severity": "2-Moderate Impact",
+                  "solutionSummary": "Solution Summary",
+                  "status": "CLOSED",
+                  "subject": "Case Subject",
+                  "timeToInitialResponse": 120,
+                  "alsoNotify": [
+                    "ram1@netfix.com",
+                    "mike@netfix.com"
+                  ],
+                  "account": {
+                    "accountId": "A-CCT7890",
+                    "accountName": "Main Street Corporation"
+                  },
+                  "alternateContact": {
+                    "company": "Netfix",
+                    "email": "email@example.com",
+                    "name": "Ram",
+                    "phone": "+91-1234567890"
+                  },
+                  "category": {
+                    "categoryId": "TECHNICAL",
+                    "categoryName": "Technical Support Issue"
+                  },
+                  "contact": {
+                    "company": "Netfix",
+                    "email": "email@example.com",
+                    "name": "John",
+                    "phone": "+1-1234567890"
+                  },
+                  "createdByAccount": {
+                    "accountId": null,
+                    "accountName": null
+                  },
+                  "parentAccount": {
+                    "accountId": null,
+                    "accountName": null
+                  },
+                  "permissions": {
+                    "addComments": true,
+                    "requestClose": true,
+                    "updateCase": true,
+                    "uploadAttachments": true
+                  },
+                  "links": [
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000/comments",
+                      "rel": "comments"
+                    },
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000/attachments",
+                      "rel": "attachments"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Collects details of the created case.",
+                  "type": "object",
+                  "properties": {
+                    "account": {
+                      "additionalProperties": false,
+                      "description": "Specifies the account the case was created for.",
+                      "type": "object",
+                      "properties": {
+                        "accountId": {
+                          "description": "Identifier for the account.",
+                          "type": "string"
+                        },
+                        "accountName": {
+                          "description": "Name of the account.",
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "age": {
+                      "description": "Case age in seconds.",
+                      "type": "integer"
+                    },
+                    "alsoNotify": {
+                      "description": "Lists email addresses to send case notifications to.",
+                      "type": "array",
+                      "items": {
+                        "description": "Email address to send update notifications to.",
+                        "format": "email",
+                        "type": "string"
+                      }
+                    },
+                    "alternateContact": {
+                      "additionalProperties": false,
+                      "description": "Specifies the alternate contact data.",
+                      "type": "object",
+                      "properties": {
+                        "company": {
+                          "description": "Company name. It's `null` if the creator didn't provide this data in the request.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "email": {
+                          "description": "Email address. It's `null` if the creator didn't provide this data in the request.",
+                          "format": "email",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "name": {
+                          "description": "Full name. It's `null` if the creator didn't provide this data in the request.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "phone": {
+                          "description": "Phone number. It's `null` if the creator didn't provide this data in the request.",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "areaName": {
+                      "description": "Area name the case refers to. It's `null` for any `categoryId` other than `BILLING` or `BUSINESS_SUPPORT`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "caseId": {
+                      "description": "Identifier for each case.",
+                      "type": "string"
+                    },
+                    "category": {
+                      "additionalProperties": false,
+                      "description": "Specifies the case category.",
+                      "type": "object",
+                      "properties": {
+                        "categoryId": {
+                          "description": "Identifier for the category. The possible options are `SECURITY`, `BUSINESS_SUPPORT`, `PROFESSIONAL_SERVICES`, `BILLING`, or `TECHNICAL`.",
+                          "type": "string",
+                          "enum": [
+                            "SECURITY",
+                            "BUSINESS_SUPPORT",
+                            "PROFESSIONAL_SERVICES",
+                            "BILLING",
+                            "TECHNICAL"
+                          ]
+                        },
+                        "categoryName": {
+                          "description": "Name of the category.",
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "closedDate": {
+                      "description": "ISO 8601 timestamp indicating when the case was closed. It's `null` for cases with any `status` other than `CLOSED`.",
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "contact": {
+                      "additionalProperties": false,
+                      "description": "Collects data about the case's creator.",
+                      "type": "object",
+                      "properties": {
+                        "company": {
+                          "description": "Name of the company the user works for. It's `null` if the creator didn't provide this data in the request.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "email": {
+                          "description": "Email address.",
+                          "format": "email",
+                          "type": "string"
+                        },
+                        "name": {
+                          "description": "Full name.",
+                          "type": "string"
+                        },
+                        "phone": {
+                          "description": "Phone number. It's `null` if the creator didn't provide this data in the request.",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "createdByAccount": {
+                      "additionalProperties": false,
+                      "description": "Specifies the reseller. ",
+                      "type": "object",
+                      "properties": {
+                        "accountId": {
+                          "description": "Identifier for the reseller's account. It's `null` if a reseller created the case for a third party.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "accountName": {
+                          "description": "Name of the reseller's account. It's `null` if a reseller created the case for a third party.",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "createdDate": {
+                      "description": "ISO 8601 timestamp indicating when the case was created.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "customerTrackingNumber": {
+                      "description": "Identifier for a separate customer's support ticket. It's `null` if the creator didn't provide this data in the request.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "description": {
+                      "description": "Description of the issue.",
+                      "type": "string"
+                    },
+                    "links": {
+                      "description": "Lists [navigable hypermedia links](https://techdocs.akamai.com/case-mgmt/reference/hypermedia) to resources.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "href": {
+                            "description": "Relative path to the resource.",
+                            "type": "string"
+                          },
+                          "rel": {
+                            "description": "Type of resource you can GET.",
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/hypermedia.yaml"
+                      }
+                    },
+                    "modifiedDate": {
+                      "description": "ISO 8601 timestamp indicating when the case was last modified.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "nextAction": {
+                      "description": "Specifies who should take the next action. The possible options are the person assigned to the case (`CASE_OWNER`) or a user (`CUSTOMER`). It's `null` for any `categoryId` other than `TECHNICAL`.",
+                      "nullable": true,
+                      "type": "string",
+                      "enum": [
+                        "CASE_OWNER",
+                        "CUSTOMER"
+                      ]
+                    },
+                    "parentAccount": {
+                      "additionalProperties": false,
+                      "description": "Specifies the parent account of the indirect contract the case is associated with.",
+                      "type": "object",
+                      "properties": {
+                        "accountId": {
+                          "description": "Identifier for the parent account. It's `null` for cases associated with an indirect contract and the `categoryId` is set to `BILLING` or `BUSINESS_SUPPORT`.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "accountName": {
+                          "description": "Name of the parent account. It's `null` for cases associated with an indirect contract and the `categoryId` is set to `BILLING` or `BUSINESS_SUPPORT`.",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "partnerTicketNumber": {
+                      "description": "Identifier for a separate reseller's support ticket. It's `null` if the creator didn't provide this data in the request.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "permissions": {
+                      "additionalProperties": false,
+                      "description": "Specifies your permissions for the case.",
+                      "type": "object",
+                      "properties": {
+                        "addComments": {
+                          "description": "Whether you can add comments to the case.",
+                          "type": "boolean"
+                        },
+                        "requestClose": {
+                          "description": "Whether you can request to close the case.",
+                          "type": "boolean"
+                        },
+                        "updateCase": {
+                          "description": "Whether you can update the case.",
+                          "type": "boolean"
+                        },
+                        "uploadAttachments": {
+                          "description": "Whether you can upload attachments.",
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "policyDomainName": {
+                      "description": "Name of the policy domain the case refers to. It's `null` for any `categoryId` other than `SECURITY`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "problemName": {
+                      "description": "Problem name the case refers to. It's `null` for any `categoryId` other than `TECHNICAL` or `SECURITY`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "productName": {
+                      "description": "Product name the case refers to. It's `null` for any `categoryId` other than `TECHNICAL` or `SECURITY`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "productSolutionName": {
+                      "description": "Product solution name the case refers to. It's `null` for any `categoryId` other than `PROFESSIONAL_SERVICES`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "psPackageName": {
+                      "description": "Professional services package name the case refers to. It's `null` for any `categoryId` other than `PROFESSIONAL_SERVICES`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "resolvedDate": {
+                      "description": "ISO 8601 timestamp indicating when the case was resolved. It's `null` for any `status` other than `CLOSED`.",
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "serviceContractId": {
+                      "description": "Identifier for the service contract. It's `null` for any `categoryId` other than `PROFESSIONAL_SERVICE`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "serviceName": {
+                      "description": "Service name the case refers to. It's `null` for any `categoryId` other than `BILLING` or `BUSINESS_SUPPORT`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "severity": {
+                      "description": "Severity level of the case.",
+                      "type": "string"
+                    },
+                    "solutionSummary": {
+                      "description": "Solution of the problem. It's `null` for any `status` other than `CLOSED`.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Current status of the case. The possible options are `CREATED`, `ASSIGNED`, `IN_PROGRESS`, `MITIGATED/SOLVED`, or `CLOSED`.",
+                      "type": "string",
+                      "enum": [
+                        "CREATED",
+                        "ASSIGNED",
+                        "IN_PROGRESS",
+                        "MITIGATED/SOLVED",
+                        "CLOSED"
+                      ]
+                    },
+                    "subject": {
+                      "description": "Title of the case.",
+                      "type": "string"
+                    },
+                    "timeToInitialResponse": {
+                      "description": "Time for initial response, in minutes. To learn more about it, see [Service level agreement for initial response](https://techdocs.akamai.com/case-mgmt/docs/about-case-management#service-level-agreement-for-initial-response). It's `null` until the first communication from Akamai.",
+                      "nullable": true,
+                      "type": "integer"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/case-details-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
+      },
+      "parameters": [
+        {
+          "description": "Identifier for each case. To get this value, run the [List cases](https://techdocs.akamai.com/case-mgmt/reference/get-cases) operation.",
+          "example": "{{caseId}}",
+          "in": "path",
+          "name": "caseId",
+          "required": true,
+          "schema": {
+            "example": "F-CS-000000",
+            "maxLength": 20,
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/caseId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/cases/{caseId}/attachments": {
+      "post": {
+        "description": "Attaches a file to a specific case. Each case can have up to ten attachments, up to 2GB each. The response includes `uploadId` necessary to [GET the status of an attachment upload](https://techdocs.akamai.com/case-mgmt/reference/get-attachment-upload-status).",
+        "operationId": "post-attachments",
+        "summary": "Attach a file",
+        "parameters": [],
+        "tags": [
+          "Case attachments"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Case Management API",
+          "url": "https://techdocs.akamai.com/case-mgmt/reference/post-attachments"
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "example": "POST /case-management/v3/cases/F-CS-000000/attachments HTTP/1.1\nContent-Length: 155\nContent-Type: multipart/form-data; boundary=abcde12345\n\n--abcde12345\nContent-Disposition: form-data; name=\"attachmentContent\"; filename=\"sample.txt\"\nContent-Type: text/plain\n\nThis is a sample file.\n--abcde12345",
+              "schema": {
+                "additionalProperties": false,
+                "description": "Content of the attachment you want to add to the case.",
+                "type": "object",
+                "required": [
+                  "attachmentContent"
+                ],
+                "properties": {
+                  "attachmentContent": {
+                    "description": "Content of the attachment in the binary format.",
+                    "format": "binary",
+                    "maxLength": 2000000000,
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/add-case-attachment-request.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Process successfully launched.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "fileName": "sample.txt",
+                  "uploadId": "F-AUS-000000",
+                  "uploadStatus": "UPLOADING",
+                  "uploadStatusMessage": "Attachment is being uploaded to case. Please use the attachment_upload_status link to check the status.",
+                  "links": [
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000/attachments/status/F-AUS-000000",
+                      "rel": "attachment_upload_status"
+                    },
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000",
+                      "rel": "case"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Provides details about the status of the attachment upload.",
+                  "type": "object",
+                  "properties": {
+                    "attachmentId": {
+                      "description": "Identifier for each attachment. This appears only for attachments with the `UPLOADED` status.",
+                      "type": "string"
+                    },
+                    "fileName": {
+                      "description": "Name of the attachment.",
+                      "type": "string"
+                    },
+                    "links": {
+                      "description": "Lists [navigable hypermedia links](https://techdocs.akamai.com/case-mgmt/reference/hypermedia) to resources.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "href": {
+                            "description": "Relative path to the resource.",
+                            "type": "string"
+                          },
+                          "rel": {
+                            "description": "Type of resource you can GET.",
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/hypermedia.yaml"
+                      }
+                    },
+                    "uploadId": {
+                      "description": "Identifier for each attachment upload request.",
+                      "type": "string"
+                    },
+                    "uploadStatus": {
+                      "description": "Status of the attachment upload. The possible options are `UPLOADING`, `UPLOADED`, or `FAILED`.",
+                      "type": "string",
+                      "enum": [
+                        "UPLOADING",
+                        "UPLOADED",
+                        "FAILED"
+                      ]
+                    },
+                    "uploadStatusMessage": {
+                      "description": "Detailed status of the attachment upload.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/case-attachment-upload-status-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
+      },
+      "get": {
+        "description": "Fetches attachments added to a specific case. Use the `limit` parameter to limit the number of attachments.",
+        "operationId": "get-attachments",
+        "summary": "List attached files",
+        "tags": [
+          "Case attachments"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Case Management API",
+          "url": "https://techdocs.akamai.com/case-mgmt/reference/get-attachments"
+        },
+        "responses": {
+          "200": {
+            "description": "The response contains the attachment.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "attachments": [
+                    {
+                      "attachmentId": "0690f000001x4jt",
+                      "createdBy": "alfulani",
+                      "createdDate": "2020-10-01T00:00:00Z",
+                      "fileName": "sample.txt",
+                      "fileType": "txt",
+                      "links": [
+                        {
+                          "href": "/case-management/v3/cases/F-CS-000000/attachments/0690f000001x4jt",
+                          "rel": "attachment"
+                        }
+                      ]
+                    },
+                    {
+                      "attachmentId": "0690f000001x4jp",
+                      "createdBy": "mrossi",
+                      "createdDate": "2020-10-01T04:00:00Z",
+                      "fileName": "metadata.xml",
+                      "fileType": "xml",
+                      "links": [
+                        {
+                          "href": "/case-management/v3/cases/F-CS-000000/attachments/0690f000001x4jp",
+                          "rel": "attachment"
+                        }
+                      ]
+                    }
+                  ],
+                  "links": [
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000/attachments?limit=2",
+                      "rel": "self"
+                    },
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000/attachments?limit=2&cursor=0690f000001y2ut",
+                      "rel": "next"
+                    },
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000",
+                      "rel": "case"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Provides details about attachments added to the case.",
+                  "type": "object",
+                  "properties": {
+                    "attachments": {
+                      "description": "Collects details about added attachments.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Attachment details.",
+                        "type": "object",
+                        "properties": {
+                          "attachmentId": {
+                            "description": "Identifier for the attachment.",
+                            "type": "string"
+                          },
+                          "createdBy": {
+                            "description": "Name of the creator of the attachment.",
+                            "type": "string"
+                          },
+                          "createdDate": {
+                            "description": "ISO 8601 timestamp indicating when the attachment was added.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "fileName": {
+                            "description": "Name of the attachment.",
+                            "type": "string"
+                          },
+                          "fileType": {
+                            "description": "Type of the attachment.",
+                            "type": "string"
+                          },
+                          "links": {
+                            "description": "Lists [navigable hypermedia links](https://techdocs.akamai.com/case-mgmt/reference/hypermedia) to resources.",
+                            "type": "array",
+                            "items": {
+                              "additionalProperties": false,
+                              "type": "object",
+                              "properties": {
+                                "href": {
+                                  "description": "Relative path to the resource.",
+                                  "type": "string"
+                                },
+                                "rel": {
+                                  "description": "Type of resource you can GET.",
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/hypermedia.yaml"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "links": {
+                      "description": "Lists [navigable hypermedia links](https://techdocs.akamai.com/case-mgmt/reference/hypermedia) to resources.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "href": {
+                            "description": "Relative path to the resource.",
+                            "type": "string"
+                          },
+                          "rel": {
+                            "description": "Type of resource you can GET.",
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/hypermedia.yaml"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/case-attachments-list-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-akamai": {
+          "supports-account-switch-key": false
+        },
+        "parameters": [
+          {
+            "description": "Data rows to fetch starting from the most recent. The maximum number of items is `200`, `50` by default.",
+            "example": "{{limit}}",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 50,
+              "example": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/limit-query.yaml"
+            }
+          },
+          {
+            "description": "Cursor value for pagination. It occurs only if there's a `next` page of the results.",
+            "example": "{{cursor}}",
+            "in": "query",
+            "name": "cursor",
+            "examples": {
+              "attachments": {
+                "summary": "Sample cursor value for navigating to the next set of paginated attachments",
+                "value": "0690f000001y2ut"
+              },
+              "cases": {
+                "summary": "Sample cursor value for navigating to the next set of paginated cases",
+                "value": "F-CS-0000002"
+              },
+              "comments": {
+                "summary": "Sample cursor value for navigating to the next set of paginated comments",
+                "value": "F-CS-0003"
+              }
+            },
+            "schema": {
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/cursor-query.yaml"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Identifier for each case. To get this value, run the [List cases](https://techdocs.akamai.com/case-mgmt/reference/get-cases) operation.",
+          "example": "{{caseId}}",
+          "in": "path",
+          "name": "caseId",
+          "required": true,
+          "schema": {
+            "example": "F-CS-000000",
+            "maxLength": 20,
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/caseId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/cases/{caseId}/attachments/status/{uploadId}": {
+      "get": {
+        "description": "Fetches the status for a specific attachment upload. Run this operation, to make sure that the upload was successful.",
+        "operationId": "get-attachment-upload-status",
+        "summary": "Get the status of an attachment upload",
+        "parameters": [],
+        "tags": [
+          "Case attachments"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Case Management API",
+          "url": "https://techdocs.akamai.com/case-mgmt/reference/get-attachment-upload-status"
+        },
+        "responses": {
+          "200": {
+            "description": "The response provides the upload status.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "attachmentId": "0690f000001x4jt",
+                  "fileName": "sample.txt",
+                  "uploadId": "F-AUS-000000",
+                  "uploadStatus": "UPLOADED",
+                  "uploadStatusMessage": "Attachment has been added to the case.",
+                  "links": [
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000/attachments/0690f000001x4jt",
+                      "rel": "attachment"
+                    },
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000",
+                      "rel": "case"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Provides details about the status of the attachment upload.",
+                  "type": "object",
+                  "properties": {
+                    "attachmentId": {
+                      "description": "Identifier for each attachment. This appears only for attachments with the `UPLOADED` status.",
+                      "type": "string"
+                    },
+                    "fileName": {
+                      "description": "Name of the attachment.",
+                      "type": "string"
+                    },
+                    "links": {
+                      "description": "Lists [navigable hypermedia links](https://techdocs.akamai.com/case-mgmt/reference/hypermedia) to resources.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "href": {
+                            "description": "Relative path to the resource.",
+                            "type": "string"
+                          },
+                          "rel": {
+                            "description": "Type of resource you can GET.",
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/hypermedia.yaml"
+                      }
+                    },
+                    "uploadId": {
+                      "description": "Identifier for each attachment upload request.",
+                      "type": "string"
+                    },
+                    "uploadStatus": {
+                      "description": "Status of the attachment upload. The possible options are `UPLOADING`, `UPLOADED`, or `FAILED`.",
+                      "type": "string",
+                      "enum": [
+                        "UPLOADING",
+                        "UPLOADED",
+                        "FAILED"
+                      ]
+                    },
+                    "uploadStatusMessage": {
+                      "description": "Detailed status of the attachment upload.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/case-attachment-upload-status-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
+      },
+      "parameters": [
+        {
+          "description": "Identifier for each case. To get this value, run the [List cases](https://techdocs.akamai.com/case-mgmt/reference/get-cases) operation.",
+          "example": "{{caseId}}",
+          "in": "path",
+          "name": "caseId",
+          "required": true,
+          "schema": {
+            "example": "F-CS-000000",
+            "maxLength": 20,
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/caseId-path.yaml"
+          }
+        },
+        {
+          "description": "Identifier for each attachment upload request.",
+          "example": "{{uploadId}}",
+          "in": "path",
+          "name": "uploadId",
+          "required": true,
+          "schema": {
+            "example": "F-AUS-000000",
+            "maxLength": 20,
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/uploadId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/cases/{caseId}/attachments/{attachmentId}": {
+      "get": {
+        "description": "Fetches a specific attachment from a specific case.",
+        "operationId": "get-attachment",
+        "summary": "Get an attached file",
+        "parameters": [],
+        "tags": [
+          "Case attachments"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Case Management API",
+          "url": "https://techdocs.akamai.com/case-mgmt/reference/get-attachment"
+        },
+        "responses": {
+          "200": {
+            "description": "The response contains attachment.",
+            "content": {
+              "application/octet-stream": {
+                "example": "This is a sample file.",
+                "schema": {
+                  "description": "Content of the attachment in the binary format.",
+                  "format": "binary",
+                  "maxLength": 2000000000,
+                  "type": "string",
+                  "x-akamai": {
+                    "file-path": "schemas/case-attachment-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
+      },
+      "parameters": [
+        {
+          "description": "Identifier for each case. To get this value, run the [List cases](https://techdocs.akamai.com/case-mgmt/reference/get-cases) operation.",
+          "example": "{{caseId}}",
+          "in": "path",
+          "name": "caseId",
+          "required": true,
+          "schema": {
+            "example": "F-CS-000000",
+            "maxLength": 20,
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/caseId-path.yaml"
+          }
+        },
+        {
+          "description": "Identifier for each attachment. To get this value, run the [List attached files](https://techdocs.akamai.com/case-mgmt/reference/get-attachments) operation.",
+          "example": "{{attachmentId}}",
+          "in": "path",
+          "name": "attachmentId",
+          "required": true,
+          "schema": {
+            "example": "0690f000001x4jt",
+            "maxLength": 20,
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/attachmentId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/cases/{caseId}/comments": {
+      "post": {
+        "description": "Adds a comment to a specific case. You can comment on tickets up to 14 days after they're closed.",
+        "operationId": "post-comments",
+        "summary": "Comment a case",
+        "parameters": [],
+        "tags": [
+          "Case comments"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Case Management API",
+          "url": "https://techdocs.akamai.com/case-mgmt/reference/post-comments"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "comment": "What is the latest Update on this Case?"
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Collects the comment you want to add to the case.",
+                "type": "object",
+                "required": [
+                  "comment"
+                ],
+                "properties": {
+                  "comment": {
+                    "description": "Your comment.",
+                    "example": "{{comment}}",
+                    "maxLength": 131072,
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/add-case-comment-request.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The response provides details of the comment.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "comment": "What is the latest update on this case?",
+                  "commentId": "F-CC-0000",
+                  "commentType": "WEB_UPDATE",
+                  "createdBy": "adevi",
+                  "createdDate": "2020-10-01T00:00:00Z",
+                  "links": [
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000",
+                      "rel": "case"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Collects details about the comment added to the case.",
+                  "type": "object",
+                  "properties": {
+                    "comment": {
+                      "description": "Comment content.",
+                      "type": "string"
+                    },
+                    "commentId": {
+                      "description": "Identifier for each case.",
+                      "type": "string"
+                    },
+                    "commentType": {
+                      "description": "Type of comment. The only supported value is `WEB_UPDATE`.",
+                      "type": "string",
+                      "enum": [
+                        "WEB_UPDATE"
+                      ]
+                    },
+                    "createdBy": {
+                      "description": "Name of the commenter.",
+                      "type": "string"
+                    },
+                    "createdDate": {
+                      "description": "ISO 8601 timestamp indicating when the comment was added.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "links": {
+                      "description": "Lists [navigable hypermedia links](https://techdocs.akamai.com/case-mgmt/reference/hypermedia) to resources.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "href": {
+                            "description": "Relative path to the resource.",
+                            "type": "string"
+                          },
+                          "rel": {
+                            "description": "Type of resource you can GET.",
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/hypermedia.yaml"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/add-case-comment-response.yaml"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Relative path to the newly created resource.",
+                "schema": {
+                  "example": "/case-management/v3/cases/F-CS-0000000",
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/Location.yaml"
+                }
+              }
+            }
+          }
+        },
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
+      },
+      "get": {
+        "description": "Fetches comments added to a specific case. You can set the `limit` parameter as the maximum number.",
+        "operationId": "get-comments",
+        "summary": "List comments",
+        "tags": [
+          "Case comments"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Case Management API",
+          "url": "https://techdocs.akamai.com/case-mgmt/reference/get-comments"
+        },
+        "responses": {
+          "200": {
+            "description": "The response returns case comments.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "comments": [
+                    {
+                      "comment": "Issue is resolved",
+                      "commentId": "F-CC-0005",
+                      "commentType": "WEB_UPDATE",
+                      "createdBy": "adevi",
+                      "createdDate": "2020-10-03T00:00:00Z",
+                      "links": []
+                    },
+                    {
+                      "comment": "<p>Any update on this case?</p><p><br></p><p>Thanks &amp; regards,</p><p>Ram</p>",
+                      "commentId": "F-CC-0004",
+                      "commentType": "WEB_UPDATE",
+                      "createdBy": "adevi",
+                      "createdDate": "2020-10-02T00:00:00Z",
+                      "links": []
+                    },
+                    {
+                      "comment": "File Uploaded: sample.txt",
+                      "commentId": "F-CC-0003",
+                      "commentType": "ATTACHMENT",
+                      "createdBy": "jperez",
+                      "createdDate": "2020-10-01T00:00:00Z",
+                      "links": [
+                        {
+                          "href": "/case-management/v3/cases/F-CS-000000/attachments/0690f000001x4jt",
+                          "rel": "attachment"
+                        }
+                      ]
+                    }
+                  ],
+                  "links": [
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000/comments?limit=3",
+                      "rel": "self"
+                    },
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000/comments?limit=3&cursor=F-CS-0002",
+                      "rel": "next"
+                    },
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000",
+                      "rel": "case"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Provides details about comments added to the case.",
+                  "type": "object",
+                  "properties": {
+                    "comments": {
+                      "description": "Collects details about added comments.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Comment details.",
+                        "type": "object",
+                        "properties": {
+                          "comment": {
+                            "description": "Comment content. Comments added in the Akamai Community are in the Rich Text format, so they may include HTML tags and entities here.",
+                            "type": "string"
+                          },
+                          "commentId": {
+                            "description": "Identifier for each comment.",
+                            "type": "string"
+                          },
+                          "commentType": {
+                            "description": "Type of the comment. The possible options are `EMAIL`, `ATTACHMENT`, or `WEB_UPDATE`.",
+                            "type": "string",
+                            "enum": [
+                              "EMAIL",
+                              "ATTACHMENT",
+                              "WEB_UPDATE"
+                            ]
+                          },
+                          "createdBy": {
+                            "description": "Name of the commenter.",
+                            "type": "string"
+                          },
+                          "createdDate": {
+                            "description": "ISO 8601 timestamp indicating when the comment was added.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "links": {
+                            "description": "Lists [navigable hypermedia links](https://techdocs.akamai.com/case-mgmt/reference/hypermedia) to resources.",
+                            "type": "array",
+                            "items": {
+                              "additionalProperties": false,
+                              "type": "object",
+                              "properties": {
+                                "href": {
+                                  "description": "Relative path to the resource.",
+                                  "type": "string"
+                                },
+                                "rel": {
+                                  "description": "Type of resource you can GET.",
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/hypermedia.yaml"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "links": {
+                      "description": "Lists [navigable hypermedia links](https://techdocs.akamai.com/case-mgmt/reference/hypermedia) to resources.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "href": {
+                            "description": "Relative path to the resource.",
+                            "type": "string"
+                          },
+                          "rel": {
+                            "description": "Type of resource you can GET.",
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/hypermedia.yaml"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/case-comments-list-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-akamai": {
+          "supports-account-switch-key": false
+        },
+        "parameters": [
+          {
+            "description": "Data rows to fetch starting from the most recent. The maximum number of items is `200`, `50` by default.",
+            "example": "{{limit}}",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 50,
+              "example": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/limit-query.yaml"
+            }
+          },
+          {
+            "description": "Cursor value for pagination. It occurs only if there's a `next` page of the results.",
+            "example": "{{cursor}}",
+            "in": "query",
+            "name": "cursor",
+            "examples": {
+              "attachments": {
+                "summary": "Sample cursor value for navigating to the next set of paginated attachments",
+                "value": "0690f000001y2ut"
+              },
+              "cases": {
+                "summary": "Sample cursor value for navigating to the next set of paginated cases",
+                "value": "F-CS-0000002"
+              },
+              "comments": {
+                "summary": "Sample cursor value for navigating to the next set of paginated comments",
+                "value": "F-CS-0003"
+              }
+            },
+            "schema": {
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/cursor-query.yaml"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Identifier for each case. To get this value, run the [List cases](https://techdocs.akamai.com/case-mgmt/reference/get-cases) operation.",
+          "example": "{{caseId}}",
+          "in": "path",
+          "name": "caseId",
+          "required": true,
+          "schema": {
+            "example": "F-CS-000000",
+            "maxLength": 20,
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/caseId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/cases/{caseId}/request-case-closure": {
+      "post": {
+        "description": "Sends a request to close a specific case.",
+        "operationId": "post-close",
+        "summary": "Close a case",
+        "parameters": [],
+        "tags": [
+          "Cases"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Case Management API",
+          "url": "https://techdocs.akamai.com/case-mgmt/reference/post-close"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "comment": "Please Close the case"
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Data needed to close the case.",
+                "type": "object",
+                "properties": {
+                  "comment": {
+                    "default": "Please close the case",
+                    "description": "Additional context for closing the case, `Please close the case` by default.",
+                    "example": "{{comment}}",
+                    "maxLength": 130000,
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/request-case-closure-request.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The response provides the request's details.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "comment": "Case Closure Request: Please close the case",
+                  "commentId": "F-CC-0000",
+                  "commentType": "WEB_UPDATE",
+                  "createdBy": "mrossi",
+                  "createdDate": "2020-10-01T00:00:00Z",
+                  "links": [
+                    {
+                      "href": "/case-management/v3/cases/F-CS-000000",
+                      "rel": "case"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Collects details about the comment added to the case.",
+                  "type": "object",
+                  "properties": {
+                    "comment": {
+                      "description": "Comment content.",
+                      "type": "string"
+                    },
+                    "commentId": {
+                      "description": "Identifier for each case.",
+                      "type": "string"
+                    },
+                    "commentType": {
+                      "description": "Type of comment. The only supported value is `WEB_UPDATE`.",
+                      "type": "string",
+                      "enum": [
+                        "WEB_UPDATE"
+                      ]
+                    },
+                    "createdBy": {
+                      "description": "Name of the commenter.",
+                      "type": "string"
+                    },
+                    "createdDate": {
+                      "description": "ISO 8601 timestamp indicating when the comment was added.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "links": {
+                      "description": "Lists [navigable hypermedia links](https://techdocs.akamai.com/case-mgmt/reference/hypermedia) to resources.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "href": {
+                            "description": "Relative path to the resource.",
+                            "type": "string"
+                          },
+                          "rel": {
+                            "description": "Type of resource you can GET.",
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/hypermedia.yaml"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/add-case-comment-response.yaml"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Relative path to the newly created resource.",
+                "schema": {
+                  "example": "/case-management/v3/cases/F-CS-0000000",
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/Location.yaml"
+                }
+              }
+            }
+          }
+        },
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
+      },
+      "parameters": [
+        {
+          "description": "Identifier for each case. To get this value, run the [List cases](https://techdocs.akamai.com/case-mgmt/reference/get-cases) operation.",
+          "example": "{{caseId}}",
+          "in": "path",
+          "name": "caseId",
+          "required": true,
+          "schema": {
+            "example": "F-CS-000000",
+            "maxLength": 20,
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/caseId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/categories/{categoryId}": {
+      "get": {
+        "description": "Returns data required to create a case for a specific case category. To learn more about available case categories, see [Categories of cases](https://techdocs.akamai.com/case-mgmt/docs/about-case-management#categories-of-cases).",
+        "operationId": "get-category",
+        "summary": "Get a case category",
+        "tags": [
+          "Case categories"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Case Management API",
+          "url": "https://techdocs.akamai.com/case-mgmt/reference/get-category"
+        },
+        "responses": {
+          "200": {
+            "description": "The response provides data necessary for creating a case.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "categoryId": "TECHNICAL",
+                  "categoryName": "Technical Support Issue",
+                  "description": "Get Akamai support on technical questions and break/fix issues you haven't been able to resolve through other tools or resources.",
+                  "areas": [],
+                  "parentAccounts": [],
+                  "policyDomains": [],
+                  "productSolutionNames": [],
+                  "psPackageNames": [],
+                  "account": {
+                    "accountId": "A-CCT7890",
+                    "accountName": "Main Street Corporation"
+                  },
+                  "products": [
+                    {
+                      "productName": "Akamai Connect",
+                      "problemNames": [
+                        "Connected-Cache",
+                        "Customer Enablement",
+                        "Device Provisioning",
+                        "Other",
+                        "Over-The-Top"
+                      ],
+                      "severities": [
+                        "4-Low Impact",
+                        "3-Moderate Impact",
+                        "2-Major Impact",
+                        "1-Critical Impact"
+                      ]
+                    },
+                    {
+                      "productName": "Aura Mgmt Center",
+                      "problemNames": [
+                        "Install Support",
+                        "Pre-Sales",
+                        "Problem Resolution",
+                        "Professional Services",
+                        "Upgrade Support"
+                      ],
+                      "severities": [
+                        "3-Minor",
+                        "2-Major",
+                        "1-Critical"
+                      ]
+                    },
+                    {
+                      "productName": "Ion Premier",
+                      "problemNames": [
+                        "Alerts",
+                        "Certificates",
+                        "Configuring/Managing Services",
+                        "DDoS Attack",
+                        "Diagnostic Tools"
+                      ],
+                      "severities": [
+                        "3-Low Impact",
+                        "2-Moderate Impact",
+                        "1-Major Impact"
+                      ]
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Collects details about a case category.",
+                  "type": "object",
+                  "properties": {
+                    "account": {
+                      "additionalProperties": false,
+                      "description": "Specifies the account you want to create the case for.",
+                      "type": "object",
+                      "properties": {
+                        "accountId": {
+                          "description": "Identifier for the account. ",
+                          "type": "string"
+                        },
+                        "accountName": {
+                          "description": "Name of the account.",
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "areas": {
+                      "description": "Lists available area and service names combinations. It's an empty array for any `categoryId` other than `BILLING` or `BUSINESS_SUPPORT`.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Available combination of area and service names.",
+                        "type": "object",
+                        "properties": {
+                          "areaName": {
+                            "description": "Name of the area.",
+                            "type": "string"
+                          },
+                          "serviceNames": {
+                            "description": "List of service names available for `areaName`.",
+                            "type": "array",
+                            "items": {
+                              "description": "Name of the service.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "categoryId": {
+                      "description": "Identifier for the category. The possible options are `SECURITY`, `BUSINESS_SUPPORT`, `PROFESSIONAL_SERVICES`, `BILLING`, or `TECHNICAL`.",
+                      "type": "string",
+                      "enum": [
+                        "SECURITY",
+                        "BUSINESS_SUPPORT",
+                        "PROFESSIONAL_SERVICES",
+                        "BILLING",
+                        "TECHNICAL"
+                      ]
+                    },
+                    "categoryName": {
+                      "description": "Name of the category.",
+                      "type": "string"
+                    },
+                    "description": {
+                      "description": "Overview of the category.",
+                      "type": "string"
+                    },
+                    "parentAccounts": {
+                      "description": "Lists available parent accounts you can create a case for. It's an empty array for any `categoryId` other than  `BILLING` or `BUSINESS_SUPPORT` and for `BILLING` or `BUSINESS_SUPPORT` cases associated with a direct contract.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Available parent accounts.",
+                        "type": "object",
+                        "properties": {
+                          "accountId": {
+                            "description": "Identifier for the parent account.",
+                            "type": "string"
+                          },
+                          "accountName": {
+                            "description": "Name of the parent account.",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "policyDomains": {
+                      "description": "Lists available policy domain, product, and problem combinations. It's an empty array for any `categoryId` other than `SECURITY`.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Available combination of policy domain, product, and problem.",
+                        "type": "object",
+                        "properties": {
+                          "policyDomainName": {
+                            "description": "Name of the policy domain.",
+                            "type": "string"
+                          },
+                          "products": {
+                            "description": "Lists products available for `policyDomainName`.",
+                            "type": "array",
+                            "items": {
+                              "additionalProperties": false,
+                              "description": "Available product.",
+                              "type": "object",
+                              "properties": {
+                                "problemNames": {
+                                  "description": "Lists problems available for `productName`.",
+                                  "type": "array",
+                                  "items": {
+                                    "description": "Available product problem.",
+                                    "type": "string"
+                                  }
+                                },
+                                "productName": {
+                                  "description": "Name of the product.",
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "productSolutionNames": {
+                      "description": "Lists available product solutions. It's an empty array for any `categoryId` other than `PROFESSIONAL_SERVICES`.",
+                      "type": "array",
+                      "items": {
+                        "description": "Name of the product solution.",
+                        "type": "string"
+                      }
+                    },
+                    "products": {
+                      "description": "Lists available product and problem names and severity level combinations. It's an empty array for any `categoryId` other than `TECHNICAL`.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Available combinations of product names, problem names, and severity levels.",
+                        "type": "object",
+                        "properties": {
+                          "problemNames": {
+                            "description": "Lists problem names available for `productName`.",
+                            "type": "array",
+                            "items": {
+                              "description": "Name of the problem.",
+                              "type": "string"
+                            }
+                          },
+                          "productName": {
+                            "description": "Name of the product.",
+                            "type": "string"
+                          },
+                          "severities": {
+                            "description": "Lists available severity levels available for the product. To learn more about them, see [Severity levels](https://techdocs.akamai.com/case-mgmt/docs/about-case-management#severity-levels).",
+                            "type": "array",
+                            "items": {
+                              "description": "Severity of the case.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "psPackageNames": {
+                      "description": "Lists available professional services packages. It's an empty array for any `categoryId` other than `PROFESSIONAL_SERVICES`.",
+                      "type": "array",
+                      "items": {
+                        "description": "Names of professional services packages.",
+                        "type": "string"
+                      }
+                    },
+                    "severities": {
+                      "description": "Lists severity levels available for the `SECURITY`, `BUSINESS_SUPPORT`, `PROFESSIONAL_SERVICES`, or `BILLING` case categories. To learn more, see [Severity levels](https://techdocs.akamai.com/case-mgmt/docs/about-case-management#severity-levels).",
+                      "type": "array",
+                      "items": {
+                        "description": "Severity of the case.",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/category-details-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-akamai": {
+          "supports-account-switch-key": false
+        },
+        "parameters": [
+          {
+            "description": "Identifier for an account you want to get the category details for. To get this value, run the [List available accounts](https://techdocs.akamai.com/case-mgmt/reference/get-accounts) operation. The default value identifies your current account.",
+            "example": "{{accountId}}",
+            "in": "query",
+            "name": "accountId",
+            "required": false,
+            "schema": {
+              "example": "A-CCT3456",
+              "maxLength": 20,
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/accountId-query.yaml"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "__Enum__ Identifier for a category you want to get the details for. To get the list of categories available for an account, run the [List available accounts](https://techdocs.akamai.com/case-mgmt/reference/get-accounts) operation. If you enter a category not available for the account, the operation returns a 404 error.",
+          "example": "{{categoryId}}",
+          "explode": false,
+          "in": "path",
+          "name": "categoryId",
+          "required": true,
+          "style": "simple",
+          "schema": {
+            "example": "TECHNICAL",
+            "type": "string",
+            "enum": [
+              "SECURITY",
+              "BUSINESS_SUPPORT",
+              "PROFESSIONAL_SERVICES",
+              "BILLING",
+              "TECHNICAL"
+            ]
+          },
+          "x-akamai": {
+            "file-path": "parameters/categoryId-path.yaml"
+          }
+        }
+      ]
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/case-management/v3"
+    }
+  ]
+}

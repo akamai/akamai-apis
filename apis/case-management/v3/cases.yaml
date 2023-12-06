@@ -1,0 +1,299 @@
+openapi: 3.0.0
+info:
+  title: Cases
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/case-management/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: cases.yaml
+paths:
+  /cases:
+    post:
+      operationId: post-cases
+      summary: Create a new case
+      tags:
+      - Cases
+      description: |
+        Creates a new case for the support team. Run the [Get a case category](ref:get-category) operation first to check what data you need for your case category and available options. Once you create the case, the support team responds based on the [service level agreement for initial response](doc:about-case-management#service-level-agreement-for-initial-response) or terms of your service agreement or contract.
+      x-akamai:
+        supports-account-switch-key: false
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/create-case.json
+            schema:
+              $ref: schemas/create-case-request.yaml
+      responses:
+        201:
+          description: |
+            The response provides the created case.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/create-case-response.json
+              schema:
+                $ref: schemas/case-details-response.yaml
+    get:
+      operationId: get-cases
+      summary: List cases
+      tags:
+      - Cases
+      description: |
+        Lists open or closed cases. You can filter the results to fetch only your cases or cases created by all users of your account. You can also limit the request to a specific number of cases or time period.
+      x-akamai:
+        supports-account-switch-key: false
+      parameters:
+      - $ref: parameters/type-query.yaml
+      - $ref: parameters/duration-query.yaml
+      - $ref: parameters/accountIds-query.yaml
+      - $ref: parameters/limit-query.yaml
+      - $ref: parameters/cursor-query.yaml
+      responses:
+        200:
+          description: |
+            The response lists cases.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-cases.json
+              schema:
+                $ref: schemas/cases-list-response.yaml
+  /cases/{caseId}:
+    parameters:
+    - $ref: parameters/caseId-path.yaml
+    get:
+      operationId: get-case
+      summary: Get a case
+      tags:
+      - Cases
+      description: |
+        Fetches details for a specific case.
+      x-akamai:
+        supports-account-switch-key: false
+      responses:
+        200:
+          description: |
+            The response provides the case details.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-case-details.json
+              schema:
+                $ref: schemas/case-details-response.yaml
+    patch:
+      operationId: patch-case
+      summary: Update contact details
+      tags:
+      - Cases
+      description: |
+        Updates the list of people to contact about the case. The alternate contact is the contact person if the case's creator is unavailable. The alternate contact and set of `alsoNotify` email addresses all receive notifications. Data provided in the body of this request replace the current contact details in the case.
+      x-akamai:
+        supports-account-switch-key: false
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/update-case-request.json
+            schema:
+              $ref: schemas/update-case-request.yaml
+      responses:
+        200:
+          description: |
+            The response provides the details of updated case.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-case-details.json
+              schema:
+                $ref: schemas/case-details-response.yaml
+  /cases/{caseId}/attachments:
+    parameters:
+    - $ref: parameters/caseId-path.yaml
+    post:
+      operationId: post-attachments
+      summary: Attach a file
+      tags:
+      - Case attachments
+      description: |
+        Attaches a file to a specific case. Each case can have up to ten attachments, up to 2GB each. The response includes `uploadId` necessary to [GET the status of an attachment upload](ref:get-attachment-upload-status).
+      x-akamai:
+        supports-account-switch-key: false
+      requestBody:
+        content:
+          multipart/form-data:
+            example:
+              $ref: examples/add-attachment
+            schema:
+              $ref: schemas/add-case-attachment-request.yaml
+      responses:
+        202:
+          description: |
+            Process successfully launched.
+          content:
+            application/json:
+              example:
+                $ref: examples/post-case-attachment.json
+              schema:
+                $ref: schemas/case-attachment-upload-status-response.yaml
+    get:
+      operationId: get-attachments
+      summary: List attached files
+      tags:
+      - Case attachments
+      description: |
+        Fetches attachments added to a specific case. Use the `limit` parameter to limit the number of attachments.
+      x-akamai:
+        supports-account-switch-key: false
+      parameters:
+      - $ref: parameters/limit-query.yaml
+      - $ref: parameters/cursor-query.yaml
+      responses:
+        200:
+          description: |
+            The response contains the attachment.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-case-attachments.json
+              schema:
+                $ref: schemas/case-attachments-list-response.yaml
+  /cases/{caseId}/attachments/status/{uploadId}:
+    parameters:
+    - $ref: parameters/caseId-path.yaml
+    - $ref: parameters/uploadId-path.yaml
+    get:
+      operationId: get-attachment-upload-status
+      summary: Get the status of an attachment upload
+      tags:
+      - Case attachments
+      description: |
+        Fetches the status for a specific attachment upload. Run this operation, to make sure that the upload was successful.
+      x-akamai:
+        supports-account-switch-key: false
+      responses:
+        200:
+          description: |
+            The response provides the upload status.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-case-attachment-upload-status.json
+              schema:
+                $ref: schemas/case-attachment-upload-status-response.yaml
+  /cases/{caseId}/attachments/{attachmentId}:
+    parameters:
+    - $ref: parameters/caseId-path.yaml
+    - $ref: parameters/attachmentId-path.yaml
+    get:
+      operationId: get-attachment
+      summary: Get an attached file
+      tags:
+      - Case attachments
+      description: |
+        Fetches a specific attachment from a specific case.
+      x-akamai:
+        supports-account-switch-key: false
+      responses:
+        200:
+          description: |
+            The response contains attachment.
+          content:
+            application/octet-stream:
+              example:
+                $ref: examples/get-attachment
+              schema:
+                $ref: schemas/case-attachment-response.yaml
+  /cases/{caseId}/comments:
+    parameters:
+    - $ref: parameters/caseId-path.yaml
+    post:
+      operationId: post-comments
+      summary: Comment a case
+      tags:
+      - Case comments
+      description: |
+        Adds a comment to a specific case. You can comment on tickets up to 14 days after they're closed.
+      x-akamai:
+        supports-account-switch-key: false
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/add-comments.json
+            schema:
+              $ref: schemas/add-case-comment-request.yaml
+      responses:
+        201:
+          description: |
+            The response provides details of the comment.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/post-case-comment.json
+              schema:
+                $ref: schemas/add-case-comment-response.yaml
+    get:
+      operationId: get-comments
+      summary: List comments
+      tags:
+      - Case comments
+      description: |
+        Fetches comments added to a specific case. You can set the `limit` parameter as the maximum number.
+      x-akamai:
+        supports-account-switch-key: false
+      parameters:
+      - $ref: parameters/limit-query.yaml
+      - $ref: parameters/cursor-query.yaml
+      responses:
+        200:
+          description: |
+            The response returns case comments.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-case-comments.json
+              schema:
+                $ref: schemas/case-comments-list-response.yaml
+  /cases/{caseId}/request-case-closure:
+    parameters:
+    - $ref: parameters/caseId-path.yaml
+    post:
+      operationId: post-close
+      summary: Close a case
+      tags:
+      - Cases
+      description: |
+        Sends a request to close a specific case.
+      x-akamai:
+        supports-account-switch-key: false
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/request-case-closure.json
+            schema:
+              $ref: schemas/request-case-closure-request.yaml
+      responses:
+        201:
+          description: |
+            The response provides the request's details.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/post-request-case-closure.json
+              schema:
+                $ref: schemas/add-case-comment-response.yaml

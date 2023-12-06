@@ -1,0 +1,38 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Events
+  version: v1
+servers:
+- url: https://{hostname}/event-viewer-api/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: events.yaml
+paths:
+  /events:
+    get:
+      operationId: get-events
+      summary: List events
+      tags:
+      - Events
+      description: |
+        Returns each user account's portal-visible events stored in the Event Logger system. Each page of results lists 50 events. You can move between pages using the `afterEventId` and `beforeEventId` query parameters, or follow the relevant hypermedia link at the bottom of each page.
+      parameters:
+      - $ref: parameters/eventTypeId-query.yaml
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      - $ref: parameters/afterEventId-query.yaml
+      - $ref: parameters/beforeEventId-query.yaml
+      - $ref: parameters/username-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/events-200.json
+              schema:
+                $ref: schemas/events-200.yaml

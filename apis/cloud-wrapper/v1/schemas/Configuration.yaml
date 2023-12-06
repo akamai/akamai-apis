@@ -1,0 +1,104 @@
+type: object
+description: |-
+  Encompasses the Cloud Wrapper configuration.
+  
+x-akamai:
+  file-path: schemas/Configuration.yaml
+additionalProperties: false
+required:
+- comments
+- contractId
+- locations
+- configName
+- propertyIds
+properties:
+  capacityAlertsThreshold:
+    type: integer
+    description: |
+      Represents the threshold for sending alerts.
+    nullable: true
+    format: int64
+    minimum: 50
+    maximum: 100
+  comments:
+    type: string
+    description: |
+      Additional information provided by user which can help to differentiate or track changes of the configuration.
+    minLength: 1
+    maxLength: 255
+  configId:
+    type: integer
+    description: |
+      The unique ID that Akamai generated for your Cloud Wrapper configuration.
+  configName:
+    type: string
+    description: |
+      The name of the configuration (property) you've set up to deliver your content. This is the `propertyName` you set when you [create](https://techdocs.akamai.com/property-mgr/reference/post-properties) the property.
+  contractId:
+    type: string
+    description: |
+      Contract ID with Cloud Wrapper entitlement.
+    minLength: 0
+    maxLength: 20
+    pattern: ^[A-Za-z0-9-_.]*$
+  lastActivatedBy:
+    type: string
+    description: |
+      User to last activate the configuration.
+  lastActivatedDate:
+    type: string
+    description: |
+      The last time you successfully activated the configuration, in ISO 8601 format.
+    format: date-time
+  lastUpdatedBy:
+    type: string
+    description: |
+      User to last modify the configuration.
+  lastUpdatedDate:
+    type: string
+    description: |
+      The last time you edited the configuration, in ISO 8601 format.
+    format: date-time
+  locations:
+    type: array
+    description: |
+      The [list of locations](ref:get-locations) you've applied in the configuration. Any locations you include need to have Cloud Wrapper capacity pre-approved on the contract you've selected.
+    minItems: 1
+    items:
+      $ref: ../schemas/ResponseConfigLocation.yaml
+  multiCdnSettings:
+    description: |
+      Specify details about the Multi CDN settings.
+    $ref: ../schemas/ConfigMultiCdnSettingsResponse.yaml
+  notificationEmails:
+    type: array
+    description: |
+      Email addresses to receive notifications.
+    minItems: 0
+    items:
+      type: string
+      format: email
+  propertyIds:
+    type: array
+    description: |
+      List of [properties](ref:concepts) belonging to eligible delivery products.
+    minItems: 1
+    items:
+      type: string
+      minLength: 1
+      maxLength: 1000000000
+  retainIdleObjects:
+    type: boolean
+    description: |
+      Retain idle objects beyond their max idle lifetime.
+    default: false
+  status:
+    type: string
+    description: |
+      Current provisioning state of the configuration, either `SAVED`, `IN_PROGRESS`, `ACTIVE`, `DELETE_IN_PROGRESS`, or `FAILED`.
+    enum:
+    - SAVED
+    - IN_PROGRESS
+    - ACTIVE
+    - DELETE_IN_PROGRESS
+    - FAILED

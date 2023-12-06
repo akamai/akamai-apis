@@ -1,0 +1,75 @@
+type: object
+x-akamai:
+  file-path: schemas/routing-rule.yaml
+additionalProperties: false
+required:
+- name
+- origin
+- forwardPath
+- conditions
+properties:
+  name:
+    type: string
+    description: |
+      A unique identifier for the rule.
+  description:
+    type: string
+    description: |
+      Descriptive text for the rule.
+    nullable: true
+  conditions:
+    type: array
+    description: |
+      A set of criteria that determines the action the API takes when an incoming request for an endpoint meets the criteria.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          description: |
+            Specifies the query string value to match. Use `RESOURCE` to match on a resource like JSON or XML. Use `METHOD` to match on the request method in the request header. Use `HOSTNAME` to match on the hostname in the request's incoming `Host` header.
+          enum:
+          - RESOURCE
+          - METHOD
+          - HOSTNAME
+        value:
+          description: |
+            Specifies the string you're trying to match. For flexible URL path matching, use `*` and `?`.
+          oneOf:
+          - title: String
+            type: string
+          - title: Number
+            type: number
+        operator:
+          type: string
+          description: |
+            Compares the incoming request to the `type` and `value` members. The only value currently available is `IS`.
+          enum:
+          - IS
+  customForwardPath:
+    type: string
+    description: |
+      Specifies the request's new forward path when the `forwardPath` value is `CUSTOM_PATH`.
+    nullable: true
+  forwardHostHeader:
+    type: string
+    description: |
+      Specifies the request's new host header.
+    nullable: true
+  forwardPath:
+    type: string
+    description: |
+      Specifies the request's forward path mode, either `CUSTOM_PATH` or `DEFAULT_PATH`.
+    enum:
+    - DEFAULT_PATH
+    - CUSTOM_PATH
+  forwardPort:
+    type: number
+    description: |
+      Specifies the request's new port number.
+    nullable: true
+  origin:
+    type: string
+    description: |
+      Specifies the request's new origin server destination.

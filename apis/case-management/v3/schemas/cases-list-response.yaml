@@ -1,0 +1,123 @@
+type: object
+description: |-
+  Contains the list of cases matching the set filters.
+  
+x-akamai:
+  file-path: schemas/cases-list-response.yaml
+additionalProperties: false
+properties:
+  cases:
+    type: array
+    description: |
+      Lists overview of requested cases.
+    items:
+      type: object
+      description: |
+        Case details.
+      additionalProperties: false
+      required:
+      - account
+      - category
+      - contact
+      properties:
+        account:
+          type: object
+          description: |
+            Specifies the account the case was created for.
+          additionalProperties: false
+          properties:
+            accountId:
+              type: string
+              description: |
+                Identifier for the account.
+              minLength: 1
+            accountName:
+              type: string
+              description: |
+                Name of the account.
+              minLength: 1
+        caseId:
+          type: string
+          description: |
+            Identifier for each case.
+          minLength: 1
+        category:
+          type: object
+          description: |
+            Specifies the case category.
+          additionalProperties: false
+          properties:
+            categoryId:
+              type: string
+              description: |
+                Identifier for the case category. The possible options are `SECURITY`, `BUSINESS_SUPPORT`, `PROFESSIONAL_SERVICES`, `BILLING`, or `TECHNICAL`.
+              enum:
+                $ref: categoryId-enum.yaml
+              minLength: 1
+            categoryName:
+              type: string
+              description: |
+                Name of the case category.
+              minLength: 1
+        contact:
+          type: object
+          description: |
+            Collects data about the case's creator.
+          additionalProperties: false
+          properties:
+            name:
+              type: string
+              description: |
+                Full name.
+              minLength: 1
+            company:
+              type: string
+              description: |
+                Name of the company the user works for. It's `null` if the creator didn't provide this data in the request.
+              nullable: true
+            email:
+              type: string
+              description: |
+                Email address.
+              format: email
+            phone:
+              type: string
+              description: |
+                Phone number. It's `null` if the creator didn't provide this data in the request.
+              nullable: true
+        createdDate:
+          type: string
+          description: |
+            ISO 8601 timestamp indicating when the case was created.
+          format: date-time
+        links:
+          $ref: hypermedia.yaml
+        policyDomainName:
+          type: string
+          description: |
+            Name of the policy domain the case refers to. It's `null` for any `categoryId` other than `SECURITY`.
+          nullable: true
+        severity:
+          type: string
+          description: |
+            Severity level of the case. To learn more about severity levels for different cases, see [Severity levels](doc:about-case-management#severity-levels).
+          minLength: 1
+        status:
+          type: string
+          description: |
+            Current status of the case. The possible options are `CREATED`, `ASSIGNED`, `IN_PROGRESS`, `MITIGATED/SOLVED`, or `CLOSED`.
+          enum:
+            $ref: status-enum.yaml
+          minLength: 1
+        subject:
+          type: string
+          description: |
+            Title of the case.
+          minLength: 1
+        updatedDate:
+          type: string
+          description: |
+            ISO 8601 timestamp indicating when the case was last modified.
+          format: date-time
+  links:
+    $ref: hypermedia.yaml

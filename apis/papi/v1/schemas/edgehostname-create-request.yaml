@@ -1,0 +1,85 @@
+id: resource:/descriptors/papi/v1/schemas/CreateNewEdgeHostnameRequestV0.json#
+javaType: com.akamai.luna.papi.model.EdgeHostnameCreateRequest
+type: object
+description: |-
+  Specifies a set of available hostnames a property version may use. To POST a new edge hostname, specify a single object with `productId`, `domainPrefix`, and `domainSuffix` members, and optional `ipVersionBehavior` and `secure` members. Relevant response objects appear within the outer envelope's `edgehostnames.items` array.
+  
+x-akamai:
+  file-path: schemas/edgehostname-create-request.yaml
+required:
+- productId
+- domainPrefix
+- domainSuffix
+- ipVersionBehavior
+properties:
+  certEnrollmentId:
+    type: integer
+    description: |
+      When creating an Enhanced TLS edge hostname, this sets the certificate enrollment ID. Specify this on POST, with `secureNetwork` set to `ENHANCED_TLS`. To obtain a value programmatically, run the Certificate Provisioning System API's [List enrollments](https://techdocs.akamai.com/cps/reference/get-enrollments) operation. Choose the appropriate enrollment, strip the leading path expression from its `location` member, and use that value as the `certEnrollmentId`.
+    minimum: 1
+  domainPrefix:
+    type: string
+    description: |
+      The origin domain portion of the edge hostname. An edge hostname consists of a customer-specific `namePrefix` such as `www.example.com` and an Akamai-specific `domainSuffix` such as `edgesuite.net`. The edge hostname's final DNS CNAME combines the two, for example, `www.example.com.edgesuite.net`.
+  domainSuffix:
+    type: string
+    description: |
+      The Akamai-specific portion of the edge hostname, for example, `edgesuite.net`.
+  ipVersionBehavior:
+    type: string
+    description: |
+      Which version of the IP protocol to use: `IPV4` for version 4 only, or `IPV6_COMPLIANCE` for both 4 and 6. The default value for requests is `IPV4`.
+    default: IPV4
+    enum:
+    - IPV4
+    - IPV6_COMPLIANCE
+  productId:
+    type: string
+    description: |
+      The product you created the edge hostname for. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prd_` prefix.
+  secure:
+    type: boolean
+    description: |
+      Whether to use the edge hostname with SSL. Defaults to `false` for POST requests. Enabling this option for new edge hostnames isn't supported.
+    default: false
+  secureNetwork:
+    type: string
+    description: |
+      On POST, specifies the type of security for the new edge hostname. With `STANDARD_TLS` specified, specify a `domainSuffix` of `edgesuite.net`. With `SHARED_CERT` specified, specify a `domainSuffix` of `akamaized.net`. With `ENHANCED_TLS` specified, you need to specify a `certEnrollmentId` value along with a `domainSuffix` of `edgekey.net`.
+    enum:
+    - ENHANCED_TLS
+    - STANDARD_TLS
+    - SHARED_CERT
+  slotNumber:
+    type: integer
+    description: |
+      On POST, sets the slot number for secure ESSL properties.
+    minimum: 1
+  useCases:
+    type: array
+    description: |
+      Optionally when configuring a new edge hostname, this assigns a preset _use case_ that characterizes the type of traffic served. Use cases optimize deployment over the Akamai edge network. To gather values to add to this object, run the [List use cases](ref:get-product-mapping-use-cases) operation.
+    minItems: 0
+    maxItems: 2
+    items:
+      type: object
+      required:
+      - useCase
+      - option
+      - type
+      properties:
+        type:
+          type: string
+          description: |
+            Identifies the type of network over which traffic deploys. The only value currently available is `GLOBAL`. Use this to specify the same member name available in the use case response object.
+          enum:
+          - GLOBAL
+        option:
+          type: string
+          description: |
+            Specifies one of the available `options` available in the response object.
+        useCase:
+          type: string
+          description: |
+            Identifies each mapping use case scenario. Use this to specify the same member name available in the use case response object.
+$schema: http://json-schema.org/draft-04-schema#

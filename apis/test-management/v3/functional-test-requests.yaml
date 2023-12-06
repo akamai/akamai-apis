@@ -1,0 +1,33 @@
+openapi: 3.0.0
+info:
+  title: 'Functional testing: test requests'
+  version: v3
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/test-management/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: functional-test-requests.yaml
+paths:
+  /functional/test-requests:
+    get:
+      operationId: get-test-requests
+      summary: Get the test requests
+      tags:
+      - Test requests
+      description: |
+        Lists test requests created in your organization. The list can also include deleted test requests that you can restore. The response is an array of objects, each keyed by `testRequestId`.
+      responses:
+        200:
+          description: |
+            The response lists test requests.
+          content:
+            application/json:
+              example:
+                $ref: examples/test-requests-get-200.json
+              schema:
+                $ref: schemas/test-requests.yaml
+        403:
+          $ref: errors/403.yaml

@@ -1,0 +1,80 @@
+type: object
+description: |-
+  Represents the results of availability testing for the specified date range.
+  
+x-akamai:
+  file-path: schemas/schema-get-availability-reports-200.yaml
+additionalProperties: false
+required:
+- estimatedAvailabilityPercentage
+- originTestErrors
+- akamaiTestErrors
+properties:
+  akamaiTestErrors:
+    type: array
+    description: |
+      Instances of the CDN test that reported failures.
+    minItems: 1
+    uniqueItems: true
+    items:
+      type: object
+      description: |
+        This object is referenced by both the `originTestErrors` and `akamaiTestErrors` members.
+      additionalProperties: false
+      required:
+      - agentName
+      - agentIp
+      - time
+      properties:
+        agentIp:
+          type: string
+          description: |
+            The IP address of the agent.
+          minLength: 1
+        agentName:
+          type: string
+          description: |
+            The geographical location of the agent used in an origin or CDN availability test that failed.
+          minLength: 1
+        time:
+          type: string
+          description: |
+            Time the error occurred, in ISO-8601 UTC format.
+          minLength: 1
+  estimatedAvailabilityPercentage:
+    type: number
+    description: |
+      Estimated time range for which no potential outage was detected, expressed as a decimal range from 0 to 1.
+    minimum: 0
+    maximum: 1
+  originTestErrors:
+    type: array
+    description: |
+      Instances of the origin test that reported failures.
+    minItems: 1
+    uniqueItems: true
+    items:
+      type: object
+      description: |
+        This object is referenced by both the `originTestErrors` and `akamaiTestErrors` members.
+      additionalProperties: false
+      required:
+      - agentName
+      - agentIp
+      - time
+      properties:
+        agentIp:
+          type: string
+          description: |
+            The IP address of the agent.
+          minLength: 1
+        agentName:
+          type: string
+          description: |
+            The geographical location of the agent used in an origin or CDN availability test that failed.
+          minLength: 1
+        time:
+          type: string
+          description: |
+            Time the error occurred, in ISO-8601 UTC format.
+          minLength: 1

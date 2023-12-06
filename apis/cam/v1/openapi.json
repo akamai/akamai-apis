@@ -1,0 +1,2826 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Cloud Access Manager API",
+    "url": "https://techdocs.akamai.com/cloud-access-mgr/reference"
+  },
+  "info": {
+    "title": "Akamai: Cloud Access Manager API",
+    "version": "1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/access-key-create-requests/{requestId}": {
+      "get": {
+        "description": "Returns the current status and other details for a request to create a new access key.",
+        "operationId": "get-access-key-create-request",
+        "summary": "Get the status of an access key",
+        "tags": [
+          "Access key creation status"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Cloud Access Manager API",
+          "url": "https://techdocs.akamai.com/cloud-access-mgr/reference/get-access-key-create-request"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "processingStatus": "IN_PROGRESS",
+                  "requestDate": "2021-02-26T13:34:36.715643Z",
+                  "requestId": 56546,
+                  "requestedBy": "jkowalski",
+                  "accessKey": {
+                    "accessKeyUid": 12345,
+                    "link": "/cam/v1/access-keys/12345"
+                  },
+                  "accessKeyVersion": {
+                    "accessKeyUid": 12345,
+                    "link": "/cam/v1/access-keys/12345/versions/1",
+                    "version": 1
+                  },
+                  "request": {
+                    "accessKeyName": "Sales-s3",
+                    "authenticationMethod": "AWS4_HMAC_SHA256",
+                    "contractId": "K-0N7RAK71",
+                    "groupId": 15225,
+                    "networkConfiguration": {
+                      "additionalCdn": "RUSSIA_CDN",
+                      "securityNetwork": "ENHANCED_TLS"
+                    }
+                  }
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Status information for requests to create an access key.",
+                  "type": "object",
+                  "required": [
+                    "accessKey",
+                    "accessKeyVersion",
+                    "request",
+                    "requestId",
+                    "requestDate",
+                    "requestedBy",
+                    "processingStatus"
+                  ],
+                  "properties": {
+                    "accessKey": {
+                      "additionalProperties": false,
+                      "description": "A hypermedia link for an access key.",
+                      "nullable": true,
+                      "type": "object",
+                      "required": [
+                        "accessKeyUid",
+                        "link"
+                      ],
+                      "properties": {
+                        "accessKeyUid": {
+                          "description": "Uniquely identifies the access key for use in keying resources within this API.",
+                          "type": "integer"
+                        },
+                        "link": {
+                          "description": "An [API hypermedia](https://techdocs.akamai.com/cloud-access-mgr/docs/hypermedia) link to the access key associated with the request.",
+                          "type": "string"
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/access-key-link.yaml"
+                      }
+                    },
+                    "accessKeyVersion": {
+                      "additionalProperties": false,
+                      "description": "Specific details for a version of an access key.",
+                      "type": "object",
+                      "required": [
+                        "accessKeyUid",
+                        "link",
+                        "version"
+                      ],
+                      "properties": {
+                        "accessKeyUid": {
+                          "description": "Uniquely identifies the access key for use in keying resources within this API.",
+                          "type": "integer"
+                        },
+                        "link": {
+                          "description": "An [API hypermedia](https://techdocs.akamai.com/cloud-access-mgr/reference/hypermedia) link to the version of the access key associated with the request.",
+                          "type": "string"
+                        },
+                        "version": {
+                          "description": "The version of the access key.",
+                          "type": "integer"
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/access-key-version-link.yaml"
+                      }
+                    },
+                    "processingStatus": {
+                      "description": "The current status of a request to create a new access key. `IN_PROGRESS` for requests that are processing and `DONE` for complete. If a result of `FAILED` is shown, retry the [create](https://techdocs.akamai.com/cloud-access-mgr/reference/post-access-key) request and verify you've properly formatted the POST object.",
+                      "type": "string",
+                      "enum": [
+                        "DONE",
+                        "FAILED",
+                        "IN_PROGRESS"
+                      ]
+                    },
+                    "request": {
+                      "additionalProperties": false,
+                      "description": "Information about a request to create an access key.",
+                      "type": "object",
+                      "required": [
+                        "authenticationMethod",
+                        "contractId",
+                        "groupId",
+                        "accessKeyName",
+                        "networkConfiguration"
+                      ],
+                      "properties": {
+                        "accessKeyName": {
+                          "description": "The user defined in `createdBy` set this as the unique name for the access key.",
+                          "maxLength": 50,
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "authenticationMethod": {
+                          "description": "The type of signing process used to authenticate API requests: `AWS4_HMAC_SHA256` for Amazon Web Services or `GOOG4_HMAC_SHA256` for Google Cloud Services in interoperability mode.",
+                          "type": "string",
+                          "enum": [
+                            "AWS4_HMAC_SHA256",
+                            "GOOG4_HMAC_SHA256"
+                          ]
+                        },
+                        "contractId": {
+                          "description": "Uniquely identifies the contract assigned when creating the access key.",
+                          "maxLength": 20,
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "groupId": {
+                          "description": "Uniquely identifies the group assigned when creating the access key.",
+                          "type": "integer"
+                        },
+                        "networkConfiguration": {
+                          "additionalProperties": false,
+                          "description": "The API deploys the access key to this secure network.",
+                          "type": "object",
+                          "required": [
+                            "additionalCdn",
+                            "securityNetwork"
+                          ],
+                          "properties": {
+                            "additionalCdn": {
+                              "description": "You can deploy the access key to these additional networks. Use `CHINA_CDN` to make the access key available in Akamai's China CDN. Use `RUSSIA_CDN` to make the access key available in Akamai's Russia CDN. `null` indicates no CDN has been selected. If the `securityNetwork` is `STANDARD_TLS`, RUSSIA_CDN is included by default. If it's `ENHANCED_TLS`, each network needs to be added manually to access these CDNs.",
+                              "nullable": true,
+                              "type": "string",
+                              "enum": [
+                                "CHINA_CDN",
+                                "RUSSIA_CDN"
+                              ]
+                            },
+                            "securityNetwork": {
+                              "description": "The API deploys the access key to this secure network. `STANDARD_TLS` deploys the access key to Akamai's standard secure network, which is [non-PCI compliant](https://techdocs.akamai.com/cloud-access-mgr/docs/concepts). `Enhanced TLS` deploys the access key to Akamai's enhanced secure network which is [PCI compliant](https://techdocs.akamai.com/cloud-access-mgr/docs/concepts).",
+                              "type": "string",
+                              "enum": [
+                                "ENHANCED_TLS",
+                                "STANDARD_TLS"
+                              ]
+                            }
+                          },
+                          "x-akamai": {
+                            "file-path": "schemas/network-configuration.yaml"
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/access-key-create-request-preview.yaml"
+                      }
+                    },
+                    "requestDate": {
+                      "description": "The time the access key create request was submitted, in [ISO 8601](https://www.w3.org/TR/NOTE-datetime) format.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "The unique identifier assigned to the access key request.",
+                      "type": "integer"
+                    },
+                    "requestedBy": {
+                      "description": "The username of the person who submitted the request.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/access-key-create-request-state-get-200.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "A request to create an access key using the given `id` doesn't exist.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Access key create request with id '1008' does not exist.",
+                  "id": 1008,
+                  "instance": "f6296041-955d-475c-90c4-d60097f404d2",
+                  "status": 404,
+                  "title": "Domain Error",
+                  "type": "/cam/error-types/access-key-create-request-does-not-exist"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for json+problem response.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "description": "A further-nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Identifies each status request.",
+          "example": "{{requestId}}",
+          "in": "path",
+          "name": "requestId",
+          "required": true,
+          "schema": {
+            "example": 1007,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/requestId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/access-key-version-create-requests/{requestId}": {
+      "get": {
+        "description": "Returns the current status and other details for a request to create a new access key version.",
+        "operationId": "get-access-key-version-create-request",
+        "summary": "Get the status of an access key version",
+        "tags": [
+          "Access key version status requests"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Cloud Access Manager API",
+          "url": "https://techdocs.akamai.com/cloud-access-mgr/reference/get-access-key-version-create-request"
+        },
+        "responses": {
+          "200": {
+            "description": "The response details the status of a request to create a new version of an access key.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "processingStatus": "IN_PROGRESS",
+                  "requestDate": "2021-02-26T14:54:38.622074Z",
+                  "requestedBy": "tyamada",
+                  "accessKeyVersion": {
+                    "accessKeyUid": 12345,
+                    "link": "/cam/v1/access-keys/12345/versions/2",
+                    "version": 2
+                  }
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Status information for requests to create a new version of an access key.",
+                  "type": "object",
+                  "required": [
+                    "accessKeyVersion",
+                    "requestedBy",
+                    "processingStatus",
+                    "requestDate"
+                  ],
+                  "properties": {
+                    "accessKeyVersion": {
+                      "additionalProperties": false,
+                      "description": "A hypermedia link for an access key version.",
+                      "nullable": true,
+                      "type": "object",
+                      "required": [
+                        "accessKeyUid",
+                        "link",
+                        "version"
+                      ],
+                      "properties": {
+                        "accessKeyUid": {
+                          "description": "Uniquely identifies the access key for use in keying resources within this API.",
+                          "type": "integer"
+                        },
+                        "link": {
+                          "description": "An [API hypermedia](https://techdocs.akamai.com/cloud-access-mgr/reference/hypermedia) link to the version of the access key associated with the request.",
+                          "type": "string"
+                        },
+                        "version": {
+                          "description": "The version of the access key.",
+                          "type": "integer"
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/access-key-version-link.yaml"
+                      }
+                    },
+                    "processingStatus": {
+                      "description": "The current status of a request to create a new version of an access key. `IN_PROGRESS` for requests that are processing and `DONE` for complete. If a result of `FAILED` is shown, retry the [create](https://techdocs.akamai.com/cloud-access-mgr/reference/post-access-key-version) request and verify you've properly formatted your POST object.",
+                      "type": "string",
+                      "enum": [
+                        "DONE",
+                        "FAILED",
+                        "IN_PROGRESS"
+                      ]
+                    },
+                    "requestDate": {
+                      "description": "The time the create request was submitted, in [ISO 8601](https://www.w3.org/TR/NOTE-datetime) format.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "requestedBy": {
+                      "description": "The username of the person who submitted the request.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/access-key-version-create-request-state-get-200.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "A request to create an access key version using the given `id` doesn't exist.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Access key version create request with ID '7777' does not exist.",
+                  "id": 7777,
+                  "instance": "34c11c73-331d-41c5-a875-a6ee7f260192",
+                  "status": 404,
+                  "title": "Domain Error",
+                  "type": "/cam/error-types/access-key-version-create-request-does-not-exist"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for json+problem response.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "description": "A further-nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Identifies each status request.",
+          "example": "{{requestId}}",
+          "in": "path",
+          "name": "requestId",
+          "required": true,
+          "schema": {
+            "example": 1007,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/requestId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/access-keys": {
+      "post": {
+        "description": "Creates a new access key. An access key's name needs to be unique within a user account. Once an access key has been created, it's available on both the staging and production Akamai networks.",
+        "operationId": "post-access-key",
+        "summary": "Create an access key",
+        "tags": [
+          "Access keys"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Cloud Access Manager API",
+          "url": "https://techdocs.akamai.com/cloud-access-mgr/reference/post-access-key"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "accessKeyName": "Sales-s3",
+                "authenticationMethod": "AWS4_HMAC_SHA256",
+                "contractId": "C-0N7RAC7",
+                "groupId": 10725,
+                "credentials": {
+                  "cloudAccessKeyId": "AKAMAICAMKEYID1EXAMPLE",
+                  "cloudSecretAccessKey": "cDblrAMtnIAxN/g7dF/bAxLfiANAXAMPLEKEY"
+                },
+                "networkConfiguration": {
+                  "additionalCdn": "RUSSIA_CDN",
+                  "securityNetwork": "ENHANCED_TLS"
+                }
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Contains information that you need to provide when posting a new access key.",
+                "type": "object",
+                "required": [
+                  "authenticationMethod",
+                  "contractId",
+                  "credentials",
+                  "groupId",
+                  "accessKeyName",
+                  "networkConfiguration"
+                ],
+                "properties": {
+                  "accessKeyName": {
+                    "description": "The descriptive name for an access key. This value needs to be unique for each access key.",
+                    "example": "{{accessKeyName}}",
+                    "maxLength": 50,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "authenticationMethod": {
+                    "description": "The type of cloud provider signing process used to authenticate API requests. Use `AWS4_HMAC_SHA256` for Amazon Web Services or `GOOG4_HMAC_SHA256` for Google Cloud Services in interoperability mode.",
+                    "example": "{{authenticationMethod}}",
+                    "type": "string",
+                    "enum": [
+                      "AWS4_HMAC_SHA256",
+                      "GOOG4_HMAC_SHA256"
+                    ]
+                  },
+                  "contractId": {
+                    "description": "The unique identifier for the contract assigned to the access key.",
+                    "example": "{{contractId}}",
+                    "maxLength": 20,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "credentials": {
+                    "additionalProperties": false,
+                    "description": "The combination of a `cloudAccessKeyId` and a `cloudSecretAccessKey` used to sign API requests.",
+                    "type": "object",
+                    "required": [
+                      "cloudAccessKeyId",
+                      "cloudSecretAccessKey"
+                    ],
+                    "properties": {
+                      "cloudAccessKeyId": {
+                        "description": "A unique identifier that's combined with the `cloudSecretAccessKey` to sign API requests. This is the [access key ID (AWS) or access ID (GCS)](https://techdocs.akamai.com/cloud-access-mgr/reference/get-auth-details) you get from your cloud provider.",
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "cloudSecretAccessKey": {
+                        "description": "A value that's combined with the `cloudAccessKeyId` to sign API requests. This is the [secret access key (AWS) or secret (GCS)](https://techdocs.akamai.com/cloud-access-mgr/reference/get-auth-details) you get from your cloud provider.",
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/access-key-credentials-post.yaml"
+                    }
+                  },
+                  "groupId": {
+                    "description": "The unique identifier assigned to the access control [group](https://techdocs.akamai.com/cloud-access-mgr/docs/concepts) assigned to the access key.",
+                    "example": "{{groupId}}",
+                    "type": "integer"
+                  },
+                  "networkConfiguration": {
+                    "additionalProperties": false,
+                    "description": "The secure networks that you assigned the access key to during creation.",
+                    "type": "object",
+                    "required": [
+                      "securityNetwork"
+                    ],
+                    "properties": {
+                      "additionalCdn": {
+                        "description": "Additional type of the deployment network that the access key will be deployed to. Include `CHINA_CDN` to make the access key available in Akamai's China CDN. Include `RUSSIA_CDN` to make the access key available in Akamai's Russia CDN. If you're using a Standard TLS certificate for security, RUSSIA_CDN is included by default, so you don't need to include it here. If you're using an Enhanced TLS certificate, you'll need to include both to access these CDNs.",
+                        "type": "string",
+                        "enum": [
+                          "CHINA_CDN",
+                          "RUSSIA_CDN"
+                        ]
+                      },
+                      "securityNetwork": {
+                        "description": "The API deploys the access key to this secure network. `STANDARD_TLS` deploys the access key to Akamai's standard secure network. This is [non-PCI compliant](https://techdocs.akamai.com/cloud-access-mgr/docs/concepts). `ENHANCED_TLS` deploys the access key to Akamai's more secure network which is [PCI compliant](https://techdocs.akamai.com/cloud-access-mgr/docs/concepts).",
+                        "type": "string",
+                        "enum": [
+                          "ENHANCED_TLS",
+                          "STANDARD_TLS"
+                        ]
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/network-configuration-request.yaml"
+                    }
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/access-key-post.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "The response contains the `requestId` assigned to the request to create a new access key. It also includes the `Location` and `Retry-After` response headers that apply to the request.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "requestId": 195,
+                  "retryAfter": 4
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Asynchronous identifier for an access key lookup request.",
+                  "type": "object",
+                  "required": [
+                    "requestId",
+                    "retryAfter"
+                  ],
+                  "properties": {
+                    "requestId": {
+                      "description": "The unique identifier assigned to a request to create an access key.",
+                      "type": "integer"
+                    },
+                    "retryAfter": {
+                      "description": "The number of seconds you should wait before using the `Location` path to check status. This delay is in place to avoid unnecessary requests before the data is ready.",
+                      "type": "integer"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/access-key-post-202.yaml"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "A URL link that you can GET the newly created resource.",
+                "schema": {
+                  "example": "/cam/v1/access-key-create-requests/6477",
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/location.yaml"
+                }
+              },
+              "Retry-After": {
+                "description": "The number of seconds you should wait before using the `Location` path to check status. This delay is in place to avoid unnecessary requests before the data is ready.",
+                "schema": {
+                  "example": "4",
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/retry-after.yaml"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No write permissions for selected group.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "contractId": "K-0N7RAK71",
+                  "detail": "No write permission on group ID '103725' and contract ID '1-7FALA",
+                  "groupId": 10125,
+                  "instance": "1c42105f-9eb1-45ae-b8fc-52719d7c57a8",
+                  "status": 400,
+                  "title": "Domain Error",
+                  "type": "/cam/error-types/no-contract-group-write-permission"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for json+problem response.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "description": "A further-nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "409": {
+            "description": "A name collision has occurred.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "accessKeyName": "Sales-s3",
+                  "detail": "Access key with name 'Sales-s3' already exists.",
+                  "instance": "109443e6-f347-43f1-922c-fa0fd480973f",
+                  "status": 400,
+                  "title": "Domain Error",
+                  "type": "/cam/error-types/access-key-already-exists"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for json+problem response.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "description": "A further-nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/409.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "get": {
+        "description": "Returns detailed information about all access keys available to the current user account.",
+        "operationId": "get-access-keys",
+        "summary": "List access keys",
+        "tags": [
+          "Access keys"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Cloud Access Manager API",
+          "url": "https://techdocs.akamai.com/cloud-access-mgr/reference/get-access-keys"
+        },
+        "responses": {
+          "200": {
+            "description": "The response contains a list of requested access keys.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "accessKeys": [
+                    {
+                      "accessKeyName": "Sales-s3",
+                      "accessKeyUid": 56514,
+                      "authenticationMethod": "AWS4_HMAC_SHA256",
+                      "createdBy": "szhang",
+                      "createdTime": "2021-02-24T09:09:52.782555Z",
+                      "latestVersion": 1,
+                      "note": "Sales key note",
+                      "networkConfiguration": {
+                        "additionalCdn": "RUSSIA_CDN",
+                        "securityNetwork": "ENHANCED_TLS"
+                      },
+                      "groups": [
+                        {
+                          "groupId": 15225,
+                          "groupName": "Sales",
+                          "contractIds": [
+                            "1-7FALA"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "accessKeyName": "Home automation | s3",
+                      "accessKeyUid": 56512,
+                      "authenticationMethod": "AWS4_HMAC_SHA256",
+                      "createdBy": "jperez",
+                      "createdTime": "2021-02-26T09:09:15.428314Z",
+                      "latestVersion": 3,
+                      "note": "Home automation key note",
+                      "networkConfiguration": {
+                        "additionalCdn": null,
+                        "securityNetwork": "ENHANCED_TLS"
+                      },
+                      "groups": [
+                        {
+                          "groupId": 15166,
+                          "groupName": "Smarthomes",
+                          "contractIds": [
+                            "1-7FALA"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "An outer wrapping object structure for a set of access keys.",
+                  "type": "object",
+                  "required": [
+                    "accessKeys"
+                  ],
+                  "properties": {
+                    "accessKeys": {
+                      "description": "The set of access keys.",
+                      "minItems": 0,
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Accepted response object.",
+                        "type": "object",
+                        "required": [
+                          "authenticationMethod",
+                          "createdBy",
+                          "createdTime",
+                          "groups",
+                          "latestVersion",
+                          "accessKeyName",
+                          "networkConfiguration",
+                          "note",
+                          "accessKeyUid"
+                        ],
+                        "properties": {
+                          "accessKeyName": {
+                            "description": "The user defined in `createdBy` set this as the unique name for the access key.",
+                            "type": "string"
+                          },
+                          "accessKeyUid": {
+                            "description": "Uniquely identifies the access key for use in keying resources within this API.",
+                            "type": "integer"
+                          },
+                          "authenticationMethod": {
+                            "description": "The type of signing process used to authenticate API requests: `AWS4_HMAC_SHA256` for Amazon Web Services or `GOOG4_HMAC_SHA256` for Google Cloud Services in interoperability mode.",
+                            "type": "string",
+                            "enum": [
+                              "AWS4_HMAC_SHA256",
+                              "GOOG4_HMAC_SHA256"
+                            ]
+                          },
+                          "createdBy": {
+                            "description": "The username of the person who created the access key.",
+                            "type": "string"
+                          },
+                          "createdTime": {
+                            "description": "The time the access key was created, in ISO 8601 format.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "groups": {
+                            "description": "A list of groups to which the access key is assigned.",
+                            "type": "array",
+                            "items": {
+                              "additionalProperties": false,
+                              "type": "object",
+                              "required": [
+                                "contractIds",
+                                "groupId",
+                                "groupName"
+                              ],
+                              "properties": {
+                                "contractIds": {
+                                  "description": "The Akamai contracts that are associated with this access key for the `groupId`.",
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "groupId": {
+                                  "description": "Uniquely identifies the Akamai group that's associated with the access key.",
+                                  "type": "integer"
+                                },
+                                "groupName": {
+                                  "description": "The name of the group.",
+                                  "nullable": true,
+                                  "type": "string"
+                                }
+                              },
+                              "x-akamai": {
+                                "file-path": "schemas/contextual-group.yaml"
+                              }
+                            }
+                          },
+                          "latestVersion": {
+                            "description": "The most recent version of the access key.",
+                            "type": "integer"
+                          },
+                          "networkConfiguration": {
+                            "additionalProperties": false,
+                            "description": "The API deploys the access key to this secure network.",
+                            "type": "object",
+                            "required": [
+                              "additionalCdn",
+                              "securityNetwork"
+                            ],
+                            "properties": {
+                              "additionalCdn": {
+                                "description": "You can deploy the access key to these additional networks. Use `CHINA_CDN` to make the access key available in Akamai's China CDN. Use `RUSSIA_CDN` to make the access key available in Akamai's Russia CDN. `null` indicates no CDN has been selected. If the `securityNetwork` is `STANDARD_TLS`, RUSSIA_CDN is included by default. If it's `ENHANCED_TLS`, each network needs to be added manually to access these CDNs.",
+                                "nullable": true,
+                                "type": "string",
+                                "enum": [
+                                  "CHINA_CDN",
+                                  "RUSSIA_CDN"
+                                ]
+                              },
+                              "securityNetwork": {
+                                "description": "The API deploys the access key to this secure network. `STANDARD_TLS` deploys the access key to Akamai's standard secure network, which is [non-PCI compliant](https://techdocs.akamai.com/cloud-access-mgr/docs/concepts). `Enhanced TLS` deploys the access key to Akamai's enhanced secure network which is [PCI compliant](https://techdocs.akamai.com/cloud-access-mgr/docs/concepts).",
+                                "type": "string",
+                                "enum": [
+                                  "ENHANCED_TLS",
+                                  "STANDARD_TLS"
+                                ]
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/network-configuration.yaml"
+                            }
+                          },
+                          "note": {
+                            "description": "Further descriptive commentary.",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/access-key-get-200.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/access-keys-get-200.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "The unique identifier assigned to an access key version.",
+            "example": "{{versionGuid}}",
+            "in": "query",
+            "name": "versionGuid",
+            "schema": {
+              "example": "ef8e433a-677c-21eb-a7f2-bbb9245556b4",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/versionGuid-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/access-keys/{accessKeyUid}": {
+      "get": {
+        "description": "Returns details for a specific access key.",
+        "operationId": "get-access-key",
+        "summary": "Get an access key",
+        "tags": [
+          "Access keys"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Cloud Access Manager API",
+          "url": "https://techdocs.akamai.com/cloud-access-mgr/reference/get-access-key"
+        },
+        "responses": {
+          "200": {
+            "description": "The response contains details for the selected access key.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "accessKeyName": "Sales-s3",
+                  "accessKeyUid": 12345,
+                  "authenticationMethod": "AWS4_HMAC_SHA256",
+                  "createdBy": "jsmith",
+                  "createdTime": "2021-02-26T13:34:36.770624Z",
+                  "latestVersion": 1,
+                  "note": "Sales key note",
+                  "networkConfiguration": {
+                    "additionalCdn": "RUSSIA_CDN",
+                    "securityNetwork": "ENHANCED_TLS"
+                  },
+                  "groups": [
+                    {
+                      "groupId": 15225,
+                      "groupName": "Sales",
+                      "contractIds": [
+                        "1-7FALA"
+                      ]
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Accepted response object.",
+                  "type": "object",
+                  "required": [
+                    "authenticationMethod",
+                    "createdBy",
+                    "createdTime",
+                    "groups",
+                    "latestVersion",
+                    "accessKeyName",
+                    "networkConfiguration",
+                    "note",
+                    "accessKeyUid"
+                  ],
+                  "properties": {
+                    "accessKeyName": {
+                      "description": "The user defined in `createdBy` set this as the unique name for the access key.",
+                      "type": "string"
+                    },
+                    "accessKeyUid": {
+                      "description": "Uniquely identifies the access key for use in keying resources within this API.",
+                      "type": "integer"
+                    },
+                    "authenticationMethod": {
+                      "description": "The type of signing process used to authenticate API requests: `AWS4_HMAC_SHA256` for Amazon Web Services or `GOOG4_HMAC_SHA256` for Google Cloud Services in interoperability mode.",
+                      "type": "string",
+                      "enum": [
+                        "AWS4_HMAC_SHA256",
+                        "GOOG4_HMAC_SHA256"
+                      ]
+                    },
+                    "createdBy": {
+                      "description": "The username of the person who created the access key.",
+                      "type": "string"
+                    },
+                    "createdTime": {
+                      "description": "The time the access key was created, in ISO 8601 format.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "groups": {
+                      "description": "A list of groups to which the access key is assigned.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "required": [
+                          "contractIds",
+                          "groupId",
+                          "groupName"
+                        ],
+                        "properties": {
+                          "contractIds": {
+                            "description": "The Akamai contracts that are associated with this access key for the `groupId`.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "groupId": {
+                            "description": "Uniquely identifies the Akamai group that's associated with the access key.",
+                            "type": "integer"
+                          },
+                          "groupName": {
+                            "description": "The name of the group.",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/contextual-group.yaml"
+                        }
+                      }
+                    },
+                    "latestVersion": {
+                      "description": "The most recent version of the access key.",
+                      "type": "integer"
+                    },
+                    "networkConfiguration": {
+                      "additionalProperties": false,
+                      "description": "The API deploys the access key to this secure network.",
+                      "type": "object",
+                      "required": [
+                        "additionalCdn",
+                        "securityNetwork"
+                      ],
+                      "properties": {
+                        "additionalCdn": {
+                          "description": "You can deploy the access key to these additional networks. Use `CHINA_CDN` to make the access key available in Akamai's China CDN. Use `RUSSIA_CDN` to make the access key available in Akamai's Russia CDN. `null` indicates no CDN has been selected. If the `securityNetwork` is `STANDARD_TLS`, RUSSIA_CDN is included by default. If it's `ENHANCED_TLS`, each network needs to be added manually to access these CDNs.",
+                          "nullable": true,
+                          "type": "string",
+                          "enum": [
+                            "CHINA_CDN",
+                            "RUSSIA_CDN"
+                          ]
+                        },
+                        "securityNetwork": {
+                          "description": "The API deploys the access key to this secure network. `STANDARD_TLS` deploys the access key to Akamai's standard secure network, which is [non-PCI compliant](https://techdocs.akamai.com/cloud-access-mgr/docs/concepts). `Enhanced TLS` deploys the access key to Akamai's enhanced secure network which is [PCI compliant](https://techdocs.akamai.com/cloud-access-mgr/docs/concepts).",
+                          "type": "string",
+                          "enum": [
+                            "ENHANCED_TLS",
+                            "STANDARD_TLS"
+                          ]
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/network-configuration.yaml"
+                      }
+                    },
+                    "note": {
+                      "description": "Further descriptive commentary.",
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/access-key-get-200.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "An access key with the provided `accessUid` doesn't exist.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "accessKeyUID": 56517,
+                  "detail": "Access key with accessKeyUID '56517' does not exist.",
+                  "instance": "c135eff0-43ec-4d0e-98c9-40efb5d19f35",
+                  "status": 404,
+                  "title": "Domain Error",
+                  "type": "/cam/error-types/access-key-does-not-exist"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for json+problem response.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "description": "A further-nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The unique identifier Akamai assigns to an access key.",
+          "example": "{{accessKeyUid}}",
+          "in": "path",
+          "name": "accessKeyUid",
+          "required": true,
+          "schema": {
+            "example": 12345,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/accessKeyUid-path.yaml"
+          }
+        }
+      ]
+    },
+    "/access-keys/{accessKeyUid}/versions": {
+      "post": {
+        "description": "Rotates an access key to a new version. You should only need to do this if your cloud provider credentials have changed, for example because they've expired or been compromised. Only two versions of an access key can exist and be active at the same time. If you have two access key versions you have to [delete](https://techdocs.akamai.com/cloud-access-mgr/reference/delete-access-key-version) one of them before you can create another version.",
+        "operationId": "post-access-key-version",
+        "summary": "Create an access key version",
+        "tags": [
+          "Access key versions"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Cloud Access Manager API",
+          "url": "https://techdocs.akamai.com/cloud-access-mgr/reference/post-access-key-version"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "cloudAccessKeyId": "AKAMAICAMKEYID2EXAMPLE",
+                "cloudSecretAccessKey": "cDdrcAMtrIAvN/h7dF/bAxLfiANAXAMPLEKEY"
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "The combination of values used to sign API requests.",
+                "type": "object",
+                "required": [
+                  "cloudAccessKeyId",
+                  "cloudSecretAccessKey"
+                ],
+                "properties": {
+                  "cloudAccessKeyId": {
+                    "description": "A unique identifier that's combined with the `cloudSecretAccessKey` to sign API requests. This is the [access key ID (AWS) or access ID (GCS)](https://techdocs.akamai.com/cloud-access-mgr/reference/get-auth-details) you get from your cloud provider.",
+                    "example": "{{cloudAccessKeyId}}",
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "cloudSecretAccessKey": {
+                    "description": "A value that's combined with the `cloudAccessKeyId` to sign API requests. This is the [secret access key (AWS) or secret (GCS)](https://techdocs.akamai.com/cloud-access-mgr/reference/get-auth-details) you get from your cloud provider.",
+                    "example": "{{cloudSecretAccessKey}}",
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/access-key-credentials-post.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "The response contains the `requestId` assigned to the request to create a new version of an access key. It also includes the `Location` and `Retry-After` response headers that apply to the request.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "requestId": 227,
+                  "retryAfter": 6
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Asynchronous identifier for an access key version property lookup request.",
+                  "type": "object",
+                  "required": [
+                    "requestId",
+                    "retryAfter"
+                  ],
+                  "properties": {
+                    "requestId": {
+                      "description": "The unique identifier assigned to a request to create an access key version.",
+                      "type": "integer"
+                    },
+                    "retryAfter": {
+                      "description": "The number of seconds you should wait before using the `Location` path to check status. This delay is in place to avoid unnecessary requests before the data is ready.",
+                      "type": "integer"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/access-key-version-post-202.yaml"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "A URL link that you can GET the newly created resource.",
+                "schema": {
+                  "example": "/cam/v1/access-key-create-requests/6477",
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/location.yaml"
+                }
+              },
+              "Retry-After": {
+                "description": "The number of seconds you should wait before using the `Location` path to check status. This delay is in place to avoid unnecessary requests before the data is ready.",
+                "schema": {
+                  "example": "4",
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/retry-after.yaml"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "An access key with the provided `accessUid` doesn't exist.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "accessKeyUID": 56517,
+                  "detail": "Access key with accessKeyUID '56517' does not exist.",
+                  "instance": "c135eff0-43ec-4d0e-98c9-40efb5d19f35",
+                  "status": 404,
+                  "title": "Domain Error",
+                  "type": "/cam/error-types/access-key-does-not-exist"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for json+problem response.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "description": "A further-nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          },
+          "409": {
+            "description": "A name collision has occurred.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "accessKeyName": "Sales-s3",
+                  "detail": "Access key with name 'Sales-s3' already exists.",
+                  "instance": "109443e6-f347-43f1-922c-fa0fd480973f",
+                  "status": 400,
+                  "title": "Domain Error",
+                  "type": "/cam/error-types/access-key-already-exists"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for json+problem response.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "description": "A further-nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/409.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "get": {
+        "description": "Returns detailed information about all of the versions for a specific access key.",
+        "operationId": "get-access-key-versions",
+        "summary": "List access key versions",
+        "tags": [
+          "Access key versions"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Cloud Access Manager API",
+          "url": "https://techdocs.akamai.com/cloud-access-mgr/reference/get-access-key-versions"
+        },
+        "responses": {
+          "200": {
+            "description": "The response contains a list of requested access key versions.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "accessKeyVersions": [
+                    {
+                      "accessKeyUid": 12345,
+                      "cloudAccessKeyId": null,
+                      "createdBy": "hgildong",
+                      "createdTime": "2021-02-26T14:48:27.355346Z",
+                      "deploymentStatus": "PENDING_ACTIVATION",
+                      "version": 2,
+                      "versionGuid": "af434285-7841-11eb-817b-1f41209f67ec"
+                    },
+                    {
+                      "accessKeyUid": 12345,
+                      "cloudAccessKeyId": null,
+                      "createdBy": "jperez",
+                      "createdTime": "2021-02-26T13:34:37.916873Z",
+                      "deploymentStatus": "ACTIVE",
+                      "version": 1,
+                      "versionGuid": "5f1c8194-7837-11eb-817b-1b3f28104c18"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "An outer wrapping object structure for a set of requested access key versions.",
+                  "type": "object",
+                  "required": [
+                    "accessKeyVersions"
+                  ],
+                  "properties": {
+                    "accessKeyVersions": {
+                      "description": "The set of requested access key versions.",
+                      "minItems": 0,
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "The version of an access key.",
+                        "type": "object",
+                        "required": [
+                          "accessKeyUid",
+                          "cloudAccessKeyId",
+                          "createdBy",
+                          "createdTime",
+                          "versionGuid",
+                          "deploymentStatus",
+                          "version"
+                        ],
+                        "properties": {
+                          "accessKeyUid": {
+                            "description": "Uniquely identifies the access key for use in keying resources within this API.",
+                            "type": "integer"
+                          },
+                          "cloudAccessKeyId": {
+                            "description": "The unique identifier assigned to the access key ID (AWS) or access ID (GCS). The value is null for legacy access keys.",
+                            "maxLength": 128,
+                            "minLength": 1,
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "createdBy": {
+                            "description": "The username of the person who created this version of the access key.",
+                            "type": "string"
+                          },
+                          "createdTime": {
+                            "description": "The time the access key version was created, in [ISO 8601](https://www.w3.org/TR/NOTE-datetime) format.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "deploymentStatus": {
+                            "description": "Status indicating whether the version has been activated to the Akamai networks. `PENDING_ACTIVATION` indicates that Akamai has received the request and a new version is in process. If `ACTIVE`, you can enable the version in the [Origin Characteristics](https://techdocs.akamai.com/cloud-access-mgr/docs/usage-examples#create-and-apply-an-access-key) behavior when configuring your property to support CAM. Once an access key has been created, it's available on both the staging and production Akamai networks. When an access key is activated, it is activated on both the staging and production Akamai networks. `PENDING_DELETION` indicates Akamai has received a request to [delete](https://techdocs.akamai.com/cloud-access-mgr/reference/delete-access-key-version) the version and the system is processing it.",
+                            "type": "string",
+                            "enum": [
+                              "PENDING_ACTIVATION",
+                              "ACTIVE",
+                              "PENDING_DELETION"
+                            ]
+                          },
+                          "version": {
+                            "description": "A positive integer identifying the incremental version.",
+                            "type": "integer"
+                          },
+                          "versionGuid": {
+                            "description": "The access key version's universally unique identifier. Use this to identify the version within the [Origin Characteristics](https://techdocs.akamai.com/cloud-access-mgr/docs/usage-examples#create-and-apply-an-access-key) behavior when configuring your property to support CAM.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/access-key-version-get-200.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/access-key-versions-get-200.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The unique identifier Akamai assigns to an access key.",
+          "example": "{{accessKeyUid}}",
+          "in": "path",
+          "name": "accessKeyUid",
+          "required": true,
+          "schema": {
+            "example": 12345,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/accessKeyUid-path.yaml"
+          }
+        }
+      ]
+    },
+    "/access-keys/{accessKeyUid}/versions/{version}": {
+      "get": {
+        "description": "Returns detailed information for a specific version of an access key.",
+        "operationId": "get-access-key-version",
+        "summary": "Get an access key version",
+        "tags": [
+          "Access key versions"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Cloud Access Manager API",
+          "url": "https://techdocs.akamai.com/cloud-access-mgr/reference/get-access-key-version"
+        },
+        "responses": {
+          "200": {
+            "description": "Response contains details of the access key version.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "accessKeyUid": 12345,
+                  "cloudAccessKeyId": null,
+                  "createdBy": "hgildong",
+                  "createdTime": "2021-02-26T13:34:37.916873Z",
+                  "deploymentStatus": "ACTIVE",
+                  "version": 1,
+                  "versionGuid": "5f1c8194-7837-11eb-817b-1b3f28104c18"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "The version of an access key.",
+                  "type": "object",
+                  "required": [
+                    "accessKeyUid",
+                    "cloudAccessKeyId",
+                    "createdBy",
+                    "createdTime",
+                    "versionGuid",
+                    "deploymentStatus",
+                    "version"
+                  ],
+                  "properties": {
+                    "accessKeyUid": {
+                      "description": "Uniquely identifies the access key for use in keying resources within this API.",
+                      "type": "integer"
+                    },
+                    "cloudAccessKeyId": {
+                      "description": "The unique identifier assigned to the access key ID (AWS) or access ID (GCS). The value is null for legacy access keys.",
+                      "maxLength": 128,
+                      "minLength": 1,
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "createdBy": {
+                      "description": "The username of the person who created this version of the access key.",
+                      "type": "string"
+                    },
+                    "createdTime": {
+                      "description": "The time the access key version was created, in [ISO 8601](https://www.w3.org/TR/NOTE-datetime) format.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "deploymentStatus": {
+                      "description": "Status indicating whether the version has been activated to the Akamai networks. `PENDING_ACTIVATION` indicates that Akamai has received the request and a new version is in process. If `ACTIVE`, you can enable the version in the [Origin Characteristics](https://techdocs.akamai.com/cloud-access-mgr/docs/usage-examples#create-and-apply-an-access-key) behavior when configuring your property to support CAM. Once an access key has been created, it's available on both the staging and production Akamai networks. When an access key is activated, it is activated on both the staging and production Akamai networks. `PENDING_DELETION` indicates Akamai has received a request to [delete](https://techdocs.akamai.com/cloud-access-mgr/reference/delete-access-key-version) the version and the system is processing it.",
+                      "type": "string",
+                      "enum": [
+                        "PENDING_ACTIVATION",
+                        "ACTIVE",
+                        "PENDING_DELETION"
+                      ]
+                    },
+                    "version": {
+                      "description": "A positive integer identifying the incremental version.",
+                      "type": "integer"
+                    },
+                    "versionGuid": {
+                      "description": "The access key version's universally unique identifier. Use this to identify the version within the [Origin Characteristics](https://techdocs.akamai.com/cloud-access-mgr/docs/usage-examples#create-and-apply-an-access-key) behavior when configuring your property to support CAM.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/access-key-version-get-200.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "An access key with the provided `accessUid` doesn't exist.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "accessKeyUID": 56517,
+                  "detail": "Access key with accessKeyUID '56517' does not exist.",
+                  "instance": "c135eff0-43ec-4d0e-98c9-40efb5d19f35",
+                  "status": 404,
+                  "title": "Domain Error",
+                  "type": "/cam/error-types/access-key-does-not-exist"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for json+problem response.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "description": "A further-nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "description": "Deletes a specific version of an access key. This operation works asynchronously. If you receive a successful 202 response, the request has been accepted and it's been added to the queue for deletion. You can use the `Location` header that's returned in the response to check the status of the request. You can't delete an access key version if it is still in use.",
+        "operationId": "delete-access-key-version",
+        "summary": "Delete an access key version",
+        "tags": [
+          "Access key versions"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Cloud Access Manager API",
+          "url": "https://techdocs.akamai.com/cloud-access-mgr/reference/delete-access-key-version"
+        },
+        "responses": {
+          "202": {
+            "description": "The response contains various data including the access key version as well as the `Location` response header.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "accessKeyUid": 12345,
+                  "cloudAccessKeyId": null,
+                  "createdBy": "hgildong",
+                  "createdTime": "2021-02-26T09:09:53.762230Z",
+                  "deploymentStatus": "PENDING_DELETION",
+                  "version": 1,
+                  "versionGuid": "636af3f2-7812-11eb-817b-b5459049a617"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "The version of an access key.",
+                  "type": "object",
+                  "required": [
+                    "accessKeyUid",
+                    "cloudAccessKeyId",
+                    "createdBy",
+                    "createdTime",
+                    "versionGuid",
+                    "deploymentStatus",
+                    "version"
+                  ],
+                  "properties": {
+                    "accessKeyUid": {
+                      "description": "Uniquely identifies the access key for use in keying resources within this API.",
+                      "type": "integer"
+                    },
+                    "cloudAccessKeyId": {
+                      "description": "The unique identifier assigned to the access key ID (AWS) or access ID (GCS). The value is null for legacy access keys.",
+                      "maxLength": 128,
+                      "minLength": 1,
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "createdBy": {
+                      "description": "The username of the person who created this version of the access key.",
+                      "type": "string"
+                    },
+                    "createdTime": {
+                      "description": "The time the access key version was created, in [ISO 8601](https://www.w3.org/TR/NOTE-datetime) format.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "deploymentStatus": {
+                      "description": "Status indicating whether the version has been activated to the Akamai networks. `PENDING_ACTIVATION` indicates that Akamai has received the request and a new version is in process. If `ACTIVE`, you can enable the version in the [Origin Characteristics](https://techdocs.akamai.com/cloud-access-mgr/docs/usage-examples#create-and-apply-an-access-key) behavior when configuring your property to support CAM. Once an access key has been created, it's available on both the staging and production Akamai networks. When an access key is activated, it is activated on both the staging and production Akamai networks. `PENDING_DELETION` indicates Akamai has received a request to [delete](https://techdocs.akamai.com/cloud-access-mgr/reference/delete-access-key-version) the version and the system is processing it.",
+                      "type": "string",
+                      "enum": [
+                        "PENDING_ACTIVATION",
+                        "ACTIVE",
+                        "PENDING_DELETION"
+                      ]
+                    },
+                    "version": {
+                      "description": "A positive integer identifying the incremental version.",
+                      "type": "integer"
+                    },
+                    "versionGuid": {
+                      "description": "The access key version's universally unique identifier. Use this to identify the version within the [Origin Characteristics](https://techdocs.akamai.com/cloud-access-mgr/docs/usage-examples#create-and-apply-an-access-key) behavior when configuring your property to support CAM.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/access-key-version-get-200.yaml"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "A URL link that you can GET the newly created resource.",
+                "schema": {
+                  "example": "/cam/v1/access-key-create-requests/6477",
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/location.yaml"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "An access key with the provided `accessUid` doesn't exist.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "accessKeyUID": 56517,
+                  "detail": "Access key with accessKeyUID '56517' does not exist.",
+                  "instance": "c135eff0-43ec-4d0e-98c9-40efb5d19f35",
+                  "status": 404,
+                  "title": "Domain Error",
+                  "type": "/cam/error-types/access-key-does-not-exist"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for json+problem response.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "description": "A further-nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          },
+          "409": {
+            "description": "A name collision has occurred.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "accessKeyName": "Sales-s3",
+                  "detail": "Access key with name 'Sales-s3' already exists.",
+                  "instance": "109443e6-f347-43f1-922c-fa0fd480973f",
+                  "status": 400,
+                  "title": "Domain Error",
+                  "type": "/cam/error-types/access-key-already-exists"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for json+problem response.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "description": "A further-nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/409.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The version number of the access key.",
+          "example": "{{version}}",
+          "in": "path",
+          "name": "version",
+          "required": true,
+          "schema": {
+            "example": 2,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/version-path.yaml"
+          }
+        },
+        {
+          "description": "The unique identifier Akamai assigns to an access key.",
+          "example": "{{accessKeyUid}}",
+          "in": "path",
+          "name": "accessKeyUid",
+          "required": true,
+          "schema": {
+            "example": 12345,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/accessKeyUid-path.yaml"
+          }
+        }
+      ]
+    },
+    "/access-keys/{accessKeyUid}/versions/{version}/properties": {
+      "get": {
+        "description": "Returns information about all of the Property Manager properties that use a specific version of an access key. This operation gets the data directly. To avoid any latency problems, run the [Perform a property lookup request asynchronously](https://techdocs.akamai.com/cloud-access-mgr/reference/get-property-lookup) operation.",
+        "operationId": "get-access-key-version-properties",
+        "summary": "Look up properties",
+        "tags": [
+          "Access key version properties"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Cloud Access Manager API",
+          "url": "https://techdocs.akamai.com/cloud-access-mgr/reference/get-access-key-version-properties"
+        },
+        "responses": {
+          "200": {
+            "description": "The response contains a list of properties that use the specified version of an access key.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "properties": [
+                    {
+                      "productionVersion": 1,
+                      "propertyId": "prp_200073086",
+                      "propertyName": "sales.west",
+                      "stagingVersion": 1
+                    },
+                    {
+                      "productionVersion": null,
+                      "propertyId": "prp_200073087",
+                      "propertyName": "sales.east",
+                      "stagingVersion": 1
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "An outer wrapping object structure for a set of properties.",
+                  "type": "object",
+                  "required": [
+                    "properties"
+                  ],
+                  "properties": {
+                    "properties": {
+                      "description": "The set of properties.",
+                      "minItems": 0,
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "required": [
+                          "productionVersion",
+                          "propertyId",
+                          "propertyName",
+                          "stagingVersion"
+                        ],
+                        "properties": {
+                          "productionVersion": {
+                            "description": "Identifies the specific property version whose production status is either active or activating. Statuses include `ACTIVE` for versions that have been activated on production or `NEW`, `PENDING`, `ZONE_1`, `ZONE_2`, or `ZONE_3` if not yet active. A `null` response indicates that the specified version of the property doesn't exist.",
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "propertyId": {
+                            "description": "The unique identifier Akamai assigned to the matching property.",
+                            "type": "string"
+                          },
+                          "propertyName": {
+                            "description": "Identifies the specific property name whose Origin Characteristics behavior uses the access key version.",
+                            "type": "string"
+                          },
+                          "stagingVersion": {
+                            "description": "Identifies the specific property version whose staging status is either active or activating. A `null` response indicates that the specified version of the property doesn't exist.",
+                            "nullable": true,
+                            "type": "integer"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/property-info.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/properties-get-200.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "An access key with the provided `accessUid` doesn't exist.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "accessKeyUID": 56517,
+                  "detail": "Access key with accessKeyUID '56517' does not exist.",
+                  "instance": "c135eff0-43ec-4d0e-98c9-40efb5d19f35",
+                  "status": 404,
+                  "title": "Domain Error",
+                  "type": "/cam/error-types/access-key-does-not-exist"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for json+problem response.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "description": "A further-nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          },
+          "500": {
+            "description": "A problem has occurred while calling an external service. Retry the operation.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "A problem has occurred while calling an external service, try again later.",
+                  "instance": "aaec18bb-1df7-4f27-af10-1e02b889cf4f",
+                  "status": 500,
+                  "title": "Domain Error",
+                  "type": "/cam/error-types/external-service-error"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for json+problem response.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "description": "A further-nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The version number of the access key.",
+          "example": "{{version}}",
+          "in": "path",
+          "name": "version",
+          "required": true,
+          "schema": {
+            "example": 2,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/version-path.yaml"
+          }
+        },
+        {
+          "description": "The unique identifier Akamai assigns to an access key.",
+          "example": "{{accessKeyUid}}",
+          "in": "path",
+          "name": "accessKeyUid",
+          "required": true,
+          "schema": {
+            "example": 12345,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/accessKeyUid-path.yaml"
+          }
+        }
+      ]
+    },
+    "/access-keys/{accessKeyUid}/versions/{version}/property-lookup-id": {
+      "get": {
+        "description": "Get the unique identifier used to perform an [asynchronous property lookup request](https://techdocs.akamai.com/cloud-access-mgr/reference/get-property-lookup).",
+        "operationId": "get-async-version-property-lookup",
+        "summary": "Get an ID for an asynchronous property lookup request",
+        "tags": [
+          "Access key version properties"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Cloud Access Manager API",
+          "url": "https://techdocs.akamai.com/cloud-access-mgr/reference/get-async-version-property-lookup"
+        },
+        "responses": {
+          "202": {
+            "description": "Response contains the unique ID that Akamai created for a lookup request and location to it in 'Location' header. The response contains the `requestId` assigned to the request to create a new access key. It also includes the `Location` and `Retry-After` response headers that apply to the request.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "lookupId": 614949,
+                  "retryAfter": 12
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Asynchronous identifier information for a property lookup request. Used to generate an asynchronous request for a property lookup.",
+                  "type": "object",
+                  "required": [
+                    "lookupId",
+                    "retryAfter"
+                  ],
+                  "properties": {
+                    "lookupId": {
+                      "description": "Identifies each property lookup process.",
+                      "type": "integer"
+                    },
+                    "retryAfter": {
+                      "description": "The number of seconds you should wait before using the `lookupId` to check the [status](https://techdocs.akamai.com/cloud-access-mgr/reference/get-property-lookup) of a property lookup request.",
+                      "type": "integer"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/property-lookup-get-202.yaml"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "A URL link that you can GET the newly created resource.",
+                "schema": {
+                  "example": "/cam/v1/access-key-create-requests/6477",
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/location.yaml"
+                }
+              },
+              "Retry-After": {
+                "description": "The number of seconds you should wait before using the `Location` path to check status. This delay is in place to avoid unnecessary requests before the data is ready.",
+                "schema": {
+                  "example": "4",
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/retry-after.yaml"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "An access key with the provided `accessUid` doesn't exist.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "accessKeyUID": 56517,
+                  "detail": "Access key with accessKeyUID '56517' does not exist.",
+                  "instance": "c135eff0-43ec-4d0e-98c9-40efb5d19f35",
+                  "status": 404,
+                  "title": "Domain Error",
+                  "type": "/cam/error-types/access-key-does-not-exist"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for json+problem response.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "description": "A further-nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          },
+          "500": {
+            "description": "A problem has occurred while calling an external service. Retry the operation.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "A problem has occurred while calling an external service, try again later.",
+                  "instance": "aaec18bb-1df7-4f27-af10-1e02b889cf4f",
+                  "status": 500,
+                  "title": "Domain Error",
+                  "type": "/cam/error-types/external-service-error"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for json+problem response.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "description": "A further-nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The version number of the access key.",
+          "example": "{{version}}",
+          "in": "path",
+          "name": "version",
+          "required": true,
+          "schema": {
+            "example": 2,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/version-path.yaml"
+          }
+        },
+        {
+          "description": "The unique identifier Akamai assigns to an access key.",
+          "example": "{{accessKeyUid}}",
+          "in": "path",
+          "name": "accessKeyUid",
+          "required": true,
+          "schema": {
+            "example": 12345,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/accessKeyUid-path.yaml"
+          }
+        }
+      ]
+    },
+    "/property-lookups/{lookupId}": {
+      "get": {
+        "description": "Provides functionality similar to the [Perform a property lookup request](https://techdocs.akamai.com/cloud-access-mgr/reference/get-access-key-version-properties) operation, but accesses the data asynchronously after running the [Get an ID for an asynchronous property lookup request](https://techdocs.akamai.com/cloud-access-mgr/reference/get-async-version-property-lookup) operation to obtain the `lookupId`.",
+        "operationId": "get-property-lookup",
+        "summary": "Perform a property lookup request asynchronously",
+        "tags": [
+          "Property lookups"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Cloud Access Manager API",
+          "url": "https://techdocs.akamai.com/cloud-access-mgr/reference/get-property-lookup"
+        },
+        "responses": {
+          "200": {
+            "description": "Response contains details of the property lookup.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "lookupId": 1221649,
+                  "lookupStatus": "COMPLETE",
+                  "properties": [
+                    {
+                      "productionVersion": 1,
+                      "propertyId": "prp_200073086",
+                      "propertyName": "sales.west",
+                      "stagingVersion": 1
+                    },
+                    {
+                      "productionVersion": null,
+                      "propertyId": "prp_200073087",
+                      "propertyName": "sales.east",
+                      "stagingVersion": 1
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "The response to a request for an asynchronous property lookup job.",
+                  "type": "object",
+                  "required": [
+                    "lookupId",
+                    "lookupStatus",
+                    "properties"
+                  ],
+                  "properties": {
+                    "lookupId": {
+                      "description": "Identifies each property lookup process.",
+                      "type": "integer"
+                    },
+                    "lookupStatus": {
+                      "description": "The status of the property lookup process. The values come from the Property Manager API. `SUBMITTED` indicates the lookup request was sent.  `PENDING` indicates the request is in a queue to process.  `IN_PROGRESS` indicates Akamai received the lookup request and it's being processed. `COMPLETE` indicates the lookup is finished and the response includes property-specific data.  For any `ERROR`, try the [property lookup request](https://techdocs.akamai.com/cloud-access-mgr/reference/get-property-lookup) again.",
+                      "type": "string",
+                      "enum": [
+                        "COMPLETE",
+                        "ERROR",
+                        "IN_PROGRESS",
+                        "PENDING",
+                        "SUBMITTED"
+                      ]
+                    },
+                    "properties": {
+                      "description": "Property lookup results, one for each property.",
+                      "minItems": 0,
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "required": [
+                          "productionVersion",
+                          "propertyId",
+                          "propertyName",
+                          "stagingVersion"
+                        ],
+                        "properties": {
+                          "productionVersion": {
+                            "description": "Identifies the specific property version whose production status is either active or activating. Statuses include `ACTIVE` for versions that have been activated on production or `NEW`, `PENDING`, `ZONE_1`, `ZONE_2`, or `ZONE_3` if not yet active. A `null` response indicates that the specified version of the property doesn't exist.",
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "propertyId": {
+                            "description": "The unique identifier Akamai assigned to the matching property.",
+                            "type": "string"
+                          },
+                          "propertyName": {
+                            "description": "Identifies the specific property name whose Origin Characteristics behavior uses the access key version.",
+                            "type": "string"
+                          },
+                          "stagingVersion": {
+                            "description": "Identifies the specific property version whose staging status is either active or activating. A `null` response indicates that the specified version of the property doesn't exist.",
+                            "nullable": true,
+                            "type": "integer"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/property-info.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/property-lookup-get-200.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "A problem has occurred while calling an external service. Retry the operation.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "A problem has occurred while calling an external service, try again later.",
+                  "instance": "aaec18bb-1df7-4f27-af10-1e02b889cf4f",
+                  "status": 500,
+                  "title": "Domain Error",
+                  "type": "/cam/error-types/external-service-error"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for json+problem response.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "description": "A further-nested problem object.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "instance": {
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The identifier of the property lookup.",
+          "example": "{{lookupId}}",
+          "in": "path",
+          "name": "lookupId",
+          "required": true,
+          "schema": {
+            "example": 1,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/lookupId-path.yaml"
+          }
+        }
+      ]
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/cam/v1"
+    }
+  ]
+}

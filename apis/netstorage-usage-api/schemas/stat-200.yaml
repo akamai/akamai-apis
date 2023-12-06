@@ -1,0 +1,90 @@
+type: object
+description: |-
+  The XML response body from action=stat.
+  
+x-akamai:
+  file-path: schemas/stat-200.yaml
+properties:
+  directory:
+    type: string
+    description: |
+      The path, starting with / and the cpCode, of the directory of the object being examined. Will not be included if the name cannot be expressed in the encoding= parameter requested in the `X-Akamai-ACS-Action` HTTP request header.
+    xml:
+      attribute: true
+  directory_base64:
+    type: string
+    description: |
+      The Base64 encoding of the path, starting with / and the cpCode, of the directory of the object being examined, if it cannot be expressed in the encoding= parameter requested in the `X-Akamai-ACS-Action` HTTP request header. If present, `directory` will not be present.
+    xml:
+      attribute: true
+  file:
+    type: array
+    description: |
+      Description of an object. In most cases, there will be only one file object, but in certain cases with a file and directory object with the same names, there will be more than one.
+    items:
+      type: object
+      properties:
+        name:
+          type: string
+          description: |
+            Name of the object relative to the directory, if it can be expressed in the encoding= parameter requested in the `X-Akamai-ACS-Action` HTTP request header. If present, `name_base64` will not be present. If type=`dir`, does include the trailing slash.
+          xml:
+            attribute: true
+        type:
+          type: string
+          description: |
+            What type of object this is.
+          enum:
+          - file
+          - dir
+          - symlink
+          xml:
+            attribute: true
+        implicit:
+          type: boolean
+          description: |
+            If type=`dir`, will be true if the directory is implicit, false if it is a directory object. Otherwise not present.
+          xml:
+            attribute: true
+        md5:
+          type: string
+          description: |
+            If type=`file`, the MD5 hash of the file contents. Otherwise not present.
+          xml:
+            attribute: true
+        mtime:
+          type: integer
+          description: |
+            Modification time of the object, in seconds since January 1, 1970. Provided except for type=`dir` implicit=`true`, as there is no actual object with a modification time.
+          format: int32
+          xml:
+            attribute: true
+        name_base64:
+          type: string
+          description: |
+            The base64 encoded name of the object relative to the directory, if it cannot be expressed in the encoding= parameter requested in the `X-Akamai-ACS-Action` HTTP request header. If present, `name` will not be present.
+          xml:
+            attribute: true
+        size:
+          type: integer
+          description: |
+            If type=`file`, the size of the object in bytes. Otherwise not present.
+          format: uint64
+          xml:
+            attribute: true
+        target:
+          type: string
+          description: |
+            If type=`symlink`, and the target of the symbolic link can be expressed in the requested character encoding, the target of the link. If present, `target_base64` will not be present. Not present when type is not `symlink`.
+          xml:
+            attribute: true
+        target_base64:
+          type: string
+          description: |
+            If type=`symlink`, and the target of the symbolic link cannot be expressed in the requested character encoding, the target of the link encoded in base64. If present, `target` will not be present. Not present when type is not `symlink`.
+          xml:
+            attribute: true
+    xml:
+      wrapped: false
+xml:
+  name: stat

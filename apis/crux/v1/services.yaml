@@ -1,0 +1,223 @@
+openapi: 3.0.0
+info:
+  title: Rules
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/crux/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: services.yaml
+paths:
+  /mgmt-pop/services:
+    post:
+      operationId: post-rule
+      summary: Create a rule
+      tags:
+      - Rules
+      description: |
+        Creates a new rule.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-rules-body.json
+            schema:
+              $ref: schemas/rules-post.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/create-rules-200.json
+              schema:
+                $ref: schemas/rules-post.yaml
+    get:
+      operationId: get-rules
+      summary: List rules
+      tags:
+      - Rules
+      description: |
+        Lists rules.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/pageable_offset.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-rules-200.json
+              schema:
+                $ref: schemas/rules-list.yaml
+  /mgmt-pop/services/{id}:
+    parameters:
+    - $ref: parameters/id-path.yaml
+    get:
+      operationId: get-rule
+      summary: Get a rule
+      tags:
+      - Rules
+      description: |
+        Gets a single rule by ID.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-update-rules-200.json
+              schema:
+                $ref: schemas/rules.yaml
+    put:
+      operationId: put-rule
+      summary: Modify a rule
+      tags:
+      - Rules
+      description: |
+        Updates an existing rule.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/update-rules-body.json
+            schema:
+              $ref: schemas/rules-put.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-update-rules-200.json
+              schema:
+                $ref: schemas/rules-put.yaml
+    delete:
+      operationId: delete-rule
+      summary: Delete a rule
+      tags:
+      - Rules
+      description: |
+        Deletes an existing rule.
+      responses:
+        200:
+          description: |
+            Successful response.
+  /mgmt-pop/services/{id}/rules:
+    parameters:
+    - $ref: parameters/id-path.yaml
+    post:
+      operationId: post-access-control-rule
+      summary: Create an access control rule
+      tags:
+      - Rules
+      description: |
+        Creates a new access control rule.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              deny group rule:
+                value:
+                  $ref: examples/group-rule-body.json
+              deny method:
+                value:
+                  $ref: examples/methodwise-body.json
+              deny region rule:
+                value:
+                  $ref: examples/region-wise-body.json
+              deny url:
+                value:
+                  $ref: examples/deny-url-body.json
+              deny user:
+                value:
+                  $ref: examples/deny-user-body.json
+            schema:
+              $ref: schemas/access-rule.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              examples:
+                deny group rule:
+                  value:
+                    $ref: examples/group-rule-200.json
+                deny method:
+                  value:
+                    $ref: examples/methodwise-200.json
+                deny region rule:
+                  value:
+                    $ref: examples/region-wise-200.json
+                deny url:
+                  value:
+                    $ref: examples/deny-url-200.json
+                deny user:
+                  value:
+                    $ref: examples/deny-user-200.json
+              schema:
+                $ref: schemas/access-rule.yaml
+    put:
+      operationId: put-access-control-rule
+      summary: Modify an access control rule
+      tags:
+      - Rules
+      description: |
+        Updates an existing access control rule.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              update deny group:
+                value:
+                  $ref: examples/update-groupname-body.json
+              update deny region:
+                value:
+                  $ref: examples/update-region-rule-body.json
+              update deny url:
+                value:
+                  $ref: examples/update-deny-user-body.json
+              update deny user:
+                value:
+                  $ref: examples/update-deny-url-rule-body.json
+            schema:
+              $ref: schemas/update-access-control-rule.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              examples:
+                update deny group:
+                  value:
+                    $ref: examples/update-groupname-200.json
+                update deny region:
+                  value:
+                    $ref: examples/update-region-rule-200.json
+                update deny url:
+                  value:
+                    $ref: examples/update-deny-url-rule-200.json
+                update deny user:
+                  value:
+                    $ref: examples/update-deny-user-rule-200.json
+              schema:
+                $ref: schemas/update-access-control-rule.yaml

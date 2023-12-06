@@ -1,0 +1,259 @@
+openapi: 3.0.0
+info:
+  title: Prolexic Analytics
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/prolexic-analytics/v2
+- url: http://prolexic-analytics/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: prolexic-analytics.yaml
+paths:
+  /attack-report/contract/{contract}/attack-id/{attackId}:
+    parameters:
+    - $ref: parameters/attackId-path.yaml
+    - $ref: parameters/contract-path.yaml
+    get:
+      operationId: get-attack-report-contract-contract-attack-id-attackid
+      summary: Get an attack report
+      tags:
+      - Attack reports
+      description: |
+        Retrieves an attack report for the specified customer and `attackId`.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/attack_report.json
+              schema:
+                $ref: schemas/AttackReport.yaml
+        403:
+          description: |
+            Unauthorized request.
+          content:
+            application/json:
+              example:
+                $ref: examples/error403.json
+        404:
+          description: |
+            Not found.
+          content:
+            application/json:
+              example:
+                $ref: examples/error404.json
+  /attack-reports/contract/{contract}/start/{start}/end/{end}:
+    parameters:
+    - $ref: parameters/end-path.yaml
+    - $ref: parameters/start-path.yaml
+    - $ref: parameters/contract-path.yaml
+    get:
+      operationId: get-attack-reports-contract-contract-start-start-end-end
+      summary: List attack reports
+      tags:
+      - Attack reports
+      description: |
+        Retrieves a list of attack reports for a customer within the specified time range.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/attack_reports_get.json
+              schema:
+                $ref: schemas/AttackReports.yaml
+        403:
+          description: |
+            Unauthorized request.
+          content:
+            application/json:
+              example:
+                $ref: examples/error403.json
+        404:
+          description: |
+            Not found.
+          content:
+            application/json:
+              example:
+                $ref: examples/error404.json
+  /critical-events/contract/{contract}:
+    parameters:
+    - $ref: parameters/contract-path.yaml
+    get:
+      operationId: get-critical-events-contract-contract
+      summary: List critical events
+      tags:
+      - Critical events
+      description: |
+        Retrieves a critical events list for a customer.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/critical_events_get.json
+              schema:
+                $ref: schemas/CriticalEvent.yaml
+        403:
+          description: |
+            Unauthorized request.
+          content:
+            application/json:
+              example:
+                $ref: examples/error403.json
+        404:
+          description: |
+            Not found.
+          content:
+            application/json:
+              example:
+                $ref: examples/error404.json
+  /events/contract/{contract}:
+    parameters:
+    - $ref: parameters/contract-path.yaml
+    get:
+      operationId: get-events-contract-contract
+      summary: List events
+      tags:
+      - Events
+      description: |
+        Retrieves an events list for a customer.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/events_get.json
+              schema:
+                $ref: schemas/EventResponse.yaml
+        403:
+          description: |
+            Unauthorized request.
+          content:
+            application/json:
+              example:
+                $ref: examples/error403.json
+        404:
+          description: |
+            Not found.
+          content:
+            application/json:
+              example:
+                $ref: examples/error404.json
+  /metric-types/{contract}:
+    parameters:
+    - $ref: parameters/contract-path.yaml
+    get:
+      operationId: get-metric-types-contract
+      summary: List metric types
+      tags:
+      - Metric types
+      description: |
+        Retrieve a list of metric types for a specific customer.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/metric-types.json
+              schema:
+                $ref: schemas/MetricType.yaml
+        403:
+          description: |
+            Unauthorized request.
+          content:
+            application/json:
+              example:
+                $ref: examples/error403.json
+        404:
+          description: |
+            Not found.
+          content:
+            application/json:
+              example:
+                $ref: examples/error404.json
+  /metrics:
+    post:
+      operationId: post-metrics
+      summary: Get metrics data
+      tags:
+      - Metrics
+      description: |
+        Lists metrics specified in the `type` object, falling between given `start` and `end` times, sampled at the given rate and attached to given contract. The maximum range between start and end is 90 days.  If some (not all) requested types are invalid, invalid types are silently dropped, and the response only contains data for valid requests. More meaningful errors result if you are requesting data for only one type at a time.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/metrics_post_req.json
+            schema:
+              $ref: schemas/MetricDataInput.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/metrics_response.json
+              schema:
+                $ref: schemas/MetricResponse.yaml
+        403:
+          description: |
+            Unauthorized request.
+          content:
+            application/json:
+              example:
+                $ref: examples/error403.json
+        404:
+          description: |
+            Not found.
+          content:
+            application/json:
+              example:
+                $ref: examples/error404.json
+  /time-series-data:
+    get:
+      operationId: get-time-series-data
+      summary: Get time series data
+      tags:
+      - Time series data
+      description: |
+        Lists usage and attack information for individual destination IP addresses. Optionally specify the `startTime` and `endTime` to get data from a specific period. The maximum date range is the last seven days and by default you get data from the last two hours. Specify `locations` to include only traffic coming through specific data centers, or `source` for specific router types. Indicate the `samplingSize` to determine the number of timestamps to get data for. Enable `sum` to get aggregated data.
+      parameters:
+      - $ref: parameters/destinations-query.yaml
+      - $ref: parameters/endTime-query.yaml
+      - $ref: parameters/locations-query.yaml
+      - $ref: parameters/samplingSize-query.yaml
+      - $ref: parameters/source-query.yaml
+      - $ref: parameters/startTime-query.yaml
+      - $ref: parameters/sum-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/TimeSeriesDataResponse.json
+              schema:
+                $ref: schemas/TimeSeriesDataFeatureSchema.yaml
+        400:
+          description: |
+            Bad request.
+        500:
+          description: |
+            Internal error.

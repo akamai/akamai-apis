@@ -1,0 +1,63 @@
+type: object
+description: |-
+  A list of actions performed by Akamai zone transfer agents.
+  
+x-akamai:
+  file-path: schemas/zone-transfer-action.yaml
+additionalProperties: false
+required:
+- actionType
+properties:
+  actionType:
+    type: string
+    description: |
+      The type of action performed. `SOA` indicates that the agent tried to fetch the SOA record for this zone. `XFR` indicates that the agent attempted to perform a full zone transfer.
+    readOnly: true
+    enum:
+    - SOA
+    - XFR
+  lastFailureTimestamp:
+    type: string
+    description: |
+      If present, the ISO 8601 timestamp indicating when the most recent failed action occurred.
+    readOnly: true
+    format: date-time
+  lastSuccessSerial:
+    type: integer
+    description: |
+      If present, the SOA serial of the zone file at the time of the most recent successful retrieval.
+    readOnly: true
+  lastSuccessTimestamp:
+    type: string
+    description: |
+      If present, the ISO 8601 timestamp indicating when the most recent successful action occurred.
+    readOnly: true
+    format: date-time
+  messages:
+    type: array
+    description: |
+      A list of error messages logged by the zone transfer agents. May contain messages from previous, that is not the most recent, actions.
+    items:
+      type: object
+      additionalProperties: true
+      required:
+      - errorCode
+      properties:
+        errorCode:
+          type: string
+          description: |
+            A short identifier for the problem. See the [Action message error code values](ref:action-message-error-code-values) for values.
+          readOnly: true
+        timestamp:
+          type: string
+          description: |
+            The ISO 8601 timestamp indicating when the error occurred.
+          readOnly: true
+          format: date-time
+        tokens:
+          type: array
+          description: |
+            Additional information about the problem. If you need to decipher this data, see the [Action message error code values](ref:action-message-error-code-values).
+          readOnly: true
+          items:
+            type: string

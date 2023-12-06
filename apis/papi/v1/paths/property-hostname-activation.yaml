@@ -1,0 +1,91 @@
+x-akamai:
+  file-path: paths/property-hostname-activation.yaml
+  path-for-file: /properties/{propertyId}/hostname-activations/{hostnameActivationId}
+parameters:
+- $ref: ../parameters/propertyId-path.yaml
+- $ref: ../parameters/hostnameActivationId-path.yaml
+get:
+  operationId: get-property-hostname-activation
+  summary: Get a property hostname activation
+  tags:
+  - Hostname buckets
+  description: |
+    For a property with `useHostnameBucket` set to `true` at [creation](ref:post-properties), this operation gets details about a specific property hostname activation. You typically get a single activation from an `activationLink` when [launching a new property hostname activation](ref:patch-property-hostnames) and following up to poll its `status`. For property hostname activations whose `status` is `PENDING`, a `Retry-After` header provides an estimate for when it's likely to change.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/includeHostnames-query.yaml
+  - $ref: ../parameters/contractId-required.yaml
+  - $ref: ../parameters/groupId-required.yaml
+  responses:
+    200:
+      description: |
+        The response shows the property hostname activation details.
+      headers:
+        Retry-After:
+          $ref: ../headers/Retry-After.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/activation-get-response.json
+          schema:
+            $ref: ../schemas/property-hostnames-activation-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+delete:
+  operationId: delete-property-hostname-activations
+  summary: Cancel a pending property hostname activation
+  tags:
+  - Hostname buckets
+  description: |
+    For a property with `useHostnameBucket` set to `true` [when created](ref:post-properties), if you detect a problem with a property hostname while its activation is still `PENDING`, use this operation to cancel it. Make a DELETE request on the `activationLink` you get from the [Add or remove hostnames for a property](ref:patch-property-hostnames) operation's response. Once you DELETE the activation, it no longer appears in the [list of activations](ref:get-property-hostname-activations), but you can still [access it individually](ref:get-property-hostname-activation).
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-required.yaml
+  - $ref: ../parameters/groupId-required.yaml
+  responses:
+    200:
+      description: |
+        The response shows a status of the cancelled hostname activation for the specified property.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/hostname-activation-delete-response.json
+          schema:
+            $ref: ../schemas/property-hostnames-activation-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    409:
+      $ref: ../errors/409.yaml
+    422:
+      $ref: ../errors/422.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: hostnameActivation
+  group: Hostname activations

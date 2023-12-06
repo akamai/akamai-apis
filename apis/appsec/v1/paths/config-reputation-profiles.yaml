@@ -1,0 +1,86 @@
+x-akamai:
+  file-path: paths/config-reputation-profiles.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/reputation-profiles
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+post:
+  operationId: post-reputation-profiles
+  summary: Create a reputation profile
+  tags:
+  - 'Shared resources: Reputation profiles'
+  description: |
+    Create a new reputation profile for a specific configuration version. _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/reputation-profile-post.json
+        schema:
+          $ref: ../schemas/reputation-profile.yaml
+  responses:
+    201:
+      description: |
+        Successfully created a  reputation profile.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/reputation-profile-200.json
+          schema:
+            $ref: ../schemas/reputation-profile.yaml
+    400:
+      $ref: ../errors/400.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to reputation profiles in this security configuration.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/403.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    404:
+      description: |
+        [Not found](ref:404). Security configuration version wasn't found.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/404.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+get:
+  operationId: get-reputation-profiles
+  summary: List reputation profiles
+  tags:
+  - 'Shared resources: Reputation profiles'
+  description: |
+    Returns reputation profiles for a specific security configuration version. To use reputation profiles, you need to add [Client Reputation](https://learn.akamai.com/en-us/products/cloud_security/client_reputation.html) to Kona Site Defender on your contract. _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module.
+  responses:
+    200:
+      description: |
+        Successfully returned reputation profiles.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/reputation-profiles-200.json
+          schema:
+            $ref: ../schemas/reputation-profiles.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to reputation profile in this security configuration.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/403.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    404:
+      description: |
+        [Not found](ref:404). Security configuration version wasn't found.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/404.json
+          schema:
+            $ref: ../schemas/problem-details.yaml

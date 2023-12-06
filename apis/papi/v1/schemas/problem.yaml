@@ -1,0 +1,48 @@
+type: object
+description: |-
+  Represents error data in the [RFC 7807](https://www.rfc-editor.org/rfc/rfc7807) Problem Details format.
+  
+x-akamai:
+  file-path: schemas/problem.yaml
+additionalProperties: false
+required:
+- type
+- title
+- status
+- detail
+- instance
+properties:
+  type:
+    type: string
+    description: |
+      Identifies each error case.
+    format: uri
+  title:
+    type: string
+    description: |
+      A summary of each error case.
+    minLength: 1
+  detail:
+    type: string
+    description: |
+      Diagnostic instructions to locate and fix the problem.
+    minLength: 1
+  errors:
+    type: array
+    description: |
+      For errors with more than one detected problem, this represents each as a nested Problem Details object.
+    minItems: 0
+    uniqueItems: true
+    items:
+      $ref: problem-nested.yaml
+  instance:
+    type: string
+    description: |
+      Unique value generated with each API call.
+    minLength: 1
+  status:
+    type: integer
+    description: |
+      The HTTP status code that categorizes this error case.
+    minimum: 100
+    maximum: 600

@@ -1,0 +1,244 @@
+openapi: 3.0.0
+info:
+  title: Record Sets
+  version: v2
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/config-dns/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: record-sets.yaml
+paths:
+  /zones/{zone}/names:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-zone-names
+      summary: Get record set names for zone
+      tags:
+      - Names
+      description: |
+        Retrieves a list of record set names for a zone.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/recordname-list.json
+              schema:
+                $ref: schemas/recordset-name-list.yaml
+  /zones/{zone}/names/{name}/types:
+    parameters:
+    - $ref: parameters/name-path.yaml
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-zone-name-types
+      summary: Get record set types for name and zone
+      tags:
+      - Types
+      description: |
+        Lists all *existing* Record set types for this name. The list of *allowed* types is available at [List record types](ref:get-record-set-types). If the name does not exist within the zone, an empty list is returned.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/recordtype-list.json
+              schema:
+                $ref: schemas/recordset-type-list.yaml
+  /zones/{zone}/names/{name}/types/{type}:
+    parameters:
+    - $ref: parameters/type-path.yaml
+    - $ref: parameters/name-path.yaml
+    - $ref: parameters/zone-path.yaml
+    post:
+      operationId: post-zones-zone-names-name-types-type
+      summary: Create a record set
+      tags:
+      - Record sets
+      description: |
+        Creates a new Record set with the specified name and type.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/recordset-get.json
+            schema:
+              $ref: schemas/recordset.yaml
+      responses:
+        201:
+          description: |
+            Successful operation.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/recordset-get.json
+              schema:
+                $ref: schemas/recordset.yaml
+    get:
+      operationId: get-zone-name-type
+      summary: Get a record set
+      tags:
+      - Record sets
+      description: |
+        Retrieves a single record set for the zone, record name, and record type specified in the URL.
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/recordset-get.json
+              schema:
+                $ref: schemas/recordset.yaml
+    put:
+      operationId: put-zones-zone-names-name-types-type
+      summary: Replace a record set
+      tags:
+      - Record sets
+      description: |
+        Replaces an existing Record set with the request body. The `name` and `type` need to match the existing record.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/recordset-get.json
+            schema:
+              $ref: schemas/recordset.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/recordset-get.json
+              schema:
+                $ref: schemas/recordset.yaml
+    delete:
+      operationId: delete-zone-name-type
+      summary: Delete a record set
+      tags:
+      - Record sets
+      description: |
+        Removes an existing record set.
+      responses:
+        204:
+          description: |
+            Successful response.
+  /zones/{zone}/recordsets:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    post:
+      operationId: post-zones-zone-recordsets
+      summary: Create multiple record sets
+      tags:
+      - Record sets
+      description: |
+        Creates multiple new Record Sets on this Zone. If any record set fails to create, for example, because a record set with that name and type already exists, the entire operation fails.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/recordsets-post.json
+            schema:
+              $ref: schemas/post-zones-zone-recordsets-request.yaml
+      responses:
+        204:
+          description: |
+            Successful operation.
+    get:
+      operationId: get-zones-zone-recordsets
+      summary: Get zone's record sets
+      tags:
+      - Record sets
+      description: |
+        Lists all Record Sets for this Zone. It works only for `PRIMARY` and `SECONDARY` zones. This operation is [paginated](ref:pagination).
+      parameters:
+      - $ref: parameters/sortBy-query-name-type.yaml
+      - $ref: parameters/types-query-record-sets.yaml
+      - $ref: parameters/search-query-name-rdata.yaml
+      - $ref: parameters/pageable_page.yaml
+      - $ref: parameters/pageable_pageSize.yaml
+      - $ref: parameters/pageable_showAll.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/recordsets-report.json
+              schema:
+                $ref: schemas/get-zones-zone-versions-uuid-recordsets-response.yaml
+    put:
+      operationId: put-zones-zone-recordsets
+      summary: Replace record sets
+      tags:
+      - Record sets
+      description: |
+        Replaces the entire list of Record Sets that currently exists with the list provided.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/recordsets-put.json
+            schema:
+              $ref: schemas/post-zones-zone-recordsets-request.yaml
+      responses:
+        204:
+          description: |
+            Successful operation.
+  /zones/{zone}/zone-file:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    post:
+      operationId: post-zones-zone-zone-file
+      summary: Post master zone file
+      tags:
+      - Master zone file
+      description: |
+        Upload new record set data for this zone in master zone file format. Replaces any existing record sets. This operation applies to primary zones and secondary zones. See [RFC 1035](http://tools.ietf.org/html/rfc1035) section 5 and [RFC 1034](http://tools.ietf.org/html/rfc1034) section 3.6.1 for more information.  Zone files can contain only US-ASCII characters 0&ndash;127. Where allowed, you can encode high-order ASCII characters, 128+, with a backslash plus a three-digit decimal number representing the byte value. For example, `\233` instead of `&eacute;`.  `AKAMAICDN` and `AKAMAITLC` records can't be represented in this format. Uploading a zone file does not affect these records.
+      requestBody:
+        required: true
+        content:
+          text/dns:
+            example:
+              $ref: examples/db.example.com
+            schema:
+              type: string
+      responses:
+        204:
+          description: |
+            Successful operation.
+    get:
+      operationId: get-zones-zone-zone-file
+      summary: Get master zone file
+      tags:
+      - Master zone file
+      description: |
+        Download this zone's record set data in master zone file format. This operation applies to primary zones and secondary zones. See [RFC 1035](http://tools.ietf.org/html/rfc1035) section 5 and [RFC 1034](http://tools.ietf.org/html/rfc1034) section 3.6.1 for more information.  `AKAMAICDN` and `AKAMAITLC` records can't be represented in this format, so they are displayed as comment lines.
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            text/dns:
+              example:
+                $ref: examples/db.example.com
+              schema:
+                type: string

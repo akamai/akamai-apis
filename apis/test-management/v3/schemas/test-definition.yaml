@@ -1,0 +1,106 @@
+type: object
+description: |-
+  Contains information about a test definition.
+  
+x-akamai:
+  file-path: schemas/test-definition.yaml
+additionalProperties: false
+required:
+- testDefinitionId
+- testDefinitionName
+- hostname
+- ipVersions
+- createdBy
+- createdDate
+properties:
+  createdBy:
+    type: string
+    description: |
+      Username who created the test definition.
+    readOnly: true
+    minLength: 1
+  createdDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the test definition was created.
+    readOnly: true
+    format: date-time
+  deletedBy:
+    type: string
+    description: |
+      Username who last deleted the test definition.
+    minLength: 0
+  deletedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the test definition was last deleted.
+    format: date-time
+  hostname:
+    type: string
+    description: |
+      Hostname to be tested. Once set, you can't modify this value.
+    maxLength: 100
+    format: hostname
+  ipVersions:
+    type: array
+    description: |
+      IP version you want to run the test for. Possible values are: `IPV4`, `IPV6`, or both.
+    minItems: 1
+    maxItems: 2
+    uniqueItems: true
+    items:
+      type: string
+      enum:
+      - IPV4
+      - IPV6
+  modifiedBy:
+    type: string
+    description: |
+      Username who last modified the test definition.
+    readOnly: true
+    minLength: 0
+  modifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the test definition was last modified.
+    readOnly: true
+    format: date-time
+  status:
+    type: string
+    description: |
+      Test definition's status. Possible values are: `ACTIVE` or `INACTIVE`. The `INACTIVE` status means the test definition was removed and you can't use it.
+    readOnly: true
+    enum:
+    - INACTIVE
+    - ACTIVE
+  testCases:
+    type: object
+    description: |
+      Lists all the test cases created for particular test definition.
+    required:
+    - testCases
+    properties:
+      testCases:
+        type: array
+        description: |
+          List of all the test cases created for particular test definition.
+        items:
+          $ref: comparative-test-case.yaml
+  testDefinitionDescription:
+    type: string
+    description: |
+      Description of the test definition.
+    minLength: 0
+    maxLength: 4000
+  testDefinitionId:
+    type: integer
+    description: |
+      Unique identifier for each test definition.
+    readOnly: true
+    minimum: 1
+  testDefinitionName:
+    type: string
+    description: |
+      Name of the test definition.
+    minLength: 1
+    maxLength: 100

@@ -1,0 +1,39 @@
+openapi: 3.0.0
+info:
+  title: Activations
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/network-list/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: activations.yaml
+paths:
+  /activations/{activationId}:
+    parameters:
+    - $ref: parameters/activationId-path.yaml
+    get:
+      operationId: get-activation
+      summary: Get activation details
+      tags:
+      - Activations
+      description: |
+        Provides detailed status for a given activation, including progress on _fast_ activation and other audit information, in addition to information ordinarily available from the [Get activation status](ref:get-network-list-status) operation.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/activation-request.json
+              schema:
+                $ref: schemas/activation-request.yaml
+        400:
+          $ref: responses/clientReadErrors_400.yaml
+        404:
+          $ref: responses/clientReadErrors_404.yaml
+        500:
+          $ref: responses/serverErrors_500.yaml

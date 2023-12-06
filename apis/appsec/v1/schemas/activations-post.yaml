@@ -1,0 +1,83 @@
+type: object
+x-akamai:
+  file-path: schemas/activations-post.yaml
+additionalProperties: false
+required:
+- action
+- activationConfigs
+- network
+- note
+- notificationEmails
+properties:
+  acknowledgedInvalidHosts:
+    type: array
+    description: |
+      The list of invalid hostnames in the security configuration to activate. In some cases, you may want to activate a security configuration with hostnames that WAF can't protect (for example, hostnames not managed as Akamai properties, or managed under a different contract than the configuration). By default, the existence of invalid hostnames blocks activation with a warning. The warning includes the names of the invalid hostnames. If you want to activate a configuration with invalid hostnames, enter the hostnames in this array. This field is now deprecated. Use `acknowledgedInvalidHostsByConfig` instead.
+    items:
+      type: string
+  acknowledgedInvalidHostsByConfig:
+    type: array
+    description: |
+      The list of invalid hostnames per security configuration to activate. In some cases, you may want to activate a security configuration with hostnames that WAF can't protect (for example, hostnames not managed as Akamai properties, or managed under a different contract than the configuration). By default, the existence of invalid hostnames blocks activation with a warning. The warning includes the names of the invalid hostnames. If you want to activate a configuration with invalid hostnames, enter the hostnames and the configuration ID in this array.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - configId
+      - invalidHosts
+      properties:
+        configId:
+          type: integer
+          description: |
+            Uniquely identifies the security configuration with invalid hostnames.
+        invalidHosts:
+          type: array
+          description: |
+            The list of invalid hostnames in the security configuration.
+          items:
+            type: string
+  action:
+    type: string
+    description: |
+      The action to take, either `ACTIVATE` or `DEACTIVATE`.
+    enum:
+    - ACTIVATE
+    - DEACTIVATE
+  activationConfigs:
+    type: array
+    description: |
+      Specifies the security configuration and version to activate or deactivate.
+    minItems: 1
+    maxItems: 2
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - configId
+      - configVersion
+      properties:
+        configId:
+          type: integer
+          description: |
+            The origin identifier or destination configuration to activate.
+        configVersion:
+          type: integer
+          description: |
+            The origin version or destination configuration to activate.
+  network:
+    type: string
+    description: |
+      The target Akamai activation environment, either `STAGING` or `PRODUCTION`.
+    enum:
+    - STAGING
+    - PRODUCTION
+  note:
+    type: string
+    description: |
+      The notes you entered for the activation.
+  notificationEmails:
+    type: array
+    description: |
+      The email addresses to notify when the activation happens.
+    items:
+      type: string

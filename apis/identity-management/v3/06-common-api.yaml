@@ -1,0 +1,159 @@
+openapi: 3.0.0
+info:
+  title: Common resources, for administrators
+  version: '3'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/identity-management/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: 06-common-api.yaml
+paths:
+  /user-admin/common/contact-types:
+    get:
+      operationId: get-common-contact-types
+      summary: View contact types
+      tags:
+      - Contact types
+      description: |
+        This operation lists the supported contact types. Administrators should use the values from this operation to add or update a user's `contactType`. Users should run the [View contact types for a user profile](ref:get-user-contact-types) operation before modifying their contact type.
+      responses:
+        200:
+          description: |
+            The response provides the supported contact types.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-contact-types.json
+              schema:
+                $ref: schemas/ListOfString.yaml
+  /user-admin/common/countries:
+    get:
+      operationId: get-common-countries
+      summary: View countries
+      tags:
+      - Locale
+      description: |
+        This operation lists the supported countries. Administrators should use the values from this operation to add or update a user's `country`. Users should run the [View supported countries for a user profile](ref:get-user-countries) operation before modifying their country.
+      responses:
+        200:
+          description: |
+            The response provides the supported countries.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-countries.json
+              schema:
+                $ref: schemas/ListOfString.yaml
+  /user-admin/common/countries/{country}/states:
+    parameters:
+    - $ref: parameters/country-path.yaml
+    get:
+      operationId: get-common-states
+      summary: View states
+      tags:
+      - Locale
+      description: |
+        This operation lists the supported U.S. states or Canadian provinces. Administrators should use the values from this operation to add or update a user's `state`. If a user's state or province is unknown, use `TBD`. Users should run the [View states for a user profile](ref:get-user-states) operation before modifying their state.
+      responses:
+        200:
+          description: |
+            The response provides the supported U.S. states or Canadian provinces.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-states.json
+              schema:
+                $ref: schemas/ListOfString.yaml
+  /user-admin/common/notification-products:
+    get:
+      operationId: get-common-notification-products
+      summary: View products
+      tags:
+      - Products
+      description: |
+        This operation lists the products a user can subscribe to and receive notifications for on the account. The tokens in your API client determine the account. Administrators should use the values from this operation to set a user's product notifications. Users should run the [View products for a user profile](ref:get-user-notification-products) operation before setting their product notifications.
+      responses:
+        200:
+          description: |
+            The response provides the supported products.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-notification-products.json
+              schema:
+                $ref: schemas/ListOfString.yaml
+  /user-admin/common/password-policy:
+    get:
+      operationId: get-common-password-policy
+      summary: View password policy
+      tags:
+      - Policies
+      description: |
+        This operation lists the password policy for the account. The tokens in your API client determine the account. Administrators should use the values from this operation to set a user's password policy. Users should run the [View password policy for a user profile](ref:get-user-password-policy) operation before setting their password policy.
+      responses:
+        200:
+          description: |
+            The response provides the password policy.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-password-policy.json
+              schema:
+                $ref: schemas/PortalPasswordClass.yaml
+  /user-admin/common/supported-languages:
+    get:
+      operationId: get-common-languages
+      summary: View languages
+      tags:
+      - Locale
+      description: |
+        This operation lists the supported languages. Administrators should use the values from this operation to set a user's `preferredLanguage`. Users should run the [View languages for a user profile](ref:get-user-languages) operation before setting their preferred language.
+      responses:
+        200:
+          description: |
+            The response provides the supported languages.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-supported-languages.json
+              schema:
+                $ref: schemas/ListOfString.yaml
+  /user-admin/common/timeout-policies:
+    get:
+      operationId: get-common-timeout-policies
+      summary: View timeout policies
+      tags:
+      - Policies
+      description: |
+        This operation lists the supported session timeout policies. The `name` for each timeout period is in minutes, and the time `value` is in seconds. Administrators should use the `sessionTimeout` values from this operation to set a user's timeout policy. Users should run the [View timeout policies for a user profile](ref:get-user-timeout-policies) operation before setting their timeout policy.
+      responses:
+        200:
+          description: |
+            This operation lists the supported session timeout policies.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-timeout-policies.json
+              schema:
+                $ref: schemas/ListOfSessionTimeoutPolicy.yaml
+  /user-admin/common/timezones:
+    get:
+      operationId: get-common-timezones
+      summary: View time zones
+      tags:
+      - Locale
+      description: |
+        This operation lists the supported time zones. Time zones are in ISO 8601 format. Administrators should use the values from this operation to set a user's `timeZone`. Users should run the [View time zones for a user profile](ref:get-user-timezones) operation before setting their time zone.
+      responses:
+        200:
+          description: |
+            The response provides the supported time zones.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-timezones.json
+              schema:
+                $ref: schemas/ListOfTimeZones.yaml

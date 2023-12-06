@@ -1,0 +1,1735 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Contract API",
+    "url": "https://techdocs.akamai.com/contract-api/reference"
+  },
+  "info": {
+    "title": "Akamai: Contract API",
+    "version": "v1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/contracts/identifiers": {
+      "get": {
+        "description": "Get the list of contracts that a user has access to.",
+        "operationId": "get-contract-ids",
+        "summary": "List contracts",
+        "tags": [
+          "Contracts"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Contract API",
+          "url": "https://techdocs.akamai.com/contract-api/reference/get-contract-ids"
+        },
+        "responses": {
+          "200": {
+            "description": "The response provides a list of contracts.",
+            "content": {
+              "application/json": {
+                "example": [
+                  "3-1EFAKE",
+                  "3-XBOGUS"
+                ],
+                "schema": {
+                  "description": "List of contracts.",
+                  "minItems": 1,
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string"
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/contract-identifiers-200.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "[Bad request](https://techdocs.akamai.com/contract-api/reference/400).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "status": "400",
+                  "title": "Erroneous data input.",
+                  "type": "/contract-api/error-types/E400",
+                  "errors": [
+                    {
+                      "detail": "From date must be within 15 months in past from the current date",
+                      "title": "from"
+                    },
+                    {
+                      "detail": "To date must be on or before the current date",
+                      "title": "to"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "status",
+                    "title"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "minItems": 1,
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.      ",
+                        "type": "object",
+                        "required": [
+                          "title",
+                          "detail"
+                        ],
+                        "properties": {
+                          "detail": {
+                            "description": "More information about the error.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "title": {
+                            "description": "Title of the error.",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/error-nested.yaml"
+                        }
+                      }
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/error.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "description": "[Unauthorized error](https://techdocs.akamai.com/contract-api/reference/401).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "192.0.2.0",
+                  "detail": "The signature does not match",
+                  "instance": "https://akab-xxxxx-xxxxx.luna.akamaiapis.net/contract-api/v1/reportingGroups/identifiers",
+                  "method": "GET",
+                  "requestId": "933ed8a4",
+                  "requestTime": "2023-02-26T17:41:25Z",
+                  "serverIp": "192.0.2.193",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "status",
+                    "title"
+                  ],
+                  "properties": {
+                    "clientIp": {
+                      "description": "IP address of the client.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "More information about the error.",
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "The URL for this error occurrence.",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "HTTP method.",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "Identifies the request.",
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "Request date expressed as an ISO 8601 timestamp.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "IP address of the server.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/error-401-403.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Returns a specific set of contracts. Select `TOP` to return only parent contracts, or `ALL` to return both parent and child contracts.",
+            "example": "{{depth}}",
+            "in": "query",
+            "name": "depth",
+            "schema": {
+              "default": "TOP",
+              "example": "TOP",
+              "type": "string",
+              "enum": [
+                "TOP",
+                "ALL"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/depth-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/contracts/{contractId}/products/summaries": {
+      "get": {
+        "description": "Get the IDs and names of the products associated with a contract for the time frame selected.",
+        "operationId": "get-contract-product-summaries",
+        "summary": "List products per contract",
+        "tags": [
+          "Products"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Contract API",
+          "url": "https://techdocs.akamai.com/contract-api/reference/get-contract-product-summaries"
+        },
+        "responses": {
+          "200": {
+            "description": "The response provides a list of products.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "products": {
+                    "contractId": "K-0N7RAK71",
+                    "marketing-products": [
+                      {
+                        "marketingProductId": "B-3-96NY56",
+                        "marketingProductName": "Access Control - All Streaming Delivery"
+                      },
+                      {
+                        "marketingProductId": "B-3-A5ME5",
+                        "marketingProductName": "Site and Visitor Intelligence"
+                      },
+                      {
+                        "marketingProductId": "B-4-1O78TS",
+                        "marketingProductName": "All Streaming Delivery"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "List of products.",
+                  "type": "object",
+                  "required": [
+                    "products"
+                  ],
+                  "properties": {
+                    "products": {
+                      "additionalProperties": false,
+                      "description": "Object that lists the products associated with the contract specified.",
+                      "type": "object",
+                      "required": [
+                        "contractId",
+                        "marketing-products"
+                      ],
+                      "properties": {
+                        "contractId": {
+                          "description": "The unique identifier for a contract.",
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "marketing-products": {
+                          "description": "The identifiers and names for each product included on a contract.",
+                          "minItems": 1,
+                          "type": "array",
+                          "uniqueItems": true,
+                          "items": {
+                            "additionalProperties": false,
+                            "type": "object",
+                            "required": [
+                              "marketingProductId",
+                              "marketingProductName"
+                            ],
+                            "properties": {
+                              "marketingProductId": {
+                                "description": "The unique identifier for a product.",
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "marketingProductName": {
+                                "description": "The formal name of a product.",
+                                "minLength": 1,
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/product-summaries-200.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "[Bad request](https://techdocs.akamai.com/contract-api/reference/400).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "status": "400",
+                  "title": "Erroneous data input.",
+                  "type": "/contract-api/error-types/E400",
+                  "errors": [
+                    {
+                      "detail": "From date must be within 15 months in past from the current date",
+                      "title": "from"
+                    },
+                    {
+                      "detail": "To date must be on or before the current date",
+                      "title": "to"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "status",
+                    "title"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "minItems": 1,
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.      ",
+                        "type": "object",
+                        "required": [
+                          "title",
+                          "detail"
+                        ],
+                        "properties": {
+                          "detail": {
+                            "description": "More information about the error.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "title": {
+                            "description": "Title of the error.",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/error-nested.yaml"
+                        }
+                      }
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/error.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "description": "[Unauthorized error](https://techdocs.akamai.com/contract-api/reference/401).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "192.0.2.0",
+                  "detail": "The signature does not match",
+                  "instance": "https://akab-xxxxx-xxxxx.luna.akamaiapis.net/contract-api/v1/reportingGroups/identifiers",
+                  "method": "GET",
+                  "requestId": "933ed8a4",
+                  "requestTime": "2023-02-26T17:41:25Z",
+                  "serverIp": "192.0.2.14",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "status",
+                    "title"
+                  ],
+                  "properties": {
+                    "clientIp": {
+                      "description": "IP address of the client.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "More information about the error.",
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "The URL for this error occurrence.",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "HTTP method.",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "Identifies the request.",
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "Request date expressed as an ISO 8601 timestamp.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "IP address of the server.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/error-401-403.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          },
+          "403": {
+            "description": "[Access is forbidden](https://techdocs.akamai.com/contract-api/reference/403).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "status": 403,
+                  "title": "Forbidden resource",
+                  "type": "/contract-api/v1/error-types/E403"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "status",
+                    "title"
+                  ],
+                  "properties": {
+                    "clientIp": {
+                      "description": "IP address of the client.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "More information about the error.",
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "The URL for this error occurrence.",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "HTTP method.",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "Identifies the request.",
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "Request date expressed as an ISO 8601 timestamp.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "IP address of the server.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/error-401-403.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "404": {
+            "description": "[Resource not found](https://techdocs.akamai.com/contract-api/reference/404).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "status": "404",
+                  "title": "Resource not found.",
+                  "type": "/contract-api/error-types/E404"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "status",
+                    "title"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "minItems": 1,
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.      ",
+                        "type": "object",
+                        "required": [
+                          "title",
+                          "detail"
+                        ],
+                        "properties": {
+                          "detail": {
+                            "description": "More information about the error.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "title": {
+                            "description": "Title of the error.",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/error-nested.yaml"
+                        }
+                      }
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/error.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "The start date, in UTC, to use when looking for products associated with a contract. The search always begins at midnight (0:00) UTC of the specified date.  The default start date is 30 days prior to the current date.  For current contracts, you can select a date within the past 15 months of the current date. For expired contracts, you are limited to a date range of 30 days within the 15 month window.",
+            "example": "{{from}}",
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "example": "2020-01-31",
+              "maxLength": 10,
+              "minLength": 10,
+              "pattern": "([0-9-])+",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/from-query.yaml"
+            }
+          },
+          {
+            "description": "The end date, in UTC, to use when looking for products associated with a contract. The search always ends at 23:59:59 UTC of the specified date.  The default end date is the current date.",
+            "example": "{{to}}",
+            "in": "query",
+            "name": "to",
+            "schema": {
+              "example": "2021-03-31",
+              "maxLength": 10,
+              "minLength": 10,
+              "pattern": "([0-9-])+",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/to-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The unique identifier for a contract.",
+          "example": "{{contractId}}",
+          "in": "path",
+          "name": "contractId",
+          "required": true,
+          "schema": {
+            "example": "2-4DW493",
+            "maxLength": 15,
+            "minLength": 3,
+            "pattern": "^[A-Z0-9-\\.]+$",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/contractId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/reportingGroups": {
+      "get": {
+        "description": "Get the IDs of the Content Provider (CP) reporting groups that you have access to along with their names. To run this operation, your user account needs the CPCode Rep Group role. To add this role, use the [Identity and Access Management application](https://control.akamai.com/admin/?tab=CONFIGURE&type=context).",
+        "operationId": "get-reporting-groups",
+        "summary": "List CP code reporting groups",
+        "tags": [
+          "Reporting groups"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Contract API",
+          "url": "https://techdocs.akamai.com/contract-api/reference/get-reporting-groups"
+        },
+        "responses": {
+          "200": {
+            "description": "The response provides a list of reporting groups.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "A logical grouping of content provider (CP) codes.",
+                  "type": "array",
+                  "items": {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "name"
+                    ],
+                    "properties": {
+                      "id": {
+                        "description": "Unique identifier for each reporting group.",
+                        "minimum": 1,
+                        "type": "integer"
+                      },
+                      "name": {
+                        "description": "The descriptive name you supply for each reporting group.",
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/reporting-group-name-list-200.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 12289,
+                    "name": "mobile group"
+                  },
+                  {
+                    "id": 139267,
+                    "name": "*.example.com"
+                  },
+                  {
+                    "id": 139268,
+                    "name": "images traffic group"
+                  },
+                  {
+                    "id": 7182,
+                    "name": "support group"
+                  },
+                  {
+                    "id": 13844,
+                    "name": "Radio and Streaming"
+                  },
+                  {
+                    "id": 130221,
+                    "name": "All Mini Country sites"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "[Bad request](https://techdocs.akamai.com/contract-api/reference/400).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "status": "400",
+                  "title": "Erroneous data input.",
+                  "type": "/contract-api/error-types/E400",
+                  "errors": [
+                    {
+                      "detail": "From date must be within 15 months in past from the current date",
+                      "title": "from"
+                    },
+                    {
+                      "detail": "To date must be on or before the current date",
+                      "title": "to"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "status",
+                    "title"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "minItems": 1,
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.      ",
+                        "type": "object",
+                        "required": [
+                          "title",
+                          "detail"
+                        ],
+                        "properties": {
+                          "detail": {
+                            "description": "More information about the error.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "title": {
+                            "description": "Title of the error.",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/error-nested.yaml"
+                        }
+                      }
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/error.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "description": "[Unauthorized error](https://techdocs.akamai.com/contract-api/reference/401).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "192.0.2.0",
+                  "detail": "The signature does not match",
+                  "instance": "https://akab-xxxxx-xxxxx.luna.akamaiapis.net/contract-api/v1/reportingGroups/identifiers",
+                  "method": "GET",
+                  "requestId": "933ed8a4",
+                  "requestTime": "2023-02-26T17:41:25Z",
+                  "serverIp": "192.0.2.91",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "status",
+                    "title"
+                  ],
+                  "properties": {
+                    "clientIp": {
+                      "description": "IP address of the client.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "More information about the error.",
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "The URL for this error occurrence.",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "HTTP method.",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "Identifies the request.",
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "Request date expressed as an ISO 8601 timestamp.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "IP address of the server.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/error-401-403.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/reportingGroups/identifiers": {
+      "get": {
+        "description": "Get the IDs of the Content Provider (CP) reporting groups that you have access to. To run this operation, your user account needs the CPCode Rep Group role. To add this role, use the [Identity and Access Management application](https://control.akamai.com/admin/?tab=CONFIGURE&type=context).",
+        "operationId": "get-group-ids",
+        "summary": "List CP code reporting group IDs",
+        "tags": [
+          "Reporting groups"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Contract API",
+          "url": "https://techdocs.akamai.com/contract-api/reference/get-group-ids"
+        },
+        "responses": {
+          "200": {
+            "description": "The response provides a list of reporting group IDs.",
+            "content": {
+              "application/json": {
+                "example": [
+                  503,
+                  999,
+                  201
+                ],
+                "schema": {
+                  "description": "An array of the CP code reporting group IDs.",
+                  "type": "array",
+                  "items": {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/reportingGroupList.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "[Bad request](https://techdocs.akamai.com/contract-api/reference/400).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "status": "400",
+                  "title": "Erroneous data input.",
+                  "type": "/contract-api/error-types/E400",
+                  "errors": [
+                    {
+                      "detail": "From date must be within 15 months in past from the current date",
+                      "title": "from"
+                    },
+                    {
+                      "detail": "To date must be on or before the current date",
+                      "title": "to"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "status",
+                    "title"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "minItems": 1,
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.      ",
+                        "type": "object",
+                        "required": [
+                          "title",
+                          "detail"
+                        ],
+                        "properties": {
+                          "detail": {
+                            "description": "More information about the error.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "title": {
+                            "description": "Title of the error.",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/error-nested.yaml"
+                        }
+                      }
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/error.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "description": "[Unauthorized error](https://techdocs.akamai.com/contract-api/reference/401).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "192.0.2.0",
+                  "detail": "The signature does not match",
+                  "instance": "https://akab-xxxxx-xxxxx.luna.akamaiapis.net/contract-api/v1/reportingGroups/identifiers",
+                  "method": "GET",
+                  "requestId": "933ed8a4",
+                  "requestTime": "2023-02-26T17:41:25Z",
+                  "serverIp": "192.0.2.25",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "status",
+                    "title"
+                  ],
+                  "properties": {
+                    "clientIp": {
+                      "description": "IP address of the client.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "More information about the error.",
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "The URL for this error occurrence.",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "HTTP method.",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "Identifies the request.",
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "Request date expressed as an ISO 8601 timestamp.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "IP address of the server.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/error-401-403.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/reportingGroups/{reportingGroupId}/products/summaries": {
+      "get": {
+        "description": "Get the IDs and names of the products associated with the reporting group for the time frame selected. To run this operation, your user account needs the CPCode Rep Group role. To add this role, use the [Identity and Access Management application](https://control.akamai.com/admin/?tab=CONFIGURE&type=context). When a request is successful, it may return either a 200 or a 300 response. The API returns a 200 (OK) response when the CP code reporting group is associated with only one contract. You'll receive a `300 Multiple Choices` response when the request returns a list of matching contracts because the CP code reporting group is associated with multiple contracts. To retrieve product information when you receive a 300 response code, make a new GET request to the hyperlinks provided in the response.",
+        "operationId": "get-group-products-summaries",
+        "summary": "List products per reporting group",
+        "tags": [
+          "Products"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Contract API",
+          "url": "https://techdocs.akamai.com/contract-api/reference/get-group-products-summaries"
+        },
+        "responses": {
+          "200": {
+            "description": "The response provides a list of products. This response is returned when the CP code reporting group is associated with only one contract.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "products": {
+                    "contractId": "C-0N7RAC71",
+                    "marketing-products": [
+                      {
+                        "marketingProductId": "B-3-96NY56",
+                        "marketingProductName": "Access Control - All Streaming Delivery"
+                      },
+                      {
+                        "marketingProductId": "B-3-A5ME5",
+                        "marketingProductName": "Site and Visitor Intelligence"
+                      },
+                      {
+                        "marketingProductId": "B-4-1O78TS",
+                        "marketingProductName": "All Streaming Delivery"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "List of products.",
+                  "type": "object",
+                  "required": [
+                    "products"
+                  ],
+                  "properties": {
+                    "products": {
+                      "additionalProperties": false,
+                      "description": "Object that lists the products associated with the contract specified.",
+                      "type": "object",
+                      "required": [
+                        "contractId",
+                        "marketing-products"
+                      ],
+                      "properties": {
+                        "contractId": {
+                          "description": "The unique identifier for a contract.",
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "marketing-products": {
+                          "description": "The identifiers and names for each product included on a contract.",
+                          "minItems": 1,
+                          "type": "array",
+                          "uniqueItems": true,
+                          "items": {
+                            "additionalProperties": false,
+                            "type": "object",
+                            "required": [
+                              "marketingProductId",
+                              "marketingProductName"
+                            ],
+                            "properties": {
+                              "marketingProductId": {
+                                "description": "The unique identifier for a product.",
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "marketingProductName": {
+                                "description": "The formal name of a product.",
+                                "minLength": 1,
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/product-summaries-200.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "300": {
+            "description": "The request returned a list of matching contracts because the CP code reporting group is associated with multiple contracts. To retrieve product information, make a new GET request to a specific contract ID using the API listed in the response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "contracts": [
+                    {
+                      "contractId": "K-0N7RAK7",
+                      "href": "/contract-api/v1/contracts/3-MADEUP/products/summaries"
+                    },
+                    {
+                      "contractId": "C-0N7RAC71",
+                      "href": "/contract-api/v1/contracts/3-1EFAKE/products/summaries"
+                    },
+                    {
+                      "contractId": "C-0N7RAC7",
+                      "href": "/contract-api/v1/contracts/3-XBOGUS/products/summaries"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "List of contracts.",
+                  "type": "object",
+                  "required": [
+                    "contracts"
+                  ],
+                  "properties": {
+                    "contracts": {
+                      "description": "Array of contracts that the requesting user has access to.",
+                      "minItems": 1,
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "required": [
+                          "contractId",
+                          "href"
+                        ],
+                        "properties": {
+                          "contractId": {
+                            "description": "The unique identifier for a contract.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "href": {
+                            "description": "The URL that accesses product information for the `contractId`.",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/contract-list-200.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "[Bad request](https://techdocs.akamai.com/contract-api/reference/400).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "status": "400",
+                  "title": "Erroneous data input.",
+                  "type": "/contract-api/error-types/E400",
+                  "errors": [
+                    {
+                      "detail": "From date must be within 15 months in past from the current date",
+                      "title": "from"
+                    },
+                    {
+                      "detail": "To date must be on or before the current date",
+                      "title": "to"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "status",
+                    "title"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "minItems": 1,
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.      ",
+                        "type": "object",
+                        "required": [
+                          "title",
+                          "detail"
+                        ],
+                        "properties": {
+                          "detail": {
+                            "description": "More information about the error.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "title": {
+                            "description": "Title of the error.",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/error-nested.yaml"
+                        }
+                      }
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/error.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "description": "[Unauthorized error](https://techdocs.akamai.com/contract-api/reference/401).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "192.0.2.0",
+                  "detail": "The signature does not match",
+                  "instance": "https://akab-xxxxx-xxxxx.luna.akamaiapis.net/contract-api/v1/reportingGroups/identifiers",
+                  "method": "GET",
+                  "requestId": "933ed8a4",
+                  "requestTime": "2023-02-26T17:41:25Z",
+                  "serverIp": "192.0.2.28",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "status",
+                    "title"
+                  ],
+                  "properties": {
+                    "clientIp": {
+                      "description": "IP address of the client.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "More information about the error.",
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "The URL for this error occurrence.",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "HTTP method.",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "Identifies the request.",
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "Request date expressed as an ISO 8601 timestamp.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "IP address of the server.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/error-401-403.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          },
+          "403": {
+            "description": "[Access is forbidden](https://techdocs.akamai.com/contract-api/reference/403).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "status": 403,
+                  "title": "Forbidden resource",
+                  "type": "/contract-api/v1/error-types/E403"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "status",
+                    "title"
+                  ],
+                  "properties": {
+                    "clientIp": {
+                      "description": "IP address of the client.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "More information about the error.",
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "The URL for this error occurrence.",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "HTTP method.",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "Identifies the request.",
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "Request date expressed as an ISO 8601 timestamp.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "IP address of the server.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/error-401-403.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "404": {
+            "description": "[Resource not found](https://techdocs.akamai.com/contract-api/reference/404).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "status": "404",
+                  "title": "Resource not found.",
+                  "type": "/contract-api/error-types/E404"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "status",
+                    "title"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "minItems": 1,
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.      ",
+                        "type": "object",
+                        "required": [
+                          "title",
+                          "detail"
+                        ],
+                        "properties": {
+                          "detail": {
+                            "description": "More information about the error.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "title": {
+                            "description": "Title of the error.",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/error-nested.yaml"
+                        }
+                      }
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/error.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "The start date, in UTC, to use when looking for products associated with a contract. The search always begins at midnight (0:00) UTC of the specified date.  The default start date is 30 days prior to the current date.  For current contracts, you can select a date within the past 15 months of the current date. For expired contracts, you are limited to a date range of 30 days within the 15 month window.",
+            "example": "{{from}}",
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "example": "2020-01-31",
+              "maxLength": 10,
+              "minLength": 10,
+              "pattern": "([0-9-])+",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/from-query.yaml"
+            }
+          },
+          {
+            "description": "The end date, in UTC, to use when looking for products associated with a contract. The search always ends at 23:59:59 UTC of the specified date.  The default end date is the current date.",
+            "example": "{{to}}",
+            "in": "query",
+            "name": "to",
+            "schema": {
+              "example": "2021-03-31",
+              "maxLength": 10,
+              "minLength": 10,
+              "pattern": "([0-9-])+",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/to-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The unique identifier for a Content Provider (CP) code reporting group.",
+          "example": "{{reportingGroupId}}",
+          "in": "path",
+          "name": "reportingGroupId",
+          "required": true,
+          "schema": {
+            "example": 1001,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/reportingGroupId-path.yaml"
+          }
+        }
+      ]
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/contract-api/v1"
+    }
+  ]
+}

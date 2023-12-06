@@ -1,0 +1,65 @@
+type: object
+description: |-
+  Configuration details used together for presentation purposes.
+  
+x-akamai:
+  file-path: schemas/detail.yaml
+additionalProperties: false
+required:
+- definitionId
+- definition
+- alerts
+properties:
+  activity:
+    type: array
+    description: |
+      Activity information.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - time
+      - messageKey
+      properties:
+        messageArgs:
+          type: object
+          description: |
+            Specifies additional information that may be useful in adding detail to the message.
+        messageKey:
+          type: string
+          description: |
+            Internationalization token or message to present to users.
+        time:
+          type: string
+          description: |
+            An ISO 8601 timestamp.
+          format: date-time
+  alerts:
+    type: array
+    description: |
+      Alert firings.
+    minItems: 1
+    items:
+      $ref: firing.yaml
+  definition:
+    $ref: definition.yaml
+  definitionId:
+    type: string
+    description: |
+      Identifies the alert definition.
+    minLength: 1
+  scopes:
+    type: array
+    description: |
+      The set of your permissions to modify the alert, any combination of: `ALERTS_READ`, `ALERTS_ADD`, `ALERTS_DELETE`, `ALERTS_EDIT`, and `ALERTS_VIEWER` values. The 'ALERTS_READ' permission lets you view alert configuration. The 'ALERTS_VIEWER' permission lets you view active alerts.
+    minItems: 1
+    items:
+      type: string
+      enum:
+      - ALERTS_READ
+      - ALERTS_ADD
+      - ALERTS_DELETE
+      - ALERTS_EDIT
+      - ALERTS_VIEWER
+  sparkline:
+    $ref: sparkline.yaml

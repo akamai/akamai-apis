@@ -1,0 +1,74 @@
+openapi: 3.0.0
+info:
+  title: GTM properties
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: gtm-properties.yaml
+paths:
+  /gtm/gtm-properties:
+    get:
+      operationId: get-gtm-properties
+      summary: List GTM properties
+      tags:
+      - GTM properties
+      description: |
+        Lists GTM properties you have access to. You can use the returned `hostname` values to run [Test network connectivity with MTR](ref:post-mtr) and [Get domain details with dig](ref:post-dig) operations for a GTM hostname. Note, that the [Test network connectivity with MTR](ref:post-mtr) operation requires also hostname's test and target IP values, that you can get with the [List test and target IPs for a GTM hostname](ref:get-gtm-property-domain-gtm-property-ips) operation.
+      responses:
+        200:
+          description: |
+            The response lists available GTM properties.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/gtmPropertiesResponse.json
+              schema:
+                $ref: schemas/gtmPropertiesResponse.yaml
+        401:
+          $ref: errors/401.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml
+  /gtm/{property}/{domain}/gtm-property-ips:
+    parameters:
+    - $ref: parameters/property-path.yaml
+    - $ref: parameters/domain-path.yaml
+    get:
+      operationId: get-gtm-property-domain-gtm-property-ips
+      summary: List test and target IPs for a GTM hostname
+      tags:
+      - GTM properties
+      description: |
+        Lists test and target IPs for a GTM property. You can use the returned data to run the [Test network connectivity with MTR](ref:post-mtr) operation for a GTM hostname. To get the data necessary for this request, run the [List GTM properties](ref:get-gtm-properties) operation first.
+      responses:
+        200:
+          description: |
+            The response lists available test and target IPs.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/gtmPropertiesIps.json
+              schema:
+                $ref: schemas/gtmPropertiesIpsResponse.yaml
+        401:
+          $ref: errors/401.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

@@ -1,0 +1,137 @@
+id: resource:/descriptors/papi/v1/schemas/DeleteActivationResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array.
+  
+x-akamai:
+  file-path: schemas/include-activation-delete-response.yaml
+additionalProperties: false
+properties:
+  accountId:
+    type: string
+    description: |
+      Identifies the prevailing account under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+    minLength: 1
+  activations:
+    type: object
+    description: |
+      The set of requested activations, available within an `items` array.
+    additionalProperties: false
+    properties:
+      items:
+        type: array
+        description: |
+          Activated include versions on a specific network. Relevant response objects appear within the outer envelope's `activations.items` array.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - includeActivationId
+          - activationType
+          - network
+          - note
+          - notifyEmails
+          - includeId
+          - includeName
+          - status
+          - submitDate
+          - updateDate
+          properties:
+            activationType:
+              type: string
+              description: |
+                Either `ACTIVATE` or `DEACTIVATE`. The default is `ACTIVATE`. Any new activation automatically deactivates the current activation. Note that if you were to POST a `DEACTIVATE` type on an active include, it would no longer serve any traffic. You'd need to modify your DNS configuration and specify a different way to field the traffic.
+              enum:
+              - ACTIVATE
+              - DEACTIVATE
+            fmaActivationState:
+              type: string
+              description: |
+                Indicates fast metadata activation state. A value of `steady` indicates the include is currently active or has been cancelled. Values of `received`, `lived`, and `deployed` represent progressive stages of activation, while `cancelling` happens either after failing a network safety check or in response to a [DELETE operation](ref:delete-include-activation). Note that the `status` member indicates whether the activation is live.
+              readOnly: true
+              enum:
+              - steady
+              - received
+              - lived
+              - deployed
+              - cancelling
+            includeActivationId:
+              type: string
+              description: |
+                The activation's unique identifier. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `atv_` prefix.
+            includeId:
+              type: string
+              description: |
+                Identifies include targeted with activation. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `inc_` prefix.
+            includeName:
+              type: string
+              description: |
+                The name of the include targeted with activation.
+            includeType:
+              type: string
+              description: |
+                The type of an include. `MICROSERVICES` specifies includes with a separate access control and activation flow, which allows different teams to work independently on different parts of a single site. In a parent property's rule tree, you add the `MICROSERVICE` includes to rules with mutually exclusive path matches. `COMMON_SETTINGS` specifies includes used across different properties that share a significant number of settings. In a parent property's rule tree, you add the `COMMON_SETTINGS` includes to the default rule or rules without any matches. By updating or activating a single `COMMON_SETTINGS` include, the changes take effect immediately across all sites that use this include. You can use this member for filtering and grouping similar includes together.
+              enum:
+              - MICROSERVICES
+              - COMMON_SETTINGS
+            includeVersion:
+              type: integer
+              description: |
+                The include version targeted with activation. Once activated, you can no longer modify that version of the include.
+              minimum: 1
+            network:
+              type: string
+              description: |
+                The network to activate on, either `STAGING` or `PRODUCTION`.
+              enum:
+              - STAGING
+              - PRODUCTION
+            note:
+              type: string
+              description: |
+                Assigns a log message to the activation request.
+            notifyEmails:
+              type: array
+              description: |
+                Email addresses to notify when the activation status changes.
+              minItems: 1
+              items:
+                type: string
+            status:
+              type: string
+              description: |
+                The activation's status. `ACTIVE` if currently serving traffic. `INACTIVE` if another activation has superseded this one. `NEW`, `PENDING`, `ZONE_1`, `ZONE_2`, or `ZONE_3` if not yet active. `ABORTED` if the client followed up with a [DELETE request](ref:delete-include-activation) in time. `FAILED` if the activation causes a range of edge network errors. `PENDING_DEACTIVATION` or `DEACTIVATED` when the `activationType` is `DEACTIVATE` to no longer serve traffic.
+              enum:
+              - ACTIVE
+              - INACTIVE
+              - PENDING
+              - ZONE_1
+              - ZONE_2
+              - ZONE_3
+              - ABORTED
+              - FAILED
+              - DEACTIVATED
+              - PENDING_DEACTIVATION
+              - PENDING_CANCELLATION
+              - NEW
+            submitDate:
+              type: string
+              description: |
+                A date stamp marking when the activation initiated.
+              readOnly: true
+            updateDate:
+              type: string
+              description: |
+                A date stamp marking when the `status` last changed.
+              readOnly: true
+  contractId:
+    type: string
+    description: |
+      Identifies the prevailing contract under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ctr_` prefix.
+    minLength: 1
+  groupId:
+    type: string
+    description: |
+      Identifies the prevailing group under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+    minLength: 1
+$schema: http://json-schema.org/draft-04-schema#

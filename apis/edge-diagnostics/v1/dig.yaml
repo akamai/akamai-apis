@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: Dig
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: dig.yaml
+paths:
+  /dig:
+    post:
+      operationId: post-dig
+      summary: Get domain details with dig
+      tags:
+      - Dig
+      description: |
+        Uses the `dig` command to provide DNS details for the location  of an edge server, a hostname or a domain name, or a GTM hostname. The results may help you diagnose issues with domain name resolutions.  You can run this operation either for a specific location or an edge IP. If you want to get the data for a location, you need to run the [List available edge server locations](ref:get-edge-locations) operation first to get `edgeLocationId`. To run this operation for an IP,  you may need to [verify an IP](ref:post-verify-edge-ip), if it belongs to an edge server. And to run this operation for a GTM hostname, you need to run the [List GTM properties](ref:get-gtm-properties) operation first. If you don't provide neither a location ID nor an edge server IP, then Edge Diagnostics runs the operation using a random edge server IP.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/digPostRequest.json
+            schema:
+              $ref: schemas/digPostRequest.yaml
+      responses:
+        200:
+          description: |
+            The response provides the `dig` results and details about the request.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/digPostResponse.json
+              schema:
+                $ref: schemas/digPostResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

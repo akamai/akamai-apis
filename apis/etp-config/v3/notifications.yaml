@@ -1,0 +1,167 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Notifications
+  version: v3
+servers:
+- url: https://{hostname}/etp-config/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: notifications.yaml
+paths:
+  /configs/{configId}/notifications-config:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-notifications-config
+      summary: Create notifications configs
+      tags:
+      - Notifications
+      description: |
+        Create notification configs in bulk.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/notification-config-request-200.json
+            schema:
+              $ref: schemas/notificationConfigRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+    get:
+      operationId: get-notifications-config
+      summary: Get notification configuration
+      tags:
+      - Notifications
+      description: |
+        Provides all notification configurations.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/notifications-config-all-200.json
+              schema:
+                $ref: schemas/notificationConfigAll.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    put:
+      operationId: put-notifications-config
+      summary: Update the notifications configs
+      tags:
+      - Notifications
+      description: |
+        Updates the notification configs in bulk.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/notification-config-request-200.json
+            schema:
+              $ref: schemas/notificationConfigRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+  /configs/{configId}/notifications-config/{notificationType}:
+    parameters:
+    - $ref: parameters/notificationType-path.yaml
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-config-notification-type
+      summary: Get notification configuration for type
+      tags:
+      - Notifications
+      description: |
+        Gets notification details for the given notification type.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/notification-config-type-200.json
+              schema:
+                $ref: schemas/notificationConfigType.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    put:
+      operationId: put-config-notification-type
+      summary: Update the subscribers to notification type
+      tags:
+      - Notifications
+      description: |
+        Updates the subscribers to the given notification type.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/notification-config-update-200.json
+            schema:
+              $ref: schemas/notificationConfigTypeUpdate.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml

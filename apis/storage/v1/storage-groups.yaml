@@ -1,0 +1,136 @@
+openapi: 3.0.0
+info:
+  title: Storage groups
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/storage/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: storage-groups.yaml
+paths:
+  /storage-groups:
+    post:
+      operationId: post-storage-groups
+      summary: Create a storage group
+      tags:
+      - Groups
+      description: |
+        This operation creates a new storage group to house your content.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/PostStorageGroupSample.json
+            schema:
+              $ref: schemas/storage-group-post.yaml
+      responses:
+        201:
+          description: |
+            Created storage group.
+          content:
+            application/json:
+              example:
+                $ref: examples/GetStorageGroupSample.json
+              schema:
+                $ref: schemas/storage-group-get.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        429:
+          $ref: errors/429.yaml
+    get:
+      operationId: get-storage-groups
+      summary: List storage groups
+      tags:
+      - Groups
+      description: |
+        Get a list of all of the storage groups in your NetStorage instance, optionally filtered by CP code or the storage group's categorized purpose.
+      parameters:
+      - $ref: parameters/cpcodeId-query.yaml
+      - $ref: parameters/storageGroupPurpose-query.yaml
+      responses:
+        200:
+          description: |
+            Request OK.
+          content:
+            application/json:
+              example:
+                $ref: examples/GetStorageGroupsSample.json
+              schema:
+                $ref: schemas/pageable-get-storage-group.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        429:
+          $ref: errors/429.yaml
+  /storage-groups/{storageGroupId}:
+    parameters:
+    - $ref: parameters/storageGroupId-path.yaml
+    get:
+      operationId: get-storage-group
+      summary: Get a storage group
+      tags:
+      - Groups
+      description: |
+        Get a specific storage group based on its `storageGroupId`.
+      responses:
+        200:
+          description: |
+            Request OK.
+          content:
+            application/json:
+              example:
+                $ref: examples/GetStorageGroupSample.json
+              schema:
+                $ref: schemas/storage-group-get.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        429:
+          $ref: errors/429.yaml
+    put:
+      operationId: put-storage-group
+      summary: Edit a storage group
+      tags:
+      - Groups
+      description: |
+        Update storage group based on its unique ID value.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/PutStorageGroupSample.json
+            schema:
+              $ref: schemas/storage-group-put.yaml
+      responses:
+        200:
+          description: |
+            Request OK.
+          content:
+            application/json:
+              example:
+                $ref: examples/GetStorageGroupSample.json
+              schema:
+                $ref: schemas/storage-group-get.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        429:
+          $ref: errors/429.yaml

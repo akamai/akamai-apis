@@ -1,0 +1,132 @@
+openapi: 3.0.0
+info:
+  title: Grep
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: grep.yaml
+paths:
+  /grep:
+    post:
+      operationId: post-grep
+      summary: Launch a GREP request
+      tags:
+      - Grep
+      description: |
+        Launches an [asynchronous](ref:asynchronous-processes) request to fetch logs for an edge server IP address using the `grep` command.  To verify if an IP belongs to an edge server, run the [Verify an IP](ref:post-verify-edge-ip) operation first. If you known the exact values to filter the logs by and you want to get the data directly, run the synchronous [Get specific logs](ref:get-grep) operation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/grepRequest.json
+            schema:
+              $ref: schemas/grepRequest.yaml
+      responses:
+        202:
+          description: |
+            Process successfully launched.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/grepResult.json
+              schema:
+                $ref: schemas/grepResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml
+    get:
+      operationId: get-grep
+      summary: Get specific logs
+      tags:
+      - Grep
+      description: |
+        Using the `grep` command, returns logs that match the query parameters. This operation gets the data  directly. If you don't have detailed information about the logs or you want to avoid latency, run the [Launch a GREP request](ref:post-grep) operation. If you provide request parameters  for which Edge Diagnostics doesn't find logs, you get the validation error.
+      parameters:
+      - $ref: parameters/edgeIp-query.yaml
+      - $ref: parameters/cpCode-query.yaml
+      - $ref: parameters/clientIp-query.yaml
+      - $ref: parameters/objectStatus-query.yaml
+      - $ref: parameters/httpStatusCode-query.yaml
+      - $ref: parameters/userAgent-query.yaml
+      - $ref: parameters/arl-query.yaml
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      - $ref: parameters/logType-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides the `grep` results and details about the request.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/grepSyncResult.json
+              schema:
+                $ref: schemas/grepSyncResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml
+  /grep/requests/{requestId}:
+    parameters:
+    - $ref: parameters/requestId-path.yaml
+    get:
+      operationId: get-grep-request
+      summary: Check a GREP request status
+      tags:
+      - Grep
+      description: |
+        Returns the status of the [asynchronous](ref:asynchronous-processes) [Launch a GREP request](ref:post-grep) request.  Operations with the `SUCCESS` status include also the `grep` logs.
+      responses:
+        200:
+          description: |
+            The response provides the status of the request and its details.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/grepResult.json
+              schema:
+                $ref: schemas/grepResponse.yaml
+        401:
+          $ref: errors/401.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

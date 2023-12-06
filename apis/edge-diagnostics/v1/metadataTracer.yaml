@@ -1,0 +1,121 @@
+openapi: 3.0.0
+info:
+  title: Metadata Tracer
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: metadataTracer.yaml
+paths:
+  /metadata-tracer:
+    post:
+      operationId: post-mdt
+      summary: Launch a metadata tracing request
+      tags:
+      - Metadata Tracer
+      description: |
+        Launches an [asynchronous](ref:asynchronous-processes) request to trace metadata for a URL configured in Property Manager. The metadata tracing works for the current property version active either on staging or production. To run the operation for a location, run the [List available locations for metadata tracing](ref:get-mdt-locations) operation first to get available values. If you don't provide a location ID or an edge server IP, then Edge Diagnostics runs the operation using a random location.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/mdtRequest.json
+            schema:
+              $ref: schemas/mdtRequest.yaml
+      responses:
+        202:
+          description: |
+            Process successfully launched.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/mdtPostResponse.json
+              schema:
+                $ref: schemas/mdtResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml
+  /metadata-tracer/locations:
+    get:
+      operationId: get-mdt-locations
+      summary: List available edge server locations for metadata tracing
+      tags:
+      - Metadata Tracer
+      description: |
+        Lists active locations you can use to run the [Launch a metadata tracing request](ref:post-mdt) operation together with information about supported HTTP methods. The operation responds with a subset of edge servers returned by the [List available edge server locations](ref:get-edge-locations) operation.
+      responses:
+        200:
+          description: |
+            The response lists the supported locations and HTTP methods for metadata tracing.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/mdtLocations.json
+              schema:
+                $ref: schemas/mdtLocations.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        429:
+          $ref: errors/429.yaml
+  /metadata-tracer/requests/{requestId}:
+    parameters:
+    - $ref: parameters/requestId-path.yaml
+    get:
+      operationId: get-mdt-request
+      summary: Check a metadata tracing request status
+      tags:
+      - Metadata Tracer
+      description: |
+        Returns the status of the [asynchronous](ref:asynchronous-processes) [Launch a Metadata Tracer request](ref:post-mdt) operation. For operations with the `SUCCESS` status, the response includes the metadata details. For requests with the `Accept: text/html` request header, results are in static HTML format. To learn more about the results, check [How to read the results](ref:mdt-results).
+      responses:
+        200:
+          description: |
+            The response provides the status of the request and its details, represented either as JSON or HTML. To learn more about the results, check [How to read the results](ref:mdt-results).
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/mdtResponse.json
+              schema:
+                $ref: schemas/mdtResponse.yaml
+            text/html:
+              example:
+                $ref: examples/mdtHTMLResponse.html
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

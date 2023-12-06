@@ -1,0 +1,73 @@
+type: object
+description: |-
+  Specifies the created test suite and child objects.
+  
+x-akamai:
+  file-path: schemas/test-suite-with-child-objects.yaml
+additionalProperties: false
+required:
+- testSuiteId
+- testSuiteName
+- isLocked
+- isStateful
+- executableTestCaseCount
+- createdBy
+- createdDate
+properties:
+  configs:
+    $ref: configs.yaml
+  createdBy:
+    $ref: createdBy.yaml
+  createdDate:
+    $ref: createdDate.yaml
+  executableTestCaseCount:
+    type: integer
+    description: |
+      Number of test cases in the test suite. This count also includes the derived test case count.
+    minimum: 0
+  isLocked:
+    type: boolean
+    description: |
+      Locks the test suite so that only designated owners or editors can modify it.
+  isStateful:
+    type: boolean
+    description: |
+      Sets the test suite to be run statefully, retaining cookies and session data for subsequent test cases within the test suite.
+  modifiedBy:
+    $ref: modifiedBy.yaml
+  modifiedDate:
+    $ref: modifiedDate.yaml
+  testCases:
+    type: array
+    description: |
+      Lists test cases included in the test suite.
+    minItems: 0
+    items:
+      $ref: functional-test-case.yaml
+  testSuiteDescription:
+    type: string
+    description: |
+      Description of the test suite. It's `null` for test suites without descriptions. 
+    default: null
+    nullable: true
+    minLength: 1
+    maxLength: 4000
+  testSuiteId:
+    type: integer
+    description: |
+      Identifies a test suite. To get this value, run the [List test suites](ref:get-test-suites) operation.
+    readOnly: true
+    minimum: 1
+  testSuiteName:
+    type: string
+    description: |
+      Unique name for each test suite.
+    minLength: 1
+    maxLength: 100
+  variables:
+    type: array
+    description: |
+      Lists variables included in the test suite.
+    minItems: 0
+    items:
+      $ref: variables.yaml

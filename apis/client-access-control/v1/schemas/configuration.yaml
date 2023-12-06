@@ -1,0 +1,64 @@
+type: object
+description: |-
+  Encapsulates the Client Access Control (CAC) configurations that you have access to. These configurations let your origin communicate with the Akamai network.
+  
+x-akamai:
+  file-path: schemas/configuration.yaml
+additionalProperties: false
+properties:
+  name:
+    type: string
+    description: |
+      The name of the CAC configuration.
+  description:
+    type: string
+    description: |
+      A description of the CAC configuration.
+  configurationId:
+    type: integer
+    description: |
+      The unique ID for the CAC configuration.
+  currentCidrs:
+    type: object
+    description: |
+      Encapsulates the current set of CIDR blocks.
+    additionalProperties: false
+    properties:
+      version:
+        type: integer
+        description: |
+          The current version of CIDR blocks serving the CAC configuration. The first version is always `0`.
+      acknowledgeDate:
+        type: string
+        description: |
+          An ISO-8601 timestamp for when your organization last acknowledged a proposed CIDR block version.
+        format: date-time
+      cidrs:
+        type: array
+        description: |
+          CIDR blocks used to provide this CAC configuration with access to the Akamai portal.
+        items:
+          type: string
+  proposedCidrs:
+    type: array
+    description: |
+      Encapsulates the set of CIDR blocks proposed by Akamai.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        version:
+          type: integer
+          description: |
+            The latest version of CIDR blocks proposed.
+        cidrs:
+          type: array
+          description: |
+            CIDR blocks used to provide this CAC configuration with access to the Akamai portal.
+          items:
+            type: string
+        proposedDate:
+          type: string
+          description: |
+            The time, in ISO-8601 format, that Akamai proposed the latest version of CIDR blocks.
+          format: date-time

@@ -1,0 +1,63 @@
+openapi: 3.0.0
+info:
+  title: list
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: http://{apiKey}-nsu.akamaihd.net
+x-akamai:
+  file-path: list.yaml
+paths:
+  /{cpCode}/{path}/{filename}:
+    parameters:
+    - $ref: parameters/X-Akamai-ACS-Action-list.yaml
+    - $ref: parameters/X-Akamai-ACS-Auth-Data.yaml
+    - $ref: parameters/X-Akamai-ACS-Auth-Sign.yaml
+    - $ref: parameters/Host.yaml
+    - $ref: parameters/cpCode.yaml
+    - $ref: parameters/path.yaml
+    - $ref: parameters/filename.yaml
+    get:
+      operationId: get-list
+      summary: list action
+      tags:
+      - API actions
+      description: |
+        [TBD](https://techdocs.akamai.com/clone-akamai-test-project/reference/post-symlink) list.
+      responses:
+        200:
+          description: |
+            TBD.
+          content:
+            application/xml:
+              examples:
+                default:
+                  summary: List
+                  description: |
+                    Result of action=list for a cpCode.
+                  value:
+                    $ref: examples/list-200.xml
+                base64:
+                  summary: Example of name_base64
+                  description: |
+                    Result of action=list&encoding=utf-8 when a there is a file whose name is not valid UTF-8. The requested object path was `1234/example/notUTF-8%C0%C0` (which is invalid UTF-8), which gets Base64 encoded as `MTIzNC9leGFtcGxlL25vdFVURi04wMAv` in the response.
+                  value:
+                    $ref: examples/list-base64-200.xml
+                mtime_all:
+                  summary: Use mtime_all=yes
+                  description: |
+                    Result of action=list&mtime_all=yes for a cpCode.
+                  value:
+                    $ref: examples/list-mtime_all-200.xml
+              schema:
+                $ref: schemas/list-200.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        500:
+          $ref: errors/500.yaml

@@ -1,0 +1,62 @@
+type: array
+description: |-
+  Health status.
+  
+x-akamai:
+  file-path: schemas/BackendStatusOutput.yaml
+items:
+  type: object
+  description: |
+    Reports the health status of the back-end IP addresses in your policy domains.
+  additionalProperties: false
+  properties:
+    policyDomainName:
+      type: string
+      description: |
+        Unique name of the policy domain.
+    vips:
+      type: array
+      description: |
+        Virtual IP addresses.
+      items:
+        type: object
+        description: |
+          Virtual IP addresses. IP Protect routes traffic to these virtual IP addresses.
+        additionalProperties: false
+        properties:
+          akamaiFrontend:
+            type: string
+            description: |
+              IP address of the Akamai virtual IP address that's been mapped to a customer's server or subnet IP address.
+          backendIps:
+            type: array
+            description: |
+              IP addresses of a customer's servers and subnets.
+            items:
+              type: object
+              description: |
+                IP addresses of a customer's servers and subnets.
+              additionalProperties: false
+              properties:
+                backendIp:
+                  type: string
+                  description: |
+                    IP addresses of a customer's server or subnet.
+                status:
+                  type: string
+                  description: |
+                    Current state of the back-end IP. Valid values are `HEALTHY`, `POSSIBLE_CONNECTIVITY_ISSUES`, `CONNECTIVITY_ISSUES`, `DOWN`, and `UNKNOWN`. IP Protect calculates health status by determining the percentage of active locations for a back-end IP address.
+                  enum:
+                  - HEALTHY
+                  - POSSIBLE_CONNECTIVITY_ISSUES
+                  - CONNECTIVITY_ISSUES
+                  - DOWN
+                  - UNKNOWN
+          customerBackend:
+            type: string
+            description: |
+              IP address of the customer's server or subnet.
+          vipId:
+            type: integer
+            description: |
+              Unique identifier of the Akamai virtual IP address.

@@ -1,0 +1,158 @@
+openapi: 3.0.0
+info:
+  title: Property hostnames
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/chinacdn/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: property-hostnames.yaml
+paths:
+  /property-hostnames:
+    get:
+      operationId: get-property-hostnames
+      summary: List property hostnames
+      tags:
+      - Property hostnames
+      description: |
+        Returns a list of the property hostnames under your account that are available for deployment on China CDN.
+      responses:
+        200:
+          description: |
+            Provides information about the property hostnames under your account.
+          content:
+            application/vnd.akamai.chinacdn.property-hostnames.v1+json:
+              example:
+                $ref: examples/property-hostnames-get-200.json
+              schema:
+                $ref: schemas/hostnames-get-response.yaml
+  /property-hostnames/{hostname}:
+    parameters:
+    - $ref: parameters/hostname-path.yaml
+    get:
+      operationId: get-property-hostname
+      summary: Get a property hostname
+      tags:
+      - Property hostnames
+      description: |
+        Returns a specific property hostname under your account.
+      responses:
+        200:
+          description: |
+            Provides information about the property hostname under your account.
+          content:
+            application/vnd.akamai.chinacdn.property-hostname.v1+json:
+              example:
+                $ref: examples/property-hostname-get-put-response.json
+              schema:
+                $ref: schemas/hostname-get-response.yaml
+    put:
+      operationId: put-property-hostname
+      summary: Create or update a property hostname
+      tags:
+      - Property hostnames
+      description: |
+        This operation lets you create or update a property `hostname` based on the group for your current account and contract type. The API responds with a 201 code when you create a new property hostname, and a 200 code thereafter when updating it. If the property `hostname` has a provision status of `WHITELISTED` or `PROVISIONED` and you change the `icpNumberId`, the API creates a China partner re-approval request. If the partner denies the request for any reason, the property hostname's `provisionState` changes to `DEPROVISIONED`.
+      parameters:
+      - $ref: parameters/groupId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/vnd.akamai.chinacdn.property-hostname.v1+json:
+            example:
+              $ref: examples/property-hostname-put.json
+            schema:
+              $ref: schemas/property-hostname-put-request.yaml
+      responses:
+        200:
+          description: |
+            Provides information about the property hostname under your account.
+          content:
+            application/vnd.akamai.chinacdn.property-hostname.v1+json:
+              example:
+                $ref: examples/property-hostname-get-put-response.json
+              schema:
+                $ref: schemas/property-hostname-put-response.yaml
+        201:
+          description: |
+            Provides information about the property hostname under your account.
+          content:
+            application/vnd.akamai.chinacdn.property-hostname.v1+json:
+              example:
+                $ref: examples/property-hostname-get-put-response.json
+              schema:
+                $ref: schemas/property-hostname-put-response.yaml
+  /property-hostnames/{hostname}/provision-state-changes:
+    parameters:
+    - $ref: parameters/hostname-path.yaml
+    post:
+      operationId: post-property-hostname-provision-state-change
+      summary: Create a new provision state change
+      tags:
+      - Provision state changes
+      description: |
+        Run this operation to change your property hostname's current deployment state. For more information, see the [Provision state change workflow](ref:provision-state-change-workflow), [Deployment states](ref:deployment-states), and [Manage property hostnames](ref:manage-property-hostnames) sections. For delivery in China, Akamai recommends you map the CNAME of your property hostname to the new `*88.net` Chinese operational domain that corresponds to your original edge hostname selection. For example, with an `example.com.edgesuite.net` edge hostname, change the CNAME to `example.com.edgesuite88.net`. For more information, see: [New Chinese operational domains](doc:add-edit-prop-hn#new-chinese-operational-domains).
+      parameters:
+      - $ref: parameters/forceDeprovision-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/vnd.akamai.chinacdn.provision-state-change.v1+json:
+            example:
+              $ref: examples/provision-state-change-input.json
+            schema:
+              $ref: schemas/property-hostname-provision-state-changes-post-request.yaml
+      responses:
+        202:
+          description: |
+            Provides information about the change made to the property hostname's deployment in China.
+          content:
+            application/vnd.akamai.chinacdn.provision-state-change.v1+json:
+              example:
+                $ref: examples/provision-state-change-response.json
+              schema:
+                $ref: schemas/property-hostname-provision-state-changes-post-response.yaml
+  /property-hostnames/{hostname}/provision-state-changes/current:
+    parameters:
+    - $ref: parameters/hostname-path.yaml
+    get:
+      operationId: get-property-hostname-provision-state-changes-current
+      summary: Get the current provision state changes
+      tags:
+      - Provision state changes
+      description: |
+        Returns details about current deployment changes for the specified property `hostname` under your account.
+      responses:
+        200:
+          description: |
+            Contains a list of provisions state changes.
+          content:
+            application/vnd.akamai.chinacdn.provision-state-changes.v1+json:
+              example:
+                $ref: examples/provision-state-changes.json
+              schema:
+                $ref: schemas/hostname-provision-state-changes-current-get-response.yaml
+  /property-hostnames/{hostname}/provision-state-changes/{changeId}:
+    parameters:
+    - $ref: parameters/changeId-path.yaml
+    - $ref: parameters/hostname-path.yaml
+    get:
+      operationId: get-property-hostname-provision-state-change
+      summary: Get a provision state change
+      tags:
+      - Provision state changes
+      description: |
+        Returns details about a specific deployment change for the specified property `hostname`.
+      responses:
+        200:
+          description: |
+            Provides information about the change made to the property hostname's deployment in China.
+          content:
+            application/vnd.akamai.chinacdn.provision-state-change.v1+json:
+              example:
+                $ref: examples/provision-state-change-get.json
+              schema:
+                $ref: schemas/hostname-provision-state-change-get-response.yaml

@@ -1,0 +1,64 @@
+x-akamai:
+  file-path: paths/api-discovery-base-path-endpoints.yaml
+  path-info: /api-discovery/host/{hostname}/basepath/{basePath}/endpoints
+parameters:
+- $ref: ../parameters/hostname-path.yaml
+- $ref: ../parameters/basepath-path.yaml
+post:
+  operationId: post-api-endpoint-resource
+  summary: Create an endpoint or resource
+  tags:
+  - Endpoints
+  description: |
+    Create a new API endpoint or add a resource to an existing endpoint. When you run this operation to add a new resource to an existing API, the API version is cloned for you and the resource is included in the new version.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/endpoint-post.json
+        schema:
+          $ref: ../schemas/endpoint-post.yaml
+  responses:
+    201:
+      description: |
+        Successfully registered an endpoint or a new resource to an existing endpoint.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/api-endpoint-with-resource-postresult.json
+          schema:
+            $ref: ../schemas/api-endpoint-with-resource.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+get:
+  operationId: get-discovered-api-endpoints
+  summary: List discovered API endpoints
+  tags:
+  - Endpoints
+  description: |
+    Returns API endpoints for the specified hostname and base path. Unlike [Get discovered APIs](ref:get-api-list), this operation returns APIs already in your API definitions. When you see a discovered API or a new resource, add it to your definition with [Create an endpoint or resource](ref:post-api-endpoint-resource).
+  responses:
+    200:
+      description: |
+        Successfully returned the data.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/api-matching-definitions.json
+          schema:
+            $ref: ../schemas/api-matches.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

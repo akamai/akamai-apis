@@ -1,0 +1,673 @@
+openapi: 3.0.0
+info:
+  title: Functional testing
+  version: v3
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/test-management/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: functional-test-suites.yaml
+paths:
+  /functional/test-suites:
+    post:
+      operationId: post-test-suites
+      summary: Create a test suite
+      tags:
+      - Test suites
+      description: |
+        Creates an empty test suite.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/test-suite-post.json
+            schema:
+              $ref: schemas/test-suite-create.yaml
+      responses:
+        201:
+          description: |
+            The response provides the created test suite.
+          content:
+            application/json:
+              example:
+                $ref: examples/test-suite-get-200.json
+              schema:
+                $ref: schemas/test-suite.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+    get:
+      operationId: get-test-suites
+      summary: List test suites
+      tags:
+      - Test suites
+      description: |
+        Lists test suites created in your organization. The list can also include deleted test suites you can restore. The response contains an array of objects, each keyed by `testSuiteId`. You can use these IDs to [Get a test suite with child objects](ref:get-test-suites-with-child-objects).
+      parameters:
+      - $ref: parameters/includeRecentlyDeleted-query.yaml
+      - $ref: parameters/propertyId-query.yaml
+      - $ref: parameters/propertyName-query.yaml
+      - $ref: parameters/propertyVersion-query.yaml
+      - $ref: parameters/user-query.yaml
+      responses:
+        200:
+          description: |
+            The response lists test suites.
+          content:
+            application/json:
+              example:
+                $ref: examples/test-suites-get-200.json
+              schema:
+                $ref: schemas/test-suites.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+  /functional/test-suites/auto-generate:
+    post:
+      operationId: post-auto-generate-test-suite
+      summary: Generate a test suite with child objects
+      tags:
+      - Test suites
+      description: |
+        Generates a default test suite with test cases and variables for a specific property version and a URL. Based on property settings and its behaviors and the URL, Test Center generates a default test suite object with test cases and variables. You can modify the generated test suite and add it to Test Center using the [Create a test suite with child objects](ref:post-test-suites-with-child-objects) operation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/test-suite-auto-generate-post.json
+            schema:
+              $ref: schemas/test-suite-auto-generate.yaml
+      responses:
+        200:
+          description: |
+            The response provides the generated test suite with test cases and variables.
+          content:
+            application/json:
+              example:
+                $ref: examples/test-suite-auto-generate-post-200.json
+              schema:
+                $ref: schemas/test-suite-with-child-objects-auto-generate.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+  /functional/test-suites/with-child-objects:
+    post:
+      operationId: post-test-suites-with-child-objects
+      summary: Create a test suite with child objects
+      tags:
+      - Test suites
+      description: |
+        Creates, or imports, a test suite with test cases and variables. The operation responds with a [partial-success 207 response](ref:partial-success-responses).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/test-suite-with-child-objects-post.json
+            schema:
+              $ref: schemas/test-suite-with-child-objects-create.yaml
+      responses:
+        207:
+          description: |
+            [Partial success response](ref:partial-success-responses)
+          content:
+            application/json:
+              example:
+                $ref: examples/test-suite-with-child-objects-post-207.json
+              schema:
+                $ref: schemas/test-suite-with-child-objects-207.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+  /functional/test-suites/{testSuiteId}:
+    parameters:
+    - $ref: parameters/testSuiteId-path.yaml
+    get:
+      operationId: get-test-suite
+      summary: Get a test suite
+      tags:
+      - Test suites
+      description: |
+        Returns basic data about a test suite. To check test cases and variables included in the test suite, run the [Get a test suite with child objects](ref:get-test-suites-with-child-objects) operation.
+      responses:
+        200:
+          description: |
+            The response provides the test suite.
+          content:
+            application/json:
+              example:
+                $ref: examples/test-suite-get-200.json
+              schema:
+                $ref: schemas/test-suite.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+    put:
+      operationId: put-test-suite
+      summary: Update a test suite
+      tags:
+      - Test suites
+      description: |
+        Updates basic settings of a test suite. To edit test cases and variables, run the [Update a test suite with child objects](ref:put-test-suites-with-child-objects) operation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/test-suite-put.json
+            schema:
+              $ref: schemas/test-suite-create.yaml
+      responses:
+        200:
+          description: |
+            The response provides the updated test suite.
+          content:
+            application/json:
+              example:
+                $ref: examples/test-suite-put-200.json
+              schema:
+                $ref: schemas/test-suite.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+    delete:
+      operationId: delete-test-suite
+      summary: Delete a test suite
+      tags:
+      - Test suites
+      description: |
+        Deletes a test suite and included child objects: test cases and variables. You can [restore](ref:post-test-suite-restore) test suites with child objects within 30 days of deleting them.
+      responses:
+        204:
+          description: |
+            Test suite removed.
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+  /functional/test-suites/{testSuiteId}/restore:
+    parameters:
+    - $ref: parameters/testSuiteId-path.yaml
+    post:
+      operationId: post-test-suite-restore
+      summary: Restore a test suite
+      tags:
+      - Test suites
+      description: |
+        Restores a deleted test suite and included child objects. You can run this operation within 30 days of deleting the test suite.
+      responses:
+        200:
+          description: |
+            The response provides the restored test suite.
+          content:
+            application/json:
+              example:
+                $ref: examples/test-suite-restore-200.json
+              schema:
+                $ref: schemas/test-suite.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+  /functional/test-suites/{testSuiteId}/test-cases:
+    parameters:
+    - $ref: parameters/testSuiteId-path.yaml
+    post:
+      operationId: post-test-cases
+      summary: Create test cases
+      tags:
+      - Test cases
+      description: |
+        Creates a list of new functional test cases for a test suite. Each test case consists of a test request, client profile, and condition. If you want to use variables within a condition or test request's URL or request header, [create the needed variables](ref:post-variables) first. The operation responds with a [partial-success 207 response](ref:partial-success-responses).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/functional-test-cases-post.json
+            schema:
+              $ref: schemas/functional-test-cases-create.yaml
+      responses:
+        207:
+          description: |
+            [Partial success response](ref:partial-success-responses)
+          content:
+            application/json:
+              example:
+                $ref: examples/functional-test-cases-post-207.json
+              schema:
+                $ref: schemas/functional-test-cases-207.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+    get:
+      operationId: get-test-cases
+      summary: List test cases
+      tags:
+      - Test cases
+      description: |
+        Lists functional test cases included in a test suite. The list can also include deleted test cases that you can restore. The response is an array of objects, each keyed by `testCaseId`.
+      parameters:
+      - $ref: parameters/includeRecentlyDeleted-query.yaml
+      - $ref: parameters/resolveVariables-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides test cases for a test suite.
+          content:
+            application/json:
+              example:
+                $ref: examples/functional-test-cases-get-200.json
+              schema:
+                $ref: schemas/functional-test-cases.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+    put:
+      operationId: put-test-cases
+      summary: Update a test case
+      tags:
+      - Test cases
+      description: |
+        Updates functional test cases in a test suite. The operation responds with a [partial-success 207 response](ref:partial-success-responses).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/functional-test-cases-put.json
+            schema:
+              $ref: schemas/functional-test-cases-update.yaml
+      responses:
+        207:
+          description: |
+            [Partial success response](ref:partial-success-responses)
+          content:
+            application/json:
+              example:
+                $ref: examples/functional-test-cases-put-207.json
+              schema:
+                $ref: schemas/functional-test-cases-207.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+  /functional/test-suites/{testSuiteId}/test-cases/order:
+    parameters:
+    - $ref: parameters/testSuiteId-path.yaml
+    put:
+      operationId: put-order-test-case
+      summary: Reorder test cases in a test suite
+      tags:
+      - Test cases
+      description: |
+        Reorders functional test cases in a test suite. The order of test cases applies when running a test for stateful test suites. You need to provide target order for all test cases included in a test suite. To check the current order of test cases, run the [Get a test suite with child objects](ref:get-test-suites-with-child-objects) operation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/functional-test-cases-order.json
+            schema:
+              $ref: schemas/functional-test-cases-order.yaml
+      responses:
+        200:
+          description: |
+            The response provides reordered test cases.
+          content:
+            application/json:
+              example:
+                $ref: examples/functional-test-cases-order.json
+              schema:
+                $ref: schemas/functional-test-cases-order.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+  /functional/test-suites/{testSuiteId}/test-cases/remove:
+    parameters:
+    - $ref: parameters/testSuiteId-path.yaml
+    post:
+      operationId: post-remove-test-case
+      summary: Delete test cases
+      tags:
+      - Test cases
+      description: |
+        Deletes functional test cases with specific identifiers from a test suite. To get the identifiers, run the [List test cases](ref:get-test-cases) operation. The operation responds with a [partial-success 207 response](ref:partial-success-responses).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/functional-test-cases-remove-restore.json
+            schema:
+              $ref: schemas/functional-test-cases-remove.yaml
+      responses:
+        207:
+          description: |
+            [Partial success response](ref:partial-success-responses)
+          content:
+            application/json:
+              example:
+                $ref: examples/functional-test-cases-remove-207.json
+              schema:
+                $ref: schemas/functional-test-cases-remove-207.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+  /functional/test-suites/{testSuiteId}/test-cases/restore:
+    parameters:
+    - $ref: parameters/testSuiteId-path.yaml
+    post:
+      operationId: post-test-cases-restore
+      summary: Restore test cases
+      tags:
+      - Test cases
+      description: |
+        Restores functional test cases into a test suite. The operation responds with a [partial-success 207 response](ref:partial-success-responses).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/functional-test-cases-remove-restore.json
+            schema:
+              $ref: schemas/functional-test-cases-restore.yaml
+      responses:
+        207:
+          description: |
+            [Partial success response](ref:partial-success-responses)
+          content:
+            application/json:
+              example:
+                $ref: examples/functional-test-cases-restore-207.json
+              schema:
+                $ref: schemas/functional-test-cases-207.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+  /functional/test-suites/{testSuiteId}/test-cases/{testCaseId}:
+    parameters:
+    - $ref: parameters/testSuiteId-path.yaml
+    - $ref: parameters/testCaseId-path.yaml
+    get:
+      operationId: get-test-case
+      summary: Get a test case
+      tags:
+      - Test cases
+      description: |
+        Returns details of a functional test case.
+      parameters:
+      - $ref: parameters/resolveVariables-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides the test case.
+          content:
+            application/json:
+              example:
+                $ref: examples/functional-test-case-get-200.json
+              schema:
+                $ref: schemas/functional-test-case.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+  /functional/test-suites/{testSuiteId}/variables:
+    parameters:
+    - $ref: parameters/testSuiteId-path.yaml
+    post:
+      operationId: post-variables
+      summary: Create variables
+      tags:
+      - Variables
+      description: |
+        Creates variables for a test suite. You can use variables in a test request's URL or request headers and in condition expression, as a substitute of placeholders. To learn more, see [Variables](ref:variables-overview). The operation responds with a [partial-success 207 response](ref:partial-success-responses).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/variables-post.json
+            schema:
+              $ref: schemas/variables-create.yaml
+      responses:
+        207:
+          description: |
+            [Partial success response](ref:partial-success-responses)
+          content:
+            application/json:
+              example:
+                $ref: examples/variables-post-207.json
+              schema:
+                $ref: schemas/variables-207.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+    get:
+      operationId: get-variables
+      summary: List variables
+      tags:
+      - Variables
+      description: |
+        Lists variables created in a test suite.
+      responses:
+        200:
+          description: |
+            The response lists variables.
+          content:
+            application/json:
+              example:
+                $ref: examples/variables-get-200.json
+              schema:
+                $ref: schemas/variables.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+    put:
+      operationId: put-variables
+      summary: Update variables
+      tags:
+      - Variables
+      description: |
+        Updates variables in a test suite. The operation responds with a [partial-success 207 response](ref:partial-success-responses).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/variables-put.json
+            schema:
+              $ref: schemas/variables-update.yaml
+      responses:
+        207:
+          description: |
+            [Partial success response](ref:partial-success-responses)
+          content:
+            application/json:
+              example:
+                $ref: examples/variables-put-207.json
+              schema:
+                $ref: schemas/variables-207.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+  /functional/test-suites/{testSuiteId}/variables/remove:
+    parameters:
+    - $ref: parameters/testSuiteId-path.yaml
+    post:
+      operationId: post-remove-variables
+      summary: Delete variables
+      tags:
+      - Variables
+      description: |
+        Deletes unused variables from a test suite. The operation responds with a [partial-success 207 response](ref:partial-success-responses).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/variables-remove.json
+            schema:
+              $ref: schemas/variables-remove.yaml
+      responses:
+        207:
+          description: |
+            [Partial success response](ref:partial-success-responses)
+          content:
+            application/json:
+              example:
+                $ref: examples/variables-remove-207.json
+              schema:
+                $ref: schemas/variables-remove-207.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+  /functional/test-suites/{testSuiteId}/variables/{variableId}:
+    parameters:
+    - $ref: parameters/testSuiteId-path.yaml
+    - $ref: parameters/variableId-path.yaml
+    get:
+      operationId: get-variable
+      summary: Get a variable
+      tags:
+      - Variables
+      description: |
+        Returns details of a variable used in a test suite.
+      responses:
+        200:
+          description: |
+            The response provides the variable.
+          content:
+            application/json:
+              examples:
+                variable:
+                  summary: Single variables
+                  value:
+                  - $ref: examples/variable-get-200.json
+                variable-group:
+                  summary: Group variables
+                  value:
+                  - $ref: examples/variable-group-get-200.json
+              schema:
+                oneOf:
+                - $ref: schemas/variable.yaml
+                - $ref: schemas/variable-with-var-group.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+  /functional/test-suites/{testSuiteId}/with-child-objects:
+    parameters:
+    - $ref: parameters/testSuiteId-path.yaml
+    get:
+      operationId: get-test-suites-with-child-objects
+      summary: Get a test suite with child objects
+      tags:
+      - Test suites
+      description: |
+        Exports a test suite with test cases and variables.
+      parameters:
+      - $ref: parameters/resolveVariables-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides the test suite with child objects.
+          content:
+            application/json:
+              example:
+                $ref: examples/test-suite-with-child-objects-get-200.json
+              schema:
+                $ref: schemas/test-suite-with-child-objects.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+    put:
+      operationId: put-test-suites-with-child-objects
+      summary: Update a test suite with child objects
+      tags:
+      - Test suites
+      description: |
+        Updates a test suite and included test cases and variables.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/test-suite-with-child-objects-put.json
+            schema:
+              $ref: schemas/test-suite-with-child-objects-update.yaml
+      responses:
+        200:
+          description: |
+            The response provides the updated test suite with child objects.
+          content:
+            application/json:
+              example:
+                $ref: examples/test-suite-with-child-objects-put-200.json
+              schema:
+                $ref: schemas/test-suite-with-child-objects.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml

@@ -1,0 +1,85 @@
+type: object
+description: |-
+  JSON used to represent graph data. The amount of data varies depending on the supplied parameters.
+  
+x-akamai:
+  file-path: schemas/sparkline.yaml
+additionalProperties: false
+required:
+- definitionId
+- points
+- anomalies
+nullable: true
+properties:
+  anomalies:
+    type: array
+    description: |
+      Lists alert firings that occur within the report's time range.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - start
+      - firingId
+      properties:
+        end:
+          type: string
+          description: |
+            ISO 8601 timestamp for when the anomaly ended, or `null` for a currently firing anomaly.
+          nullable: true
+          format: date-time
+        firingId:
+          type: string
+          description: |
+            Identifies the alert firing for this anomaly.
+          minLength: 1
+        start:
+          type: string
+          description: |
+            ISO 8601 timestamp for when the anomaly started.
+          format: date-time
+  definitionId:
+    type: string
+    description: |
+      Identifies the associated alert definition.
+    minLength: 1
+  points:
+    type: array
+    description: |
+      Encapsulates the full range of graph data used to render traffic information.
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - x
+      - y
+      properties:
+        high:
+          type: number
+          description: |
+            Upper bound of expected value. Only available for adaptive alerts.
+          minimum: 0
+        low:
+          type: number
+          description: |
+            Lower bound of expected value. Only available for adaptive alerts.
+          minimum: 0
+        x:
+          type: string
+          description: |
+            ISO 8601 timestamp for each data point.
+          format: date-time
+        y:
+          type: number
+          description: |
+            For adaptive alerts, provides the observed value at that point. Otherwise yields 0 for static alerts, in which case x values simply define the overall range of the time series.
+          minimum: 0
+  suppressions:
+    type: array
+    description: |
+      Suppressions associated with the alert.
+    minItems: 0
+    items:
+      $ref: suppression.yaml

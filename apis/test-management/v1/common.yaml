@@ -1,0 +1,126 @@
+openapi: 3.0.0
+info:
+  title: Common resources
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/test-management/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: common.yaml
+paths:
+  /comparison-settings-default-values:
+    get:
+      operationId: get-comparison-settings-default-values
+      summary: List comparison lists
+      tags:
+      - Comparison lists
+      description: |
+        Get the comparison lists for a specific test definition. This includes the Compare All Except list of comparisons and the Compare Only list of comparisons.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-comparison-settings-default-values-response.json
+              schema:
+                $ref: schemas/getComparisonSettingsDefaultValuesResponse.yaml
+  /http-headers:
+    get:
+      operationId: get-http-headers
+      summary: List HTTP headers
+      tags:
+      - HTTP headers
+      description: |
+        Get list of standard HTTP request and response headers.  These values can be used to prepopulate the request headers during the creation or modification of a test case.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-http-headers-response.json
+              schema:
+                $ref: schemas/getHttpHeadersResponse.yaml
+  /properties/{propertyId}:
+    parameters:
+    - $ref: parameters/propertyId-path.yaml
+    get:
+      operationId: get-property
+      summary: Get a property
+      tags:
+      - Properties
+      description: |
+        Get the details of a specific property.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-property-response.json
+              schema:
+                $ref: schemas/getPropertyResponse.yaml
+  /properties/{propertyId}/version/{versionId}/isRun:
+    parameters:
+    - $ref: parameters/versionId-path.yaml
+    - $ref: parameters/propertyId-path.yaml
+    get:
+      operationId: get-property-version-isrun
+      summary: Confirm test
+      tags:
+      - Properties
+      description: |
+        Verify if propertyId and version are tested in ATC.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-property-version-isrun-response.json
+              schema:
+                $ref: schemas/getPropertyVersionIsrunResponse.yaml
+  /property-hostnames:
+    get:
+      operationId: get-property-hostnames
+      summary: Map properties to hostnames
+      tags:
+      - Properties
+      description: |
+        Fetch all of the properties that your account has access to.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-property-hostnames-response.json
+              schema:
+                $ref: schemas/getPropertyHostnamesResponse.yaml
+  /user-config:
+    get:
+      operationId: get-user-config
+      summary: List user configurations
+      tags:
+      - Users
+      description: |
+        Get the list of resources and permissions for the logged in account.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-user-config-response.json
+              schema:
+                $ref: schemas/getUserConfigResponse.yaml

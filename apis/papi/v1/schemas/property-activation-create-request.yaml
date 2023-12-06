@@ -1,0 +1,76 @@
+id: resource:/descriptors/papi/v1/schemas/CreateNewActivationOrDeactivationRequestV0.json#
+javaType: com.akamai.luna.papi.model.PropertyActivationRequest
+type: object
+description: |-
+  Activates property versions on a specific network. Relevant response objects appear within the outer envelope's `activations.items` array.
+  
+x-akamai:
+  file-path: schemas/property-activation-create-request.yaml
+required:
+- propertyVersion
+- network
+- notifyEmails
+properties:
+  acknowledgeAllWarnings:
+    type: boolean
+    description: |
+      When POSTing an activation, you can skip acknowledging each warning. With this enabled, you can omit the `acknowledgeWarnings` array.
+    default: false
+  acknowledgeWarnings:
+    type: array
+    description: |
+      String IDs prefixed with `msg_` to acknowledge any warnings noted in responses to previous activation requests.
+    items:
+      type: string
+  activationType:
+    type: string
+    description: |
+      Either `ACTIVATE` or `DEACTIVATE`. The default is `ACTIVATE`. Any new activation automatically deactivates the current activation. Note that if you were to POST a `DEACTIVATE` type on an active property, it would no longer serve any traffic. You'd need to modify your DNS configuration and specify a different way to field the traffic.
+    default: ACTIVATE
+    enum:
+    - ACTIVATE
+    - DEACTIVATE
+  delayValidations:
+    type: boolean
+    description: |
+      This makes the operation respond with an `activationLink` more quickly. Some time-consuming validations ordinarily result in a direct error response. Enabling this delays them so that any errors appear later once you [Get a property activation](ref:get-property-activation). In that case, the activation's `status` is `FAILED`.
+    nullable: true
+  fastPush:
+    type: boolean
+    description: |
+      Enable a fast metadata push when activating a new property, `true` by default.
+    default: true
+  ignoreHttpErrors:
+    type: boolean
+    description: |
+      Ignore any HTTP errors when pushing fast metadata activation, `true` by default.
+    default: true
+  network:
+    type: string
+    description: |
+      The network to activate on, either `STAGING` or `PRODUCTION`.
+    enum:
+    - STAGING
+    - PRODUCTION
+  note:
+    type: string
+    description: |
+      A descriptive log comment.
+  notifyEmails:
+    type: array
+    description: |
+      Email addresses to notify when the activation status changes.
+    minItems: 1
+    items:
+      type: string
+  propertyVersion:
+    type: integer
+    description: |
+      The version of the property to activate.
+    minimum: 1
+  useFastFallback:
+    type: boolean
+    description: |
+      After activating a property and finding it causes problems, POSTing another activation within one hour with `useFastFallback` enabled quickly rolls back to the previous version. This option is only available for activations where `canFastFallback` is `true`.
+    default: false
+$schema: http://json-schema.org/draft-04-schema#

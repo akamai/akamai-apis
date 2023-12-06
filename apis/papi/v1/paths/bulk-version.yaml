@@ -1,0 +1,45 @@
+x-akamai:
+  file-path: paths/bulk-version.yaml
+  path-for-file: /bulk/property-version-creations/{bulkCreateId}
+parameters:
+- $ref: ../parameters/bulkCreateId-path.yaml
+get:
+  operationId: get-bulk-version
+  summary: List bulk-versioned properties
+  tags:
+  - Bulk versioning
+  description: |
+    List all new property versions that result from a [bulk versioning request](ref:post-bulk-version). This operation polls the asynchronous process's status. After the `bulkCreateVersionsStatus` is `COMPLETE`, use the new version numbers along with search paths from a [bulk search](ref:post-bulk-search) operation to [bulk patch](ref:post-bulk-patch) them. See [Bulk Search and Update](ref:bulk-search-and-update) for guidance.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional-bulk.yaml
+  - $ref: ../parameters/groupId-optional-bulk.yaml
+  responses:
+    200:
+      description: |
+        The response shows the bulk versioning job, which proceeds until the `bulkCreateVersionsStatus` is `COMPLETE`.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/property-version-bulk-get-response.json
+          schema:
+            $ref: ../schemas/bulk-property-version-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: bulkPropertyVersion
+  group: Bulk property versions

@@ -1,0 +1,425 @@
+openapi: 3.0.0
+info:
+  title: MSL Ingest
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/config-media-live/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: msl-origin.yaml
+paths:
+  /msl-origin/cdns:
+    get:
+      operationId: get-cdns
+      summary: List CDNs
+      tags:
+      - CDNs
+      description: |
+        Fetch predefined list of CDN providers. You can configure your MSL origin to include multiple CDN providers.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/CdnResourceExample.json
+              schema:
+                $ref: schemas/CdnResourceDTO.yaml
+  /msl-origin/contracts:
+    get:
+      operationId: get-contracts
+      summary: List contracts
+      tags:
+      - Contracts
+      description: |
+        Fetch MSL contracts.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/ContractsExample.json
+              schema:
+                $ref: schemas/BasicContractDTO.yaml
+        400:
+          $ref: errors/400.yaml
+        429:
+          $ref: errors/429.yaml
+  /msl-origin/cpcodes:
+    post:
+      operationId: post-cpcodes
+      summary: Create a CP code
+      tags:
+      - CP codes
+      description: |
+        Creates a new MSL CP code. You need a CP code to create a stream or an origin.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/CreateCpcodeRequestExample.json
+            schema:
+              $ref: schemas/CreateCpcodeDTO.yaml
+      responses:
+        202:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/CreateCpcodeResponseExample.json
+              schema:
+                $ref: schemas/CpcodeCreateResponse.yaml
+    get:
+      operationId: get-cpcodes
+      summary: List CP codes
+      tags:
+      - CP codes
+      description: |
+        Obtains the CP code based on the type. You need a CP code to create a stream.
+      parameters:
+      - $ref: parameters/unused-query.yaml
+      - $ref: parameters/type-cpcodes-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/CpCodesExample.json
+              schema:
+                $ref: schemas/CpcodeDTO.yaml
+  /msl-origin/generate-key:
+    get:
+      operationId: get-generate-key
+      summary: Generate a key
+      tags:
+      - Keys
+      description: |
+        Specify either an `AKAMAI` or `THIRD_PARTY` key format.
+      parameters:
+      - $ref: parameters/type-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/GenerateSecretExample.json
+              schema:
+                $ref: schemas/GenerateSecretDTO.yaml
+  /msl-origin/origins:
+    post:
+      operationId: post-origin
+      summary: Create a new origin
+      tags:
+      - Origins
+      description: |
+        Create a Media Services live origin for the stream. You can associate this origin hostname with an Adaptive Media Delivery configuration.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/OriginPostExample.json
+            schema:
+              $ref: schemas/OriginDetailDTOV2Post.yaml
+      responses:
+        202:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content: {}
+        400:
+          $ref: errors/400-origin-bad-request.yaml
+        429:
+          $ref: errors/429.yaml
+    get:
+      operationId: get-msl-origin-origins
+      summary: List live origins
+      tags:
+      - Origins
+      description: |
+        Retrieves a list of all live origins associated with the profile by default, or optionally filtered live origins.
+      parameters:
+      - $ref: parameters/encoderLocation-query.yaml
+      - $ref: parameters/cpcode-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/OriginsExample.json
+              schema:
+                $ref: schemas/OriginsDTO.yaml
+        429:
+          $ref: errors/429.yaml
+  /msl-origin/origins/cpcodes:
+    get:
+      operationId: get-origin-cpcodes
+      summary: List CP codes per origin
+      tags:
+      - Origins
+      description: |
+        Fetches available CP codes for a new origin.
+      parameters:
+      - $ref: parameters/type-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/CpCodesExample.json
+              schema:
+                $ref: schemas/CpcodeDTO.yaml
+  /msl-origin/origins/{originId}:
+    parameters:
+    - $ref: parameters/originId-path.yaml
+    get:
+      operationId: get-origin
+      summary: Get an origin
+      tags:
+      - Origins
+      description: |
+        Retrieves detailed information about the requested origin.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/OriginDetailExampleV2.json
+              schema:
+                $ref: schemas/OriginDetailDTOV2.yaml
+        404:
+          description: |
+            The API returns 404 response when the user doesn't have access to the requested Origin or when an invalid Origin ID is passed.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/OriginGetException.json
+              schema:
+                $ref: schemas/ProblemDetailDTO.yaml
+        429:
+          $ref: errors/429.yaml
+    put:
+      operationId: put-origin
+      summary: Update an origin
+      tags:
+      - Origins
+      description: |
+        Updates certain fields of the origin. You can also use this API to rotate keys. Populate `previousKey` and `previousKeyExpiryDate` fields if you need your old keys to be valid for a certain amount of time even after rotating.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/OriginPutExample.json
+            schema:
+              $ref: schemas/OriginDetailDTOV2Put.yaml
+      responses:
+        202:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/400-origin-bad-request.yaml
+        429:
+          $ref: errors/429.yaml
+    delete:
+      operationId: delete-origin
+      summary: Remove an origin
+      tags:
+      - Origins
+      description: |
+        Deletes the specified origin.
+      responses:
+        202:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/400-origin-delete-exception.yaml
+        429:
+          $ref: errors/429.yaml
+  /msl-origin/publishing-locations:
+    get:
+      operationId: get-publishing-locations
+      summary: List publishing locations
+      tags:
+      - Publishing locations
+      description: |
+        Get valid encoder locations.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/PublishingLocationExample.json
+              schema:
+                $ref: schemas/PublishingLocationDTO.yaml
+  /msl-origin/streams:
+    post:
+      operationId: post-stream
+      summary: Create a stream
+      tags:
+      - Streams
+      description: |
+        Provisions a new stream. To create an ingest stream using Media Services Live 4, you need to:
+
+        - Set up an ingest for the stream
+        - Set up an archive for the stream. For details on the types of archive you can specify, see [Archive stream members](ref:archive-stream-members).
+        - Set up Media Services Live origin for the stream.
+
+        The process of creating or updating any stream changes its status to `PENDING`. When all of the steps are complete, the stream status changes to `PROVISIONED`. If any of the steps fail, the stream status changes to `FAILED`. It takes two to three hours to provision a stream.
+      parameters:
+      - $ref: parameters/cloneInternalSettingsFromStreamId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/StreamCreateExample.json
+            schema:
+              $ref: schemas/StreamDetailsPostDTO.yaml
+      responses:
+        202:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              description: |
+                Relative URL for created stream endpoint.
+              schema:
+                type: string
+          content: {}
+        400:
+          $ref: errors/400-stream-create-exception.yaml
+        429:
+          $ref: errors/429.yaml
+    get:
+      operationId: get-streams
+      summary: List streams
+      tags:
+      - Streams
+      description: |
+        Retrieves a list of all streams available to a user. Supports optional URL Parameters for pagination and sorting of the results.
+      parameters:
+      - $ref: parameters/page-query.yaml
+      - $ref: parameters/pageSize-query.yaml
+      - $ref: parameters/sortKey-query.yaml
+      - $ref: parameters/sortOrder-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/StreamsExample.json
+              schema:
+                $ref: schemas/StreamsDTO.yaml
+        400:
+          $ref: errors/400.yaml
+        429:
+          $ref: errors/429.yaml
+  /msl-origin/streams/{streamId}:
+    parameters:
+    - $ref: parameters/streamId-path.yaml
+    get:
+      operationId: get-stream
+      summary: Get a stream
+      tags:
+      - Streams
+      description: |
+        Retrieves detailed information about the requested stream.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/StreamDetailExample.json
+              schema:
+                $ref: schemas/StreamDetailsDTO.yaml
+        400:
+          $ref: errors/400-stream-get-exception.yaml
+        429:
+          $ref: errors/429.yaml
+    put:
+      operationId: put-stream
+      summary: Update a stream
+      tags:
+      - Streams
+      description: |
+        Modifies an existing stream. The request body object must be identical in structure to the Get Stream Details response object. You can edit the `name`, `ingestAccelerated`, `password`, `dvrWindow`, `allowedIps`, and `additionalEmailIds` members. If you try to edit any other member, the API returns a `400` error. If you want to update the HTTP digest authentication `username`, `password`, or `expiryDate` for a live stream, refer to these examples [Rotate HTTP digest authentication settings](ref:rotate-http-digest-authentication-settings).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/StreamUpdateExample.json
+            schema:
+              $ref: schemas/StreamDetailsPutDTO.yaml
+      responses:
+        202:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/400.yaml
+        429:
+          $ref: errors/429.yaml
+    delete:
+      operationId: delete-stream
+      summary: Remove a stream
+      tags:
+      - Streams
+      description: |
+        Deletes the specified stream. If you delete an archived stream, but set `purgeContent=false` the stream will be permanently deleted, but any archived content saved on NetStorage will continue to incur billing. If you set `purgeContent=true`, the stream will be permanently deleted and any archived content saved on NetStorage for this stream will also be deleted and cannot be restored.
+      parameters:
+      - $ref: parameters/purgeContent-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/400-stream-delete-exception.yaml
+        429:
+          $ref: errors/429.yaml
+  /msl-origin/vod-origin:
+    get:
+      operationId: get-vod-origin
+      summary: List VOD origins
+      tags:
+      - VOD origins
+      description: |
+        List all of the VOD origins.
+      parameters:
+      - $ref: parameters/encoderLocation-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/VodOriginResponseExample.json
+              schema:
+                $ref: schemas/VODOriginDTO.yaml

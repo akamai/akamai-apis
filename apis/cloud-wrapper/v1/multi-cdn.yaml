@@ -1,0 +1,108 @@
+openapi: 3.0.1
+info:
+  title: CloudWrapper Multi-CDN
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cloud-wrapper/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: multi-cdn.yaml
+paths:
+  /multi-cdn/auth-keys:
+    get:
+      operationId: get-auth-keys
+      summary: Get an auth key
+      tags:
+      - Multi-CDN
+      description: |
+        This operation shows the `cdnAuthKeys` for a specific Akamai `contractId` and specific third-party CDN (`cdnCode`). Use [auth keys](ref:concepts) (`cdnAuthKeys`) to generate the header that authenticates a request between a third-party CDN and your Cloud Wrapper cache, on the Akamai CDN.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/cdnCode-query.yaml
+      responses:
+        200:
+          description: |
+            The response includes the list of `cdnAuthKeys`.
+          content:
+            application/json:
+              example:
+                $ref: examples/MultiCdnAuthKeysExample.json
+              schema:
+                $ref: schemas/CdnAuthKeys.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /multi-cdn/origin-hostnames/{configId}:
+    get:
+      operationId: get-origin-hostnames
+      summary: List origin hostnames for a configuration
+      tags:
+      - Multi-CDN
+      description: |
+        View a list of origin hostnames for a configuration.
+      parameters:
+      - $ref: parameters/configId-path.yaml
+      responses:
+        200:
+          description: |
+            OK
+          content:
+            application/json:
+              example:
+                $ref: examples/MultiCdnOriginHostnamesExample.json
+              schema:
+                $ref: schemas/CdnHostnames.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /multi-cdn/providers:
+    get:
+      operationId: get-providers
+      summary: List CDN providers
+      tags:
+      - Multi-CDN
+      description: |
+        View a list of CDN providers.
+      responses:
+        200:
+          description: |
+            OK
+          content:
+            application/json:
+              example:
+                $ref: examples/MultiCdnProvidersExample.json
+              schema:
+                $ref: schemas/CdnProviders.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml

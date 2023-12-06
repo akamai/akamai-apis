@@ -1,0 +1,159 @@
+type: object
+description: |-
+  An enrollment displays all the information about the process that your certificate goes through from the time you request it, through renewal, and as you obtain subsequent versions. CPS is a certificate life cycle management tool. Once you obtain a certificate, you use it until it expires, in most cases a year from the date the CA issued the certificate. CPS automatically starts the renewal process 90 days before the old certificate expires. It then automatically deploys the renewed certificate when it receives it from the CA. A version label indicates this member is introduced in that version. A pre-version label indicates this member is removed in that version. No version label indicates this member is present in all versions.
+  
+x-akamai:
+  file-path: schemas/enrollment.v1.yaml
+additionalProperties: false
+required:
+- adminContact
+- certificateType
+- changeManagement
+- csr
+- networkConfiguration
+- org
+- ra
+- techContact
+- validationType
+properties:
+  adminContact:
+    type: object
+    description: |
+      Contact information for the certificate administrator that you want to use as a contact at your company.
+    additionalProperties: false
+    nullable: true
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phone:
+        type: string
+  certificateType:
+    type: string
+  changeManagement:
+    type: boolean
+  csr:
+    type: object
+    description: |
+      When you create an enrollment, you also generate a certificate signing request (CSR) using CPS. CPS signs the CSR with the private key. The CSR contains all the information the CA needs to issue your certificate.
+    additionalProperties: false
+    required:
+    - cn
+    properties:
+      c:
+        type: string
+      cn:
+        type: string
+      l:
+        type: string
+      o:
+        type: string
+      ou:
+        type: string
+        nullable: true
+      sans:
+        type: array
+        items:
+          type: string
+      st:
+        type: string
+  location:
+    type: string
+  networkConfiguration:
+    type: object
+    description: |
+      Settings that specify any network information and TLS Metadata you want CPS to use to push the completed certificate to the network.
+    additionalProperties: false
+    required:
+    - networkType
+    properties:
+      mustHaveCiphers:
+        type: string
+      networkType:
+        type: string
+        nullable: true
+      preferredCiphers:
+        type: string
+      sni:
+        type: object
+        description: |
+          SNI settings for your enrollment. When set to null, the enrollment becomes non-SNI. When it is non-null, enrollment is SNI-ONLY. This setting cannot be changed once an enrollment is created.
+        additionalProperties: false
+        required:
+        - cloneDnsNames
+        nullable: true
+        properties:
+          cloneDnsNames:
+            type: boolean
+          dnsNames:
+            type: array
+            items:
+              type: string
+  org:
+    type: object
+    description: |
+      Your organization information.
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+      addressLineOne:
+        type: string
+        nullable: true
+      addressLineTwo:
+        type: string
+        nullable: true
+      city:
+        type: string
+        nullable: true
+      country:
+        type: string
+        nullable: true
+      phone:
+        type: string
+      postalCode:
+        type: string
+        nullable: true
+      region:
+        type: string
+        nullable: true
+  pendingChanges:
+    type: array
+    items:
+      type: string
+  ra:
+    type: string
+  signatureAlgorithm:
+    type: string
+    nullable: true
+  techContact:
+    type: object
+    description: |
+      Contact information for an administrator at Akamai.
+    additionalProperties: false
+    nullable: true
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phone:
+        type: string
+  thirdParty:
+    type: object
+    description: |
+      Specifies that you want to use a third party certificate. This is any certificate that is not issued through CPS.
+    additionalProperties: false
+    required:
+    - excludeSans
+    nullable: true
+    properties:
+      excludeSans:
+        type: boolean
+  validationType:
+    type: string

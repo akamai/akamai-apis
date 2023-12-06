@@ -1,0 +1,38 @@
+openapi: 3.0.0
+info:
+  title: Validations
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edgeworkers/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: validations.yaml
+paths:
+  /validations:
+    post:
+      operationId: post-validations
+      summary: Validate an EdgeWorkers code bundle
+      tags:
+      - Validations
+      description: |
+        Return a list of errors and warnings containing details on how to fix your code bundle. See [Validation types](ref:validation-types). In order to run this operation you need to provide an EdgeWorkers code bundle as a GZIP binary file in the request body, with a `Content-Type` of `application/gzip`.
+      requestBody:
+        required: true
+        content:
+          application/gzip:
+            schema:
+              type: string
+              format: binary
+      responses:
+        200:
+          description: |
+            Provides details for an EdgeWorkers code bundle validation.
+          content:
+            application/json:
+              example:
+                $ref: examples/validations-post-200.json
+              schema:
+                $ref: schemas/validations-post-200.yaml

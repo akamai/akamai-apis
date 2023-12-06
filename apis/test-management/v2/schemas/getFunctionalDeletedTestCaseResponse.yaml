@@ -1,0 +1,58 @@
+type: object
+description: |-
+  Contains a unique identifier of the config version deleted successfully or details about failure of the operation.
+  
+x-akamai:
+  file-path: schemas/getFunctionalDeletedTestCaseResponse.yaml
+additionalProperties: false
+required:
+- testCases
+properties:
+  testCases:
+    type: object
+    additionalProperties: false
+    required:
+    - successes
+    - failures
+    properties:
+      failures:
+        type: array
+        description: |
+          Contains a list of [HTTP Problem Details](https://tools.ietf.org/html/rfc7807) objects and indicates errors together with unique identifiers of items for which the operation failed.
+        minItems: 0
+        items:
+          type: object
+          additionalProperties: true
+          required:
+          - type
+          - title
+          properties:
+            type:
+              type: string
+              description: |
+                Type of error.
+              minLength: 1
+            title:
+              type: string
+              description: |
+                Title of the error.
+              minLength: 1
+            requestField:
+              type: string
+              description: |
+                Request field name. It can be a URL or query parameter or any request payload field name.
+              minLength: 1
+            requestValues:
+              type: array
+              description: |
+                Request field values.
+              minItems: 0
+              items:
+                type: integer
+                minimum: 0
+      successes:
+        type: array
+        minItems: 0
+        items:
+          type: integer
+          minimum: 0

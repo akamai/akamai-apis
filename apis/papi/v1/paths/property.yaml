@@ -1,0 +1,81 @@
+x-akamai:
+  file-path: paths/property.yaml
+  path-for-file: /properties/{propertyId}
+parameters:
+- $ref: ../parameters/propertyId-path.yaml
+get:
+  operationId: get-property
+  summary: Get a property
+  tags:
+  - Properties
+  description: |
+    This operation gets a specific property. You can call this operation by specifying any of the `propertyId` members from a [list of properties](ref:get-properties), or by running a GET on the `propertyLink` response when [creating a new property](ref:post-properties).
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  responses:
+    200:
+      description: |
+        The response shows details for the requested property.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/property-get-response.json
+          schema:
+            $ref: ../schemas/property-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+delete:
+  operationId: delete-property
+  summary: Remove a property
+  tags:
+  - Properties
+  description: |
+    Removes a specific property, which you can only do if none of its versions are currently active. Activating another property with the same set of hostnames automatically triggers a deactivation on the targeted property. See [Create a new activation](ref:post-property-activations) for details. A successful DELETE results in a 200 response with the confirmation message. Attempting to delete an active property results in a 500 error. Attempting to delete an unknown property results in a 404 error.
+  parameters:
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  responses:
+    200:
+      description: |
+        Shows a message confirming the property deletion.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/property-delete-response.json
+          schema:
+            $ref: ../schemas/property-delete-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: property
+  group: Properties

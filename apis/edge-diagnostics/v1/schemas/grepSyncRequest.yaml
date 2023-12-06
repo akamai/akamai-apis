@@ -1,0 +1,51 @@
+type: object
+description: |-
+  Synchronous `grep` request.
+  
+x-akamai:
+  file-path: schemas/grepSyncRequest.yaml
+additionalProperties: false
+required:
+- cpCodes
+- edgeIp
+- end
+properties:
+  cpCodes:
+    type: array
+    description: |
+      Lists CP codes you want to get the logs for.
+    minItems: 0
+    items:
+      type: integer
+      minimum: 0
+  edgeIp:
+    type: string
+    description: |
+      Edge IP you want to get the logs for. If you don't know if an IP is the edge IP, run the [Verify an IP](ref:post-verify-edge-ip) operation first.
+    minLength: 1
+  end:
+    type: string
+    description: |
+      ISO 8601 timestamp for a point of time in the past when the log search window ends.
+    format: date-time
+  httpStatusCodes:
+    description: |
+      Collects HTTP status code to filter the logs by.
+    $ref: httpStatusCodes.yaml
+  logType:
+    type: string
+    description: |
+      Log record type you want to get. Possible values are either `R` for client requests to an edge server or `F` for forward requests from an edge server to the origin.
+    enum:
+    - R
+    - F
+  objectStatus:
+    type: string
+    description: |
+      Object status codes you want to get the logs for. To see available values, check [Object status codes](doc:object-status).
+    minLength: 1
+  start:
+    type: string
+    description: |
+      ISO 8601 timestamp for a point of time in the past when the log search window starts. You can get the logs from either the last 6 or 24 hours depending on the server and traffic conditions. The recommended 10-minute periods ensure that data fetches quickly and you get the most relevant logs.
+    format: date-time

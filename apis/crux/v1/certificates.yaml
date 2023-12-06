@@ -1,0 +1,174 @@
+openapi: 3.0.0
+info:
+  title: Certificates
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/crux/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: certificates.yaml
+paths:
+  /mgmt-pop/certificates:
+    post:
+      operationId: post-certificate
+      summary: Create a certificate
+      tags:
+      - Certificates
+      description: |
+        Creates a new certificate.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/certificate-post-body-manually.json
+            schema:
+              $ref: schemas/certificate_post.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/certificate-post-body-200-manually.json
+              schema:
+                $ref: schemas/certificate_post.yaml
+    get:
+      operationId: get-certificates
+      summary: List certificates
+      tags:
+      - Certificates
+      description: |
+        Lists certificates.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/pageable_offset.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/certificate-get-list-200.json
+              schema:
+                $ref: schemas/certificate_list.yaml#/definitions/certificates
+  /mgmt-pop/certificates/ca_attributes:
+    get:
+      operationId: get-certificates-ca-attributes
+      summary: Get CA attributes
+      tags:
+      - Certificates
+      description: |
+        Lists CA attributes.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/certificates-ca-attributes-200.json
+              schema:
+                $ref: schemas/need-schema-here.yaml
+  /mgmt-pop/certificates/{certificateId}:
+    parameters:
+    - $ref: parameters/certificateId-path.yaml
+    get:
+      operationId: get-certificate
+      summary: Get a certificate
+      tags:
+      - Certificates
+      description: |
+        Retrieves a single certificate by ID.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/certificate-post-body-200-file.json
+              schema:
+                $ref: schemas/certificate_post.yaml
+    put:
+      operationId: put-certificate
+      summary: Modify a certificate
+      tags:
+      - Certificates
+      description: |
+        Updates an existing manual certificate.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/certificate-put-body.json
+            schema:
+              $ref: schemas/certificate_put.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/certificate-put-200.json
+              schema:
+                $ref: schemas/certificate_post.yaml
+    delete:
+      operationId: delete-certificate
+      summary: Delete a certificate
+      tags:
+      - Certificates
+      description: |
+        Removes an existing certificate.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        204:
+          description: |
+            Successful response.
+  /mgmt-pop/certificates/{certificateId}/upload:
+    parameters:
+    - $ref: parameters/certificateId-path.yaml
+    post:
+      operationId: post-certificate-upload
+      summary: Upload a certificate
+      tags:
+      - Certificates
+      description: |
+        Modifies a certificate.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            example:
+              $ref: examples/certificate-post-body-manually.json
+            schema:
+              $ref: schemas/certificate_post_upload.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/certificate-post-body-200-upload.json
+              schema:
+                $ref: schemas/certificate_post.yaml

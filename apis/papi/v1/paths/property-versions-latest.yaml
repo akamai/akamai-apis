@@ -1,0 +1,49 @@
+x-akamai:
+  file-path: paths/property-versions-latest.yaml
+  path-for-file: /properties/{propertyId}/versions/latest
+parameters:
+- $ref: ../parameters/propertyId-path.yaml
+get:
+  operationId: get-latest-property-version
+  summary: Get the latest property version
+  tags:
+  - Property versions
+  description: |
+    This operation provides either the latest property version overall, or the latest one active on the production or staging networks. By default, the response yields the property version with the highest number. Specifying an `activatedOn` of `STAGING` or `PRODUCTION` yields the version that's currently active on either network.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/activatedOn-query.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  responses:
+    302:
+      description: |
+        The response provides a redirect URL link to the latest version of the requested property.
+      headers:
+        Location:
+          $ref: ../headers/Location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/property-version-latest-response.json
+          schema:
+            $ref: ../schemas/property-version-create-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: latestVersion
+  group: Property versions

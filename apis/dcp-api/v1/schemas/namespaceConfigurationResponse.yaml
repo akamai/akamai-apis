@@ -1,0 +1,55 @@
+type: object
+description: |-
+  The configuration JSON object specifies the configuration associated with the specified namespace and jurisdiction.
+  
+x-akamai:
+  file-path: schemas/namespaceConfigurationResponse.yaml
+additionalProperties: false
+properties:
+  acls:
+    type: array
+    description: |
+      A list of access control rules for the configuration. Indicates users or clients that can publish or subscribe to specified topics. See [access control lists](ref:access-control-lists).
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        publishers:
+          type: array
+          description: |
+            A list of authorization group names. Indicates users or clients that have permission to publish messages to the topic referenced in `topicFilter`. With identity topic filters, use `*` to match a client or user identifier. See [authorization group wildcards](ref:authorization-group-wildcard).
+          items:
+            type: string
+        subscribers:
+          type: array
+          description: |
+            A list of authorization group names. Indicates users or clients that have permission to subscribe to the topic referenced in `topicFilter`. With identity topic filters, use `*` to match a client or user identifier. See [authorization group wildcard](ref:authorization-group-wildcard).
+          items:
+            type: string
+        topicFilter:
+          type: string
+          description: |
+            The path to the topic that you want to authorize `publishers` and `subscribers` to. It is either an absolute path or a wildcarded path. In wildcarded topic filters, use `+` to match a single level and `#` to match multiple levels. See [topic filter wildcards](ref:topic-filter-wildcards) and [identity topic filters guidelines](ref:identity-topic-filters-guidelines).
+  jurisdiction:
+    type: string
+    description: |
+      The jurisdiction to which the configuration applies. The following options are available: `na` for North America, `eu` for Europe, `jp` for Japan, or `in` for India.
+    enum:
+    - na
+    - eu
+    - jp
+    - in
+  namespace:
+    type: string
+    description: |
+      The name of the namespace that the configuration applies to.
+  storage:
+    type: integer
+    description: |
+      The amount of storage in megabytes that the namespace can use.
+    default: 200000
+  topic-expiry:
+    type: integer
+    description: |
+      The number of days for the topic to expire.
+    default: 1

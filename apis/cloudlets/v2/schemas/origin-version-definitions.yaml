@@ -1,0 +1,238 @@
+x-akamai:
+  file-path: schemas/origin-version-definitions.yaml
+definitions:
+  dataCenter:
+    type: object
+    description: |
+      Contains information about the data centers.
+    additionalProperties: false
+    required:
+    - cloudService
+    - continent
+    - country
+    - latitude
+    - longitude
+    - originId
+    - percent
+    properties:
+      city:
+        type: string
+        description: |
+          The city in which the data center is located.
+      cloudServerHostHeaderOverride:
+        type: boolean
+        description: |
+          When set to `true`, overides the host header when load balancing is in a cloud environment.
+      cloudService:
+        type: boolean
+        description: |
+          If `true` caching for the data center is updated at a certain interval, like it would for a cloud-based service.
+      continent:
+        type: string
+        description: |
+          The continent on which the data center is located. See [Continent Codes](https://control.akamai.com/dl/edgescape/continentCodes.csv) for a list of valid codes.
+        enum:
+        - AF
+        - AS
+        - EU
+        - NA
+        - OC
+        - OT
+        - SA
+      country:
+        type: string
+        description: |
+          The country in which the data center is located. See [Country Codes](https://control.akamai.com/dl/edgescape/cc2continent.csv) for a list of valid codes.
+        minLength: 2
+        maxLength: 2
+      hostname:
+        type: string
+        description: |
+          The name of the host that can be used as a conditional origin.
+        maxLength: 256
+      latitude:
+        type: number
+        description: |
+          The latitude value for the data center. This member supports six decimal places of precision.
+        minimum: -180
+        maximum: 180
+      livenessHosts:
+        type: array
+        description: |
+          If you enable liveness tests, an array of strings that represent the origin servers used to poll the data centers in an Application Load Balancer configuration for liveness checks. These servers support basic HTTP polling.
+        minItems: 1
+        uniqueItems: true
+        items:
+          type: string
+      longitude:
+        type: number
+        description: |
+          The longitude value for the data center. This member supports six decimal places of precision.
+        minimum: -180
+        maximum: 180
+      originId:
+        type: string
+        description: |
+          The conditional origin's unique identifier.
+        maxLength: 128
+      percent:
+        type: number
+        description: |
+          The percent of traffic that is sent to the data center. The total for all `dataCenters` objects within the array must equal 100%.
+        minimum: 0
+        maximum: 100
+      stateOrProvince:
+        type: string
+        description: |
+          The state, province, or region where the data center is located. See [region codes](https://control.akamai.com/dl/edgescape/region_codes.txt).
+        nullable: true
+  hostHeaderValue:
+    type: string
+    description: |
+      The name of the HTTP header you want to include in liveness test requests.
+    maxLength: 256
+  httpProblem:
+    type: object
+    description: |
+      Provides error response data to help diagnose the problem that led to the error.
+    additionalProperties: false
+    required:
+    - detail
+    - title
+    - type
+    properties:
+      type:
+        type: string
+        description: |
+          The error `type` uniquely identifies each distinct error case. An error can have multiple `types`.
+      title:
+        type: string
+        description: |
+          The descriptive label for the overall problem.
+      detail:
+        type: string
+        description: |
+          Provides actionable instructions to diagnose the problem that caused the error.
+      errors:
+        type: array
+        description: |
+          Error objects that provide information for debugging.
+        items:
+          $ref: http-problem-nested.yaml
+      jsonPointer:
+        type: string
+        description: |
+          The pointer to the error response JSON body.
+        maxLength: 128
+      status:
+        type: integer
+        description: |
+          HTTP response status code.
+  livenessSettings:
+    additionalProperties: false
+    required:
+    - port
+    - protocol
+    properties:
+      additionalHeaders:
+        type: object
+        description: |
+          Maps additional case-insensitive HTTP header names included to the liveness testing requests.
+        additionalProperties: false
+        properties:
+          additionalProperties:
+            $ref: '#/definitions/hostHeaderValue'
+          host:
+            $ref: '#/definitions/notEmptyHostHeaderValue'
+      hostHeader:
+        $ref: '#/definitions/notEmptyHostHeaderValue'
+      interval:
+        type: integer
+        description: |
+          How often the liveness test occurs in seconds. Optional defaults to 60 seconds, minimum is 10 seconds.
+        minimum: 10
+        maximum: 3600
+      path:
+        type: string
+        description: |
+          The path to the test object used for liveness testing. The function of the test object is to help determine whether the data center is functioning.
+        minLength: 1
+        maxLength: 256
+      peerCertificateVerification:
+        type: boolean
+        description: |
+          When `true`, validates the origin certificate.
+      port:
+        type: integer
+        description: |
+          The port for the test object. The default port is 80, which is standard for HTTP. Enter 443 if you are using HTTPS.
+        minimum: 1
+        maximum: 65535
+      protocol:
+        type: string
+        description: |
+          The protocol or scheme for the database, either `HTTP`, or `HTTPS`.
+        enum:
+        - HTTP
+        - HTTPS
+      status3xxFailure:
+        type: boolean
+        description: |
+          Set to `true` to mark the liveness test as failed when the request returns a 3xx (redirection) status code.
+      status4xxFailure:
+        type: boolean
+        description: |
+          Set to `true` to mark the liveness test as failed when the request returns a 4xx (client error) status code.
+      status5xxFailure:
+        type: boolean
+        description: |
+          Set to `true` to mark the liveness test as failed when the request returns a 5xx (server error) status code.
+      timeout:
+        type: number
+        description: |
+          The number of seconds the system waits before failing the liveness test. The default is 25 seconds.
+        minimum: 0.001
+        maximum: 60
+  notEmptyHostHeaderValue:
+    type: string
+    description: |
+      The value of the HTTP header you want to include in liveness test requests.
+    minLength: 1
+    maxLength: 256
+  warning:
+    type: object
+    description: |
+      Provides useful debugging information.
+    additionalProperties: false
+    required:
+    - detail
+    - title
+    - type
+    properties:
+      type:
+        type: string
+        description: |
+          The error `type` uniquely identifies each distinct error case. An error can have multiple `types`.
+      title:
+        type: string
+        description: |
+          The descriptive label for the overall problem.
+      detail:
+        type: string
+        description: |
+          Provides error response data to help diagnose the problem that led to the error.
+      errors:
+        type: array
+        description: |
+          Error objects that provide information for debugging.
+        items:
+          $ref: '#/definitions/httpProblem'
+      jsonPointer:
+        type: string
+        description: |
+          The pointer to the error response JSON body.
+        maxLength: 128
+      status:
+        type: integer
+        description: |
+          HTTP response status code.

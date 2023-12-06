@@ -1,0 +1,125 @@
+openapi: 3.0.0
+info:
+  title: User diagnostic data
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: userDiagnosticData.yaml
+paths:
+  /user-diagnostic-data/groups:
+    post:
+      operationId: post-user-diagnostic-data-groups
+      summary: Generate a diagnostic link
+      tags:
+      - User diagnostic data
+      description: |
+        Generates a diagnostic link for you to share with end users of a particular URL or IP acceleration hostname experiencing similar issues.  After an end user clicks the link, the tool gathers necessary diagnostic data and asks the end user to submit it. Once submitted, you can check the collected data with  the [Get diagnostic data of a group](ref:get-user-diagnostic-data-group-records) operation. Each link is valid for 7 days of 50 submissions. To get the list of IP acceleration hostname you can collect diagnostic data for, run the [List IP acceleration hostnames](ref:get-ipa-hostnames) operation first.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/userDiagnosticDataGroupsPostRequest.json
+            schema:
+              $ref: schemas/userDiagnosticDataGroupsPostRequest.yaml
+      responses:
+        201:
+          description: |
+            Diagnostic link successfully created.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/userDiagnosticDataGroupsPostResponse.json
+              schema:
+                $ref: schemas/userDiagnosticDataGroupsPostResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml
+    get:
+      operationId: get-user-diagnostic-data-groups
+      summary: List end user groups
+      tags:
+      - User diagnostic data
+      description: |
+        Lists groups created for collecting diagnostic data and their details. A group stores diagnostic data of end users of a particular domain experiencing similar issues submitted with the specific diagnostic link. To create the diagnostic link, run the [Generate a diagnostic link](ref:post-user-diagnostic-data-groups) operation. To check the data collected for a group, store the returned `groupId` value and use it to run the [Get diagnostic data of a group](ref:get-user-diagnostic-data-group-records) operation.
+      responses:
+        200:
+          description: |
+            The response lists created diagnostic groups and their details.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/userDiagnosticDataGroupsGetResponse.json
+              schema:
+                $ref: schemas/userDiagnosticDataGroupsGetResponse.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml
+  /user-diagnostic-data/groups/{groupId}/records:
+    parameters:
+    - $ref: parameters/groupId-path.yaml
+    get:
+      operationId: get-user-diagnostic-data-group-records
+      summary: Get diagnostic data for an end user group
+      tags:
+      - User diagnostic data
+      description: |
+        Returns collected diagnostic data for a specific group. You can also request additional cURL, DIG, and MTR data. To get the `groupId` value, run the [List groups](ref:get-user-diagnostic-data-groups) operation first.
+      parameters:
+      - $ref: parameters/includeCurl.yaml
+      - $ref: parameters/includeDig.yaml
+      - $ref: parameters/includeMtr.yaml
+      responses:
+        200:
+          description: |
+            The response provides diagnostic data for a group.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/userDiagnosticDataRecordGetResponse.json
+              schema:
+                $ref: schemas/userDiagnosticDataRecordGetResponse.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

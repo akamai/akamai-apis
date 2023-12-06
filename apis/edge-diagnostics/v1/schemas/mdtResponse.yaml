@@ -1,0 +1,74 @@
+type: object
+description: |-
+  Collects the metadata tracer response and details about the request.
+  
+x-akamai:
+  file-path: schemas/mdtResponse.yaml
+additionalProperties: false
+required:
+- requestId
+- executionStatus
+- createdBy
+- createdTime
+- request
+properties:
+  summary:
+    description: |-
+      Summary for the metadata tracer operation.
+      
+    $ref: summary.yaml
+  completedTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the request was completed.
+    format: date-time
+  createdBy:
+    type: string
+    description: |
+      Username who submitted the request.
+    minLength: 1
+  createdTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the request was submitted.
+    format: date-time
+  edgeIpLocation:
+    description: |
+      Specifies the geolocation of the edge server used to run the operation.
+    $ref: edgeIpLocation.yaml
+  executionStatus:
+    type: string
+    description: |
+      Status of the request's execution. Possible values are `SUCCESS`, `FAILURE`, or `IN_PROGRESS`.
+    enum:
+    - SUCCESS
+    - FAILURE
+    - IN_PROGRESS
+  internalIp:
+    type: string
+    description: |
+      If your request contained `edgeLocationId` then this is the IP of a machine in that location. If you run the operation for a virtual IP, then this is the IP of a machine behind that virtual IP.
+    minLength: 1
+  link:
+    type: string
+    description: |
+      Link to get fetched metadata tracer response after the `retryAfter` interval passes. It occurs only for operations with the `IN_PROGRESS` status.
+    minLength: 1
+  request:
+    description: |
+      Specifies your request.
+    $ref: mdtRequest.yaml
+  requestId:
+    type: integer
+    description: |
+      Unique identifier for the metadata tracer request. Store this value to run [Check a metadata tracing request status](ref:get-mdt-request) operation.
+    minimum: 1
+  result:
+    description: |
+      Collects results of the metadata tracer command.
+    $ref: mdtResults.yaml
+  retryAfter:
+    type: integer
+    description: |
+      Number of seconds when the request is estimated to have processed. It occurs only for operations with the `IN_PROGRESS` status.
+    minimum: 0

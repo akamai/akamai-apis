@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: CURL
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: curl.yaml
+paths:
+  /curl:
+    post:
+      operationId: post-curl
+      summary: Request content with cURL
+      tags:
+      - CURL
+      description: |
+        Requests content using the `curl` command to provide the raw HTML for a URL, including request headers. You can run this operation for a specific location, an edge server IP, or a Site Shield map. If you want to get the data for a location, you need to run the [List available edge server locations](ref:get-edge-locations) operation first to get `edgeLocationId`. And if you want to run this operation for an IP,  you may need to [verify an IP](ref:post-verify-edge-ip) to check if it belongs to an edge server. If you provide neither a location nor an edge server IP, then Edge Diagnostics runs the operation using a random edge server IP.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/curlRequest.json
+            schema:
+              $ref: schemas/curlRequest.yaml
+      responses:
+        200:
+          description: |
+            The response provides the `curl` results and details about the request.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/curlResponse.json
+              schema:
+                $ref: schemas/curlResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

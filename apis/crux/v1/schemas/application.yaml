@@ -1,0 +1,449 @@
+type: object
+description: |-
+  Enterprise Access Application creation properties.
+  
+x-akamai:
+  file-path: schemas/application.yaml
+additionalProperties: false
+required:
+- app_type
+- name
+- app_profile
+properties:
+  servers:
+    type: array
+    description: |
+      EAA application server details.
+    minItems: 1
+    items:
+      type: object
+      description: |
+        Origin server details of the internal application within your network.
+      additionalProperties: false
+      required:
+      - origin_protocol
+      - name
+      - orig_tls
+      - origin_host
+      - origin_port
+      properties:
+        name:
+          type: string
+          description: |
+            The name of the origin server.
+          minLength: 1
+        orig_tls:
+          type: boolean
+          description: |
+            Enables TLS on the origin server.
+        origin_host:
+          type: string
+          description: |
+            The IP address or FQDN of the origin server.
+          minLength: 1
+        origin_port:
+          type: integer
+          description: |
+            The port number of the origin server.
+          minimum: 0
+        origin_protocol:
+          type: string
+          description: |
+            The protocol of the origin server connection. Either `ssh` or `http`.
+          enum:
+          - ssh
+          - http
+  name:
+    type: string
+    description: |
+      The name of the application configuration.
+    minLength: 1
+  description:
+    type: string
+    description: |
+      A description of the application.
+    minLength: 1
+  agents:
+    type: array
+    description: |
+      EAA application connector details.
+    minItems: 1
+    items:
+      type: object
+      description: |
+        Specifies the target connectors for deploying the application configuration.
+      additionalProperties: false
+      required:
+      - compatible
+      - name
+      - uuid_url
+      properties:
+        name:
+          type: string
+          description: |
+            The name of the connector.
+          minLength: 1
+        compatible:
+          type: boolean
+          description: |
+            Whether the target connector is compatible with the application configuration.
+        uuid_url:
+          type: string
+          description: |
+            The UUID URL of the connector.
+          minLength: 1
+  app_category:
+    type: object
+    description: |
+      Specifies the category the application belongs to.
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        description: |
+          The name of the category.
+        minLength: 1
+      uuid_url:
+        type: string
+        description: |
+          The UUID of the category.
+        minLength: 1
+  app_deployed:
+    type: boolean
+    description: |
+      Whether the application configuration is deployed.
+  app_logo:
+    type: string
+    description: |
+      A URL identifying the application configuration's logo icon.
+    minLength: 1
+  app_operational:
+    type: integer
+    description: |
+      The operational status of the application configuration. Either `1` for No, `2` for Pending, or `3` for Okay.
+    default: 1
+    enum:
+    - 1
+    - 2
+    - 3
+  app_profile:
+    type: integer
+    description: |
+      The access application profile. Either `1` for HTTP, `2` for SharePoint, `3` for Jira, `4` for RDP, `5` for VNC, `6` for ssh, `7` for Jenkins, `8` for Confluence, or `9` for TCP.
+    default: 1
+    enum:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+  app_status:
+    type: integer
+    description: |
+      The status of the application configuration. Either `1` for not ready, `2` for ready, `3` for pending, `4` for deployed, `5` for failed, `6` for cloud deployed, or `7` for connector deployed.
+    default: 1
+    enum:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+  app_type:
+    type: integer
+    description: |
+      The type of application configuration. Either `1` for Enterprise Hosted, `2` for SAAS, `3` for Bookmark, `4` for Tunnel, or `5` for Enterprise Threat Protector.
+    enum:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+  auth_agent:
+    type: string
+    description: |
+      The connector for the application.
+    minLength: 1
+  auth_enabled:
+    type: string
+    description: |
+      Enables authentication.
+    default: 'true'
+    minLength: 1
+  auth_type:
+    type: integer
+    description: |
+      The type of authentication used. Either `1` for Cloud, `2` for Enterprise, or `3` for Third Party.
+    default: 1
+    enum:
+    - 1
+    - 2
+    - 3
+  bookmark_url:
+    type: string
+    description: |
+      The Okta Bookmark app URL.
+    minLength: 1
+  cert:
+    type: string
+    description: |
+      A valid certificate string for front-end SSL connections. Used if you configure your domain as the external hostname. Specify `null` if you want to name it later.
+    nullable: true
+    minLength: 1
+  client_app_mode:
+    type: integer
+    description: |
+      The mode of client app. `1` for TCP or `2` for Tunnel.
+    default: 1
+    enum:
+    - 1
+    - 2
+  cname:
+    type: string
+    description: |
+      The upstream URL for a CNAME redirect.
+    minLength: 1
+  created_at:
+    type: string
+    description: |
+      ISO 8601 timestamp marking the application object's creation.
+    readOnly: true
+    format: date-time
+  data_agent:
+    type: string
+    description: |
+      The data connector for the application.
+    minLength: 1
+  directories:
+    type: array
+    description: |
+      Application directory details.
+    minItems: 1
+    items:
+      type: object
+      description: |
+        Specifies the directory for validating user accounts.
+      additionalProperties: false
+      required:
+      - type
+      - name
+      - user_count
+      - uuid_url
+      properties:
+        name:
+          type: string
+          description: |
+            The name of the directory.
+          minLength: 1
+        type:
+          type: string
+          description: |
+            The type of directory. Select `1` for EAA Cloud Directory, `2` for Active Directory, `3` for LDAP, or `4` for Active Directory LDS.
+          enum:
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+        user_count:
+          type: integer
+          description: |
+            The total number of user accounts configured on the directory.
+          minimum: 0
+        uuid_url:
+          type: string
+          description: |
+            The UUID URL of the directory.
+          minLength: 1
+  domain:
+    type: integer
+    description: |
+      The type of access domain. Select `1` for custom or `2` for Akamai.
+    default: 1
+    enum:
+    - 1
+    - 2
+  domain_suffix:
+    type: string
+    description: |
+      The domain suffix. For example, `.com`.
+    minLength: 1
+  host:
+    type: string
+    description: |
+      The external default hostname for the application.
+    format: hostname
+  idp:
+    type: object
+    description: |
+      Specifies the identity provider (IDP) for authenticating user requests.
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        description: |
+          The name of the IDP configuration.
+        minLength: 1
+      type:
+        type: integer
+        description: |
+          The type of IDP. Select `1` for Default, `2` for EAA, `3` for SAML, `4` for Okta, `5` for PingOne, `6` for OneLogin, `7` for Google, `8` for OIDC, or `9` for Azure.
+        default: 1
+        enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 9
+      client_cert_auth:
+        type: boolean
+        description: |
+          Enables certificate-based authentication for the client.
+      client_cert_user_param:
+        type: string
+        description: |
+          Relevant Cert based parameters for client authentication.
+        minLength: 1
+      idp_id:
+        type: string
+        description: |
+          The ID of the IDP configuration.
+        minLength: 1
+  modified_at:
+    type: string
+    description: |
+      Name of the user who most recently modified this application object. If the object wasn't modified since first being created, the value matches `createdAt`.
+    minLength: 1
+  oidc:
+    type: boolean
+    description: |
+      Enables OpenID Connect (OIDC).
+  oidc_settings:
+    description: |
+      JSON settings to implement OIDC.
+    $ref: app-oidc-settings.yaml
+  origin_host:
+    type: string
+    description: |
+      The IP address or FQDN of the application origin server.
+    minLength: 1
+  pop:
+    type: string
+    description: |
+      The identifier for the target region to deploy the application.
+    minLength: 1
+  popName:
+    type: string
+    description: |
+      The target region to deploy the application. For example, `US-West` or `US-East`.
+    minLength: 1
+  rdp_version:
+    type: string
+    description: |
+      The version of remote desktop protocol (RDP).
+    minLength: 1
+  resource:
+    type: string
+    description: |
+      Name of resource mapping to an entity or set of entities. For example, `apps`.
+    minLength: 1
+  resource_status:
+    $ref: app-resource-status.yaml
+  resource_uri:
+    type: object
+    description: |
+      Resource URIs for the application.
+    additionalProperties: false
+    required:
+    - directories
+    - groups
+    - href
+    - pop
+    - services
+    - sites
+    properties:
+      directories:
+        type: string
+        description: |
+          The URI location of an associated directory resource.
+        minLength: 1
+      groups:
+        type: string
+        description: |
+          The URI location of an associated group resource.
+        minLength: 1
+      href:
+        type: string
+        description: |
+          The URI location of an associated href resource.
+        minLength: 1
+      pop:
+        type: string
+        description: |
+          The URI location of an associated pop resource.
+        minLength: 1
+      services:
+        type: string
+        description: |
+          The URI location of an associated service resource.
+        minLength: 1
+      sites:
+        type: string
+        description: |
+          The URI location of an associated site resource.
+        minLength: 1
+  saml:
+    type: boolean
+    description: |
+      Enables SAML for the application.
+  saml_settings:
+    description: |
+      SAML configuration for an application.
+    minItems: 1
+    $ref: app-saml-settings.yaml
+  services:
+    type: array
+    description: |
+      EAA application service details.
+    minItems: 1
+    items:
+      type: object
+      description: |
+        A list of services enabled on the application configuration.
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: |
+            The name of the service.
+          minLength: 1
+  sites:
+    type: array
+    description: |
+      List of associated site resources.
+    minItems: 1
+    items:
+      type: string
+      minLength: 1
+  uuid_url:
+    type: string
+    description: |
+      A unique identifier for the application.
+    minLength: 1
+  wsfed:
+    type: boolean
+    description: |
+      Enables Web Services Federation (WSFED) identity federation.
+  wsfed_settings:
+    description: |
+      JSON settings to implement WSFED.
+    minItems: 1
+    $ref: app-wsfed-settings.yaml

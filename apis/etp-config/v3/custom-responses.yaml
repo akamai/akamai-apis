@@ -1,0 +1,159 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Custom responses
+  version: v3
+servers:
+- url: https://{hostname}/etp-config/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: custom-responses.yaml
+paths:
+  /configs/{configId}/honeypots:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-custom-response
+      summary: Create a custom response
+      tags:
+      - Custom responses
+      description: |
+        Creates a new custom response.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-honeypot-body.json
+            schema:
+              $ref: schemas/honeypotRetrieveSpecific.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        409:
+          $ref: errors/conflict-409.yaml
+    get:
+      operationId: get-custom-responses
+      summary: List custom responses
+      tags:
+      - Custom responses
+      description: |
+        Returns a list of all custom responses.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/honeypot-retrieve-all-200.json
+              schema:
+                $ref: schemas/honeypotRetrieveAll.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/honeypots/{honeypotId}:
+    parameters:
+    - $ref: parameters/honeypotId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-custom-response
+      summary: Get a custom response
+      tags:
+      - Custom responses
+      description: |
+        Returns the details of a specific custom response.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/honeypot-retrieve-specific-200.json
+              schema:
+                $ref: schemas/honeypotRetrieveSpecific.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    put:
+      operationId: put-custom-response
+      summary: Update a custom response
+      tags:
+      - Custom responses
+      description: |
+        Modifies a custom response's features.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/update-honeypot-body.json
+            schema:
+              $ref: schemas/honeypotUpdate.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        409:
+          $ref: errors/conflict-409.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+    delete:
+      operationId: delete-custom-response
+      summary: Delete a custom response
+      tags:
+      - Custom responses
+      description: |
+        Deletes a specific custom response.
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml

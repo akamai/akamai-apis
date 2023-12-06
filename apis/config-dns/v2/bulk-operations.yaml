@@ -1,0 +1,156 @@
+openapi: 3.0.0
+info:
+  title: Bulk Zone Operations
+  version: v2
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/config-dns/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: bulk-operations.yaml
+paths:
+  /zones/create-requests:
+    post:
+      operationId: post-zones-create-requests
+      summary: Submit bulk-create request
+      tags:
+      - Create requests
+      description: |
+        Submits a request to create one or more new Zones asynchronously. The request body contains a JSON array. Each object in the array contains the data necessary to create a zone. All zones are created on the same contract and group.  An offline task creates the new zones. You can use the response's `requestId` to check the task's status and view its results once it completes.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/groupAware_gid.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-request-post-request.json
+            schema:
+              $ref: schemas/create-request-post.yaml
+      responses:
+        201:
+          description: |
+            Resource successfully created.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/async-request-post-response.json
+              schema:
+                $ref: schemas/async-request-id.yaml
+  /zones/create-requests/{requestId}:
+    parameters:
+    - $ref: parameters/requestId-path-create.yaml
+    get:
+      operationId: get-zones-create-requests-requestid
+      summary: Check bulk-create status
+      tags:
+      - Create requests
+      description: |
+        Retrieves the current status of a running or completed request. The `requestId` was returned when the create request was initiated.
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/async-request-status-get.json
+              schema:
+                $ref: schemas/async-request-status.yaml
+  /zones/create-requests/{requestId}/result:
+    parameters:
+    - $ref: parameters/requestId-path-create.yaml
+    get:
+      operationId: get-zones-create-requests-requestid-result
+      summary: Get bulk-create result
+      tags:
+      - Create requests
+      description: |
+        Retrieves the results from a completed request.
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/create-request-result-get.json
+              schema:
+                $ref: schemas/create-request-result.yaml
+  /zones/delete-requests:
+    post:
+      operationId: post-zones-delete-requests
+      summary: Submit bulk-delete request
+      tags:
+      - Delete requests
+      description: |
+        Submits a request to delete one or more new Zones asynchronously. The request body contains a JSON array. Each element in the array is the name of a zone to be deleted.  Before deleting a zone from the Edge DNS system, the API makes sure Akamai servers aren't receiving DNS requests for that zone. It also checks that the zone is not currently delegated to Akamai's nameservers.  An offline task deletes the new zones. The result of this operation is a `requestId`, that you can use to check the task's status and view its results once it completes.
+      parameters:
+      - $ref: parameters/bypassSafetyChecks-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/zone-name-list.json
+            schema:
+              $ref: schemas/zone-name-list.yaml
+      responses:
+        201:
+          description: |
+            Successful operation.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/async-request-post-response.json
+              schema:
+                $ref: schemas/async-request-id.yaml
+  /zones/delete-requests/{requestId}:
+    parameters:
+    - $ref: parameters/requestId-path-delete.yaml
+    get:
+      operationId: get-zones-delete-requests-requestid
+      summary: Check bulk-delete status
+      tags:
+      - Delete requests
+      description: |
+        Retrieves the current status of a running or completed request. The `requestId` was returned when the delete request was initiated.
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/async-request-status-get.json
+              schema:
+                $ref: schemas/async-request-status.yaml
+  /zones/delete-requests/{requestId}/result:
+    parameters:
+    - $ref: parameters/requestId-path-delete.yaml
+    get:
+      operationId: get-zones-delete-requests-requestid-result
+      summary: Get bulk-delete result
+      tags:
+      - Delete requests
+      description: |
+        Retrieves the `results` from a completed request.
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/delete-request-result-get.json
+              schema:
+                $ref: schemas/delete-request-result.yaml

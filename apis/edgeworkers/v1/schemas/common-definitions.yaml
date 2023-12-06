@@ -1,0 +1,81 @@
+description: |-
+  Common definitions.
+  
+x-akamai:
+  file-path: schemas/common-definitions.yaml
+definitions:
+  boolean:
+    type: boolean
+    default: false
+  dateTime:
+    type: string
+    format: date-time
+  nonEmptyString:
+    type: string
+    minLength: 1
+  numberId:
+    type: integer
+    minimum: 1
+  revisionBom:
+    type: object
+    additionalProperties: false
+    required:
+    - edgeWorkerId
+    - version
+    - dependencies
+    properties:
+      version:
+        description: |
+          Unique identifier of the version.
+        $ref: common-definitions.yaml#/definitions/nonEmptyString
+      activeVersion:
+        description: |
+          Unique identifier for the active version.
+        $ref: common-definitions.yaml#/definitions/nonEmptyString
+      dependencies:
+        type: object
+        description: |
+          EdgeWorker dependencies. This is a further nested revision BOM object.
+        minProperties: 0
+      edgeWorkerId:
+        description: |
+          Unique identifier of the EdgeWorker.
+        $ref: common-definitions.yaml#/definitions/numberId
+      pinNote:
+        description: |
+          Note for the pinned revision.
+        maxLength: 128
+        $ref: common-definitions.yaml#/definitions/nonEmptyString
+      pinnedRevisionId:
+        description: |
+          Unique identifier of the pinned revision.
+        $ref: common-definitions.yaml#/definitions/nonEmptyString
+      pinnedTime:
+        description: |
+          ISO 8601 timestamp indicating when the revision was pinned.
+        $ref: common-definitions.yaml#/definitions/dateTime
+  revisionCompare:
+    type: object
+    additionalProperties: false
+    required:
+    - edgeWorkerId
+    - version
+    - dependencies
+    properties:
+      version:
+        description: |
+          Unique identifier of the version.
+        $ref: common-definitions.yaml#/definitions/nonEmptyString
+      dependencies:
+        type: object
+        description: |
+          EdgeWorker dependencies. This is a further nested revision compare object.
+        minProperties: 0
+      edgeWorkerId:
+        description: |
+          Unique identifier of the EdgeWorker.
+        $ref: common-definitions.yaml#/definitions/numberId
+      previousVersion:
+        description: |
+          Unique identifier of the previous version.
+        $ref: common-definitions.yaml#/definitions/nonEmptyString

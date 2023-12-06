@@ -1,0 +1,95 @@
+type: object
+description: |-
+  Contains notification configuration details.
+  
+x-akamai:
+  file-path: schemas/notification-config-update-specific.yaml
+additionalProperties: false
+required:
+- type
+- value
+- id
+- siteSelectionStrategy
+- siteMappings
+- attributes
+properties:
+  id:
+    type: integer
+    description: |
+      A unique identifier for notification config.
+    readOnly: true
+    minimum: 1
+  type:
+    type: string
+    description: |
+      The mode of communication to subscriber.
+    minLength: 1
+  value:
+    type: string
+    description: |
+      The email of the subscriber.
+    format: email
+  attributes:
+    type: array
+    description: |
+      List of attributes for the notifications.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - category
+      - contentType
+      - enabled
+      properties:
+        category:
+          type: string
+          description: |
+            The notification category. Either `alert`, `upgrade`, `vmUpgrade`, `scheduledReport`, or `system`.
+          enum:
+          - alert
+          - upgrade
+          - vmUpgrade
+          - scheduledReport
+          - system
+        contentType:
+          type: string
+          description: |
+            The notification's MIME type, either `text/html` or `text/plain`.
+          enum:
+          - text/html
+          - text/plain
+        enabled:
+          type: boolean
+          description: |
+            Enables the notification.
+  siteMappings:
+    type: array
+    description: |
+      List of site details for the notification config.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - siteId
+      - siteName
+      properties:
+        siteId:
+          type: integer
+          description: |
+            The unique site ID for the notifications.
+          readOnly: true
+          minimum: 1
+        siteName:
+          type: string
+          description: |
+            The site name for the notifications.
+          minLength: 1
+  siteSelectionStrategy:
+    type: string
+    description: |
+      The location strategy adopted for notification, either `ALL` or `PARTIAL`.
+    enum:
+    - ALL
+    - PARTIAL

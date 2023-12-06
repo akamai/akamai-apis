@@ -1,0 +1,115 @@
+type: object
+description: |-
+  Collects the Connectivity problems scenario results and details about the request.
+  
+x-akamai:
+  file-path: schemas/connectivityProblemsResponse.yaml
+additionalProperties: false
+required:
+- createdBy
+- createdTime
+- executionStatus
+- internalIp
+- internalIpLocation
+- request
+- requestId
+- summary
+- content
+- connectivity
+- logLines
+properties:
+  summary:
+    description: |-
+      Collects partial results of the Connectivity problems scenario. These results contain fetched data that Edge Diagnostics identified as potential source of issues.
+      
+    $ref: connectivityProblemsSummary.yaml
+  content:
+    type: array
+    description: |
+      Lists the results of the cURL request.
+    minItems: 1
+    items:
+      $ref: contentDetail.yaml
+  clientIpLocation:
+    description: |
+      Specifies the geolocation of the Client IP.
+    $ref: edgeIpLocation.yaml
+  connectivity:
+    type: array
+    description: |
+      Lists the results of the MTR request.
+    minItems: 1
+    items:
+      $ref: connectivity.yaml
+  createdBy:
+    type: string
+    description: |
+      Username who submitted the request.
+    minLength: 1
+  createdTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the request was submitted.
+    format: date-time
+  errorResponse:
+    description: |
+      Specifies the reason for `FAILURE` status.
+    $ref: errorResponse.yaml
+  executionStatus:
+    type: string
+    description: |
+      Status of the request's execution. Possible values are: `SUCCESS`, `FAILURE`, or `IN_PROGRESS`.
+    enum:
+    - SUCCESS
+    - FAILURE
+    - IN_PROGRESS
+  internalIp:
+    type: string
+    description: |
+      Machine IP for the requested location used to forward the request to the origin server.
+    minLength: 1
+  internalIpLocation:
+    description: |
+      Specifies the geolocation of `internalIp`.
+    $ref: edgeIpLocation.yaml
+  link:
+    type: string
+    description: |
+      Link to get the Connectivity problems scenario response after the `retryAfter` interval passes. It occurs only for operations with the `IN_PROGRESS` status.
+    minLength: 1
+  logLines:
+    type: array
+    description: |
+      Lists the results of the GREP request.
+    minItems: 1
+    items:
+      $ref: logLines.yaml
+  request:
+    description: |
+      Specifies your Connectivity problems scenario request.
+    $ref: connectivityProblemsRequest.yaml
+  requestId:
+    type: integer
+    description: |
+      Unique identifier for the Connectivity problems scenario request. Store this value to run [Get the Connectivity problems scenario response](ref:get-connectivity-problems-request) operation.
+    minimum: 1
+  retryAfter:
+    type: integer
+    description: |
+      Number of seconds when the request is estimated to have processed. It occurs only for operations with the `IN_PROGRESS` status.
+    minimum: 1
+  siteShieldIp:
+    type: string
+    description: |
+      If your request specifies `runFromSiteShield` as `true`, then this IP was used to run Connectivity problems.
+    minLength: 1
+  siteShieldIpLocation:
+    type: object
+    description: |
+      Specifies the geolocation of the edge server used to run the operation.
+    additionalProperties: false
+    $ref: edgeIpLocation.yaml
+  spoofEdgeIpLocation:
+    description: |
+      Specifies the geolocation of the edge server used to serve the request.
+    $ref: edgeIpLocation.yaml

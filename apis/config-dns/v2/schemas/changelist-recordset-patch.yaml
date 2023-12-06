@@ -1,0 +1,38 @@
+type: object
+description: |-
+  A modification of a record set inside a change list.
+  
+x-akamai:
+  file-path: schemas/changelist-recordset-patch.yaml
+additionalProperties: false
+required:
+- name
+- type
+- op
+properties:
+  name:
+    type: string
+    description: |
+      The DNS name of this record.
+  type:
+    type: string
+    description: |
+      The record type.
+  op:
+    type: string
+    description: |
+      The requested operation. You can `ADD`, `DELETE`, or `EDIT` a record set.
+    enum:
+    - ADD
+    - EDIT
+    - DELETE
+  rdata:
+    type: array
+    description: |
+      An array of data strings, representing multiple records within a set. The format of the `rdata` strings are dependent on the `type` of this record. Not used when `PATCH`ing a `DELETE` operation.
+    items:
+      type: string
+  ttl:
+    type: integer
+    description: |
+      The number of seconds that this record should live in a resolver's cache before being refetched. Not used when `PATCH`ing a `DELETE` operation.

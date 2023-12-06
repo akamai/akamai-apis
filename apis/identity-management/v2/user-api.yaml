@@ -1,0 +1,318 @@
+openapi: 3.0.0
+info:
+  title: Users, for administrators
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/identity-management/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: user-api.yaml
+paths:
+  /user-admin/ui-identities:
+    post:
+      operationId: post-ui-identity
+      summary: Create a user
+      tags:
+      - Users
+      description: |
+        Create a user in the account specified in your own API client credentials or clone an existing user's role assignments. Optionally, send a randomly generated one-time use password to the new user. If you send the email with the password directly to the user, the response for this operation doesn't include that password. If you don't send the password to the user through email, the password is included in the response.
+      parameters:
+      - $ref: parameters/sendEmail_sendEmail.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-request-create-user.json
+            schema:
+              $ref: schemas/CreateUserRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/post-response-create-user.json
+              schema:
+                $ref: schemas/UserResponse.yaml
+    get:
+      operationId: get-ui-identities
+      summary: List users
+      tags:
+      - Users
+      description: |
+        Return a list of users who have access on this account. The account is determined by the tokens in your API client. You can pass a `groupId` to filter users based on group. Additionally, you can return additional user information such as what product notifications they subscribe to, or what group and role assignments they have. Set  the `actions` parameter to `true` to return the actions you can  take on each user.
+      parameters:
+      - $ref: parameters/rolesFilterParamsGroup_groupId.yaml
+      - $ref: parameters/authGrants-query.yaml
+      - $ref: parameters/adminActions_actions.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-users.json
+              schema:
+                $ref: schemas/ListOfUserResponse.yaml
+  /user-admin/ui-identities/{uiIdentityId}:
+    parameters:
+    - $ref: parameters/uiIdentityId-path.yaml
+    get:
+      operationId: get-ui-identity
+      summary: Get a user
+      tags:
+      - Users
+      description: |
+        Return a specific user's profile.
+      parameters:
+      - $ref: parameters/authGrants-query.yaml
+      - $ref: parameters/notifications-query.yaml
+      - $ref: parameters/adminActions_actions.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-user.json
+              schema:
+                $ref: schemas/UserResponse.yaml
+    delete:
+      operationId: delete-ui-identity
+      summary: Remove a user
+      tags:
+      - Users
+      description: |
+        You can only delete users who don't have any API or Webservices clients. To delete users, first transfer their API clients and delete their Webservices clients.
+      responses:
+        204:
+          description: |
+            Successful response.
+  /user-admin/ui-identities/{uiIdentityId}/auth-grants:
+    parameters:
+    - $ref: parameters/uiIdentityId-path.yaml
+    put:
+      operationId: put-ui-uiidentity-auth-grants
+      summary: Modify a user's group and role assignments
+      tags:
+      - Assignments
+      description: |
+        Edit what groups a user has access to, and how the use can interact with the objects in those groups.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-request-auth-grants.json
+            schema:
+              $ref: schemas/ListOfAuthGrantRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-response-auth-grants.json
+              schema:
+                $ref: schemas/ListOfAuthGrantResponse.yaml
+  /user-admin/ui-identities/{uiIdentityId}/basic-info:
+    parameters:
+    - $ref: parameters/uiIdentityId-path.yaml
+    put:
+      operationId: put-ui-identity-basic-info
+      summary: Update a user
+      tags:
+      - Users
+      description: |
+        Modify user information. Pass the entire body of data in the request, including members you're not changing, or unspecified data will be removed.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-request-basic-info.json
+            schema:
+              $ref: schemas/UpdateUserBasicInfoRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-response-basic-info.json
+              schema:
+                $ref: schemas/UserResponse.yaml
+  /user-admin/ui-identities/{uiIdentityId}/groups/{groupId}/blocked-properties:
+    parameters:
+    - $ref: parameters/groupId-path.yaml
+    - $ref: parameters/uiIdentityId-path.yaml
+    get:
+      operationId: get-blocked-properties
+      summary: List blocked properties
+      tags:
+      - Blocked properties
+      description: |
+        Return all properties a user doesn't have access to in a group.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-blocked-properties.json
+              schema:
+                $ref: schemas/ListOfInteger.yaml
+    put:
+      operationId: put-blocked-properties
+      summary: Update blocked properties
+      tags:
+      - Blocked properties
+      description: |
+        Remove or grant user access to properties. By default, users have access to all properties in a group.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/get-response-blocked-properties.json
+            schema:
+              $ref: schemas/ListOfInteger.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-blocked-properties.json
+              schema:
+                $ref: schemas/ListOfInteger.yaml
+  /user-admin/ui-identities/{uiIdentityId}/lock:
+    parameters:
+    - $ref: parameters/uiIdentityId-path.yaml
+    post:
+      operationId: post-ui-identity-lock
+      summary: Lock a user's account
+      tags:
+      - User access
+      description: |
+        Prevent a user from logging in to Control center.
+      responses:
+        204:
+          description: |
+            Successful response.
+  /user-admin/ui-identities/{uiIdentityId}/notifications:
+    parameters:
+    - $ref: parameters/uiIdentityId-path.yaml
+    put:
+      operationId: put-notifications
+      summary: Update a user's notifications
+      tags:
+      - User notifications
+      description: |
+        Subscribe or un-subscribe users to product notification emails.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-request-update-notifications.json
+            schema:
+              $ref: schemas/NotificationsRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-request-update-notifications.json
+              schema:
+                $ref: schemas/NotificationsResponse.yaml
+  /user-admin/ui-identities/{uiIdentityId}/reset-password:
+    parameters:
+    - $ref: parameters/uiIdentityId-path.yaml
+    post:
+      operationId: post-reset-password
+      summary: Reset a user's password
+      tags:
+      - User access
+      description: |
+        Optionally send a one-time use password to the user. If you send the email with the password directly to the user, the response for this operation doesn't include that password. If you don't send the password to the user through email, the password is included in the response.
+      parameters:
+      - $ref: parameters/sendEmail_sendEmail.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/post-response-reset-password.json
+              schema:
+                $ref: schemas/PasswordResponse.yaml
+        204:
+          description: |
+            Successful response.
+  /user-admin/ui-identities/{uiIdentityId}/set-password:
+    parameters:
+    - $ref: parameters/uiIdentityId-path.yaml
+    post:
+      operationId: post-set-password
+      summary: Set a user's password
+      tags:
+      - User access
+      description: |
+        Set a specific password for a user. This differs from [Reset a user's password](ref:post-reset-password) because this password may be used more than once, and isn't randomly generated.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-response-reset-password.json
+            schema:
+              $ref: schemas/SetPasswordRequest.yaml
+      responses:
+        204:
+          description: |
+            Successful response.
+  /user-admin/ui-identities/{uiIdentityId}/tfa:
+    parameters:
+    - $ref: parameters/uiIdentityId-path.yaml
+    put:
+      operationId: put-ui-identity-tfa
+      summary: Set a user's two-factor authentication
+      tags:
+      - User access
+      description: |
+        Actions for this operation are `enable`, `disable`, and `reset`. Users can make five attempts to log in with TFA before their accounts lock. If the account gets locked, use `reset` value to unlock.
+      parameters:
+      - $ref: parameters/action-query.yaml
+      responses:
+        204:
+          description: |
+            Successful response.
+  /user-admin/ui-identities/{uiIdentityId}/unlock:
+    parameters:
+    - $ref: parameters/uiIdentityId-path.yaml
+    post:
+      operationId: post-ui-identity-unlock
+      summary: Unlock a user's account
+      tags:
+      - User access
+      description: |
+        Release the lock on a user's account and allow them to access Control Center.
+      responses:
+        204:
+          description: |
+            Successful response.

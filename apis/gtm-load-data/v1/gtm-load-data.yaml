@@ -1,0 +1,90 @@
+openapi: 3.0.0
+info:
+  title: GTM Load Feedback
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: http://{hostname}/gtm-load-data/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: gtm-load-data.yaml
+paths:
+  /{domain}/{resource}/{datacenterId}:
+    post:
+      operationId: post-domain-resource
+      summary: Submit load data
+      tags:
+      - Load data
+      description: |
+        Use this action to submit load data. The URL specifies the `domain`, `resource`, and `datacenterId` of the instance to which the load data pertains. The data may be submitted in either XML or JSON format. To support legacy clients, we allow `region` as an alias for `datacenterId`. The timestamp string should be in XSD format.
+      parameters:
+      - $ref: parameters/domain-path.yaml
+      - $ref: parameters/resource-path.yaml
+      - $ref: parameters/datacenterId-path.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/domain-resource-dc.json
+            schema:
+              $ref: schemas/domain-resource-dc-json.yaml
+          application/xml:
+            example:
+              $ref: examples/domain-resource-dc.xml
+            schema:
+              $ref: schemas/domain-resource-dc-xml.yaml
+      responses:
+        204:
+          description: |
+            Status 204.
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml
+        500:
+          $ref: errors/500.yaml
+    get:
+      operationId: get-domain-resource
+      summary: Get load data
+      tags:
+      - Load data
+      description: |
+        Use this action to fetch the load data for a resource instance. The URL format is the same as the POST action. The API returns either XML or JSON, depending on your `Accept` header. If both are specified, or there is no `Accept` header, the default is JSON. In this sample data, we're fetching load for a resource called `connections` in datacenter 100, in the `example.akadns.net` domain.
+      parameters:
+      - $ref: parameters/domain-path.yaml
+      - $ref: parameters/resource-path.yaml
+      - $ref: parameters/datacenterId-path.yaml
+      responses:
+        200:
+          description: |
+            Status 200.
+          content:
+            application/json:
+              example:
+                $ref: examples/domain-resource-dc.json
+              schema:
+                $ref: schemas/domain-resource-dc-json.yaml
+            application/xml:
+              example:
+                $ref: examples/domain-resource-dc.xml
+              schema:
+                $ref: schemas/domain-resource-dc-xml.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml
+        500:
+          $ref: errors/500.yaml

@@ -1,0 +1,98 @@
+openapi: 3.0.0
+info:
+  title: Autonomous system maps
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/config-gtm/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: AutonomousSystemMaps.yaml
+paths:
+  /domains/{domainName}/as-maps:
+    parameters:
+    - $ref: parameters/domainName-path.yaml
+    get:
+      operationId: get-as-maps
+      summary: List AS maps
+      tags:
+      - AS maps
+      description: |
+        Returns a list of AS maps.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-as-maps-200.json
+              schema:
+                $ref: schemas/get-all.yaml
+  /domains/{domainName}/as-maps/{mapName}:
+    parameters:
+    - $ref: parameters/mapName-path.yaml
+    - $ref: parameters/domainName-path.yaml
+    get:
+      operationId: get-as-map
+      summary: Get an AS map
+      tags:
+      - AS maps
+      description: |
+        Returns information for a specific AS map.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-an-as-map-200.json
+              schema:
+                $ref: schemas/as-map.yaml
+    put:
+      operationId: put-as-map
+      summary: Create or update an AS map
+      tags:
+      - AS maps
+      description: |
+        Run this operation to create or update an AS map.
+      parameters:
+      - $ref: parameters/domain-modification-comments-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/get-an-as-map-200.json
+            schema:
+              $ref: schemas/as-map.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/create-or-update-an-as-map.json
+              schema:
+                $ref: schemas/update-response.yaml
+    delete:
+      operationId: delete-as-map
+      summary: Remove an AS map
+      tags:
+      - AS maps
+      description: |
+        Removes a specific AS map.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/remove-an-as-map-200.json
+              schema:
+                $ref: schemas/update-response.yaml

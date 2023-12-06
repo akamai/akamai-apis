@@ -1,0 +1,103 @@
+x-akamai:
+  file-path: paths/includes.yaml
+  path-for-file: /includes
+post:
+  operationId: post-includes
+  summary: Create or clone an include
+  tags:
+  - Includes
+  description: |
+    This operation either creates a new include from scratch or bases one on another include's rule tree. Version 1 of a new include is created automatically.
+  x-akamai:
+    status: LA
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-required.yaml
+  - $ref: ../parameters/groupId-required.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/include-create-request.json
+        schema:
+          $ref: ../schemas/include-create-request.yaml
+  responses:
+    201:
+      description: |
+        The response provides a URL link to the newly created or cloned include.
+      headers:
+        Location:
+          $ref: ../headers/Location.yaml
+        X-Limit-Includes-Per-Contract-Limit:
+          $ref: ../headers/X-Limit-Includes-Per-Contract-Limit.yaml
+        X-Limit-Includes-Per-Contract-Remaining:
+          $ref: ../headers/X-Limit-Includes-Per-Contract-Remaining.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/include-create-response.json
+          schema:
+            $ref: ../schemas/include-create-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+get:
+  operationId: get-includes
+  summary: List includes
+  tags:
+  - Includes
+  description: |
+    This operation lists includes available for the current contract and group. Use optional query parameters to only show includes that were modified within a specified time range or on a selected network. If you specify the `modifiedSince` parameter, `contractId` and `groupId` become optional. If you don't identify a contract and group, the operation lists all includes you have access to, modified within a specified time range.
+  x-akamai:
+    status: LA
+  parameters:
+  - $ref: ../parameters/modifiedSince-query.yaml
+  - $ref: ../parameters/modifiedNetwork-query.yaml
+  - $ref: ../parameters/contractId-required.yaml
+  - $ref: ../parameters/groupId-required.yaml
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  responses:
+    200:
+      description: |
+        The response lists all includes available for the requested contract and group.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/include-list-response.json
+          schema:
+            $ref: ../schemas/include-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: includes
+  group: Includes

@@ -1,0 +1,205 @@
+type: object
+description: |-
+  Contains information about JSON web token (JWT) validation settings configured for an endpoint. JWT is an open standard (RFC 7519) that defines a compact and self-contained method for securely transmitting JSON-encoded information between parties. It's often used for authentication purposes. You can configure JWT validation settings if the API Gateway product is in your contract.
+  
+x-akamai:
+  file-path: schemas/jwtDto.yaml
+additionalProperties: false
+required:
+- enabled
+- settings
+properties:
+  enabled:
+    type: boolean
+    description: |
+      Whether you enabled JWT validation for the endpoint.
+  resources:
+    description: |
+      Contains information about JWT validation settings for each resource assigned to an endpoint version. The resources are available through a map of `resourceId` keys.
+    $ref: resources-jwt.yaml
+  settings:
+    type: object
+    description: |
+      Contains information about endpoint-level JWT settings.
+    additionalProperties: false
+    required:
+    - location
+    - paramName
+    - clockSkew
+    - validation
+    properties:
+      clockSkew:
+        type: integer
+        description: |
+          The allowed time difference in seconds between the server and client clocks when validating the `exp` and `nbf` JWT claims. The recommended value is 10.
+      location:
+        type: string
+        description: |
+          The location of the JWT in incoming requests, either `HEADER` for a request header, `COOKIE`, or `QUERY` for a query parameter.
+        default: HEADER
+        enum:
+        - HEADER
+        - COOKIE
+        - QUERY
+      paramName:
+        type: string
+        description: |
+          The name of the header, cookie, or query parameter that you specified for the JWT location.
+      validation:
+        type: object
+        description: |
+          Contains information about the JWT validation details, such as RSA public keys and JWT claims.
+        additionalProperties: false
+        required:
+        - rsaPublicKeyA
+        properties:
+          claims:
+            type: array
+            description: |
+              The collection of custom and reserved JWT claims that API Gateway validates in incoming requests. Reserved claims are predefined (as per [RFC 7519](https://tools.ietf.org/html/rfc7519)) and serve as a starting point for your JWT claim configuration. Custom claims refer to both private and public claims and you can define them at will. To prevent claim name collisions, you can register public claims at the [IANA JSON Web Token Claims registry](https://www.iana.org/assignments/jwt/jwt.xhtml) or give them collision-resistant names, such as universally unique identifiers (UUIDs) or object identifiers (OIDs). Private claims usually contain information specific to your organization, such as internal user ID. They're different from public claims as they're not registered at the [IANA JSON Web Token Claims registry](https://www.iana.org/assignments/jwt/jwt.xhtml), and you should use them with care.
+            nullable: true
+            items:
+              type: object
+              additionalProperties: false
+              required:
+              - type
+              - required
+              - validate
+              nullable: true
+              properties:
+                name:
+                  type: string
+                  description: |
+                    The name of the JWT claim. For reserved claims, it can either be `aud` to identify the audience for the JWT, `iss` to identify the issuer of the JWT claim, `sub` to identify the subject of the JWT, `exp` to identify the expiration time on or after which the token isn't accepted for processing, or `nbf` to identify the time before which the token isn't accepted for processing. For custom claims, you can use all alphanumeric characters and these characters: `[-_]`. The value isn't case-sensitive for reserved claims and case-sensitive for custom claims. For example, if you enter `AUD` for a value, the system automatically converts it to `aud`, but `scope` and `SCOPE` represent two different values.
+                type:
+                  type: string
+                  description: |
+                    The data type of the JWT claim's value, either `ARRAY`, `STRING`, `INTEGER`, `BOOLEAN`, or `REGEX` if it's a regular expression.
+                  enum:
+                  - ARRAY
+                  - STRING
+                  - REGEX
+                  - INTEGER
+                  - BOOLEAN
+                required:
+                  type: boolean
+                  description: |
+                    Whether the JWT claim needs to be present in incoming requests.
+                value:
+                  oneOf:
+                  - items:
+                      oneOf:
+                      - title: Array of strings
+                        type: string
+                      - title: Array of numbers
+                        type: number
+                    type: array
+                    title: Array
+                    nullable: true
+                  - nullable: true
+                    type: string
+                    title: String
+                  - nullable: true
+                    type: boolean
+                    title: Boolean
+                  - nullable: true
+                    type: number
+                    title: Number
+                validate:
+                  type: boolean
+                  description: |
+                    Whether to validate the value of the JWT claim at the edge.
+          jwks:
+            type: object
+            description: |
+              Contains information about a JSON web key set to load public keys from. Specify this object only if the corresponding `method` member is `JWKS`.
+            additionalProperties: false
+            nullable: true
+            properties:
+              certChain:
+                type: object
+                description: |
+                  Contains information about a PEM file with the certificate to use for validation of hostnames included in the `hosts` member.
+                additionalProperties: false
+                required:
+                - name
+                - content
+                nullable: true
+                properties:
+                  name:
+                    type: string
+                    description: |
+                      The name of the PEM file that contains the certificate.
+                  content:
+                    type: string
+                    description: |
+                      The contents of the PEM file that contains the certificate.
+              hosts:
+                type: array
+                description: |
+                  The list of hostnames that store JSON web key sets. You need to sign each hostname digitally with the certificate chain described in the corresponding `certChain` field.
+                items:
+                  type: string
+              jwksSetUrl:
+                type: string
+                description: |
+                  URL that refers to a resource for a set of JSON-encoded public keys.
+                format: uri
+              publicKeyMaxAge:
+                description: |
+                  Contains information about the maximum duration to keep a public key in a cache.
+                $ref: durationDto.yaml
+          method:
+            type: string
+            description: |
+              The method of delivering RSA public keys for JWT validation. Either `INLINE_PUBLIC_KEY` for periodical manual uploads of public keys, or `JWKS` for a dynamic upload of public keys from specific JWKS URIs.
+            default: INLINE_PUBLIC_KEY
+            nullable: true
+            enum:
+            - INLINE_PUBLIC_KEY
+            - JWKS
+          rsaPublicKeyA:
+            type: object
+            description: |
+              Contains information about the primary RSA public key that you use for JWT validation. The value is `null` if the corresponding `method` member is `JWKS`.
+            additionalProperties: false
+            required:
+            - name
+            - content
+            properties:
+              name:
+                type: string
+                description: |
+                  The name of the file containing the primary RSA key.
+              content:
+                type: string
+                description: |
+                  The content of the file containing the primary RSA key.
+          rsaPublicKeyB:
+            type: object
+            description: |
+              Contains information about the backup RSA public key for use during key rotations.
+            additionalProperties: false
+            required:
+            - name
+            - content
+            nullable: true
+            properties:
+              name:
+                type: string
+                description: |
+                  The name of the file containing the backup RSA key.
+              content:
+                type: string
+                description: |
+                  The content of the file containing the backup RSA key.
+          signingAlgorithm:
+            type: string
+            description: |
+              Algorithm used to sign tokens issued for your application or API. A signature is part of a JSON Web Token (JWT) and is used to verify that the sender of the token is who it says it is and to ensure that the message wasn't changed along the way.
+            nullable: true
+            enum:
+            - RS256
+            - RS384
+            - ES256
+            - ES384

@@ -1,0 +1,95 @@
+type: object
+description: |-
+  Specifies Identity Provider (IdP) access log details.
+  
+x-akamai:
+  file-path: schemas/idp-details.yaml
+additionalProperties: false
+required:
+- auditStartTime
+- configId
+- siteId
+- siteName
+- encryptedInternalClientIp
+- decryptedInternalClientIp
+- connectionId
+- allowUnauthenticated
+- eventName
+- userIdentity
+- message
+- idp
+properties:
+  allowUnauthenticated:
+    type: boolean
+    description: |
+      Include unauthenticated users in access log details.
+  auditStartTime:
+    type: string
+    description: |
+      IdP login user timestamp in ISO 8601 format.
+    minLength: 1
+  configId:
+    type: integer
+    description: |
+      The SIA configuration ID.
+    minimum: 0
+  connectionId:
+    type: string
+    description: |
+      The connection ID for the report.
+    minLength: 1
+  decryptedInternalClientIp:
+    type: string
+    description: |
+      The IP address of the client machine in plain-text form.
+    minLength: 1
+  encryptedInternalClientIp:
+    type: string
+    description: |
+      The IP address of the client machine in encrypted form.
+    minLength: 1
+  eventName:
+    type: string
+    description: |
+      The IDP event name.
+    minLength: 1
+  idp:
+    type: object
+    additionalProperties: false
+    required:
+    - idp_sid
+    - idp_xid
+    - etp_sid
+    properties:
+      etp_sid:
+        type: string
+        description: |
+          The SIA ID for the IdP.
+        minLength: 1
+      idp_sid:
+        type: string
+        description: |
+          The system ID for the IdP.
+        minLength: 1
+      idp_xid:
+        type: string
+        description: |
+          The unique digital identity record XID for the IdP, in the format `xID:Name:Community:Region:State:Transterritory`.
+        minLength: 1
+  message:
+    type: string
+    description: |
+      IdP access log message details.
+    minLength: 1
+  siteId:
+    type: integer
+    description: |
+      The site ID for the report.
+    minimum: 0
+  siteName:
+    type: string
+    description: |
+      The location name for the report.
+    minLength: 1
+  userIdentity:
+    $ref: user-identity.json

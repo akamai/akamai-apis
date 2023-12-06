@@ -1,0 +1,1222 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Service-Level Agreement API",
+    "url": "https://techdocs.akamai.com/sla/reference"
+  },
+  "info": {
+    "title": "Akamai: Service-Level Agreement API",
+    "version": "1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/agent-groups": {
+      "get": {
+        "description": "This returns an array of all agent group identifiers and their corresponding descriptions. You can use this to retrieve a human-readable equivalent of the `agentGroupId` numbers.",
+        "operationId": "get-agent-groups",
+        "summary": "List agent groups",
+        "tags": [
+          "Agent Groups"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Service-Level Agreement API",
+          "url": "https://techdocs.akamai.com/sla/reference/get-agent-groups"
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Represents the set of possible agents in which tests for a given SLA test configuration are run. Agents groups are defined by geographical location. This setting usually corresponds to the regional SLA provided to you with your purchase.",
+                  "minItems": 1,
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "agentGroupId",
+                      "name"
+                    ],
+                    "properties": {
+                      "agentGroupId": {
+                        "description": "Code representing the agent group (also called a region or regional SLA) for the test configuration. See [agentGroupId values](https://techdocs.akamai.com/sla/reference/agentgroupid-values).",
+                        "type": "integer"
+                      },
+                      "name": {
+                        "description": "Descriptive name of an agent group indicating its geographical region.",
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/schema-get-agent-groups-200.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "agentGroupId": 1,
+                    "name": "Australia SLA"
+                  },
+                  {
+                    "agentGroupId": 5,
+                    "name": "North American SLA"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/test-quotas": {
+      "get": {
+        "description": "Each contract has a maximum number of allowed test configurations. Get the test quotas to find out how many test configurations are allowed and how many are in use.",
+        "operationId": "get-quotas",
+        "summary": "List test configuration quotas",
+        "tags": [
+          "Quotas"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Service-Level Agreement API",
+          "url": "https://techdocs.akamai.com/sla/reference/get-quotas"
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Each contract has a maximum number of allowed test configurations. The quota object indicates how many test configurations are allowed on the specified contract and how many are in use.",
+                  "minItems": 1,
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "contractId",
+                      "availabilitySlaCounts",
+                      "performanceSlaCounts"
+                    ],
+                    "properties": {
+                      "availabilitySlaCounts": {
+                        "additionalProperties": false,
+                        "description": "Bundles quota data for availability test configurations.",
+                        "type": "object",
+                        "required": [
+                          "used",
+                          "max"
+                        ],
+                        "properties": {
+                          "max": {
+                            "description": "The maximum number of allowed test configurations of the specified type.",
+                            "type": "integer"
+                          },
+                          "used": {
+                            "description": "The number of test configurations of the specified type that are currently used.",
+                            "type": "integer"
+                          }
+                        }
+                      },
+                      "contractId": {
+                        "description": "The contract for which you want to get quota data.",
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "performanceSlaCounts": {
+                        "additionalProperties": false,
+                        "description": "Bundles quota data for performance test configurations.",
+                        "type": "object",
+                        "required": [
+                          "used",
+                          "max"
+                        ],
+                        "properties": {
+                          "max": {
+                            "description": "The maximum number of allowed test configurations of the specified type.",
+                            "type": "integer"
+                          },
+                          "used": {
+                            "description": "The number of test configurations of the specified type that are currently used.",
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/schema-get-quotas-200.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "contractId": "C-0N7RAC71",
+                    "availabilitySlaCounts": {
+                      "max": 1,
+                      "used": 0
+                    },
+                    "performanceSlaCounts": {
+                      "max": 1,
+                      "used": 0
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/tests": {
+      "post": {
+        "description": "Create either a new availability test configuration or a new performance test configuration, if there is an available corresponding slot in the contract's quotas.",
+        "operationId": "post-test-config",
+        "summary": "Create a new test configuration",
+        "tags": [
+          "Create Test"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Service-Level Agreement API",
+          "url": "https://techdocs.akamai.com/sla/reference/post-test-config"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "agentGroupId": 123,
+                "contractId": "K-0N7RAK7",
+                "groupId": 1,
+                "name": "My Test Name",
+                "performanceSlaTarget": 1.1,
+                "type": "PERFORMANCE",
+                "testDetails": {
+                  "akamaiUrl": "http://www.example.com/testObject.txt",
+                  "originDnsHostnameOverride": "unpredictablestring-www.example.com",
+                  "originUrl": "http://www.example.com/testObject.txt"
+                }
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Represents a configuration of either an availability test or a performance test. You can use a test object to add a new test configuration, update an existing one, or get the settings of a specified configuration.",
+                "type": "object",
+                "required": [
+                  "groupId",
+                  "contractId",
+                  "agentGroupId",
+                  "name",
+                  "type",
+                  "performanceSlaTarget",
+                  "testDetails"
+                ],
+                "properties": {
+                  "agentGroupId": {
+                    "description": "Code representing the agent group (also called a region or regional SLA) for the test configuration. See [agentGroupId values](https://techdocs.akamai.com/sla/reference/agentgroupid-values).",
+                    "example": "{{agentGroupId}}",
+                    "type": "integer"
+                  },
+                  "contractId": {
+                    "description": "The contract associated with the test configuration.",
+                    "example": "{{contractId}}",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "groupId": {
+                    "description": "Identifies the group containing the property. See the [Property Manager API](https://techdocs.akamai.com/property-mgr/reference) (PAPI), which provides these IDs. Required when creating a test configuration.",
+                    "example": "{{groupId}}",
+                    "type": "integer"
+                  },
+                  "name": {
+                    "description": "Name you create to identify test configurations and their associated reports.",
+                    "example": "{{name}}",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "performanceSlaTarget": {
+                    "description": "The target performance as specified in the SLA, expressed as a decimal greater than or equal to 1.0. For a target performance improvement of 20%, specify 1.2.",
+                    "example": "{{performanceSlaTarget}}",
+                    "type": "number"
+                  },
+                  "testDetails": {
+                    "additionalProperties": false,
+                    "description": "Contains test object location and hostnames.",
+                    "type": "object",
+                    "required": [
+                      "originUrl",
+                      "akamaiUrl",
+                      "originDnsHostnameOverride"
+                    ],
+                    "properties": {
+                      "akamaiUrl": {
+                        "description": "The URL of the test object for the CDN portion of the test.",
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "originDnsHostnameOverride": {
+                        "description": "Replaces the hostname in `originUrl` for the purposes of DNS lookup to obtain the IP address of the origin server. Use this if requests sent directly to your origin hostname redirect to the CDN.",
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "originUrl": {
+                        "description": "The URL of the test object for the origin portion of the test. Use the outward-facing hostname if `originDnsHostnameOverride` is included, otherwise  use the origin hostname.",
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "type": {
+                    "description": "The test configuration type, either `PERFORMANCE` or `AVAILABILITY`.",
+                    "example": "{{type}}",
+                    "minLength": 1,
+                    "type": "string",
+                    "enum": [
+                      "PERFORMANCE",
+                      "AVAILABILITY"
+                    ]
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/schema-post-test-config.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "slaTestId": 82
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Represents a configuration of either an availability test or a performance test. A test object can be used to add a new test configuration, update an existing one, or get the settings of a specified configuration.",
+                  "type": "object",
+                  "required": [
+                    "slaTestId"
+                  ],
+                  "properties": {
+                    "slaTestId": {
+                      "description": "Identifies each test configuration.",
+                      "type": "integer"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/schema-post-test-config-201.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "get": {
+        "description": "Returns all test configurations, or a filtered set you use the `slaTestIds` parameter to control.",
+        "operationId": "get-test-configs",
+        "summary": "List test configurations",
+        "tags": [
+          "Tests"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Service-Level Agreement API",
+          "url": "https://techdocs.akamai.com/sla/reference/get-test-configs"
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Represents configurations for either an availability test or a performance test. You can use a test object to add a new test configuration, update an existing one, or get the settings of a specified configuration.",
+                  "minItems": 1,
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "slaTestId",
+                      "contractId",
+                      "agentGroupId",
+                      "name",
+                      "type",
+                      "performanceSlaTarget",
+                      "testDetails"
+                    ],
+                    "properties": {
+                      "agentGroupId": {
+                        "description": "Code representing the agent group (also called a region or regional SLA) for the test configuration. See [agentGroupId values](https://techdocs.akamai.com/sla/reference/agentgroupid-values).",
+                        "type": "integer"
+                      },
+                      "contractId": {
+                        "description": "The contract associated with the test configuration.",
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "Name you create to identify test configurations and their associated reports.",
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "performanceSlaTarget": {
+                        "description": "The target performance as specified in the SLA, expressed as a decimal greater than or equal to 1.0. For a target performance improvement of 20%, specify 1.2.",
+                        "type": "number"
+                      },
+                      "slaTestId": {
+                        "description": "Identifies each test configuration.",
+                        "type": "integer"
+                      },
+                      "testDetails": {
+                        "additionalProperties": false,
+                        "description": "Contains test object location and hostnames.",
+                        "type": "object",
+                        "required": [
+                          "originUrl",
+                          "akamaiUrl",
+                          "originDnsHostnameOverride"
+                        ],
+                        "properties": {
+                          "akamaiUrl": {
+                            "description": "The URL of the test object for the CDN portion of the test.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "originDnsHostnameOverride": {
+                            "description": "Replaces the hostname in `originUrl` for the purposes of DNS lookup to obtain the IP address of the origin server. Use this if requests sent directly to your origin hostname redirect to the CDN.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "originUrl": {
+                            "description": "The URL of the test object for the origin portion of the test. Use the outward-facing hostname if `originDnsHostnameOverride` is included, otherwise  use the origin hostname.",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "type": {
+                        "description": "The test configuration type, either `PERFORMANCE` or `AVAILABILITY`.",
+                        "minLength": 1,
+                        "type": "string",
+                        "enum": [
+                          "PERFORMANCE",
+                          "AVAILABILITY"
+                        ]
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/schema-get-test-configs-200.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "agentGroupId": 123,
+                    "contractId": "C-0N7RAC71",
+                    "name": "My Test Name",
+                    "performanceSlaTarget": 1.1,
+                    "slaTestId": 82,
+                    "type": "PERFORMANCE",
+                    "testDetails": {
+                      "akamaiUrl": "http://www.example.com/testObject.txt",
+                      "originDnsHostnameOverride": "unpredictablestring-www.example.com",
+                      "originUrl": "http://www.example.com/testObject.txt"
+                    }
+                  },
+                  {
+                    "agentGroupId": 124,
+                    "contractId": "C-0N7RAC7",
+                    "name": "My Second Test Name",
+                    "performanceSlaTarget": 1.1,
+                    "slaTestId": 83,
+                    "type": "PERFORMANCE",
+                    "testDetails": {
+                      "akamaiUrl": "http://www.example.com/testObject.txt",
+                      "originDnsHostnameOverride": "unpredictablestring-www.example.com",
+                      "originUrl": "http://www.example.com/testObject.txt"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "One or more IDs of SLA tests, comma separated.",
+            "example": "{{slaTestIds}}",
+            "in": "query",
+            "name": "slaTestIds",
+            "schema": {
+              "example": "82,83",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/slaTestIds-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/tests/{slaTestId}": {
+      "get": {
+        "description": "Return the contents of one test configuration. Set the `slaTestId` parameter to indicate which test configuration to retrieve.",
+        "operationId": "get-test-config",
+        "summary": "Get a test configuration",
+        "tags": [
+          "Tests"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Service-Level Agreement API",
+          "url": "https://techdocs.akamai.com/sla/reference/get-test-config"
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "agentGroupId": 123,
+                  "contractId": "C-0N7RAC71",
+                  "name": "My Test Name",
+                  "performanceSlaTarget": 1.1,
+                  "slaTestId": 82,
+                  "type": "performance",
+                  "testDetails": {
+                    "akamaiUrl": "http://www.example.com/testObject.txt",
+                    "originDnsHostnameOverride": "unpredictablestring-www.example.com",
+                    "originUrl": "http://www.example.com/testObject.txt"
+                  }
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Represents a configuration of either an availability test or a performance test. You an use a test object to add a new test configuration, update an existing one, or get the settings of a specified configuration.",
+                  "type": "object",
+                  "required": [
+                    "slaTestId",
+                    "contractId",
+                    "agentGroupId",
+                    "name",
+                    "type",
+                    "performanceSlaTarget",
+                    "testDetails"
+                  ],
+                  "properties": {
+                    "agentGroupId": {
+                      "description": "Code representing the agent group (also called a region or regional SLA) for the test configuration. See [agentGroupId values](https://techdocs.akamai.com/sla/reference/agentgroupid-values).",
+                      "type": "integer"
+                    },
+                    "contractId": {
+                      "description": "The contract associated with the test configuration.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "name": {
+                      "description": "Name you create to identify test configurations and their associated reports.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "performanceSlaTarget": {
+                      "description": "The target performance as specified in the SLA, expressed as a decimal greater than or equal to 1.0. For a target performance improvement of 20%, specify 1.2.",
+                      "type": "number"
+                    },
+                    "slaTestId": {
+                      "description": "Identifies each test configuration.",
+                      "type": "integer"
+                    },
+                    "testDetails": {
+                      "additionalProperties": false,
+                      "description": "Contains test object location and hostnames.",
+                      "type": "object",
+                      "required": [
+                        "originUrl",
+                        "akamaiUrl",
+                        "originDnsHostnameOverride"
+                      ],
+                      "properties": {
+                        "akamaiUrl": {
+                          "description": "The URL of the test object for the CDN portion of the test.",
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "originDnsHostnameOverride": {
+                          "description": "Replaces the hostname in `originUrl` for the purposes of DNS lookup to obtain the IP address of the origin server. Use this if requests sent directly to your origin hostname redirect to the CDN.",
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "originUrl": {
+                          "description": "The URL of the test object for the origin portion of the test. Use the outward-facing hostname if `originDnsHostnameOverride` is included, otherwise  use the origin hostname.",
+                          "minLength": 1,
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "type": {
+                      "description": "The test configuration type, either `PERFORMANCE` or `AVAILABILITY`.",
+                      "minLength": 1,
+                      "type": "string",
+                      "enum": [
+                        "PERFORMANCE",
+                        "AVAILABILITY"
+                      ]
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/schema-get-test-config-200.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "The test's unique identifier.",
+            "example": "{{slaTestId}}",
+            "in": "path",
+            "name": "slaTestId",
+            "required": true,
+            "schema": {
+              "example": 1,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/slaTestId-path.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "description": "Use this operation change an existing test configuration, such as changing the agent group or adding a performance target. Set the `slaTestId` parameter to indicate which test configuration to update.",
+        "operationId": "put-test-config",
+        "summary": "Update a test configuration",
+        "tags": [
+          "Tests"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Service-Level Agreement API",
+          "url": "https://techdocs.akamai.com/sla/reference/put-test-config"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "agentGroupId": 123,
+                "contractId": "C-0N7RAC71",
+                "name": "My Test Name",
+                "performanceSlaTarget": 1.1,
+                "type": "PERFORMANCE",
+                "testDetails": {
+                  "akamaiUrl": "http://www.example.com/testObject.txt",
+                  "originDnsHostnameOverride": "unpredictablestring-www.example.com",
+                  "originUrl": "http://www.example.com/testObject.txt"
+                }
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Represents a configuration of either an availability test or a performance test. You can use a test object to add a new test configuration, update an existing one, or get the settings of a specified configuration.",
+                "type": "object",
+                "required": [
+                  "contractId",
+                  "agentGroupId",
+                  "name",
+                  "type",
+                  "performanceSlaTarget",
+                  "testDetails"
+                ],
+                "properties": {
+                  "agentGroupId": {
+                    "description": "Code representing the agent group (also called a region or regional SLA) for the test configuration. See [agentGroupId values](https://techdocs.akamai.com/sla/reference/agentgroupid-values).",
+                    "example": "{{agentGroupId}}",
+                    "type": "integer"
+                  },
+                  "contractId": {
+                    "description": "The contract associated with the test configuration.",
+                    "example": "{{contractId}}",
+                    "type": "string"
+                  },
+                  "name": {
+                    "description": "Name you create to identify test configurations and their associated reports.",
+                    "example": "{{name}}",
+                    "type": "string"
+                  },
+                  "performanceSlaTarget": {
+                    "description": "The target performance as specified in the SLA, expressed as a decimal greater than or equal to 1.0. For a target performance improvement of 20%, specify 1.2.",
+                    "example": "{{performanceSlaTarget}}",
+                    "type": "number"
+                  },
+                  "testDetails": {
+                    "additionalProperties": false,
+                    "description": "Contains test object location and hostnames.",
+                    "type": "object",
+                    "required": [
+                      "originUrl",
+                      "akamaiUrl",
+                      "originDnsHostnameOverride"
+                    ],
+                    "properties": {
+                      "akamaiUrl": {
+                        "description": "The URL of the test object for the CDN portion of the test.",
+                        "type": "string"
+                      },
+                      "originDnsHostnameOverride": {
+                        "description": "Replaces the hostname in `originUrl` for the purposes of DNS lookup to obtain the IP address of the origin server. Use this if requests sent directly to your origin hostname redirect to the CDN.",
+                        "type": "string"
+                      },
+                      "originUrl": {
+                        "description": "The URL of the test object for the origin portion of the test. Use the outward-facing hostname if `originDnsHostnameOverride` is included, otherwise  use the origin hostname.",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "type": {
+                    "description": "The test configuration type, either `PERFORMANCE` or `AVAILABILITY`.",
+                    "example": "{{type}}",
+                    "type": "string",
+                    "enum": [
+                      "PERFORMANCE",
+                      "AVAILABILITY"
+                    ]
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/schema-put-test-config.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "The test's unique identifier.",
+            "example": "{{slaTestId}}",
+            "in": "path",
+            "name": "slaTestId",
+            "required": true,
+            "schema": {
+              "example": 1,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/slaTestId-path.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "description": "Deletion cannot be undone. Once you delete a test configuration, you can't retrieve it or any data that it has collected. Set the `slaTestId` parameter to indicate which test configuration to delete.",
+        "operationId": "delete-test-config",
+        "summary": "Delete a test configuration",
+        "tags": [
+          "Tests"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Service-Level Agreement API",
+          "url": "https://techdocs.akamai.com/sla/reference/delete-test-config"
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "The test's unique identifier.",
+            "example": "{{slaTestId}}",
+            "in": "path",
+            "name": "slaTestId",
+            "required": true,
+            "schema": {
+              "example": 1,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/slaTestId-path.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/tests/{slaTestId}/reports/availability": {
+      "get": {
+        "description": "Returns an array of the results of availability tests run in the specified time period.",
+        "operationId": "get-availability-reports",
+        "summary": "List availability reports",
+        "tags": [
+          "Reports"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Service-Level Agreement API",
+          "url": "https://techdocs.akamai.com/sla/reference/get-availability-reports"
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "estimatedAvailabilityPercentage": 1,
+                  "akamaiTestErrors": [
+                    {
+                      "agentIp": "192.0.2.14",
+                      "agentName": "Frankfurt, Germany",
+                      "time": "2016-03-09T03:29:25Z"
+                    },
+                    {
+                      "agentIp": "192.0.2.20",
+                      "agentName": "Berlin, Germany",
+                      "time": "2016-03-09T08:20:11Z"
+                    },
+                    {
+                      "agentIp": "192.0.2.78",
+                      "agentName": "Paris, France",
+                      "time": "2016-03-09T09:31:37Z"
+                    }
+                  ],
+                  "originTestErrors": [
+                    {
+                      "agentIp": "192.0.2.77",
+                      "agentName": "Frankfurt, Germany",
+                      "time": "2016-03-09T03:29:25Z"
+                    },
+                    {
+                      "agentIp": "192.0.2.151",
+                      "agentName": "Berlin, Germany",
+                      "time": "2016-03-09T08:20:11Z"
+                    },
+                    {
+                      "agentIp": "192.0.2.128",
+                      "agentName": "Paris, France",
+                      "time": "2016-03-09T09:31:37Z"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Represents the results of availability testing for the specified date range.",
+                  "type": "object",
+                  "required": [
+                    "estimatedAvailabilityPercentage",
+                    "originTestErrors",
+                    "akamaiTestErrors"
+                  ],
+                  "properties": {
+                    "akamaiTestErrors": {
+                      "description": "Instances of the CDN test that reported failures.",
+                      "minItems": 1,
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "This object is referenced by both the `originTestErrors` and `akamaiTestErrors` members.",
+                        "type": "object",
+                        "required": [
+                          "agentName",
+                          "agentIp",
+                          "time"
+                        ],
+                        "properties": {
+                          "agentIp": {
+                            "description": "The IP address of the agent.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "agentName": {
+                            "description": "The geographical location of the agent used in an origin or CDN availability test that failed.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "time": {
+                            "description": "Time the error occurred, in ISO-8601 UTC format.",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "estimatedAvailabilityPercentage": {
+                      "description": "Estimated time range for which no potential outage was detected, expressed as a decimal range from 0 to 1.",
+                      "maximum": 1,
+                      "minimum": 0,
+                      "type": "number"
+                    },
+                    "originTestErrors": {
+                      "description": "Instances of the origin test that reported failures.",
+                      "minItems": 1,
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "This object is referenced by both the `originTestErrors` and `akamaiTestErrors` members.",
+                        "type": "object",
+                        "required": [
+                          "agentName",
+                          "agentIp",
+                          "time"
+                        ],
+                        "properties": {
+                          "agentIp": {
+                            "description": "The IP address of the agent.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "agentName": {
+                            "description": "The geographical location of the agent used in an origin or CDN availability test that failed.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "time": {
+                            "description": "Time the error occurred, in ISO-8601 UTC format.",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/schema-get-availability-reports-200.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "The test's unique identifier.",
+            "example": "{{slaTestId}}",
+            "in": "path",
+            "name": "slaTestId",
+            "required": true,
+            "schema": {
+              "example": 1,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/slaTestId-path.yaml"
+            }
+          },
+          {
+            "description": "Timestamp for the start of the data window, in UTC 8601 format.",
+            "example": "{{start}}",
+            "in": "query",
+            "name": "start",
+            "required": true,
+            "schema": {
+              "example": "2016-03-09T00:00:00Z",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/start-query.yaml"
+            }
+          },
+          {
+            "description": "Timestamp for the end of data window, in UTC 8601 format.",
+            "example": "{{end}}",
+            "in": "query",
+            "name": "end",
+            "required": true,
+            "schema": {
+              "example": "2016-03-12T01:00:00Z",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/end-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/tests/{slaTestId}/reports/performance": {
+      "get": {
+        "description": "Returns an array of the results of performance tests run in the specified time period.",
+        "operationId": "get-performance-reports",
+        "summary": "List performance reports",
+        "tags": [
+          "Reports"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Service-Level Agreement API",
+          "url": "https://techdocs.akamai.com/sla/reference/get-performance-reports"
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": [
+                    {
+                      "averageAkamaiPerformanceGain": 1.2573270808909731,
+                      "averageResponseTimeAkamai": 1706,
+                      "averageResponseTimeOrigin": 2145,
+                      "date": "2016-03-09",
+                      "numberOfAkamaiTests": 1385,
+                      "numberOfOriginTests": 1385
+                    },
+                    {
+                      "averageAkamaiPerformanceGain": 1.1373414230557088,
+                      "averageResponseTimeAkamai": 1813,
+                      "averageResponseTimeOrigin": 2062,
+                      "date": "2016-03-10",
+                      "numberOfAkamaiTests": 1329,
+                      "numberOfOriginTests": 1329
+                    },
+                    {
+                      "averageAkamaiPerformanceGain": 1.3577405857740585,
+                      "averageResponseTimeAkamai": 1434,
+                      "averageResponseTimeOrigin": 1947,
+                      "date": "2016-03-11",
+                      "numberOfAkamaiTests": 1245,
+                      "numberOfOriginTests": 1245
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Represents the performance test results for the specified date range. Each item in the `data` array contains aggregate performance data for one calendar day.",
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "description": "Container for instances of performance report data.",
+                      "minItems": 1,
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Each day's data.",
+                        "type": "object",
+                        "required": [
+                          "date",
+                          "averageAkamaiPerformanceGain",
+                          "numberOfAkamaiTests",
+                          "numberOfOriginTests",
+                          "averageResponseTimeOrigin",
+                          "averageResponseTimeAkamai"
+                        ],
+                        "properties": {
+                          "averageAkamaiPerformanceGain": {
+                            "description": "The average of all performance gains for the specified date. Each is the `averageResponseTimeOrigin` divided by the `averageResponseTimeAkamai`.",
+                            "type": "number"
+                          },
+                          "averageResponseTimeAkamai": {
+                            "description": "The average of all CDN test times in milliseconds measured on the specified date.",
+                            "type": "number"
+                          },
+                          "averageResponseTimeOrigin": {
+                            "description": "The average of all origin test times in milliseconds measured on the specified date.",
+                            "type": "number"
+                          },
+                          "date": {
+                            "description": "The day of each summary test, expressed as an ISO 8601 date stamp.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "numberOfAkamaiTests": {
+                            "description": "The number of CDN performance test measurements included in the aggregation.",
+                            "type": "integer"
+                          },
+                          "numberOfOriginTests": {
+                            "description": "The number of origin performance test measurements included in the aggregation.",
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/schema-get-performance-reports-200.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "The test's unique identifier.",
+            "example": "{{slaTestId}}",
+            "in": "path",
+            "name": "slaTestId",
+            "required": true,
+            "schema": {
+              "example": 1,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/slaTestId-path.yaml"
+            }
+          },
+          {
+            "description": "Timestamp for the start of the data window, in UTC 8601 format.",
+            "example": "{{start}}",
+            "in": "query",
+            "name": "start",
+            "required": true,
+            "schema": {
+              "example": "2016-03-09T00:00:00Z",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/start-query.yaml"
+            }
+          },
+          {
+            "description": "Timestamp for the end of data window, in UTC 8601 format.",
+            "example": "{{end}}",
+            "in": "query",
+            "name": "end",
+            "required": true,
+            "schema": {
+              "example": "2016-03-12T01:00:00Z",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/end-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/sla-api/v1"
+    }
+  ]
+}

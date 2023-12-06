@@ -1,0 +1,97 @@
+x-akamai:
+  file-path: paths/property-versions.yaml
+  path-for-file: /properties/{propertyId}/versions
+parameters:
+- $ref: ../parameters/propertyId-path.yaml
+post:
+  operationId: post-property-versions
+  summary: Create a new property version
+  tags:
+  - Property versions
+  description: |
+    Create a new property version based on any previous version. All data from the `createFromVersion` populates the new version, including its rules and hostnames. Specify `createFromVersionEtag` if you want to ensure you're creating from a version that hasn't changed since you fetched it.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/property-version-create-request.json
+        schema:
+          $ref: ../schemas/property-version-create-request.yaml
+  responses:
+    201:
+      description: |
+        The response provides a URL link to the newly created property version.
+      headers:
+        Location:
+          $ref: ../headers/Location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/property-version-create-response.json
+          schema:
+            $ref: ../schemas/property-version-create-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+get:
+  operationId: get-property-versions
+  summary: List property versions
+  tags:
+  - Property versions
+  description: |
+    Lists the property's versions, with results limited to the 500 most recent versions. Optionally paginate the results. Each property version indicates activation status on different networks, and an `etag` digest useful when [cloning the property](ref:post-properties).
+  parameters:
+  - $ref: ../parameters/offset-query.yaml
+  - $ref: ../parameters/limit-optional.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  responses:
+    200:
+      description: |
+        The response lists property versions for the requested property.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/property-version-list-response.json
+          schema:
+            $ref: ../schemas/property-version-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: propertyVersions
+  group: Property versions

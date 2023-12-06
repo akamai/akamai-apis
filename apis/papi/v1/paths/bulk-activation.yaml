@@ -1,0 +1,45 @@
+x-akamai:
+  file-path: paths/bulk-activation.yaml
+  path-for-file: /bulk/activations/{bulkActivationId}
+parameters:
+- $ref: ../parameters/bulkActivationId-path.yaml
+get:
+  operationId: get-bulk-activation
+  summary: List bulk-activated properties
+  tags:
+  - Bulk activations
+  description: |
+    List all activations that result from a [bulk activation request](ref:post-bulk-activations). Once the overall `bulkActivationStatus` is `COMPLETE`, check each activation's `activationStatus` to confirm it's `ACTIVATED`. See [Bulk Search and Update](ref:bulk-search-and-update) for overall guidance on this feature.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional-bulk.yaml
+  - $ref: ../parameters/groupId-optional-bulk.yaml
+  responses:
+    200:
+      description: |
+        The response shows the bulk activation job, which proceeds until the `bulkActivationStatus` is `COMPLETE`.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/bulk-activation-get-response.json
+          schema:
+            $ref: ../schemas/bulk-property-activation-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: bulkPropertyActivation
+  group: Bulk property activations

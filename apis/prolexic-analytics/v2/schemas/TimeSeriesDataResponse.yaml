@@ -1,0 +1,24 @@
+type: object
+description: |-
+  Contains attack and individual usage information for selected destination IP addresses or CIDR blocks in a three-level mapping object. An IP address or CIDR block keys appear at the top-level. The nested keys represent different report data facets. The lowest level shows keys for each data point's individual epoch timestamp.
+  
+x-akamai:
+  file-path: schemas/TimeSeriesDataResponse.yaml
+additionalProperties: false
+properties:
+  aggregationData:
+    type: object
+    description: |
+      Contains aggregated time series data for each report data facet during the specified time range. Only appears in the response if you enable the request's `sum` parameter.
+    $ref: TimeSeriesDataFeatureSchema.yaml#
+patternProperties:
+  ^([0-9]{1,3}[.]){3}[0-9]{1,3}([/][1-3]?[0-9])?$:
+    type: object
+    description: |
+      Contains time series data for an individual destination IP address or a CIDR block. Each CIDR block or IP address key maps to a different report data facet.
+    $ref: TimeSeriesDataFeatureSchema.yaml#
+  ^([0-9a-f:]{3,39})([/]1?[0-9]{1,2})?$:
+    type: object
+    description: |
+      Contains time series data for an individual destination IP address or a CIDR block. Each CIDR block or IP address key maps to a different report data facet.
+    $ref: TimeSeriesDataFeatureSchema.yaml#

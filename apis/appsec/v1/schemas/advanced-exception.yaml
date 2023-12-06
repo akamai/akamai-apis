@@ -1,0 +1,152 @@
+type: object
+description: |-
+  Describes the advanced exception members that allow you to conditionally exclude requests from inspection. This is only available for attack groups and when the advanced exception feature is enabled.
+  
+x-akamai:
+  file-path: schemas/advanced-exception.yaml
+additionalProperties: false
+properties:
+  conditionOperator:
+    type: string
+    description: |
+      Use `OR` to match any condition, or `AND` to match on all conditions.
+    enum:
+    - AND
+    - OR
+  conditions:
+    type: array
+    description: |
+      The list of match conditions.
+    items:
+      $ref: condition.yaml#
+  headerCookieOrParamValues:
+    type: array
+    description: |
+      The list of excepted values in headers, cookies, or query parameters.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - values
+      properties:
+        criteria:
+          type: array
+          description: |
+            A list of criteria to limit the scope of this exception.
+          items:
+            $ref: criteria.yaml#
+        valueWildcard:
+          type: boolean
+          description: |
+            Whether the provided header `name` is a wildcard.
+          default: false
+        values:
+          type: array
+          description: |
+            The list of request attribute names.
+          items:
+            type: string
+  specificHeaderCookieOrParamNameValue:
+    type: array
+    description: |
+      Contains details about the excepted name-value pairs in a request.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - namesValues
+      - selector
+      properties:
+        criteria:
+          type: array
+          description: |
+            A list of criteria to limit the scope of this exception.
+          items:
+            $ref: criteria.yaml#
+        namesValues:
+          type: array
+          description: |
+            A list of name-value pairs to except.
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - names
+            properties:
+              names:
+                type: array
+                description: |
+                  The list of request attribute names.
+                items:
+                  type: string
+              values:
+                type: array
+                description: |
+                  The list of request attribute values.
+                items:
+                  type: string
+        selector:
+          type: string
+          description: |
+            The request attribute to exclude from inspection. See [Exception selector values](ref:exception-selector-values).
+          enum:
+          - REQUEST_COOKIES
+          - JSON_PAIRS
+          - XML_PAIRS
+          - ARGS
+          - REQUEST_HEADERS
+        wildcard:
+          type: boolean
+          description: |
+            Whether the provided header `name` is a wildcard.
+          default: false
+  specificHeaderCookieParamXmlOrJsonNames:
+    type: array
+    description: |
+      Describes the advanced exception members that allow you to conditionally exclude requests from inspection. This is only available for attack groups and when the advanced exception feature is enabled.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - selector
+      properties:
+        criteria:
+          type: array
+          description: |
+            A list of criteria to limit the scope of this exception.
+          items:
+            $ref: criteria.yaml#
+        names:
+          type: array
+          description: |
+            The list of request attribute names.
+          items:
+            type: string
+        selector:
+          type: string
+          description: |
+            The request attribute to exclude from inspection. See [Exception selector values](ref:exception-selector-values).
+          enum:
+          - ARGS_NAMES
+          - ARGS
+          - REQUEST_HEADERS_NAMES
+          - REQUEST_HEADERS
+          - REQUEST_COOKIES_NAMES
+          - REQUEST_COOKIES
+          - JSON_NAMES
+          - JSON_PAIRS
+          - XML_PAIRS
+          - REQUEST_PROTOCOL
+          - REQUEST_METHOD
+          - REQUEST_URI
+          - QUERY_STRING
+          - REQUEST_FILENAME
+          - REQUEST_PATH_SEGMENT
+          - REQUEST_BODY
+          - REQBODY_PROCESSOR_ERROR
+          - FILES_NAMES
+        wildcard:
+          type: boolean
+          description: |
+            Whether the provided header `name` is a wildcard.
+          default: false

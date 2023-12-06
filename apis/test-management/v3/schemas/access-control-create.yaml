@@ -1,0 +1,32 @@
+type: object
+description: |-
+  This object takes in details of an user or a group who will be provided access to a given locked test suite.
+  
+x-akamai:
+  file-path: schemas/access-control-create.yaml
+additionalProperties: false
+required:
+- accessorId
+- type
+- role
+properties:
+  type:
+    type: string
+    description: |
+      Whether the access is provided to a single `USER` or a `GROUP` of users.
+    enum:
+    - GROUP
+    - USER
+  accessorId:
+    type: string
+    description: |
+      Depending on the `type` value, the `accessorId` value can be either a unique identifier for an user or a group of users. The two groups available are: `USERS_IN_THIS_ACCOUNT` and `INTERNAL_USERS` for all Akamai users who have access to a group account.
+    minLength: 1
+  role:
+    type: string
+    description: |
+      User's or group's test suite role,`OWNER`,`EDITOR` or `VIEWER`. The `EDITOR` can only include new functional test cases and remove those already included. The `OWNER` can also edit the test cases and remove them. `VIEWER` can only view the testcases.
+    enum:
+    - OWNER
+    - EDITOR
+    - VIEWER

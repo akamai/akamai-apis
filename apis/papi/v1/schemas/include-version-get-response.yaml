@@ -1,0 +1,117 @@
+id: resource:/descriptors/papi/v1/schemas/GetIncludeVersionResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array.
+  
+x-akamai:
+  file-path: schemas/include-version-get-response.yaml
+additionalProperties: false
+properties:
+  accountId:
+    type: string
+    description: |
+      Identifies the prevailing account under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+  assetId:
+    type: string
+    description: |
+      An alternative identifier for the include. Use this value to key the include in the Identity and Access Management API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+  contractId:
+    type: string
+    description: |
+      Identifies the prevailing contract under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ctr_` prefix.
+  groupId:
+    type: string
+    description: |
+      Identifies the prevailing group under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+  includeId:
+    type: string
+    description: |
+      The include's unique identifier. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `inc_` prefix.
+  includeName:
+    type: string
+    description: |
+      A descriptive name for the include.
+  includeType:
+    type: string
+    description: |
+      The type of an include. `MICROSERVICES` specifies includes with a separate access control and activation flow, which allows different teams to work independently on different parts of a single site. In a parent property's rule tree, you add the `MICROSERVICE` includes to rules with mutually exclusive path matches. `COMMON_SETTINGS` specifies includes used across different properties that share a significant number of settings. In a parent property's rule tree, you add the `COMMON_SETTINGS` includes to the default rule or rules without any matches. By updating or activating a single `COMMON_SETTINGS` include, the changes take effect immediately across all sites that use this include. You can use this member for filtering and grouping similar includes together.
+    enum:
+    - COMMON_SETTINGS
+    - MICROSERVICES
+  versions:
+    type: object
+    description: |
+      The set of requested include versions, available within an `items` array.
+    additionalProperties: false
+    properties:
+      items:
+        type: array
+        description: |
+          Specifies the version of an include. Relevant response objects appear within the outer envelope's `versions.items` array.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - etag
+          - note
+          - productId
+          - productionStatus
+          - includeVersion
+          - stagingStatus
+          - updatedByUser
+          - updatedDate
+          properties:
+            etag:
+              type: string
+              description: |
+                A digest with which to check the data's integrity. See [Concurrency control](ref:concurrency-control) for guidance.
+            includeVersion:
+              type: integer
+              description: |
+                A positive integer identifying the incremental version.
+              minimum: 1
+            note:
+              type: string
+              description: |
+                A descriptive log comment.
+            productId:
+              type: string
+              description: |
+                The product assigned to the include when versioned. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `inc_` prefix.
+            productionStatus:
+              type: string
+              description: |
+                Whether the version has been activated to the production network. If `ACTIVE`, the version is read-only. It's `INACTIVE` if another version has superseded this one. It's `PENDING` if the [activation request](ref:post-include-activation) is in progress. It's `PENDING_CANCELLATION` or `ABORTED` if the client [cancelled a pending activation](ref:delete-include-activation) in time. It's `PENDING_DEACTIVATION` or `DEACTIVATED` when set to no longer serve traffic.
+              enum:
+              - ACTIVE
+              - INACTIVE
+              - PENDING
+              - ABORTED
+              - DEACTIVATED
+              - PENDING_DEACTIVATION
+              - PENDING_CANCELLATION
+            ruleFormat:
+              type: string
+              description: |
+                Identifies the rule format currently assigned to the include version's rule tree.
+            stagingStatus:
+              type: string
+              description: |
+                Whether the version has been activated to the test network. If `ACTIVE`, the version is read-only. It's `INACTIVE` if another version has superseded this one. It's `PENDING` if the [activation request](ref:post-include-activation) is in progress. It's `PENDING_CANCELLATION` or `ABORTED` if the client [cancelled a pending activation](ref:delete-include-activation) in time. It's `PENDING_DEACTIVATION` or `DEACTIVATED` when set to no longer serve traffic.
+              enum:
+              - ACTIVE
+              - INACTIVE
+              - PENDING
+              - ABORTED
+              - DEACTIVATED
+              - PENDING_DEACTIVATION
+              - PENDING_CANCELLATION
+            updatedByUser:
+              type: string
+              description: |
+                The username who last updated the version.
+            updatedDate:
+              type: string
+              description: |
+                The date stamp of the version's latest update.
+$schema: http://json-schema.org/draft-04/schema#

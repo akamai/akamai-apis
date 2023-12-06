@@ -1,0 +1,45 @@
+x-akamai:
+  file-path: paths/bulk-patch.yaml
+  path-for-file: /bulk/rules-patch-requests/{bulkPatchId}
+parameters:
+- $ref: ../parameters/bulkPatchId-path.yaml
+get:
+  operationId: get-bulk-patch
+  summary: List bulk-patched properties
+  tags:
+  - Bulk patch
+  description: |
+    List all modified property versions that result from a [bulk patch](ref:post-bulk-patch) request. This operation polls the asynchronous process's status. Once the overall `bulkPatchStatus` is `COMPLETE`, you can feed all successfully updated property versions whose `status` is `UPDATED` into a subsequent request to [bulk activate](ref:post-bulk-activations) them. See [Bulk Search and Update](ref:bulk-search-and-update) for overall guidance on this feature.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional-bulk.yaml
+  - $ref: ../parameters/groupId-optional-bulk.yaml
+  responses:
+    200:
+      description: |
+        The response shows the bulk update job, which proceeds until the `bulkPatchStatus` is `COMPLETE`.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/patch-bulk-get-response.json
+          schema:
+            $ref: ../schemas/bulk-patch-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: bulkPatches
+  group: Bulk patch

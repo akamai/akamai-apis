@@ -1,0 +1,100 @@
+openapi: 3.0.0
+info:
+  title: Initialize
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edgekv/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: initialize.yaml
+paths:
+  /initialize:
+    get:
+      operationId: get-initialize
+      summary: Get the EdgeKV initialization status
+      tags:
+      - EdgeKV status
+      description: |
+        View the EdgeKV initialization status.
+      responses:
+        200:
+          description: |
+            Returns current initialization status.
+          content:
+            application/json:
+              example:
+                $ref: examples/initialize-200.json
+              schema:
+                $ref: schemas/initialize-200.yaml
+        404:
+          description: |
+            EdgeKV has not been initialized.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/initialize-404.json
+              schema:
+                $ref: schemas/initialize-200.yaml
+        500:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml
+    put:
+      operationId: put-initialize
+      summary: Initialize EdgeKV
+      tags:
+      - EdgeKV status
+      description: |
+        You only need to initialize EdgeKV once. This operation adds the `default` EdgeKV namespace to Akamai's `STAGING` and `PRODUCTION` networks. It also creates a new dedicated CP code for you to track your EdgeKV usage. You won't be able to use any of the EdgeKV API operations or your EdgeKV database until initialization completes. You should only use the default namespace for experimentation and testing purposes. When deploying your EdgeKV database in production, use a new namespace with a different name. You need to specify a database Data Access Policy when running this operation. The Data Access Policy determines if new namespaces should be processed only on Akamai’s enhanced secure network with high security standards, or both enhanced and standard secure networks. By default, all current existing namespaces in EdgeKV are set to use only the enhanced secure network. To use the standard secure network, you need special contract entitlement for Standard TLS Support.
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/initialize-put.json
+            schema:
+              $ref: schemas/initialize-put.yaml
+      responses:
+        102:
+          description: |
+            An existing initialization request is currently processing for current account.
+          content:
+            application/json:
+              example:
+                $ref: examples/initialize-102.json
+              schema:
+                $ref: schemas/initialize-200.yaml
+        201:
+          description: |
+            On initial successful initialization, returns current initialization status and the assigned CP code.
+          content:
+            application/json:
+              example:
+                $ref: examples/initialize-200.json
+              schema:
+                $ref: schemas/initialize-200.yaml
+        400:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/initialize-400.json
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml

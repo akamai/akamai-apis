@@ -1,0 +1,46 @@
+type: object
+description: |-
+  Contains threshold and action settings for slow POST protection.
+  
+x-akamai:
+  file-path: schemas/slow-post-protection.yaml
+additionalProperties: false
+required:
+- action
+properties:
+  action:
+    type: string
+    description: |
+      Specifies the  action that the rule should trigger. Either `alert` or `abort`.
+    enum:
+    - alert
+    - abort
+  durationThreshold:
+    type: object
+    description: |
+      If the edge server doesn't receive the first eight kilobytes of the POST body transfer within the specified time, the specified action in the policy is applied.
+    additionalProperties: false
+    required:
+    - timeout
+    properties:
+      timeout:
+        type: integer
+        description: |
+          Number of seconds from the time a request starts to the value specified in the timeout. If the timeout value is reached, the action specified in the policy applies. For example, if the timeout is 30 seconds and a request reaches 30 seconds without completing, the action in the policy triggers.
+  slowRateThreshold:
+    type: object
+    description: |
+      The average rate in bytes per second over a period of time that you specify before an action (`alert` or `abort`) in the policy triggers. For example, if you set the `slowRateThreshold` to an average of 10 bytes per second in a 60 second period and a request comes in at an average of 5 bytes per second in a 60 second period, the action you specified in the policy triggers.
+    additionalProperties: false
+    required:
+    - rate
+    - period
+    properties:
+      period:
+        type: integer
+        description: |
+          The slow rate period value. The amount of time in seconds of how long the server should accept a request to determine whether a POST request is too slow.
+      rate:
+        type: integer
+        description: |
+          The rate threshold value. How many bytes per second is considered a slow request. For example, 10 bytes or less per second.

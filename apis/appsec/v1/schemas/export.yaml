@@ -1,0 +1,228 @@
+type: object
+description: |-
+  Contains details about an exported security configuration version.
+  
+x-akamai:
+  file-path: schemas/export.yaml
+additionalProperties: false
+required:
+- advancedOptions
+- basedOn
+- configId
+- configName
+- createDate
+- createdBy
+- customRules
+- errorHosts
+- matchTargets
+- production
+- ratePolicies
+- reputationProfiles
+- ruleSets
+- securityPolicies
+- selectableHosts
+- selectedHosts
+- siem
+- customDenyList
+- staging
+- version
+- versionNotes
+properties:
+  version:
+    type: integer
+    description: |
+      The security configuration's incremental version number.
+  advancedOptions:
+    type: array
+    description: |
+      The logging and prefetch settings in the configuration version.
+    items:
+      $ref: export-advanced-options.yaml
+  basedOn:
+    type: integer
+    description: |
+      The version from which you cloned this version. If it's the first version, this member is omitted from the response.
+  configId:
+    type: integer
+    description: |
+      Uniquely identifies each security configuration.
+  configName:
+    type: string
+    description: |
+      The name that you assign to the security configuration.
+  createDate:
+    type: string
+    description: |
+      The date when you created the security configuration.
+  createdBy:
+    type: string
+    description: |
+      The user who created the configuration version.
+  customDenyList:
+    type: array
+    description: |
+      The list of custom deny actions in the configuration version.
+    items:
+      $ref: custom-denies.yaml
+  customRules:
+    type: array
+    description: |
+      The custom rule details in the configuration version.
+    items:
+      $ref: export-custom-rules.yaml
+  errorHosts:
+    type: array
+    description: |
+      Specifies the set of hostnames unavailable for protection in this configuration version.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - hostname
+      - reason
+      - reasonCode
+      properties:
+        hostname:
+          type: string
+          description: |
+            The hostname unavailable for protection.
+        reason:
+          type: string
+          description: |
+            Describes why WAF can't protect the hostname.
+        reasonCode:
+          type: integer
+          description: |
+            The HTTP error code indicating why WAF can't protect the hostname.
+  evaluating:
+    type: object
+    description: |
+      Describes security controls and information for hostnames you want to evaluate.
+    additionalProperties: false
+    properties:
+      securityPolicies:
+        type: array
+        description: |
+          The evaluation policy details in the configuration version.
+        items:
+          $ref: export-eval-policy.yaml
+  malwarePolicies:
+    type: array
+    description: |
+      The malware policy details for a configuration version.
+    items:
+      $ref: malware-policy.yaml
+  matchTargets:
+    type: array
+    description: |
+      The match target details in the configuration version.
+    items:
+      $ref: export-match-targets.yaml
+  production:
+    type: object
+    description: |
+      Specifies the configuration version's activation status on the production network.
+    additionalProperties: false
+    required:
+    - action
+    - status
+    - time
+    properties:
+      action:
+        type: string
+        description: |
+          The action you performed on the configuration version. Either `ACTIVATE` or `DEACTIVATE`.
+        enum:
+        - ACTIVATE
+        - DEACTIVATE
+      status:
+        type: string
+        description: |
+          The activation status. Either `Active`, `Failed`, `Inactive`, `Deactivated`, or `Pending`.
+        enum:
+        - Active
+        - Failed
+        - Inactive
+        - Deactivated
+        - Pending
+      time:
+        type: string
+        description: |
+          The ISO 8601 timestamp when you activated the configuration version.
+  ratePolicies:
+    type: array
+    description: |
+      The rate policy details in the configuration version.
+    items:
+      $ref: rate-policy.yaml
+  reputationProfiles:
+    type: array
+    description: |
+      The reputation profile details in the configuration version.
+    items:
+      $ref: export-reputation-profiles.yaml
+  ruleSets:
+    type: array
+    description: |
+      The ruleset details in the configuration version.
+    items:
+      $ref: export-rule-sets.yaml
+  securityPolicies:
+    type: array
+    description: |
+      The security policies in the configuration version.
+    items:
+      $ref: export-security-policies.yaml
+  selectableHosts:
+    type: array
+    description: |
+      The hostnames that are available for protection in the configuration version.
+    items:
+      type: string
+  selectedHosts:
+    type: array
+    description: |
+      The hostnames protected in the configuration version.
+    items:
+      type: string
+  siem:
+    type: array
+    description: |
+      The SIEM details in the configuration version.
+    items:
+      $ref: export-siem.yaml
+  staging:
+    type: object
+    description: |
+      Specifies the configuration version's activation status on the staging network.
+    additionalProperties: false
+    required:
+    - action
+    - status
+    - time
+    properties:
+      action:
+        type: string
+        description: |
+          The action you performed on the configuration version. Either `ACTIVATE` or `DEACTIVATE`.
+        enum:
+        - ACTIVATE
+        - DEACTIVATE
+      status:
+        type: string
+        description: |
+          The activation status. Either `Pending`, `Active`, `Inactive`, `Deactivated`, `Failed`.
+        enum:
+        - Active
+        - Failed
+        - Inactive
+        - Deactivated
+        - Pending
+      time:
+        type: string
+        description: |
+          The ISO 8601 timestamp when you activated the configuration version.
+  versionNotes:
+    type: string
+    description: |
+      The notes that you provide to describe the security configuration version.

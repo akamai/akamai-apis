@@ -1,0 +1,50 @@
+type: object
+x-akamai:
+  file-path: schemas/LocationCapacity.yaml
+additionalProperties: false
+required:
+- locationId
+- locationName
+- contractId
+- approvedCapacity
+- assignedCapacity
+- unassignedCapacity
+- type
+properties:
+  type:
+    type: string
+    description: |
+      The type of delivery property you've assigned this capacity to. `MEDIA` applies to live or video on demand content. `WEB_STANDARD_TLS` or `WEB_ENHANCED_TLS` applies to web content using Standard TLS security or Enhanced TLS security, respectively.
+    enum:
+    - MEDIA
+    - WEB_STANDARD_TLS
+    - WEB_ENHANCED_TLS
+  approvedCapacity:
+    description: |
+      Capacity allocated for the location.
+    $ref: ../schemas/Capacity.yaml
+  assignedCapacity:
+    description: |
+      Capacity already assigned to Cloud Wrapper configurations.
+    $ref: ../schemas/Capacity.yaml
+  contractId:
+    type: string
+    description: |
+      Contract ID having Cloud Wrapper entitlement.
+    minLength: 0
+    maxLength: 20
+    pattern: ^[A-Za-z0-9-_.]*$
+  locationId:
+    type: integer
+    description: |
+      Unique identifier of the configured location.
+    format: int64
+  locationName:
+    type: string
+    description: |
+      Name of the location.
+  unassignedCapacity:
+    description: |-
+      The total amount of capacity you can assign to Cloud Wrapper configurations.
+      
+    $ref: ../schemas/Capacity.yaml

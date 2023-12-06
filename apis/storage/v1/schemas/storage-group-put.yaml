@@ -1,0 +1,192 @@
+type: object
+description: |-
+  Update storage group.
+  
+x-akamai:
+  file-path: schemas/storage-group-put.yaml
+additionalProperties: false
+properties:
+  cpcodes:
+    type: array
+    description: |
+      The set of CP codes assigned to a group.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        ageDeletions:
+          type: array
+          description: |
+            Automatic Purge Routines that have been set up for the group.
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              ageDeletionDays:
+                type: integer
+                description: |
+                  When the `ageDeletionSizeBytes` value is reached for the target directory, this number is subtracted from the current date to determine a timestamp. Files older than this timestamp are purged.
+              ageDeletionDirectory:
+                type: string
+                description: |
+                  The target directory for an Automatic Purge Routine.
+              ageDeletionExclusionRegex:
+                type: string
+                description: |
+                  POSIX regular expression pattern matching the filenames to exclude from the purge.
+              ageDeletionRecursivePurge:
+                type: boolean
+                description: |
+                  Whether subdirectories within the target directory are also included in the purge. If `false`, only files within the target directory are purged.
+                default: 'false'
+              ageDeletionSelectionRegex:
+                type: string
+                description: |
+                  POSIX regular expression pattern matching the filenames to include in the purge.
+              ageDeletionSizeBytes:
+                type: integer
+                description: |
+                  Automatic purge occurs when the target directory reaches this size, in bytes.
+        cpcodeId:
+          type: integer
+          description: |
+            A CP code assigned to the group and used to identify requests to a specific upload directory. The CP code serves as the root for upload directory. This is also referred to as the CP code root.
+        dirListing:
+          type: object
+          description: |
+            Specifies the file to serve if a request doesn't end in a specific filename and extension.
+          additionalProperties: false
+          properties:
+            indexFileName:
+              type: string
+              description: |
+                If a request doesn't specifically end in a filename and extension, this specifies the default file that's served.
+            maxListSize:
+              type: integer
+              description: |
+                Whether the file path is truncated or hidden in the file path displayed in the HTML directory listing for the index name file. `-1` indicates the full path is displayed, `0` indicates directory listings aren't served, but the search for the requested index name file continues, and an integer greater than zero indicates directory listings in the path are limited to this number.
+            searchOn404:
+              type: string
+              description: |
+                The action taken in the event of a 404 error, where the client was able to access NetStorage, but not the requested content or directory. `DO_NOT_SEARCH` stops additional searches, and returns a 404 error, `LOOK_FOR_EXPLICIT_DIR_ONLY` looks for an explicit directory matching the path specified in the request, and `LOOK_FOR_IMPLICIT_AND_EXPLICIT_DIR` looks for both an explicit and implicit directory that may match a path defined in the request.
+              enum:
+              - DO_NOT_SEARCH
+              - LOOK_FOR_EXPLICIT_DIR_ONLY
+              - LOOK_FOR_IMPLICIT_AND_EXPLICIT_DIR
+        downloadSecurity:
+          type: string
+          description: |
+            The level of security to obtain download access to the group. `ALL_EDGE_SERVERS` allows requests from all edge servers. `STREAMING_SERVERS_ONLY` only allows requests from edge servers dedicated to streaming media. `G_2_O_AND_ALL_EDGE_SERVERS` allows requests from all edge servers, but a warning is issued. It also allows all requests that include a valid G2O token, `G_2_O_ONLY` requires inclusion of a valid G2O token.
+          enum:
+          - ALL_EDGE_SERVERS
+          - STREAMING_SERVERS_ONLY
+          - G_2_O_AND_ALL_EDGE_SERVERS
+          - G_2_O_ONLY
+        enableQuickDelete:
+          type: boolean
+          description: |
+            Whether the `quick-delete` operation is available in the NetStorage Usage API and the CMShell.  Targets a specific directory in this group and recursively deletes all of its contents.
+          default: 'false'
+        encodingConfig:
+          type: object
+          description: |
+            The type of encoding to use when displaying paths in XML-aware contexts.
+          additionalProperties: false
+          properties:
+            encoding:
+              type: string
+              description: |
+                The selected encoding format, either `ISO_8859_1` which are 8-bit, single-byte coded graphic character sets, or `UTF_8` which are variable length, 8-bit code units via UTF-8 character encoding.
+              enum:
+              - ISO_8859_1
+              - UTF_8
+            enforceEncoding:
+              type: boolean
+              description: |
+                Whether upload operations verify that all path values defined within the URL for target content are properly formatted using the selected encoding method.
+              default: 'false'
+        f2hConfig:
+          type: object
+          description: |
+            FTP to HTTP (F2H) conversion for FTP download efficiency.
+          additionalProperties: false
+          properties:
+            f2hCookies:
+              type: array
+              items:
+                type: string
+            f2hDirectories:
+              type: array
+              items:
+                type: string
+        pathCheckAndConversion:
+          type: string
+          description: |
+            Specifies the action taken when analyzing the request path. With `DISALLOW_ALL_IMPROPER_PATHS`, paths using naming conventions outside of what's supported for use as an explicit or implicit directory name are blocked, and an error message is displayed. With `DISALLOW_IMPROPER_PATHS_ON_UPLOAD_ONLY`, as previous, but only for upload requests.  Download requests are translated to canonical. With `TRANSLATE_TO_CANONICAL`, a forward slash (/) is seen as a path delimiter and repeat instances are treated as a single instance in a path. For example, if an upload request is sent to target the directory, `//files/new///mp4/movie1.mp4`, the file is uploaded to `/files/new/mp4/movie1.mp4`. (And, non-existent directories within the path are auto-generated to exist as explicit ones). With `DO_NOT_CHECK_PATHS`, paths aren't checked and are interpreted exactly as they're sent.
+          enum:
+          - DISALLOW_ALL_IMPROPER_PATHS
+          - DISALLOW_IMPROPER_PATHS_ON_UPLOAD_ONLY
+          - TRANSLATE_TO_CANONICAL
+          - DO_NOT_CHECK_PATHS
+        queryStringConversion:
+          type: object
+          description: |
+            Specifies how query strings appended to request paths to this group are handled.
+          additionalProperties: false
+          properties:
+            queryStringConversionExclude:
+              type: string
+              description: |
+                A list of query string values that have been explicitly set to be excluded from conversion. Only applicable if `APPLY_ACS_QUERY_CONVERSION` is set as the `queryStringConversionMode`.
+            queryStringConversionKeyOrder:
+              type: string
+              description: |
+                If `APPLY_ACS_QUERY_CONVERSION` is set as the `queryStringConversionMode`, this specifies a list of query string values that should be included for ACS Query String Conversion, in the specific order they should be interpreted.
+            queryStringConversionMode:
+              type: string
+              description: |
+                Specifies how upload and download request query strings should be transformed before processing the request. With `STRIP_ALL_INCOMING_QUERY`, all query strings are stripped and ignored.  With `APPLY_ACS_QUERY_CONVERSION`, the key is reviewed and stripped down using settings defined for `queryStringConversionKeyOrder` and `queryStringConversionExclude`; a hash of the string is also applied and used for matching at request time. With `LEAVE_INCOMING_QUERY_AS_IS`, the string is left as is.
+              enum:
+              - STRIP_ALL_INCOMING_QUERY
+              - APPLY_ACS_QUERY_CONVERSION
+              - LEAVE_INCOMING_QUERY_AS_IS
+            queryStringConversionVersion:
+              type: string
+              description: |
+                The version in use for `queryStringConversion` with this group.
+        requestUriCaseConversion:
+          type: string
+          description: |
+            Standardizes case usage for filenames uploaded to your selected upload directory. `NO_CONVERSION`, `CONVERT_TO_UPPER` and `CONVERT_TO_LOWER` are self-explanatory. `STREAM_OS` indicates case requirements are applied to support the Stream OS product. This is only seen in a very limited number of legacy groups.
+          enum:
+          - NO_CONVERSION
+          - CONVERT_TO_UPPER
+          - CONVERT_TO_LOWER
+          - STREAM_OS
+        sendHash:
+          type: boolean
+          description: |
+            Whether a content item's MD5 digest values is sent in the HTTP `Content-MD5` response header.
+          default: 'false'
+        serveFromZip:
+          type: boolean
+          description: |
+            Whether NetStorage dynamically examines archived files to directly serve individual files from within the archive.
+          default: 'false'
+        useSsl:
+          type: boolean
+          description: |
+            Whether the contents within the upload directory are replicated securely via Secure Sockets Layer (SSL).
+          default: 'false'
+  storageGroupName:
+    type: string
+    description: |
+      The name you set for the group.
+  zones:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        zoneName:
+          type: string

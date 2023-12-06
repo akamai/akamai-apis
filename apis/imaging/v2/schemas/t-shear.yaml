@@ -1,0 +1,40 @@
+type: object
+description: |-
+  Slants an image into a parallelogram, as a percent of the starting dimension as represented in decimal format. You need to specify at least one axis property. Transparent pixels fill empty areas around the sheared image as needed, so it's often useful to use a `BackgroundColor` transformation for these areas.
+  
+x-akamai:
+  file-path: schemas/t-shear.yaml
+title: Shear
+additionalProperties: false
+required:
+- transformation
+properties:
+  transformation:
+    type: string
+    description: |
+      Identifies the type of transformation, `Shear` in this case.
+    default: Shear
+    enum:
+    - Shear
+  xShear:
+    description: |
+      The amount to shear along the x-axis, measured in multiples of the image's width. Required if `yShear` is not specified.
+    oneOf:
+    - default: 0
+      type: number
+      title: Number
+      format: float
+      minimum: -5
+      maximum: 5
+    - $ref: variable-inline.yaml
+  yShear:
+    description: |
+      The amount to shear along the y-axis, measured in multiples of the image's height. Required if `xShear` is not specified.
+    oneOf:
+    - default: 0
+      type: number
+      title: Number
+      format: float
+      minimum: -5
+      maximum: 5
+    - $ref: variable-inline.yaml

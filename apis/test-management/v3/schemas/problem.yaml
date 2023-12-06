@@ -1,0 +1,59 @@
+type: object
+description: |-
+  Specifies the errors.
+  
+x-akamai:
+  file-path: schemas/problem.yaml
+additionalProperties: false
+required:
+- type
+- title
+- instance
+- status
+properties:
+  type:
+    type: string
+    description: |
+      Type of error.
+    minLength: 1
+  title:
+    type: string
+    description: |
+      Title of the error.
+    minLength: 1
+  errors:
+    type: array
+    description: |
+      [HTTP Problem Details](https://tools.ietf.org/html/rfc7807) objects indicating causes of failure.
+    minItems: 0
+    items:
+      $ref: sub-problem.yaml
+  instance:
+    type: string
+    description: |
+      Identifies an error.
+    minLength: 1
+  requestField:
+    type: string
+    description: |
+      Request field name the error refers to. It can be a path or query parameter of the URL or any request payload field name.
+    minLength: 1
+  requestValues:
+    type: array
+    description: |
+      Lists values corresponding to the `requestField`.
+    minItems: 0
+    items:
+      anyOf:
+      - title: String
+        type: string
+      - title: Integer
+        type: integer
+      - title: Object
+        type: object
+  status:
+    type: integer
+    description: |
+      HTTP response code.
+    minimum: 100
+    maximum: 599

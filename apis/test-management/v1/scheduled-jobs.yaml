@@ -1,0 +1,73 @@
+openapi: 3.0.0
+info:
+  title: Scheduled jobs
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/test-management/v1/scheduled-jobs
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: scheduled-jobs.yaml
+paths:
+  /notification:
+    post:
+      operationId: post-notification
+      summary: Send emails
+      tags:
+      - Notifications
+      description: |
+        Send pending test result emails.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/post-notification-response.json
+              schema:
+                $ref: schemas/postNotificationResponse.yaml
+  /purge:
+    delete:
+      operationId: delete-purge
+      summary: Purge older test run data
+      tags:
+      - Test runs
+      description: |
+        Purge older test run data.
+      responses:
+        202:
+          description: |
+            Successfully submitted.
+  /update-incomplete-jobs:
+    post:
+      operationId: post-update-incomplete-jobs
+      summary: Update incomplete jobs
+      tags:
+      - Test runs
+      description: |
+        Update incomplete jobs' status.
+      responses:
+        202:
+          description: |
+            Successfully submitted.
+  /update-run-status:
+    post:
+      operationId: post-update-run-status
+      summary: Update test run status
+      tags:
+      - Test runs
+      description: |
+        Update status of test runs in progress. This returns a list of IDs of jobs that were updated.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/post-updated-jobs-response.json
+              schema:
+                $ref: schemas/postUpdatedJobsResponse.yaml

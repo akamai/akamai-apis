@@ -1,0 +1,159 @@
+openapi: 3.0.0
+info:
+  title: Groups
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/identity-management/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: groups-api.yaml
+paths:
+  /user-admin/groups:
+    get:
+      operationId: get-groups
+      summary: List groups
+      tags:
+      - Groups
+      description: |
+        List all groups in which you have a scope of `admin` for the current account and contract type. The account and contract type are determined by the access tokens in your API client.
+      parameters:
+      - $ref: parameters/rolesFilterParamsActions_actions.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-groups.json
+              schema:
+                $ref: schemas/ListOfGroupResponse.yaml
+  /user-admin/groups/move:
+    post:
+      operationId: post-groups-move
+      summary: Move a group
+      tags:
+      - Move groups
+      description: |
+        Move a nested group under another group within the same parent hierarchy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-request-move-group.json
+            schema:
+              $ref: schemas/MoveGroupRequest.yaml
+      responses:
+        204:
+          description: |
+            Successful response.
+  /user-admin/groups/move/{sourceGroupId}/{destinationGroupId}/affected-users:
+    parameters:
+    - $ref: parameters/destinationGroupId-path.yaml
+    - $ref: parameters/sourceGroupId-path.yaml
+    get:
+      operationId: get-move-affected-users
+      summary: List users affected by moving a group
+      tags:
+      - Move groups
+      description: |
+        List users who are affected when a group is moved. Users may lose or gain access to resources depending on the roles and permissions associated with the new parent group. Users with a `userType` of `lostAccess` lose their access to the source group. If the `userType` is `gainAccess`, they gain access to the resources in the source group. Users who have inherited access to a group lose access to that group if it moves out of its the hierarchy that gives them those access rights. If the group moves to another parent group to which they have access, they still have access to the group you move. Likewise, when a group is moved to its new location, users who inherit their access rights from the new parent group gain access to the resources in the group you move.
+      parameters:
+      - $ref: parameters/userType-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-affected-users.json
+              schema:
+                $ref: schemas/ListOfMoveUserResponse.yaml
+  /user-admin/groups/{groupId}:
+    parameters:
+    - $ref: parameters/groupId-path.yaml
+    post:
+      operationId: post-group
+      summary: Create a new group
+      tags:
+      - Groups
+      description: |
+        Create a new group within a parent group you specify in the request.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-request-group.json
+            schema:
+              $ref: schemas/GroupRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/post-response-group.json
+              schema:
+                $ref: schemas/GroupResponse.yaml
+    get:
+      operationId: get-group
+      summary: Get a group
+      tags:
+      - Groups
+      description: |
+        Return a group's details.
+      parameters:
+      - $ref: parameters/rolesFilterParamsActions_actions.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-group-details.json
+              schema:
+                $ref: schemas/GroupResponse.yaml
+    put:
+      operationId: put-group
+      summary: Modify a group's name
+      tags:
+      - Groups
+      description: |
+        Change the name of the group.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-request-group.json
+            schema:
+              $ref: schemas/GroupRequest.yaml
+      responses:
+        201:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-response-group.json
+              schema:
+                $ref: schemas/GroupResponse.yaml
+    delete:
+      operationId: delete-group
+      summary: Delete a group
+      tags:
+      - Groups
+      description: |
+        You can only delete a sub-group, and only if that sub-group doesn't include any users.
+      responses:
+        204:
+          description: |
+            Successful response.

@@ -1,0 +1,46 @@
+x-akamai:
+  file-path: paths/edge-hostname.yaml
+  path-for-file: /edgehostnames/{edgeHostnameId}
+parameters:
+- $ref: ../parameters/edgeHostnameId-path.yaml
+get:
+  operationId: get-edgehostname
+  summary: Get an edge hostname
+  tags:
+  - Edge hostnames
+  description: |
+    This polls the state of an edge hostname, typically after [creating a new edge hostname](ref:post-edgehostnames). The response tells you whether the CNAME has been fully distributed across the network. If the hostname's `status` is `ACTIVE`, the process is complete. Until then, you typically see values of `ZONE1`, `ZONE2`, `ZONE3`, or simply `PENDING`.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-required.yaml
+  - $ref: ../parameters/groupId-required.yaml
+  - $ref: ../parameters/options-query.yaml
+  responses:
+    200:
+      description: |
+        The response shows the specified edge hostname.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/edgehostname-get-response.json
+          schema:
+            $ref: ../schemas/edgehostname-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: edgeHostname
+  group: EdgeHostnames

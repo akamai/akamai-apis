@@ -1,0 +1,386 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Client Configurations
+  version: v3
+servers:
+- url: https://{hostname}/etp-config/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: client-configurations.yaml
+paths:
+  /configs/{configId}/client-configuration:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-client-configuration
+      summary: Get client configuration
+      tags:
+      - Client configuration
+      description: |
+        Provides client configuration details.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/client-configuration-response-200.json
+              schema:
+                $ref: schemas/clientConfiguration.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    put:
+      operationId: put-client-configuration
+      summary: Update client configuration
+      tags:
+      - Client configuration
+      description: |
+        Updates the client configuration.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/client-configuration-put-body-200.json
+            schema:
+              $ref: schemas/clientConfigUpdate.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+  /configs/{configId}/client-versions:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-client-versions
+      summary: List client versions
+      tags:
+      - Client versions
+      description: |
+        Provides a list of client versions.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/client-versions-response-200.json
+              schema:
+                $ref: schemas/clientVersions.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/client-versions/op/rotate-entitlement-code:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-rotate-entitlement-code
+      summary: Rotate client version entitlement code
+      tags:
+      - Client versions
+      description: |
+        Rotates global entitlement code.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/client-versions/{clientVersionId}:
+    parameters:
+    - $ref: parameters/clientVersionId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    put:
+      operationId: put-client-version
+      summary: Updates the client version details
+      tags:
+      - Client versions
+      description: |
+        Updates the details of the specific client version.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/client-version-update-200.json
+            schema:
+              $ref: schemas/clientVersionUpdate.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+  /configs/{configId}/client-versions/{clientVersionId}/download:
+    parameters:
+    - $ref: parameters/clientVersionId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-client-version-download
+      summary: Download client version details
+      tags:
+      - Client versions
+      description: |
+        Provides the link to download client version details.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/client-version-download-200.json
+              schema:
+                $ref: schemas/clientVersionDownload.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/client/devices:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-client-devices
+      summary: List client devices
+      tags:
+      - Client devices
+      description: |
+        Provides a list of client devices and its details.
+      responses:
+        200:
+          description: |
+            The response provides either JSON or CSV data.
+          content:
+            application/json:
+              example:
+                $ref: examples/client-devices-all-200.json
+              schema:
+                $ref: schemas/clientDevicesAll.yaml
+            text/csv:
+              example:
+                $ref: examples/client-devices-all-200.csv
+              schema:
+                $ref: schemas/csv-data.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/client/devices/{deviceId}/op/de-activate:
+    parameters:
+    - $ref: parameters/deviceId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-device-de-activate
+      summary: Deactivate a client device
+      tags:
+      - Client devices
+      description: |
+        Deactivates the specified client device.
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/client/devices/{deviceId}/op/re-activate:
+    parameters:
+    - $ref: parameters/deviceId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-device-re-activate
+      summary: Re-activate a client device
+      tags:
+      - Client devices
+      description: |
+        Re-activates the specified device.
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/client/status:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-client-status
+      summary: Get client status
+      tags:
+      - Client devices
+      description: |
+        Provides details of software installed with device counts. Also specifies errors and device count with errors.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/client-status-200.json
+              schema:
+                $ref: schemas/clientStatus.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/network-configuration:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-network-configuration
+      summary: Create a network configuration
+      tags:
+      - Client network configurations
+      description: |
+        Creates the network configuration.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/network-config-post-request.json
+            schema:
+              $ref: schemas/networkConfigurationCreate.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    get:
+      operationId: get-network-configuration
+      summary: Get the network configuration
+      tags:
+      - Client network configurations
+      description: |
+        Provides network configuration details.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/network-config-200.json
+              schema:
+                $ref: schemas/networkConfigurationResponse.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    put:
+      operationId: put-network-configuration
+      summary: Update the network configuration
+      tags:
+      - Client network configurations
+      description: |
+        Modifies the network configuration.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/network-config-put-request-200.json
+            schema:
+              $ref: schemas/networkConfigurationUpdate.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml

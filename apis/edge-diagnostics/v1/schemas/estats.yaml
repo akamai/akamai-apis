@@ -1,0 +1,45 @@
+type: object
+description: |-
+  Collects HTTP status codes distribution statistics for the requested traffic. The content of the response differs depending on your filters from the request. If you chose `delivery` not used by your resource, then the results are empty.
+  
+x-akamai:
+  file-path: schemas/estats.yaml
+additionalProperties: false
+required:
+- request
+- createdBy
+- createdTime
+- completedTime
+- executionStatus
+properties:
+  completedTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the request was completed.
+    format: date-time
+  createdBy:
+    type: string
+    description: |
+      Username who submitted the request.
+    minLength: 1
+  createdTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the request was submitted.
+    format: date-time
+  executionStatus:
+    type: string
+    description: |
+      Status of the request's execution, either `SUCCESS` or `FAILURE`.
+    enum:
+    - SUCCESS
+    - FAILURE
+  request:
+    description: |
+      Specifies your request.
+    $ref: estatsRequest.yaml
+  result:
+    description: |-
+      Provides HTTP status codes distribution statistics for the requested traffic.
+      
+    $ref: estatsData.yaml

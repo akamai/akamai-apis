@@ -1,0 +1,169 @@
+type: object
+description: |-
+  The Site Snapshot Tool (SST) is an advanced, robust, and flexible failover (continuity) solution that automates the process of downloading content from an enterprise onto the Edge Platform.
+  
+x-akamai:
+  file-path: schemas/site-snapshot-get.yaml
+additionalProperties: false
+properties:
+  baseDirectory:
+    type: string
+    description: |
+      The specified directory to store your snapshot.
+  command:
+    type: string
+    description: |
+      This is the full `SST` command string. View the [SST command format](doc:create-a-site-snapshot#available-command-options) for available command options.
+  commandConfig:
+    type: object
+    description: |
+      This object contains all of the individual elements that make up your Site Snapshot configuration.
+    additionalProperties: false
+    properties:
+      headers:
+        type: array
+        description: |
+          Specify a desired `<STRING>` to include with HTTP request headers.
+        items:
+          type: string
+      convertAbsolute:
+        type: boolean
+        description: |
+          Change relative hyperlinks to absolute.
+      convertLinks:
+        type: boolean
+        description: |
+          Change absolute hyperlinks to relative.
+      cookiesFile:
+        type: string
+        description: |
+          Prior to the first download, load the cookies contained in this file. The cookie file needs to follow a specific format: <br>domain<br>ignore<br>path<br>secure<br>expires<br>name
+      directoryPrefix:
+        type: string
+        description: |
+          Download all files and subdirectories to this directory.
+      domains:
+        type: array
+        description: |
+          Follow only domains specified as the `<LIST>` variable. Separate multiple entries with a whitespace.
+        items:
+          type: string
+      ignoreRobots:
+        type: boolean
+        description: |
+          Don't honor the `robot.txt` file or the `robots` `<meta>` tag.
+      inputFile:
+        type: string
+        description: |
+          Get the list of URLs to download from a named file. Input the complete path and filename for this file as a string.
+      level:
+        type: integer
+        description: |
+          Limit recursion depth to a specific number of levels. The maximum recursion depth is 10. Recursion limits apply to directory depth and following links.
+      outputFile:
+        type: string
+        description: |
+          Send operation information to a specified file instead of to the standard output. Include the desired path and filename for this file.
+      pageRequisites:
+        type: boolean
+        description: |
+          In addition to the specified HTML page, also download any other associated files that may be required to properly display the page, such as image files and CSS style sheets.
+      passiveFtp:
+        type: boolean
+        description: |
+          Use passive mode to require the client to start communications with the server.
+      quota:
+        type: integer
+        description: |
+          Set a byte-count limit for downloading multiple files recursively, or from an input file. Suffix with `k` for kilobytes or `m` for megabytes. For example, `20m` for 20 megabytes.
+      recursive:
+        type: boolean
+        description: |
+          Include this option to perform the download recursively. Links within the targeted page are followed and their associated pages are also downloaded. See [Considerations when using the Site Snapshot Tool](doc:create-a-site-snapshot#considerations-using-site-snapshot) for recursion considerations.
+      retrSymlinks:
+        type: boolean
+        description: |
+          Ignore symbolic links when performing a recursive download, and download the link targets instead, unless the target is a directory.
+      timeOut:
+        type: integer
+        description: |
+          Don't allow DNS lookups, connection attempts, or read idle times to exceed a specific number of seconds.
+      timestamping:
+        type: boolean
+        description: |
+          Only include files if they're newer than any files that were previously downloaded.
+      urls:
+        type: array
+        description: |
+          Site Snapshot takes a snapshot of the specified URLs.
+        items:
+          type: string
+  cpcodeId:
+    type: integer
+    description: |
+      A CP code assigned to the group, and used to identify requests to a specific upload directory. The CP code serves as the root for upload directory. This is also referred to as the CP code root.
+  dayOfMonth:
+    type: string
+    description: |
+      Your scheduled snapshot runs on the day specified. This value uses standard cron time syntax. Valid options are digits between `1` and `31`, or `*` to run every day.
+  dayOfWeek:
+    type: string
+    description: |
+      Your scheduled snapshot runs on a specific day of the week. This value uses standard cron time syntax. Valid options are digits up to `6`, with `0` starting at Sunday, or `*` to run every day.
+  executeNow:
+    type: boolean
+    description: |
+      Set this to `true` to create a snapshot now, or `false` to use your defined schedule.
+  hour:
+    type: string
+    description: |
+      Your scheduled snapshot runs on the hour specified. This value uses standard cron time syntax. Valid options are digits up to `24`, or `*` to run every hour.
+  lastEnd:
+    type: string
+    description: |
+      The time this snapshot completed.
+  lastStart:
+    type: string
+    description: |
+      The most recent start time for this snapshot.
+  minute:
+    type: string
+    description: |
+      Your scheduled snapshot runs on the minute specified. This value uses standard cron time syntax. Valid options are digits up to `59`, or `*` to run every minute.
+  month:
+    type: string
+    description: |
+      Your scheduled snapshot runs on the month specified. This value uses standard cron time syntax. Valid options are digits between `1` and `12`, or `*` to run every month.
+  scheduled:
+    type: boolean
+    description: |
+      Set this to `true` use your defined schedule, or `false` to disable the schedule.
+  snapshotId:
+    type: integer
+    description: |
+      The unique identifier for each snapshot.
+  snapshotName:
+    type: string
+    description: |
+      Name associated with each snapshot.
+  status:
+    type: string
+    description: |
+      Displays the status of your Site Snapshot. These are the available status messages: `WAITING`, `OK`, `ERROR`, `INPROGRESS`, `ERROR_CONFIG`, `LIMITS_ERROR`, `AUTH_ERROR`, `MAX_RETRY_ERROR`, `DNS_FAILURE`, `CONNECT_FAILURE`, `CONNECT_TIMEOUT`, AND `REQUEST_TIMEOUT`.
+    enum:
+    - WAITING
+    - OK
+    - ERROR
+    - INPROGRESS
+    - ERROR_CONFIG
+    - LIMITS_ERROR
+    - AUTH_ERROR
+    - MAX_RETRY_ERROR
+    - DNS_FAILURE
+    - CONNECT_FAILURE
+    - CONNECT_TIMEOUT
+    - REQUEST_TIMEOUT
+  wizard:
+    type: boolean
+    description: |
+      When set to `true`, Site Snapshot uses the `command` configuration. When set to `false`, Site Snapshot uses the `commandConfig` option.

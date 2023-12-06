@@ -1,0 +1,46 @@
+openapi: 3.0.0
+info:
+  title: Sparklines
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/alerts/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: Sparklines.yaml
+paths:
+  /sparklines:
+    get:
+      operationId: get-sparklines
+      summary: List sparklines
+      tags:
+      - Sparklines
+      description: |
+        Lists _sparklines_, reports that plot anomalies that trigger firings over a time series. Each sparkline this operation lists corresponds to an alert definition. Specify more than one alert identifier to gather related data from different alerts for potential use in overlays, for example one sparkline to identify too much traffic, and another for too little traffic. Note that sparklines based on adaptive alerts provide observed data for both `anomalies` and the full range of `points`. Sparklines based on static alerts only provide observed data for `anomalies`, and the `points` simply define the range of the time series without any observed non-anomalous data.
+      parameters:
+      - $ref: parameters/definitionIds-query.yaml
+      - $ref: parameters/duration-query.yaml
+      - $ref: parameters/inclRange-query.yaml
+      - $ref: parameters/points-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides the set of sparklines.
+          content:
+            application/json:
+              example:
+                $ref: examples/sparklines-get-200.json
+              schema:
+                $ref: schemas/sparklines.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml

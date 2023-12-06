@@ -1,0 +1,134 @@
+type: object
+description: |-
+  Provides log file upload metrics for streams.
+  
+x-akamai:
+  file-path: schemas/StreamsMetrics.yaml
+properties:
+  fileUploadMetrics:
+    type: array
+    description: |
+      Provides detailed log file upload metrics for streams.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - aggregationTime
+      - streamId
+      - successUploadsCount
+      - failedUploadAttempts
+      properties:
+        aggregationTime:
+          type: string
+          description: |
+            The start date and time of the metrics aggregation time interval in the ISO 8601 format. For example, for an `aggregationInterval` set to `FIVE_MINUTE`, `aggregationTime` returns `2022-05-10T10:05:00` for metrics between `2022-05-10T10:05:00` and `2022-05-10T10:09:59`.
+          format: date-time
+        failedUploadAttempts:
+          type: array
+          description: |
+            Lists the upload `errorCount` per specific `errorCode`.
+          items:
+            required:
+            - errorCode
+            - errorCount
+            properties:
+              errorCode:
+                type: string
+                description: |
+                  The upload error code returned by the stream.
+              errorCount:
+                type: integer
+                description: |
+                  The number of occurences of the error code.
+        latencyBuckets:
+          type: array
+          description: |
+            Delivery buckets that specify the number of records the logging server delivered to the Akamai upload server within a `latencyInSeconds` range.
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - latencyInSeconds
+            - recordsCount
+            properties:
+              latencyInSeconds:
+                type: integer
+                description: |
+                  The latency for record delivery in seconds. The number is the minimum value in a latency range, for example, `60` indicates latency between `60` and `120` seconds.
+                enum:
+                - 0
+                - 30
+                - 60
+                - 120
+                - 300
+              recordsCount:
+                type: integer
+                description: |
+                  The number of records delivered within the specified latency range.
+        recordsAttemptedUpload:
+          type: integer
+          description: |
+            The total number of log records attempted to upload.
+          minimum: 0
+        recordsFailedUpload:
+          type: integer
+          description: |
+            The number of log records that failed to upload.
+          minimum: 0
+        streamId:
+          type: integer
+          description: |
+            Uniquely identifies the stream you want to view metrics for.
+        successUploadsCount:
+          type: integer
+          description: |
+            The number of successful log uploads in the aggregation time interval.
+          minimum: 0
+        uploadBuckets:
+          type: array
+          description: |
+            Upload buckets specyfing the number of records delivered from the Akamai upload server to the client-defined sink with an upload time.
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - uploadTimeInMilliseconds
+            - recordsCount
+            properties:
+              recordsCount:
+                type: integer
+                description: |
+                  The number of records uploaded during the `uploadTimeInMilliseconds`. This is the minimum value in a range, for example, `60` indicates between `60` and `120` records.
+                minimum: 0
+              uploadTimeInMilliseconds:
+                type: integer
+                description: |
+                  The upload time for record delivery in milliseconds. The number is the minimum value in a time range, for example, `120` indicates latency between `120` and `300` seconds.
+                enum:
+                - 0
+                - 30
+                - 60
+                - 120
+                - 300
+                - 600
+                - 1800
+        uploadedBytes:
+          type: integer
+          description: |
+            The volume of uploaded data in bytes.
+          minimum: 0
+  totalErrorCount:
+    type: integer
+    description: |
+      The total number log upload failures between the `start` and `end` date.
+    minimum: 0
+  totalSuccessCount:
+    type: integer
+    description: |
+      The total number of successful log uploads between the `start` and `end` date.
+    minimum: 0
+  totalUploadCount:
+    type: integer
+    description: |
+      The total number of log uploads between the `start` and `end` date.
+    minimum: 0

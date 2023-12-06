@@ -1,0 +1,2217 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Fast Purge API",
+    "url": "https://techdocs.akamai.com/purge-cache/reference"
+  },
+  "info": {
+    "title": "Akamai: Fast Purge API",
+    "version": "1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/delete/cpcode/{network}": {
+      "post": {
+        "description": "Deletes content on the selected CP code for the selected `network`. In most cases, you should [invalidate](https://techdocs.akamai.com/purge-cache/reference/invalidate-cpcode) rather than delete content. Invalidation keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable.",
+        "operationId": "post-delete-cpcode",
+        "summary": "Delete by CP code",
+        "tags": [
+          "CP code"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Fast Purge API",
+          "url": "https://techdocs.akamai.com/purge-cache/reference/post-delete-cpcode"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "objects": [
+                  12345,
+                  98765
+                ]
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Specifies a list of CP codes to invalidate or delete.",
+                "type": "object",
+                "required": [
+                  "objects"
+                ],
+                "properties": {
+                  "objects": {
+                    "description": "For CP code-based operations, an array of the CP codes you want to purge.",
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/post-cpcode.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful POST of a purge request.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Request accepted",
+                  "estimatedSeconds": 5,
+                  "httpStatus": 201,
+                  "purgeId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden request.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "http://fpj-test.bad-ideas2.org/",
+                  "httpStatus": 403,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "unauthorized arl"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "",
+                  "httpStatus": 429,
+                  "rateLimit": 300,
+                  "rateLimitCurrentRequestSize": 5,
+                  "rateLimitRemaining": 1,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "CPCODE Rate Limit exceeded"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "If problem persists over multiple requests, please contact Customer Care",
+                  "httpStatus": 500,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "internal error"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "__Enum__ The network on which you want to invalidate or delete content, either `staging` or the default `production` network. If omitting this optional parameter, also omit any trailing slash from the shortened URL.",
+          "example": "{{network}}",
+          "in": "path",
+          "name": "network",
+          "required": true,
+          "schema": {
+            "default": "production",
+            "example": "production",
+            "type": "string",
+            "enum": [
+              "staging",
+              "production"
+            ]
+          },
+          "x-akamai": {
+            "file-path": "parameters/network-path.yaml"
+          }
+        }
+      ]
+    },
+    "/delete/tag/{network}": {
+      "post": {
+        "description": "Deletes content on the selected set of cache tags for the selected `network`. In most cases, you should [invalidate](https://techdocs.akamai.com/purge-cache/reference/invalidate-tag) rather than delete content. Invalidation keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable.",
+        "operationId": "post-delete-tag",
+        "summary": "Delete by cache tag",
+        "tags": [
+          "Cache tag"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Fast Purge API",
+          "url": "https://techdocs.akamai.com/purge-cache/reference/post-delete-tag"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "objects": [
+                  "black-friday",
+                  "electronics",
+                  "laptops",
+                  "tablets"
+                ]
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Specifies a list of cache tags to invalidate or delete.",
+                "type": "object",
+                "required": [
+                  "objects"
+                ],
+                "properties": {
+                  "objects": {
+                    "description": "An array of cache tag strings you want to purge.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/post-tag.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful POST of a purge request.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Request accepted",
+                  "estimatedSeconds": 5,
+                  "httpStatus": 201,
+                  "purgeId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden request.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "http://fpj-test.bad-ideas2.org/",
+                  "httpStatus": 403,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "unauthorized arl"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "",
+                  "httpStatus": 429,
+                  "rateLimit": 5000,
+                  "rateLimitCurrentRequestSize": 45,
+                  "rateLimitRemaining": 34,
+                  "supportId": "edtp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "TAG Rate Limit exceeded"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "If problem persists over multiple requests, please contact Customer Care",
+                  "httpStatus": 500,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "internal error"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "__Enum__ The network on which you want to invalidate or delete content, either `staging` or the default `production` network. If omitting this optional parameter, also omit any trailing slash from the shortened URL.",
+          "example": "{{network}}",
+          "in": "path",
+          "name": "network",
+          "required": true,
+          "schema": {
+            "default": "production",
+            "example": "production",
+            "type": "string",
+            "enum": [
+              "staging",
+              "production"
+            ]
+          },
+          "x-akamai": {
+            "file-path": "parameters/network-path.yaml"
+          }
+        }
+      ]
+    },
+    "/delete/url/{network}": {
+      "post": {
+        "description": "Deletes content on the selected URL or ARL  for the selected `network`.  URLs and ARLs can be submitted in the same request. In most cases, you should [invalidate](https://techdocs.akamai.com/purge-cache/reference/invalidate-url) rather than delete content. Invalidation keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable.",
+        "operationId": "post-delete-url",
+        "summary": "Delete by URL or ARL",
+        "tags": [
+          "URL/ARL"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Fast Purge API",
+          "url": "https://techdocs.akamai.com/purge-cache/reference/post-delete-url"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "objects": [
+                  "https://foo1.bar.com/some/path",
+                  "http://foo2.bar.com/some/other/path"
+                ]
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Specifies a list of URLs or ARLs to invalidate or delete. You can submit URLs and ARLs in the same purge request.",
+                "type": "object",
+                "required": [
+                  "objects"
+                ],
+                "properties": {
+                  "objects": {
+                    "description": "Lists URLs or ARLs to purge. Purges content for both `http` and `https` schemes.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/post-url.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful POST of a purge request.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Request accepted",
+                  "estimatedSeconds": 5,
+                  "httpStatus": 201,
+                  "purgeId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden request.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "http://fpj-test.bad-ideas2.org/",
+                  "httpStatus": 403,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "unauthorized arl"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "",
+                  "httpStatus": 429,
+                  "rateLimit": 10000,
+                  "rateLimitCurrentRequestSize": 110,
+                  "rateLimitRemaining": 94,
+                  "supportId": "edup-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "URL Rate Limit exceeded"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "If problem persists over multiple requests, please contact Customer Care",
+                  "httpStatus": 500,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "internal error"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "__Enum__ The network on which you want to invalidate or delete content, either `staging` or the default `production` network. If omitting this optional parameter, also omit any trailing slash from the shortened URL.",
+          "example": "{{network}}",
+          "in": "path",
+          "name": "network",
+          "required": true,
+          "schema": {
+            "default": "production",
+            "example": "production",
+            "type": "string",
+            "enum": [
+              "staging",
+              "production"
+            ]
+          },
+          "x-akamai": {
+            "file-path": "parameters/network-path.yaml"
+          }
+        }
+      ]
+    },
+    "/invalidate/cpcode/{network}": {
+      "post": {
+        "description": "Invalidates content on the selected CP code for the selected `network`. You should consider invalidating content by default. This keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable.",
+        "operationId": "post-invalidate-cpcode",
+        "summary": "Invalidate by CP code",
+        "tags": [
+          "CP code"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Fast Purge API",
+          "url": "https://techdocs.akamai.com/purge-cache/reference/post-invalidate-cpcode"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "objects": [
+                  12345,
+                  98765
+                ]
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Specifies a list of CP codes to invalidate or delete.",
+                "type": "object",
+                "required": [
+                  "objects"
+                ],
+                "properties": {
+                  "objects": {
+                    "description": "For CP code-based operations, an array of the CP codes you want to purge.",
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/post-cpcode.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Request accepted",
+                  "estimatedSeconds": 5,
+                  "httpStatus": 201,
+                  "purgeId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized request.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "http://fpj-test.bad-ideas2.org/",
+                  "httpStatus": 403,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "unauthorized arl"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "",
+                  "httpStatus": 429,
+                  "rateLimit": 300,
+                  "rateLimitCurrentRequestSize": 5,
+                  "rateLimitRemaining": 1,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "CPCODE Rate Limit exceeded"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "If problem persists over multiple requests, please contact Customer Care",
+                  "httpStatus": 500,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "internal error"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "__Enum__ The network on which you want to invalidate or delete content, either `staging` or the default `production` network. If omitting this optional parameter, also omit any trailing slash from the shortened URL.",
+          "example": "{{network}}",
+          "in": "path",
+          "name": "network",
+          "required": true,
+          "schema": {
+            "default": "production",
+            "example": "production",
+            "type": "string",
+            "enum": [
+              "staging",
+              "production"
+            ]
+          },
+          "x-akamai": {
+            "file-path": "parameters/network-path.yaml"
+          }
+        }
+      ]
+    },
+    "/invalidate/tag/{network}": {
+      "post": {
+        "description": "Invalidates content on the selected set of cache tags for the selected `network`. You should consider invalidating content by default. This keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable.",
+        "operationId": "post-invalidate-tag",
+        "summary": "Invalidate by cache tag",
+        "tags": [
+          "Cache tag"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Fast Purge API",
+          "url": "https://techdocs.akamai.com/purge-cache/reference/post-invalidate-tag"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "objects": [
+                  "black-friday",
+                  "electronics",
+                  "laptops",
+                  "tablets"
+                ]
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Specifies a list of cache tags to invalidate or delete.",
+                "type": "object",
+                "required": [
+                  "objects"
+                ],
+                "properties": {
+                  "objects": {
+                    "description": "An array of cache tag strings you want to purge.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/post-tag.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful POST of a purge request.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Request accepted",
+                  "estimatedSeconds": 5,
+                  "httpStatus": 201,
+                  "purgeId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden request.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "http://fpj-test.bad-ideas2.org/",
+                  "httpStatus": 403,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "unauthorized arl"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "",
+                  "httpStatus": 429,
+                  "rateLimit": 5000,
+                  "rateLimitCurrentRequestSize": 45,
+                  "rateLimitRemaining": 34,
+                  "supportId": "edtp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "TAG Rate Limit exceeded"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "If problem persists over multiple requests, please contact Customer Care",
+                  "httpStatus": 500,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "internal error"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "__Enum__ The network on which you want to invalidate or delete content, either `staging` or the default `production` network. If omitting this optional parameter, also omit any trailing slash from the shortened URL.",
+          "example": "{{network}}",
+          "in": "path",
+          "name": "network",
+          "required": true,
+          "schema": {
+            "default": "production",
+            "example": "production",
+            "type": "string",
+            "enum": [
+              "staging",
+              "production"
+            ]
+          },
+          "x-akamai": {
+            "file-path": "parameters/network-path.yaml"
+          }
+        }
+      ]
+    },
+    "/invalidate/url/{network}": {
+      "post": {
+        "description": "Invalidates content on the selected URL or ARL for the selected `network`. You should consider invalidating content by default. This keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable. URLs and ARLs can be submitted in the same request.",
+        "operationId": "post-invalidate-url",
+        "summary": "Invalidate by URL or ARL",
+        "tags": [
+          "URL/ARL"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Fast Purge API",
+          "url": "https://techdocs.akamai.com/purge-cache/reference/post-invalidate-url"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "objects": [
+                  "https://foo1.bar.com/some/path",
+                  "http://foo2.bar.com/some/other/path"
+                ]
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Specifies a list of URLs or ARLs to invalidate or delete. You can submit URLs and ARLs in the same purge request.",
+                "type": "object",
+                "required": [
+                  "objects"
+                ],
+                "properties": {
+                  "objects": {
+                    "description": "Lists URLs or ARLs to purge. Purges content for both `http` and `https` schemes.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/post-url.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful POST of a purge request.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Request accepted",
+                  "estimatedSeconds": 5,
+                  "httpStatus": 201,
+                  "purgeId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden request.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "http://fpj-test.bad-ideas2.org/",
+                  "httpStatus": 403,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "unauthorized arl"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "",
+                  "httpStatus": 429,
+                  "rateLimit": 10000,
+                  "rateLimitCurrentRequestSize": 110,
+                  "rateLimitRemaining": 94,
+                  "supportId": "edup-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "URL Rate Limit exceeded"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "If problem persists over multiple requests, please contact Customer Care",
+                  "httpStatus": 500,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "internal error"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "type": "object",
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "__Enum__ The network on which you want to invalidate or delete content, either `staging` or the default `production` network. If omitting this optional parameter, also omit any trailing slash from the shortened URL.",
+          "example": "{{network}}",
+          "in": "path",
+          "name": "network",
+          "required": true,
+          "schema": {
+            "default": "production",
+            "example": "production",
+            "type": "string",
+            "enum": [
+              "staging",
+              "production"
+            ]
+          },
+          "x-akamai": {
+            "file-path": "parameters/network-path.yaml"
+          }
+        }
+      ]
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/ccu/v3"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+type: object
+description: |-
+  Provides response data for a specific user.
+  
+x-akamai:
+  file-path: schemas/userDetail.yaml
+additionalProperties: false
+required:
+- userId
+- username
+- userStatus
+- deviceCount
+- createdDate
+properties:
+  aliases:
+    type: array
+    description: |
+      The user's alternate names.
+    minItems: 0
+    items:
+      $ref: userAlias.yaml
+  createdDate:
+    description: |
+      ISO 8601 timestamp marking when the user account was created.
+    $ref: common-definitions.yaml#/definitions/createdDate
+  deviceCount:
+    type: integer
+    description: |
+      The number of authentication devices enrolled by the user in Akamai MFA. The user can enroll and use a set of authentication devices. The supported device types include the following: `PUSH`. Any device that supports sending push notifications, for example, tablets and smartphones. `PHONE_ONLY`. A non-smartphone mobile device that supports only text messages and calls. `SECURITY_KEY`. A FIDO2 WebAuthn security key such as a YubiKey or Akamai MFA phone security key. `TOTP`. A hardware device that generates one-time passcodes. `HARDWARE_TOKEN`. A security device that generates one-time passcodes.
+    minimum: 0
+  devices:
+    type: array
+    description: |
+      Authentication devices the user enrolled in Akamai MFA.
+    minItems: 0
+    items:
+      $ref: device.yaml
+  email:
+    type: string
+    description: |
+      The user's email address.
+  firstName:
+    type: string
+    description: |
+      The user's first name.
+  groups:
+    type: array
+    description: |
+      Lists the user's group memberships.
+    minItems: 0
+    items:
+      $ref: userGroup.yaml
+  importSource:
+    description: |
+      The imported user's provisioning source. A `null` value marks manually imported users.
+    nullable: true
+    $ref: userSource.yaml
+  lastName:
+    type: string
+    description: |
+      The user's last name.
+  modifiedDate:
+    description: |
+      ISO 8601 timestamp marking when the user account was last modified.
+    $ref: common-definitions.yaml#/definitions/modifiedDate
+  userId:
+    description: |
+      A unique identifier for each user account.
+    $ref: common-definitions.yaml#/definitions/nonEmptyString
+  userStatus:
+    description: |
+      The status of the user account, either `UNENROLLED`, `ACTIVE`, `DEVICES_DISABLED`, or `PROVISIONING_DISABLED`. Refer to [API concepts](ref:mfa-concepts) to learn more about user account status.
+    $ref: user-enum-definitions.yaml#/definitions/status
+  username:
+    description: |-
+      The user's username. The username is unique for the tenant.
+      
+    $ref: common-definitions.yaml#/definitions/nonEmptyString

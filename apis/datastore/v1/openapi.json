@@ -1,0 +1,797 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Iot Edge Connect Message Store API",
+    "url": "https://techdocs.akamai.com/iot-edge-connect-msg-store/reference"
+  },
+  "info": {
+    "title": "Akamai: Iot Edge Connect Message Store API",
+    "version": "1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/datastore": {
+      "get": {
+        "description": "Returns the names of objects stored in your data set in alphabetical order. You can use the `fileName` value from the response as object.",
+        "operationId": "get-datastore",
+        "summary": "List object keys",
+        "tags": [
+          "Objects"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Iot Edge Connect Message Store API",
+          "url": "https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/get-datastore"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Provides basic information about the objects stored in your datastore.",
+                  "type": "object",
+                  "required": [
+                    "fileName",
+                    "size"
+                  ],
+                  "properties": {
+                    "fileName": {
+                      "description": "The name under which the object is stored in the dataset. You can use the `fileName` value from the response as object keys for the [Get an object](https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/get-datastore-key), [Delete an object](https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/delete-datastore-key), and [Get object metadata](https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/delete-datastore) operations.",
+                      "type": "string"
+                    },
+                    "size": {
+                      "description": "The size of the object in bytes.",
+                      "type": "integer"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/bulk-list.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "fileName": "AAX.dat",
+                    "size": 864421
+                  },
+                  {
+                    "fileName": "ABD.dat",
+                    "size": 463422
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "Returns messages with keys greater or equal to `from_name` from all available messages in alphabetical order.",
+            "example": "{{from_name}}",
+            "in": "query",
+            "name": "from_name",
+            "schema": {
+              "example": "AAX",
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/from_name-query.yaml"
+            }
+          },
+          {
+            "description": "Limits the number of objects in the response. By default, you receive 1000 objects, and the maximum value is `10000`.",
+            "example": "{{limit}}",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 1000,
+              "example": 100,
+              "maximum": 10000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/limit-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "description": "Deletes all objects stored in a data set. If you want to purge the cache every time after deleting or modifying objects, enable the purge option in the [Message Store caching](https://techdocs.akamai.com/property-mgr/docs/msg-store-caching) behavior in your property.",
+        "operationId": "delete-datastore",
+        "summary": "Delete all objects",
+        "tags": [
+          "Objects"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Iot Edge Connect Message Store API",
+          "url": "https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/delete-datastore"
+        },
+        "responses": {
+          "204": {
+            "description": "Messages in the data set have been successfully deleted.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/datastore/archive": {
+      "put": {
+        "description": "Uploads contents of objects as a compressed ZIP file to a specified data set. Set the `Content-Type` header to specify the media type for every object. You can use a MD5 or SHA256 hash as the `ETag` header to optimize caching. Use the `Expires` header to specify the time after when the object expires and is automatically deleted. With this operation, you can also set custom headers for the specified object. See [Add custom headers](https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/add-custom-headers). In the response, this operation returns the `Content-MD5` and `Content-SHA256` headers with an MD5 and SHA256 digest of the uploaded contents. Get and store the `X-Akamai-IEC-RequestId` header containing a request ID of the compressed ZIP file you upload.",
+        "operationId": "put-datastore-archive",
+        "summary": "Upload bulk objects",
+        "tags": [
+          "Bulk objects"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Iot Edge Connect Message Store API",
+          "url": "https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/put-datastore-archive"
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "description": "The contents of the file.",
+                    "type": "array",
+                    "items": {
+                      "format": "binary",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Zip has been successfully uploaded.",
+            "content": {
+              "*/*": {}
+            },
+            "headers": {
+              "Content-MD5": {
+                "description": "MD5 of the uploaded zip file content.",
+                "schema": {
+                  "example": "1a79a4d60de6718e8e5b326e338ae533",
+                  "type": "string"
+                }
+              },
+              "Content-SHA256": {
+                "description": "SHA256 of the uploaded zip file content.",
+                "schema": {
+                  "example": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15",
+                  "type": "string"
+                }
+              },
+              "X-Akamai-IEC-RequestId": {
+                "description": "Uploaded zip file request ID.",
+                "schema": {
+                  "example": "7445deaf-cc36-4897-b494-38593ab96839",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Provided archive was corrupted or metadata is invalid. For example, `Content-Length` too long.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "Sets a media type of the object.",
+            "example": "{{Content-Type}}",
+            "in": "header",
+            "name": "Content-Type",
+            "schema": {
+              "default": "application/octet-stream",
+              "example": "image/png",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/Content-Type-header.yaml"
+            }
+          },
+          {
+            "description": "Sets expiration date on which the file will be automatically deleted.",
+            "example": "{{Expires}}",
+            "in": "header",
+            "name": "Expires",
+            "schema": {
+              "example": "Wed, 21 Oct 2015 07:28:00 GMT",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/Expires-header.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/datastore/archive/{requestId}": {
+      "get": {
+        "description": "Check the status of processing a ZIP file identified by request key. If you don't have the `X-Akamai-IEC-RequestId` value, run the [Upload bulk objects](https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/put-datastore-upload-key) operation. See [Bulk upload status](https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/bulk-upload-status). In the response, this operation returns the status of ZIP processing, the `size` of the object in bytes, and the `md5` and `sha256` digest of the uploaded contents.",
+        "operationId": "get-datastore-request",
+        "summary": "Check bulk upload status",
+        "tags": [
+          "Bulk objects"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Iot Edge Connect Message Store API",
+          "url": "https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/get-datastore-request"
+        },
+        "responses": {
+          "200": {
+            "description": "Request has succeeded and body contains full document.",
+            "content": {
+              "application/zip": {
+                "example": {
+                  "md5": "c0197d1fcdee35dff357221148b8cd98",
+                  "requestId": "5c3a116a-0683-4919-959d-59246e3a77d6",
+                  "sha256": "28fbe3b44159338aa9198185fd7cfeb6d064d008ab1453faa628bb0bb49a9545",
+                  "size": 451586,
+                  "status": "INITIALIZED"
+                },
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "headers": {
+              "Content-Type": {
+                "description": "Media type of the object. Can be set during the [Upload an object](https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/put-datastore-upload-key) request.",
+                "required": false,
+                "schema": {
+                  "default": "application/octet-stream",
+                  "example": "image/png",
+                  "type": "string"
+                }
+              },
+              "X-AK-Meta-*": {
+                "description": "Custom header that was set during upload.",
+                "required": false,
+                "schema": {
+                  "example": "X-AK-Meta-Permission",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Request ID as returned in the response in the `X-Akamai-IEC-RequestId` header.",
+          "example": "{{requestId}}",
+          "in": "path",
+          "name": "requestId",
+          "required": true,
+          "schema": {
+            "example": "7445deaf-cc36-4897-b494-38593ab96839",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/requestId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/datastore/upload/{key}": {
+      "put": {
+        "description": "Uploads an object under the specified key and sets the object's headers. In case of simultaneous uploads to the same key, the upload with the last written byte wins. Set the `Content-Type` header to specify the media type for the object. You can use an MD5 or SHA256 hash as the `ETag` header for this version of the object to optimize caching. Use the `Expires` header to specify the time after when the object expires and is automatically deleted. With this operation, you can also set custom headers for the specified object. See [Add custom headers](https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/add-custom-headers).",
+        "operationId": "put-datastore-upload-key",
+        "summary": "Upload an object",
+        "tags": [
+          "Objects"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Iot Edge Connect Message Store API",
+          "url": "https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/put-datastore-upload-key"
+        },
+        "requestBody": {
+          "content": {
+            "application/octet-stream": {
+              "example": "Value to store.",
+              "schema": {
+                "format": "binary",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message has been successfully uploaded and replaced existing object.",
+            "content": {
+              "*/*": {}
+            },
+            "headers": {
+              "Content-MD5": {
+                "description": "MD5 of the uploaded contents.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-SHA256": {
+                "description": "SHA256 of the uploaded contents.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "description": "Media type of the object.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Message has been successfully uploaded.",
+            "content": {
+              "*/*": {}
+            },
+            "headers": {
+              "Content-MD5": {
+                "description": "MD5 of the uploaded contents.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-SHA256": {
+                "description": "SHA256 of the uploaded contents.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "description": "Media type of the object.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Provided metadata was invalid (e.g. Content-Type too long).",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "Tag the response header for GET operations. For example, `X-AK-Meta-Permission: Read`, where the `Permission` segment is the tag. You can define parameters for up to 10 custom tags, each up to 128 characters long, with corresponding values up to 64 characters long.",
+            "example": "{{X-AK-Meta-*}}",
+            "in": "header",
+            "name": "X-AK-Meta-*",
+            "schema": {
+              "example": "Read",
+              "maxLength": 64,
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/X-AK-Meta-header.yaml"
+            }
+          },
+          {
+            "description": "Sets a media type of the object.",
+            "example": "{{Content-Type}}",
+            "in": "header",
+            "name": "Content-Type",
+            "schema": {
+              "default": "application/octet-stream",
+              "example": "image/png",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/Content-Type-header.yaml"
+            }
+          },
+          {
+            "description": "Sets entity tag.",
+            "example": "{{ETag}}",
+            "in": "header",
+            "name": "ETag",
+            "schema": {
+              "example": "686897696a7c876b7e",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/ETag-header.yaml"
+            }
+          },
+          {
+            "description": "Sets expiration date on which the file will be automatically deleted.",
+            "example": "{{Expires}}",
+            "in": "header",
+            "name": "Expires",
+            "schema": {
+              "example": "Wed, 21 Oct 2015 07:28:00 GMT",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/Expires-header.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The unique key value for an object stored in the data set. It can be up to 64 characters long.",
+          "example": "{{key}}",
+          "in": "path",
+          "name": "key",
+          "required": true,
+          "schema": {
+            "example": "AAX.dat",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/key-path.yaml"
+          }
+        }
+      ]
+    },
+    "/datastore/{key}": {
+      "get": {
+        "description": "Returns the contents of the object stored under the specified key in your data set. If you don't already have the key value for the object, run the [List object keys](https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/get-datastore) operation, select a `fileName` from the response object, and use it as the `key` in your request. You can also use the `Range` header to indicate the part of the object that you want to receive. In the response, this operation returns the `Content-Type` header for the object and any custom `X-AK-Meta-*` headers you set with the [Upload an object](https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/put-datastore-upload-key) operation.",
+        "operationId": "get-datastore-key",
+        "summary": "Get an object",
+        "tags": [
+          "Objects"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Iot Edge Connect Message Store API",
+          "url": "https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/get-datastore-key"
+        },
+        "responses": {
+          "200": {
+            "description": "Request has succeeded and body contains full document.",
+            "content": {
+              "*/*": {}
+            },
+            "headers": {
+              "Content-Type": {
+                "description": "Media type of the object. Can be set during the [Upload an object](https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/put-datastore-upload-key) request.",
+                "schema": {
+                  "default": "application/octet-stream",
+                  "type": "string"
+                }
+              },
+              "X-AK-Meta-*": {
+                "description": "Custom header that was set during upload.",
+                "required": false,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "206": {
+            "description": "Request has succeeded and body contains the requested ranges of the document.",
+            "content": {
+              "*/*": {}
+            },
+            "headers": {
+              "Content-Type": {
+                "description": "Media type of the object. Can be set during the [Upload an object](https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/put-datastore-upload-key) request.",
+                "schema": {
+                  "default": "application/octet-stream",
+                  "type": "string"
+                }
+              },
+              "X-AK-Meta-*": {
+                "description": "Custom header that was set during upload.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Condition from the request matched document's metadata (ETag or Last Modified date).",
+            "content": {
+              "*/*": {}
+            }
+          },
+          "404": {
+            "description": "Message does not exist.",
+            "content": {
+              "*/*": {}
+            }
+          },
+          "416": {
+            "description": "Server cannot serve the requested ranges. Either the document doesn't contain requested range or multiple ranges were requested.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "Makes the request conditional. Message downloads only if the condition fails - data has been last modified after the provided date.",
+            "example": "{{If-Modified-Since}}",
+            "in": "header",
+            "name": "If-Modified-Since",
+            "schema": {
+              "example": "Wed, 21 Oct 2015 07:28:00 GMT",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/If-Modified-Since-header.yaml"
+            }
+          },
+          {
+            "description": "Makes the request conditional. Message downloads only if the condition fails - data has different ETag than the provided one.",
+            "example": "{{If-None-Match}}",
+            "in": "header",
+            "name": "If-None-Match",
+            "schema": {
+              "example": "686897696a7c876b7e",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/If-None-Match-header.yaml"
+            }
+          },
+          {
+            "description": "Indicates the part of a document that the server should return. Only single range is supported.",
+            "example": "{{Range}}",
+            "in": "header",
+            "name": "Range",
+            "schema": {
+              "example": "bytes=0-499",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/Range-header.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "description": "Removes the object stored under the specified key from your data set. If you don't already have the key value for the object, run the [List object keys](https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/get-datastore) operation, select a `fileName` from the response object, and use it as and use it as the `key` in your request.",
+        "operationId": "delete-datastore-key",
+        "summary": "Delete an object",
+        "tags": [
+          "Objects"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Iot Edge Connect Message Store API",
+          "url": "https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/delete-datastore-key"
+        },
+        "responses": {
+          "204": {
+            "description": "Message has been successfully deleted.",
+            "content": {
+              "*/*": {}
+            }
+          },
+          "404": {
+            "description": "Message does not exist.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "head": {
+        "description": "Returns the object's metadata without downloading its contents. You can view the `Content-Type`, `Content-MD5`, `Content-SHA256`, and `ETag` headers set for the object. Use the MD5 hash and SHA256 values to verify your upload, and the `Last-Updated` timestamp to optimize caching. You can also view the custom `X-AK-Meta-*` headers you set with the Upload an object operation.",
+        "operationId": "head-datastore-key",
+        "summary": "Get object metadata",
+        "tags": [
+          "Objects"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Iot Edge Connect Message Store API",
+          "url": "https://techdocs.akamai.com/iot-edge-connect-msg-store/reference/head-datastore-key"
+        },
+        "responses": {
+          "200": {
+            "description": "Metadata of the object.",
+            "content": {
+              "*/*": {}
+            },
+            "headers": {
+              "Content-MD5": {
+                "description": "MD5 of the stored object.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-SHA256": {
+                "description": "SHA256 of the stored object.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "description": "Content Type which should be returned during download.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "ETag": {
+                "description": "Updates entity tag.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Message does not exist.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "Makes the request conditional. Message downloads only if the condition fails - data has been last modified after the provided date.",
+            "example": "{{If-Modified-Since}}",
+            "in": "header",
+            "name": "If-Modified-Since",
+            "schema": {
+              "example": "Wed, 21 Oct 2015 07:28:00 GMT",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/If-Modified-Since-header.yaml"
+            }
+          },
+          {
+            "description": "Makes the request conditional. Message downloads only if the condition fails - data has different ETag than the provided one.",
+            "example": "{{If-None-Match}}",
+            "in": "header",
+            "name": "If-None-Match",
+            "schema": {
+              "example": "686897696a7c876b7e",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/If-None-Match-header.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The unique key value for an object stored in the data set. It can be up to 64 characters long.",
+          "example": "{{key}}",
+          "in": "path",
+          "name": "key",
+          "required": true,
+          "schema": {
+            "example": "AAX.dat",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/key-path.yaml"
+          }
+        }
+      ]
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}"
+    }
+  ]
+}

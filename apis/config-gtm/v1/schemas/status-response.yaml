@@ -1,0 +1,42 @@
+type: object
+description: |-
+  Contains information about the condition of the change in the domain's activation. Any change that returns a 200 series response and goes to propagationStatus PENDING, propagates within a few minutes. To query the activation status, run the [Get current status](ref:get-status-current) operation, which returns information about the current condition of the change in the domain's activation.
+  
+x-akamai:
+  file-path: schemas/status-response.yaml
+additionalProperties: false
+properties:
+  changeId:
+    type: string
+    description: |
+      A unique identifier generated when a change occurs to the domain. The maximum length is 36 characters.
+    maxLength: 36
+  links:
+    type: array
+    description: |
+      Specifies the URL path that allows direct navigation to the domain.
+    items:
+      $ref: link.yaml
+  message:
+    type: string
+    description: |
+      A notification generated when a change occurs to the domain. The maximum length is 4000 characters.
+    maxLength: 4000
+  passingValidation:
+    type: boolean
+    description: |
+      Indicates if the domain validates.
+  propagationStatus:
+    type: string
+    description: |
+      Tracks the status of the domain's propagation state. Either `PENDING`, `COMPLETE`, or `DENIED`. A `DENIED` value indicates that the domain configuration is invalid, and doesn't propagate until the validation errors are resolved.
+    enum:
+    - DENIED
+    - PENDING
+    - COMPLETE
+    maxLength: 20
+  propagationStatusDate:
+    type: string
+    description: |
+      An ISO 8601 timestamp indicating when a change occurs to the domain.
+    format: date-time

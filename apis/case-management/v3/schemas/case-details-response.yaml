@@ -1,0 +1,271 @@
+type: object
+description: |-
+  Collects details of the created case.
+  
+x-akamai:
+  file-path: schemas/case-details-response.yaml
+additionalProperties: false
+properties:
+  description:
+    type: string
+    description: |
+      Description of the issue.
+  account:
+    type: object
+    description: |
+      Specifies the account the case was created for.
+    additionalProperties: false
+    properties:
+      accountId:
+        type: string
+        description: |
+          Identifier for the account.
+      accountName:
+        type: string
+        description: |
+          Name of the account.
+  age:
+    type: integer
+    description: |
+      Case age in seconds.
+  alsoNotify:
+    type: array
+    description: |
+      Lists email addresses to send case notifications to.
+    items:
+      type: string
+      description: |
+        Email address to send update notifications to.
+      format: email
+  alternateContact:
+    type: object
+    description: |
+      Specifies the alternate contact data.
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        description: |
+          Full name. It's `null` if the creator didn't provide this data in the request.
+        nullable: true
+      company:
+        type: string
+        description: |
+          Company name. It's `null` if the creator didn't provide this data in the request.
+        nullable: true
+      email:
+        type: string
+        description: |
+          Email address. It's `null` if the creator didn't provide this data in the request.
+        nullable: true
+        format: email
+      phone:
+        type: string
+        description: |
+          Phone number. It's `null` if the creator didn't provide this data in the request.
+        nullable: true
+  areaName:
+    type: string
+    description: |
+      Area name the case refers to. It's `null` for any `categoryId` other than `BILLING` or `BUSINESS_SUPPORT`.
+    nullable: true
+  caseId:
+    type: string
+    description: |
+      Identifier for each case.
+  category:
+    type: object
+    description: |
+      Specifies the case category.
+    additionalProperties: false
+    properties:
+      categoryId:
+        type: string
+        description: |
+          Identifier for the category. The possible options are `SECURITY`, `BUSINESS_SUPPORT`, `PROFESSIONAL_SERVICES`, `BILLING`, or `TECHNICAL`.
+        enum:
+          $ref: categoryId-enum.yaml
+      categoryName:
+        type: string
+        description: |
+          Name of the category.
+  closedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the case was closed. It's `null` for cases with any `status` other than `CLOSED`.
+    nullable: true
+    format: date-time
+  contact:
+    type: object
+    description: |
+      Collects data about the case's creator.
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        description: |
+          Full name.
+      company:
+        type: string
+        description: |
+          Name of the company the user works for. It's `null` if the creator didn't provide this data in the request.
+        nullable: true
+      email:
+        type: string
+        description: |
+          Email address.
+        format: email
+      phone:
+        type: string
+        description: |
+          Phone number. It's `null` if the creator didn't provide this data in the request.
+        nullable: true
+  createdByAccount:
+    type: object
+    description: |
+      Specifies the reseller. 
+    additionalProperties: false
+    properties:
+      accountId:
+        type: string
+        description: |
+          Identifier for the reseller's account. It's `null` if a reseller created the case for a third party.
+        nullable: true
+      accountName:
+        type: string
+        description: |
+          Name of the reseller's account. It's `null` if a reseller created the case for a third party.
+        nullable: true
+  createdDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the case was created.
+    format: date-time
+  customerTrackingNumber:
+    type: string
+    description: |
+      Identifier for a separate customer's support ticket. It's `null` if the creator didn't provide this data in the request.
+    nullable: true
+  links:
+    $ref: hypermedia.yaml
+  modifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the case was last modified.
+    format: date-time
+  nextAction:
+    type: string
+    description: |
+      Specifies who should take the next action. The possible options are the person assigned to the case (`CASE_OWNER`) or a user (`CUSTOMER`). It's `null` for any `categoryId` other than `TECHNICAL`.
+    nullable: true
+    enum:
+    - CASE_OWNER
+    - CUSTOMER
+  parentAccount:
+    type: object
+    description: |
+      Specifies the parent account of the indirect contract the case is associated with.
+    additionalProperties: false
+    properties:
+      accountId:
+        type: string
+        description: |
+          Identifier for the parent account. It's `null` for cases associated with an indirect contract and the `categoryId` is set to `BILLING` or `BUSINESS_SUPPORT`.
+        nullable: true
+      accountName:
+        type: string
+        description: |
+          Name of the parent account. It's `null` for cases associated with an indirect contract and the `categoryId` is set to `BILLING` or `BUSINESS_SUPPORT`.
+        nullable: true
+  partnerTicketNumber:
+    type: string
+    description: |
+      Identifier for a separate reseller's support ticket. It's `null` if the creator didn't provide this data in the request.
+    nullable: true
+  permissions:
+    type: object
+    description: |
+      Specifies your permissions for the case.
+    additionalProperties: false
+    properties:
+      addComments:
+        type: boolean
+        description: |
+          Whether you can add comments to the case.
+      requestClose:
+        type: boolean
+        description: |
+          Whether you can request to close the case.
+      updateCase:
+        type: boolean
+        description: |
+          Whether you can update the case.
+      uploadAttachments:
+        type: boolean
+        description: |
+          Whether you can upload attachments.
+  policyDomainName:
+    type: string
+    description: |
+      Name of the policy domain the case refers to. It's `null` for any `categoryId` other than `SECURITY`.
+    nullable: true
+  problemName:
+    type: string
+    description: |
+      Problem name the case refers to. It's `null` for any `categoryId` other than `TECHNICAL` or `SECURITY`.
+    nullable: true
+  productName:
+    type: string
+    description: |
+      Product name the case refers to. It's `null` for any `categoryId` other than `TECHNICAL` or `SECURITY`.
+    nullable: true
+  productSolutionName:
+    type: string
+    description: |
+      Product solution name the case refers to. It's `null` for any `categoryId` other than `PROFESSIONAL_SERVICES`.
+    nullable: true
+  psPackageName:
+    type: string
+    description: |
+      Professional services package name the case refers to. It's `null` for any `categoryId` other than `PROFESSIONAL_SERVICES`.
+    nullable: true
+  resolvedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the case was resolved. It's `null` for any `status` other than `CLOSED`.
+    nullable: true
+    format: date-time
+  serviceContractId:
+    type: string
+    description: |
+      Identifier for the service contract. It's `null` for any `categoryId` other than `PROFESSIONAL_SERVICE`.
+    nullable: true
+  serviceName:
+    type: string
+    description: |
+      Service name the case refers to. It's `null` for any `categoryId` other than `BILLING` or `BUSINESS_SUPPORT`.
+    nullable: true
+  severity:
+    type: string
+    description: |
+      Severity level of the case.
+  solutionSummary:
+    type: string
+    description: |
+      Solution of the problem. It's `null` for any `status` other than `CLOSED`.
+    nullable: true
+  status:
+    type: string
+    description: |
+      Current status of the case. The possible options are `CREATED`, `ASSIGNED`, `IN_PROGRESS`, `MITIGATED/SOLVED`, or `CLOSED`.
+    enum:
+      $ref: status-enum.yaml
+  subject:
+    type: string
+    description: |
+      Title of the case.
+  timeToInitialResponse:
+    type: integer
+    description: |
+      Time for initial response, in minutes. To learn more about it, see [Service level agreement for initial response](doc:about-case-management#service-level-agreement-for-initial-response). It's `null` until the first communication from Akamai.
+    nullable: true

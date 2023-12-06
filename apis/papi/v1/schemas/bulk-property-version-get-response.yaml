@@ -1,0 +1,104 @@
+id: resource:/descriptors/papi/v1/schemas/GetBulkPropertyVersionResponse.json#
+type: object
+description: |-
+  Encapsulates a set of properties from which to bulk create new versions. See [Bulk Search and Update](ref:bulk-search-and-update) for guidance on this feature.
+  
+x-akamai:
+  file-path: schemas/bulk-property-version-get-response.yaml
+additionalProperties: false
+required:
+- bulkCreateId
+- bulkCreateVersionsStatus
+- bulkCreateVersionSubmitDate
+- bulkCreateVersionUpdateDate
+properties:
+  bulkCreateId:
+    type: integer
+    description: |
+      Identifies each bulk-versioning process.
+    minimum: 1
+  bulkCreateVersionSubmitDate:
+    type: string
+    description: |
+      An ISO 8601 timestamp indicating when the bulk versioning request occurred.
+  bulkCreateVersionUpdateDate:
+    type:
+    - string
+    - 'null'
+    description: |
+      An ISO 8601 timestamp indicating when the bulk versioning request most recently updated with changes to versions' status. The value may be `null` when the bulk version request first occurs.
+  bulkCreateVersionsStatus:
+    type: string
+    description: |
+      Tracks the status of the overall bulk versioning request, either `PENDING`, `IN_PROGRESS`, or `COMPLETE`.
+    enum:
+    - PENDING
+    - COMPLETE
+    - IN_PROGRESS
+  createPropertyVersions:
+    type: array
+    description: |
+      Encapsulates information about each new property version to create.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - propertyId
+      - createFromVersion
+      - createVersionStatus
+      - createVersionSubmitDate
+      - createVersionUpdateDate
+      properties:
+        createFromVersion:
+          type: integer
+          description: |
+            The property version on which to base the new version.
+          minimum: 1
+        createFromVersionEtag:
+          type: string
+          description: |
+            The data digest of the version on which to base the new version. If the digest doesn't match the current state of the version, batch-versioning fails for this property. See [Concurrency control](ref:concurrency-control) for guidance.
+        createVersionStatus:
+          type: string
+          description: |
+            Tracks the status of the versioning request for this property, either `PENDING`, `SUBMITTED`, `IN_PROGRESS`, or `COMPLETE`, indicating success. A `SUBMISSION_ERROR` means the versioning failed, for example, if the `createFromVersionEtag` didn't reflect the version's current state. A value of `INTERRUPTED` indicates a server error.
+          enum:
+          - PENDING
+          - SUBMITTED
+          - IN_PROGRESS
+          - COMPLETE
+          - INTERRUPTED
+          - SUBMISSION_ERROR
+        createVersionSubmitDate:
+          type: string
+          description: |
+            An ISO 8601 timestamp indicating when the request for a new version occurred. Note that this occurs asynchronously, and doesn't match when the overall bulk versioning request occurred.
+        createVersionUpdateDate:
+          type: string
+          description: |
+            An ISO 8601 timestamp indicating when the `createVersionStatus` last updated.
+        etag:
+          type:
+          - string
+          - 'null'
+          description: |
+            A digest identifying a specific property version. When making any subsequent modifications, this ensures the integrity of the newly created version's data. See [Concurrency control](ref:concurrency-control) for guidance. The value may appear as `null` prior to the new version's creation.
+        propertyId:
+          type: string
+          description: |
+            Identifies the property for which to create a new version. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+        propertyVersion:
+          type: integer
+          description: |
+            Reflects the new version for this property resulting from the batch-versioning request.
+          minimum: 1
+        propertyVersionLink:
+          type: string
+          description: |
+            Provides an API hypermedia link to each newly created property version. Prior to creation, the value is `null`.
+          nullable: true
+  message:
+    type: string
+    description: |
+      A notification in case the bulk request repeatedly fails to process.
+$schema: http://json-schema.org/draft-04/schema#

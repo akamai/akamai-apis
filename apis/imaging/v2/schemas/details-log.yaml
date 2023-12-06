@@ -1,0 +1,80 @@
+type: object
+description: |-
+  Lists image or video logs pertaining to transformation tasks.
+  
+x-akamai:
+  file-path: schemas/details-log.yaml
+additionalProperties: false
+required:
+- url
+- policyId
+- size
+- transformationType
+- status
+- startTime
+- completeTime
+properties:
+  actual:
+    type: integer
+    description: |
+      The actual value of metric mentioned in the reason. Present only for error logs.
+  completeTime:
+    type: string
+    description: |
+      Time when the transformation task was completed.
+    format: date-time
+  pendingTime:
+    type: string
+    description: |
+      Time when the transformation task was added to queue. Present only for queued offline images or videos.
+    format: date-time
+  policyId:
+    type: string
+    description: |
+      The ID of the policy used for the image or video transformation.
+  reason:
+    type: string
+    description: |
+      Provides a reason for an Image & Video Manager failure. The possible values are: `DURATION` when the pristine video exceeds the maximum duration of 5 minutes, `BYTES` when the pristine video exceeds the maximum size of 256 MB, `PIXEL` when the pristine video pixels exceed 3,686,400 (1920&times;1920), `SAMPLERATE` when the pristine video exceeds maximum sample rate of 60 Hz, `UNPARSEABLE` when the pristine video isn't a recognized or supported video format, `PRISTINE_TOO_WIDE` when the pristine image width exceeds 9999 pixels, `PRISTINE_TOO_TALL` when the pristine image height exceeds 9999 pixels, `PROCESS_FAILED_INTERNALLY` when the image or video couldn't be fetched from the origin or the policy is outdated, or `INVALID_POLICY` when the policy parameters are invalid.
+    enum:
+    - DURATION
+    - BYTES
+    - PIXEL
+    - SAMPLERATE
+    - UNPARSEABLE
+    - PRISTINE_TOO_WIDE
+    - PRISTINE_TOO_TALL
+    - PROCESS_FAILED_INTERNALLY
+    - INVALID_POLICY
+  size:
+    type: integer
+    description: |
+      The size breakpoint width in pixels configured in the policy.
+  startTime:
+    type: string
+    description: |
+      Time when the transformation task execution started.
+    format: date-time
+  status:
+    type: string
+    description: |
+      The status of the transformation task. The status is `PASSED` when the image or video processing succeeds, `FAILED`  when the image or video processing fails, or `QUEUED` when the image or video processing is queued for offline processing.
+    enum:
+    - PASSED
+    - FAILED
+    - QUEUED
+  threshold:
+    type: integer
+    description: |
+      The threshold value of metric mentioned in the reason. Present only for error logs.
+  transformationType:
+    type: string
+    description: |
+      The type of transformation requested. The transformation type is `OFFLINE` if the image processing is queued for offline processing, or `REALTIME` if the image processing is performed in realtime.
+    enum:
+    - REALTIME
+    - OFFLINE
+  url:
+    type: string
+    description: |
+      The URL of the image.

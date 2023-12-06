@@ -1,0 +1,481 @@
+openapi: 3.0.0
+info:
+  title: Keys
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/apikey-manager-api/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: KeysResource.yaml
+paths:
+  /keys:
+    post:
+      operationId: post-keys
+      summary: Create keys
+      tags:
+      - Keys
+      description: |
+        Creates a collection of keys with unassigned values.  To generate keys with assigned values, use the [Generate keys](ref:post-keys-generate) operation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/createNewKeyCommand-post-example.json
+            schema:
+              $ref: schemas/createNewKeyCommand.yaml
+      responses:
+        201:
+          description: |
+            The key has been created.
+          headers:
+            Location:
+              description: |
+                A URI that points to the location of the newly created key.
+              schema:
+                type: string
+          content:
+            application/json:
+              example:
+                $ref: examples/keyDto-response-example.json
+              schema:
+                $ref: schemas/keyDto.yaml
+        207:
+          description: |
+            The multiple keys have been created.
+        400:
+          description: |
+            [Validation error](ref:400). The request contains invalid data.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/400.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to create a key.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The key couldn't be created.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    get:
+      operationId: get-keys
+      summary: List keys
+      tags:
+      - Keys
+      description: |
+        Returns keys included in a collection based on the specified criteria.
+      parameters:
+      - $ref: parameters/collectionId-query.yaml
+      - $ref: parameters/filter-query.yaml
+      - $ref: parameters/pageNumber-query.yaml
+      - $ref: parameters/keyType-query.yaml
+      - $ref: parameters/pageSize-query.yaml
+      - $ref: parameters/sortDirection-query.yaml
+      - $ref: parameters/sortColumn-query.yaml
+      responses:
+        200:
+          description: |
+            The keys have been returned.
+          content:
+            application/json:
+              example:
+                $ref: examples/keyPage-example.json
+              schema:
+                $ref: schemas/keyPage.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to get the keys.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The requested keys could not be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /keys/generate:
+    post:
+      operationId: post-keys-generate
+      summary: Generate keys
+      tags:
+      - Keys
+      description: |
+        Creates a collection of keys with assigned values. To create keys and assign your own values, use the [Create keys](ref:post-keys) operation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/generateKeysCommand-post-example.json
+            schema:
+              $ref: schemas/generateKeysCommand.yaml
+      responses:
+        204:
+          description: |
+            The keys have been created.
+        400:
+          description: |
+            [Validation error](ref:400). The request contains invalid data.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/400.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to create keys.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The keys could not be created.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /keys/import:
+    post:
+      operationId: post-keys-import
+      summary: Import keys
+      tags:
+      - Keys
+      description: |
+        Imports keys from a CSV, XML, or JSON file to a collection. When making a request  to import keys, embed the data structure that defines the  contents of the import file in a JSON object. For details, see [Import keys in different formats](ref:import-keys-different-formats).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/importKeysCommand-post-example.json
+            schema:
+              $ref: schemas/importKeysCommand.yaml
+      responses:
+        204:
+          description: |
+            The import has completed successfully.
+        400:
+          description: |
+            [Validation error](ref:400). The import file is invalid. The error details are described in the response.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/400.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to perform the import.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /keys/move:
+    post:
+      operationId: post-keys-move
+      summary: Move keys
+      tags:
+      - Keys
+      description: |
+        Moves keys from one collection to another. For details, see move keys to a new collection or move keys to an existing collection.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/moveKeysCommand-post-example.json
+            schema:
+              $ref: schemas/moveKeysCommand.yaml
+      responses:
+        204:
+          description: |
+            The keys have been moved.
+        400:
+          description: |
+            [Validation error](ref:400). The request contains invalid data.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/400.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to move keys.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The keys could not be moved.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /keys/quota-reset:
+    post:
+      operationId: post-keys-quota-reset
+      summary: Reset key quota
+      tags:
+      - Reset
+      description: |
+        Resets the quota limit for selected keys.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/keysList-example.json
+            schema:
+              $ref: schemas/keysList.yaml
+      responses:
+        204:
+          description: |
+            The quota has been reset.
+        400:
+          description: |
+            [Validation error](ref:400). Some of user input is invalid.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/400.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to reset the quota.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The quota could not be reset.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /keys/restore:
+    post:
+      operationId: post-keys-restore
+      summary: Restore revoked keys
+      tags:
+      - Keys
+      description: |
+        Restores previously revoked keys in a collection. This operation is only available in the 120 days following the revocation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/revokeKeysCommand-post-example.json
+            schema:
+              $ref: schemas/revokeKeysCommand.yaml
+      responses:
+        204:
+          description: |
+            The keys have been restored.
+        400:
+          description: |
+            [Validation error](ref:400). The request contains invalid data.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/400.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to restore keys.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The keys could not be restored.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /keys/revoke:
+    post:
+      operationId: post-keys-revoke
+      summary: Revoke keys
+      tags:
+      - Keys
+      description: |
+        Revokes keys in a collection and marks them as revoked. The revoked keys can be restored within the next 120 days and after this period they're deleted.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/revokeKeysCommand-post-example.json
+            schema:
+              $ref: schemas/revokeKeysCommand.yaml
+      responses:
+        204:
+          description: |
+            The keys have been revoked.
+        400:
+          description: |
+            [Validation error](ref:400). The request contains invalid data.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/400.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to revoke keys.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The keys could not be revoked.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /keys/{keyId}:
+    parameters:
+    - $ref: parameters/keyId-path.yaml
+    get:
+      operationId: get-key
+      summary: Get a key
+      tags:
+      - Keys
+      description: |
+        Returns information about a key.
+      responses:
+        200:
+          description: |
+            The key has been returned.
+          content:
+            application/json:
+              example:
+                $ref: examples/keyDto-response-example.json
+              schema:
+                $ref: schemas/keyDto.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to get the key.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The key could not be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    put:
+      operationId: put-key
+      summary: Edit a key
+      tags:
+      - Keys
+      description: |
+        Updates information about a key.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/keyDto-response-example.json
+            schema:
+              $ref: schemas/keyDto.yaml
+      responses:
+        200:
+          description: |
+            The key has been updated.
+          content:
+            application/json:
+              example:
+                $ref: examples/keyDto-response-example.json
+              schema:
+                $ref: schemas/keyDto.yaml
+        400:
+          description: |
+            [Validation error](ref:400). The request contains invalid data.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/400.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to update the key.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The key could not be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml

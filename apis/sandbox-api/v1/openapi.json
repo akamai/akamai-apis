@@ -1,0 +1,3283 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Sandbox API",
+    "url": "https://techdocs.akamai.com/sandbox/reference"
+  },
+  "info": {
+    "title": "Akamai: Sandbox API",
+    "version": "v0",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/sandboxes": {
+      "post": {
+        "description": "You can create a sandbox based on an existing `property`, `hostname`, or property `version`. Refer to the example JSONs for each use case in the [Recipes](https://techdocs.akamai.com/sandbox/recipes). In order to create a sandbox with this method, you need to have an API client for the `Sandbox API` with read-write access and Property Manager authorization enabled in Control Center.",
+        "operationId": "post-sandbox",
+        "summary": "Create a sandbox",
+        "tags": [
+          "Sandboxes"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/post-sandbox"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "isClonable": true,
+                "name": "Sandbox-123",
+                "property": {
+                  "propertyName": "exampledevops.com",
+                  "propertyVersion": 12345
+                }
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Create a JSON request body including data members as described in the table below.",
+                "type": "object",
+                "required": [
+                  "property"
+                ],
+                "properties": {
+                  "isClonable": {
+                    "default": false,
+                    "description": "Indicates whether the sandbox can be cloned by other developers.",
+                    "example": "{{isClonable}}",
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "description": "Descriptive name for the new sandbox. If you do not specify a name, the default name will be the `sandboxId`. You will get an error message if the name is not unique.",
+                    "example": "{{name}}",
+                    "type": "string"
+                  },
+                  "property": {
+                    "additionalProperties": false,
+                    "description": "Contains information about the property within the sandbox.",
+                    "minProperties": 1,
+                    "type": "object",
+                    "properties": {
+                      "contractId": {
+                        "description": "The identifier you can use to create a sandbox from a specific contract. If you use this, you also need to specify the `groupId`.",
+                        "type": "string"
+                      },
+                      "cpcode": {
+                        "description": "Unique code that enables you to isolate sandbox traffic in report data. If you do not specify a value, the system creates one.",
+                        "type": "number"
+                      },
+                      "edgeHostname": {
+                        "description": "The edge hostname for the property as configured in Property Manager. May be specified instead of `propertyId`, `hostname`, or `propertyName`.",
+                        "type": "string"
+                      },
+                      "groupId": {
+                        "description": "The identifier you can use to create a sandbox from a specific group.  If you use this, you also need to specify the `contractId`.",
+                        "type": "string"
+                      },
+                      "hostname": {
+                        "description": "The hostname for the property as configured in Property Manager. May be specified instead of `propertyId`, `edgeHostname`, or `propertyName`.",
+                        "type": "string"
+                      },
+                      "propertyId": {
+                        "description": "The unique identifier for the property as it appears in Property Manager. May be specified instead of `hostname`, `edgeHostname`, or `propertyName`.",
+                        "type": "string"
+                      },
+                      "propertyName": {
+                        "description": "The name of the property as it appears in Property Manager. May be specified instead of `propertyId`, `edgeHostname`, or `hostname`.",
+                        "type": "string"
+                      },
+                      "propertyVersion": {
+                        "description": "If not specified, the API uses the version that is active in production. If an active version is not found, the API uses the most recent version.",
+                        "type": "number"
+                      },
+                      "requestHostnames": {
+                        "description": "Specifies the hostnames for the request. If you try to create a sandbox property with a `requestHostname` that is not already contained in the property configuration, you may get unexpected results. The Sandbox API automatically converts any specified request hostnames to lower case.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "ruleFormat": {
+                        "description": "Specifies the rule format. The rule format is a dated version of the rule object in a property configuration. For more information, refer to the [Property Manager API](https://developer.akamai.com/api/core_features/property_manager/v1.html#understandingruleformats).",
+                        "type": "string"
+                      },
+                      "rules": {
+                        "description": "Defines how your website and applications process requests and the behaviors to apply to those requests. Include a `rules` object if you want to apply specific rules to test within your sandbox. The content-handling rules are defined in the [Property Manager API](https://techdocs.akamai.com/property-mgr/reference/rule-trees).",
+                        "type": "object"
+                      }
+                    }
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/sandbox-create-request.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The resource was created.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "createdBy": "hgildong",
+                  "createdOn": "2021-10-09T15:20:36.441Z",
+                  "isClonable": true,
+                  "jwtToken": "eyJ0eXA ... qggqqw",
+                  "name": "Sandbox-123",
+                  "sandboxId": "2956607f-854e-11e8-898a-0242ac110002",
+                  "status": "OK",
+                  "_links": {
+                    "clone": {
+                      "href": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002/clone"
+                    },
+                    "rotateJWT": {
+                      "href": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002/rotateJWT"
+                    },
+                    "self": {
+                      "href": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002"
+                    }
+                  },
+                  "properties": [
+                    {
+                      "sandboxPropertyId": "e7b77afe-271b-4159-bdd1-c312ef560cdb",
+                      "additionalRequestHostnamesInProperty": [
+                        "www.abc1234def.com"
+                      ],
+                      "editedRuleBehaviors": [
+                        "cpCode"
+                      ],
+                      "filteredRuleBehaviors": [
+                        "http2"
+                      ],
+                      "requestHostnames": [
+                        "shop.exampledevops.com",
+                        "info.abc1234def.com"
+                      ],
+                      "_links": {
+                        "property": {
+                          "href": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002/properties/e7b77afe-271b-4159-bdd1-c312ef560cdb"
+                        },
+                        "rules": {
+                          "href": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002/properties/e7b77afe-271b-4159-bdd1-c312ef560cdb/rules"
+                        }
+                      },
+                      "validationWarnings": [
+                        {
+                          "detail": "If your `Origin Server` uses HTTPS, make sure to follow <a href=\"/dl/property-manager/property-manager-help/csh_lookup.html?id=PM_0034\" target=\"_blank\">this procedure</a> to avoid a service outage or a security breach when you rotate your origin's certificate.",
+                          "errorLocation": "#/rules/behaviors/0",
+                          "type": "https://problems.luna.akamaiapis.net/papi/v1/validation/validation_message.ssl_delegate_warning_rotate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "A sandbox is an isolated development environment used for testing. Each sandbox has a unique identifier, or `sandboxId`. If you create a sandbox with `isClonable` enabled, another developer can quickly create a sandbox with the same configuration settings. When you create a sandbox, give it a meaningful `name`.",
+                  "type": "object",
+                  "required": [
+                    "sandboxId",
+                    "createdBy",
+                    "createdOn",
+                    "name",
+                    "isClonable",
+                    "properties"
+                  ],
+                  "properties": {
+                    "_links": {
+                      "additionalProperties": true,
+                      "description": "HAL-formatted hypermedia links relating to the sandbox. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                      "minProperties": 1,
+                      "type": "object",
+                      "properties": {
+                        "resource": {
+                          "additionalProperties": true,
+                          "description": "Contains a link to the current resource.",
+                          "type": "object",
+                          "required": [
+                            "href"
+                          ],
+                          "properties": {
+                            "href": {
+                              "description": "A relative link to access the resource.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/Links.yaml"
+                      }
+                    },
+                    "createdBy": {
+                      "description": "The identifier for the developer who created the sandbox.",
+                      "type": "string"
+                    },
+                    "createdOn": {
+                      "description": "A timestamp representing when the system created the sandbox.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "isClonable": {
+                      "description": "Indicates whether the sandbox can be copied for another developer's use.",
+                      "type": "boolean"
+                    },
+                    "jwtToken": {
+                      "description": "Java Web Token that is returned in the JSON response when you create a sandbox and is used for authentication. You need this string value to configure the Sandbox Client.",
+                      "type": "string"
+                    },
+                    "name": {
+                      "description": "The name of the sandbox defined by the developer when the sandbox was created. If you do not specify a name, the default is the `sandboxId`.",
+                      "type": "string"
+                    },
+                    "properties": {
+                      "description": "A list of the properties available for testing in the sandbox environment. A sandbox can contain more than one property, but a given hostname may only be associated to one property within a sandbox.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "_links": {
+                            "additionalProperties": true,
+                            "description": "HAL-formatted hypermedia links relating to the sandbox's properties. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                            "minProperties": 1,
+                            "type": "object",
+                            "properties": {
+                              "resource": {
+                                "additionalProperties": true,
+                                "description": "Contains a link to the current resource.",
+                                "type": "object",
+                                "required": [
+                                  "href"
+                                ],
+                                "properties": {
+                                  "href": {
+                                    "description": "A relative link to access the resource.",
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/Links.yaml"
+                            }
+                          },
+                          "additionalRequestHostnamesInProperty": {
+                            "description": "A list of hostnames that are associated with the property referenced in the create sandbox POST request that were not included as request hostnames in the JSON body.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "editedRuleBehaviors": {
+                            "description": "Behaviors in the rule tree that were modified for use in the Sandbox.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "filteredRuleBehaviors": {
+                            "description": "Behaviors in the rule tree that were removed because they are not supported by Sandbox.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "requestHostnames": {
+                            "description": "A set of hostnames you can use for testing requests within your sandbox.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "sandboxPropertyId": {
+                            "description": "The unique identifier for the sandbox.",
+                            "type": "string"
+                          },
+                          "validationWarnings": {
+                            "description": "Contains warnings related to validating the rule tree when a sandbox is created or a property is added.",
+                            "type": "array",
+                            "items": {
+                              "additionalProperties": false,
+                              "description": "Contains warnings related to validating the rule tree. For details, refer to [Errors](https://techdocs.akamai.com/sandbox/reference/errors).",
+                              "type": "object",
+                              "properties": {
+                                "detail": {
+                                  "description": "Provides specific information related to this validation warning.",
+                                  "readOnly": true,
+                                  "type": "string"
+                                },
+                                "errorLocation": {
+                                  "description": "Provides a path expression to the offending rule.",
+                                  "readOnly": true,
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "description": "A unique name for this particular validation.",
+                                  "readOnly": true,
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/ValidationWarnings.yaml"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "sandboxId": {
+                      "description": "The unique identifier for the sandbox.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The status of the sandbox. `OK` indicates that the sandbox is able to send traffic.",
+                      "type": "string"
+                    },
+                    "statusReason": {
+                      "description": "Provides more information when the status field is `ERROR`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/sandbox.yaml"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Provides a URL link to GET the newly created resource.",
+                "schema": {
+                  "example": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002/properties/f48caeff-68e5-11e8-8870-0242ac110003",
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/Location.yaml"
+                }
+              },
+              "X-Limit-Sandboxes-Limit": {
+                "description": "Unique identifier for the sandbox.",
+                "schema": {
+                  "example": 100,
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/X-Limit-Sandboxes-Limit.yaml"
+                }
+              },
+              "X-Limit-Sandboxes-Remaining": {
+                "description": "Unique identifier for the sandbox.",
+                "schema": {
+                  "example": 98,
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/X-Limit-Sandboxes-Remaining.yaml"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "get": {
+        "description": "This operation returns a list of sandboxes. In the response object, you can see the `sandboxId`, the developer who created the sandbox, and the sandbox `name`. The `X-Limit-Sandboxes-Remaining` in the response header indicates the number of remaining sandboxes you can create. Generally, you will only see a list of sandboxes you created. If your Control Center user role has permission to edit Property Manager configurations, you have access to view all the sandboxes within the account. You'll be able to [Delete a sandbox](https://techdocs.akamai.com/sandbox/reference/delete-sandbox) returned in the list. You will only be able to [Update a rule tree](https://techdocs.akamai.com/sandbox/reference/put-sandbox-properties-rules) if your user role has permission to edit the property within your Property Manager configuration. For more information on user roles and permissions, refer to [Identity and Access Management](https://techdocs.akamai.com/iam/docs/welcome-id-access-mgmt).",
+        "operationId": "get-sandboxes",
+        "summary": "List sandboxes",
+        "tags": [
+          "Sandboxes"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/get-sandboxes"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "accountId": "A-CCT3456",
+                  "_links": {
+                    "self": {
+                      "href": "/sandbox-api/v1/sandboxes"
+                    }
+                  },
+                  "sandboxes": [
+                    {
+                      "createdBy": "jsmith",
+                      "name": "STAR-04",
+                      "sandboxId": "a7123f13-6f14-11e8-8592-0242ac110002",
+                      "_links": {
+                        "rotateJWT": {
+                          "href": "/sandbox-api/v1/sandboxes/a7123f13-6f14-11e8-8592-0242ac110002/rotateJWT"
+                        },
+                        "self": {
+                          "href": "/sandbox-api/v1/sandboxes/a7123f13-6f14-11e8-8592-0242ac110002"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "accountId",
+                    "sandboxes"
+                  ],
+                  "properties": {
+                    "accountId": {
+                      "description": "Unique identifier for an account.",
+                      "type": "string"
+                    },
+                    "sandboxes": {
+                      "description": "The set of sandboxes created by the developer.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Detailed information on the sandbox.",
+                        "type": "object",
+                        "required": [
+                          "sandboxId",
+                          "createdBy",
+                          "createdOn",
+                          "name",
+                          "isClonable",
+                          "properties"
+                        ],
+                        "properties": {
+                          "_links": {
+                            "additionalProperties": true,
+                            "description": "HAL-formatted hypermedia links relating to the sandbox. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                            "minProperties": 1,
+                            "type": "object",
+                            "properties": {
+                              "resource": {
+                                "additionalProperties": true,
+                                "description": "Contains a link to the current resource.",
+                                "type": "object",
+                                "required": [
+                                  "href"
+                                ],
+                                "properties": {
+                                  "href": {
+                                    "description": "A relative link to access the resource.",
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/Links.yaml"
+                            }
+                          },
+                          "createdBy": {
+                            "description": "The identifier for the developer who created the sandbox.",
+                            "type": "string"
+                          },
+                          "createdOn": {
+                            "description": "A timestamp representing when the system created the sandbox.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "isClonable": {
+                            "description": "Indicates whether the sandbox can be copied for another developer's use.",
+                            "type": "boolean"
+                          },
+                          "jwtToken": {
+                            "description": "Java Web Token that is returned in the JSON response when you create a sandbox and is used for authentication. You need this string value to configure the Sandbox Client.",
+                            "type": "string"
+                          },
+                          "name": {
+                            "description": "The name of the sandbox defined by the developer when the sandbox was created. If you do not specify a name, the default is the `sandboxId`.",
+                            "type": "string"
+                          },
+                          "properties": {
+                            "description": "A list of the properties available for testing in the sandbox environment. A sandbox can contain more than one property, but a given hostname may only be associated to one property within a sandbox.",
+                            "type": "array",
+                            "items": {
+                              "additionalProperties": false,
+                              "type": "object",
+                              "properties": {
+                                "_links": {
+                                  "additionalProperties": true,
+                                  "description": "HAL-formatted hypermedia links relating to the sandbox's properties. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                                  "minProperties": 1,
+                                  "type": "object",
+                                  "properties": {
+                                    "resource": {
+                                      "additionalProperties": true,
+                                      "description": "Contains a link to the current resource.",
+                                      "type": "object",
+                                      "required": [
+                                        "href"
+                                      ],
+                                      "properties": {
+                                        "href": {
+                                          "description": "A relative link to access the resource.",
+                                          "type": "string"
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "x-akamai": {
+                                    "file-path": "schemas/Links.yaml"
+                                  }
+                                },
+                                "additionalRequestHostnamesInProperty": {
+                                  "description": "A list of hostnames that are associated with the property referenced in the create sandbox POST request that were not included as request hostnames in the JSON body.",
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "editedRuleBehaviors": {
+                                  "description": "Behaviors in the rule tree that were modified for use in the Sandbox.",
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "filteredRuleBehaviors": {
+                                  "description": "Behaviors in the rule tree that were removed because they are not supported by Sandbox.",
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "requestHostnames": {
+                                  "description": "A set of hostnames you can use for testing requests within your sandbox.",
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "sandboxPropertyId": {
+                                  "description": "The unique identifier for the sandbox.",
+                                  "type": "string"
+                                },
+                                "validationWarnings": {
+                                  "description": "Contains warnings related to validating the rule tree when a sandbox is created or a property is added.",
+                                  "type": "array",
+                                  "items": {
+                                    "additionalProperties": false,
+                                    "description": "Contains warnings related to validating the rule tree. For details, refer to [Errors](https://techdocs.akamai.com/sandbox/reference/errors).",
+                                    "type": "object",
+                                    "properties": {
+                                      "detail": {
+                                        "description": "Provides specific information related to this validation warning.",
+                                        "readOnly": true,
+                                        "type": "string"
+                                      },
+                                      "errorLocation": {
+                                        "description": "Provides a path expression to the offending rule.",
+                                        "readOnly": true,
+                                        "type": "string"
+                                      },
+                                      "type": {
+                                        "description": "A unique name for this particular validation.",
+                                        "readOnly": true,
+                                        "type": "string"
+                                      }
+                                    }
+                                  },
+                                  "x-akamai": {
+                                    "file-path": "schemas/ValidationWarnings.yaml"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "sandboxId": {
+                            "description": "The unique identifier for the sandbox.",
+                            "type": "string"
+                          },
+                          "status": {
+                            "description": "The status of the sandbox. `OK` indicates that the sandbox is able to send traffic.",
+                            "type": "string"
+                          },
+                          "statusReason": {
+                            "description": "Provides more information when the status field is `ERROR`.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/sandbox.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/sandboxes-get-response.yaml"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Limit-Sandboxes-Limit": {
+                "description": "Unique identifier for the sandbox.",
+                "schema": {
+                  "example": 100,
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/X-Limit-Sandboxes-Limit.yaml"
+                }
+              },
+              "X-Limit-Sandboxes-Remaining": {
+                "description": "Unique identifier for the sandbox.",
+                "schema": {
+                  "example": 98,
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/X-Limit-Sandboxes-Remaining.yaml"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Indicates the access level of the request. Specify either `USER` to perform the request for the sandboxes that you can access, or `ACCOUNT` to perform the request for all sandboxes within the account.",
+            "example": "{{access}}",
+            "in": "query",
+            "name": "access",
+            "schema": {
+              "default": "USER",
+              "example": "ACCOUNT",
+              "type": "string",
+              "enum": [
+                "USER",
+                "ACCOUNT"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/accessParam-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/sandboxes/{sandboxId}": {
+      "get": {
+        "description": "Get a specific sandbox based on `sandboxId`.",
+        "operationId": "get-sandbox",
+        "summary": "Get a sandbox",
+        "tags": [
+          "Sandboxes"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/get-sandbox"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "createdBy": "jsmith",
+                  "createdOn": "2021-07-11T21:05:38.227Z",
+                  "isClonable": true,
+                  "name": "Sandbox-clone-1",
+                  "sandboxId": "2956607f-854e-11e8-898a-0242ac110002",
+                  "status": "OK",
+                  "_links": {
+                    "clone": {
+                      "href": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002/clone"
+                    },
+                    "rotateJWT": {
+                      "href": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002/rotateJWT"
+                    },
+                    "self": {
+                      "href": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002"
+                    }
+                  },
+                  "properties": [
+                    {
+                      "requestHostnames": [
+                        "shop.example.com"
+                      ],
+                      "_links": {
+                        "property": {
+                          "href": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002/properties/29b5e5a0-854e-11e8-898a-0242ac110002"
+                        },
+                        "rules": {
+                          "href": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002/properties/29b5e5a0-854e-11e8-898a-0242ac110002/rules"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "A sandbox is an isolated development environment used for testing. Each sandbox has a unique identifier, or `sandboxId`. If you create a sandbox with `isClonable` enabled, another developer can quickly create a sandbox with the same configuration settings. When you create a sandbox, give it a meaningful `name`.",
+                  "type": "object",
+                  "required": [
+                    "sandboxId",
+                    "createdBy",
+                    "createdOn",
+                    "name",
+                    "isClonable",
+                    "properties"
+                  ],
+                  "properties": {
+                    "_links": {
+                      "additionalProperties": true,
+                      "description": "HAL-formatted hypermedia links relating to the sandbox. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                      "minProperties": 1,
+                      "type": "object",
+                      "properties": {
+                        "resource": {
+                          "additionalProperties": true,
+                          "description": "Contains a link to the current resource.",
+                          "type": "object",
+                          "required": [
+                            "href"
+                          ],
+                          "properties": {
+                            "href": {
+                              "description": "A relative link to access the resource.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/Links.yaml"
+                      }
+                    },
+                    "createdBy": {
+                      "description": "The identifier for the developer who created the sandbox.",
+                      "type": "string"
+                    },
+                    "createdOn": {
+                      "description": "A timestamp representing when the system created the sandbox.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "isClonable": {
+                      "description": "Indicates whether the sandbox can be copied for another developer's use.",
+                      "type": "boolean"
+                    },
+                    "jwtToken": {
+                      "description": "Java Web Token that is returned in the JSON response when you create a sandbox and is used for authentication. You need this string value to configure the Sandbox Client.",
+                      "type": "string"
+                    },
+                    "name": {
+                      "description": "The name of the sandbox defined by the developer when the sandbox was created. If you do not specify a name, the default is the `sandboxId`.",
+                      "type": "string"
+                    },
+                    "properties": {
+                      "description": "A list of the properties available for testing in the sandbox environment. A sandbox can contain more than one property, but a given hostname may only be associated to one property within a sandbox.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "_links": {
+                            "additionalProperties": true,
+                            "description": "HAL-formatted hypermedia links relating to the sandbox's properties. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                            "minProperties": 1,
+                            "type": "object",
+                            "properties": {
+                              "resource": {
+                                "additionalProperties": true,
+                                "description": "Contains a link to the current resource.",
+                                "type": "object",
+                                "required": [
+                                  "href"
+                                ],
+                                "properties": {
+                                  "href": {
+                                    "description": "A relative link to access the resource.",
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/Links.yaml"
+                            }
+                          },
+                          "additionalRequestHostnamesInProperty": {
+                            "description": "A list of hostnames that are associated with the property referenced in the create sandbox POST request that were not included as request hostnames in the JSON body.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "editedRuleBehaviors": {
+                            "description": "Behaviors in the rule tree that were modified for use in the Sandbox.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "filteredRuleBehaviors": {
+                            "description": "Behaviors in the rule tree that were removed because they are not supported by Sandbox.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "requestHostnames": {
+                            "description": "A set of hostnames you can use for testing requests within your sandbox.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "sandboxPropertyId": {
+                            "description": "The unique identifier for the sandbox.",
+                            "type": "string"
+                          },
+                          "validationWarnings": {
+                            "description": "Contains warnings related to validating the rule tree when a sandbox is created or a property is added.",
+                            "type": "array",
+                            "items": {
+                              "additionalProperties": false,
+                              "description": "Contains warnings related to validating the rule tree. For details, refer to [Errors](https://techdocs.akamai.com/sandbox/reference/errors).",
+                              "type": "object",
+                              "properties": {
+                                "detail": {
+                                  "description": "Provides specific information related to this validation warning.",
+                                  "readOnly": true,
+                                  "type": "string"
+                                },
+                                "errorLocation": {
+                                  "description": "Provides a path expression to the offending rule.",
+                                  "readOnly": true,
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "description": "A unique name for this particular validation.",
+                                  "readOnly": true,
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/ValidationWarnings.yaml"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "sandboxId": {
+                      "description": "The unique identifier for the sandbox.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The status of the sandbox. `OK` indicates that the sandbox is able to send traffic.",
+                      "type": "string"
+                    },
+                    "statusReason": {
+                      "description": "Provides more information when the status field is `ERROR`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/sandbox.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Indicates the access level of the request. Specify either `USER` to perform the request for the sandboxes that you can access, or `ACCOUNT` to perform the request for all sandboxes within the account.",
+            "example": "{{access}}",
+            "in": "query",
+            "name": "access",
+            "schema": {
+              "default": "USER",
+              "example": "ACCOUNT",
+              "type": "string",
+              "enum": [
+                "USER",
+                "ACCOUNT"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/accessParam-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "description": "Enable `isClonable` if you have preconfigured the settings for the sandbox and want to make it possible for other developers to create an exact replica in their development environment. You can also update the sandbox `name` to make it easy to identify when returned in a list or in a log line.",
+        "operationId": "put-sandbox",
+        "summary": "Modify a sandbox",
+        "tags": [
+          "Sandboxes"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/put-sandbox"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "isClonable": true,
+                "name": "SHOP-123212"
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "A sandbox is an isolated development environment used for testing. Each sandbox has a unique identifier, or `sandboxId`. If you create a sandbox with `isClonable` enabled, another developer can quickly create a sandbox with the same configuration settings. When you create a sandbox, give it a meaningful `name`.",
+                "type": "object",
+                "required": [
+                  "sandboxId",
+                  "createdBy",
+                  "createdOn",
+                  "name",
+                  "isClonable",
+                  "properties"
+                ],
+                "properties": {
+                  "_links": {
+                    "additionalProperties": true,
+                    "description": "HAL-formatted hypermedia links relating to the sandbox. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                    "minProperties": 1,
+                    "type": "object",
+                    "properties": {
+                      "resource": {
+                        "additionalProperties": true,
+                        "description": "Contains a link to the current resource.",
+                        "type": "object",
+                        "required": [
+                          "href"
+                        ],
+                        "properties": {
+                          "href": {
+                            "description": "A relative link to access the resource.",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/Links.yaml"
+                    }
+                  },
+                  "createdBy": {
+                    "description": "The identifier for the developer who created the sandbox.",
+                    "example": "{{createdBy}}",
+                    "type": "string"
+                  },
+                  "createdOn": {
+                    "description": "A timestamp representing when the system created the sandbox.",
+                    "example": "{{createdOn}}",
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "isClonable": {
+                    "description": "Indicates whether the sandbox can be copied for another developer's use.",
+                    "example": "{{isClonable}}",
+                    "type": "boolean"
+                  },
+                  "jwtToken": {
+                    "description": "Java Web Token that is returned in the JSON response when you create a sandbox and is used for authentication. You need this string value to configure the Sandbox Client.",
+                    "example": "{{jwtToken}}",
+                    "type": "string"
+                  },
+                  "name": {
+                    "description": "The name of the sandbox defined by the developer when the sandbox was created. If you do not specify a name, the default is the `sandboxId`.",
+                    "example": "{{name}}",
+                    "type": "string"
+                  },
+                  "properties": {
+                    "description": "A list of the properties available for testing in the sandbox environment. A sandbox can contain more than one property, but a given hostname may only be associated to one property within a sandbox.",
+                    "type": "array",
+                    "items": {
+                      "additionalProperties": false,
+                      "type": "object",
+                      "properties": {
+                        "_links": {
+                          "additionalProperties": true,
+                          "description": "HAL-formatted hypermedia links relating to the sandbox's properties. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                          "minProperties": 1,
+                          "type": "object",
+                          "properties": {
+                            "resource": {
+                              "additionalProperties": true,
+                              "description": "Contains a link to the current resource.",
+                              "type": "object",
+                              "required": [
+                                "href"
+                              ],
+                              "properties": {
+                                "href": {
+                                  "description": "A relative link to access the resource.",
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "x-akamai": {
+                            "file-path": "schemas/Links.yaml"
+                          }
+                        },
+                        "additionalRequestHostnamesInProperty": {
+                          "description": "A list of hostnames that are associated with the property referenced in the create sandbox POST request that were not included as request hostnames in the JSON body.",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "editedRuleBehaviors": {
+                          "description": "Behaviors in the rule tree that were modified for use in the Sandbox.",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "filteredRuleBehaviors": {
+                          "description": "Behaviors in the rule tree that were removed because they are not supported by Sandbox.",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "requestHostnames": {
+                          "description": "A set of hostnames you can use for testing requests within your sandbox.",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "sandboxPropertyId": {
+                          "description": "The unique identifier for the sandbox.",
+                          "type": "string"
+                        },
+                        "validationWarnings": {
+                          "description": "Contains warnings related to validating the rule tree when a sandbox is created or a property is added.",
+                          "type": "array",
+                          "items": {
+                            "additionalProperties": false,
+                            "description": "Contains warnings related to validating the rule tree. For details, refer to [Errors](https://techdocs.akamai.com/sandbox/reference/errors).",
+                            "type": "object",
+                            "properties": {
+                              "detail": {
+                                "description": "Provides specific information related to this validation warning.",
+                                "readOnly": true,
+                                "type": "string"
+                              },
+                              "errorLocation": {
+                                "description": "Provides a path expression to the offending rule.",
+                                "readOnly": true,
+                                "type": "string"
+                              },
+                              "type": {
+                                "description": "A unique name for this particular validation.",
+                                "readOnly": true,
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "x-akamai": {
+                            "file-path": "schemas/ValidationWarnings.yaml"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "sandboxId": {
+                    "description": "The unique identifier for the sandbox.",
+                    "example": "{{sandboxId}}",
+                    "type": "string"
+                  },
+                  "status": {
+                    "description": "The status of the sandbox. `OK` indicates that the sandbox is able to send traffic.",
+                    "example": "{{status}}",
+                    "type": "string"
+                  },
+                  "statusReason": {
+                    "description": "Provides more information when the status field is `ERROR`.",
+                    "example": "{{statusReason}}",
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/sandbox.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "The request was successfully processed.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "description": "Remove a specific sandbox instance based on `sandboxId`. This is useful when you have completed testing and no longer need the sandbox, or when you are approaching the limit. There is a limit of 100 sandbox instances for each Control Center account. The `X-Limit-Sandboxes-Remaining` value in the response header indicates how many sandbox instances you have remaining to create.",
+        "operationId": "delete-sandbox",
+        "summary": "Delete a sandbox",
+        "tags": [
+          "Sandboxes"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/delete-sandbox"
+        },
+        "responses": {
+          "204": {
+            "description": "The request was successfully processed.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Indicates the access level of the request. Specify either `USER` to perform the request for the sandboxes that you can access, or `ACCOUNT` to perform the request for all sandboxes within the account.",
+            "example": "{{access}}",
+            "in": "query",
+            "name": "access",
+            "schema": {
+              "default": "USER",
+              "example": "ACCOUNT",
+              "type": "string",
+              "enum": [
+                "USER",
+                "ACCOUNT"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/accessParam-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Unique identifier for the sandbox.",
+          "example": "{{sandboxId}}",
+          "in": "path",
+          "name": "sandboxId",
+          "required": true,
+          "schema": {
+            "example": "2956607f-854e-11e8-898a-0242ac110002",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/sandboxId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/sandboxes/{sandboxId}/clone": {
+      "post": {
+        "description": "Create a new sandbox instance based on the specified `sandboxId`. You can clone a sandbox that has `isClonable` enabled. This is useful if you want to copy a sandbox that was preconfigured by another developer within your organization.",
+        "operationId": "post-sandbox-clone",
+        "summary": "Clone a sandbox",
+        "tags": [
+          "Sandboxes"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/post-sandbox-clone"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "sandbox-clone-1"
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "You can clone a sandbox based on a pre-configured sandbox if you have the `sandboxId`.",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Descriptive name for the new sandbox.",
+                    "example": "{{name}}",
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/sandbox-clone-request.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "createdBy": "adevi",
+                  "createdOn": "2021-10-09T15:20:36.441Z",
+                  "isClonable": true,
+                  "jwtToken": "eyJ0eXA ... qggqqw",
+                  "name": "Sandbox-123",
+                  "sandboxId": "2956607f-854e-11e8-898a-0242ac110002",
+                  "status": "OK",
+                  "_links": {
+                    "clone": {
+                      "href": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002/clone"
+                    },
+                    "rotateJWT": {
+                      "href": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002/rotateJWT"
+                    },
+                    "self": {
+                      "href": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002"
+                    }
+                  },
+                  "properties": [
+                    {
+                      "sandboxPropertyId": "e7b77afe-271b-4159-bdd1-c312ef560cdb",
+                      "additionalRequestHostnamesInProperty": [
+                        "www.abc1234def.com"
+                      ],
+                      "editedRuleBehaviors": [
+                        "cpCode"
+                      ],
+                      "filteredRuleBehaviors": [
+                        "http2"
+                      ],
+                      "requestHostnames": [
+                        "shop.exampledevops.com",
+                        "info.abc1234def.com"
+                      ],
+                      "_links": {
+                        "property": {
+                          "href": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002/properties/e7b77afe-271b-4159-bdd1-c312ef560cdb"
+                        },
+                        "rules": {
+                          "href": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002/properties/e7b77afe-271b-4159-bdd1-c312ef560cdb/rules"
+                        }
+                      },
+                      "validationWarnings": [
+                        {
+                          "detail": "If your `Origin Server` uses HTTPS, make sure to follow <a href=\"/dl/property-manager/property-manager-help/csh_lookup.html?id=PM_0034\" target=\"_blank\">this procedure</a> to avoid a service outage or a security breach when you rotate your origin's certificate.",
+                          "errorLocation": "#/rules/behaviors/0",
+                          "type": "https://problems.luna.akamaiapis.net/papi/v1/validation/validation_message.ssl_delegate_warning_rotate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "A sandbox is an isolated development environment used for testing. Each sandbox has a unique identifier, or `sandboxId`. If you create a sandbox with `isClonable` enabled, another developer can quickly create a sandbox with the same configuration settings. When you create a sandbox, give it a meaningful `name`.",
+                  "type": "object",
+                  "required": [
+                    "sandboxId",
+                    "createdBy",
+                    "createdOn",
+                    "name",
+                    "isClonable",
+                    "properties"
+                  ],
+                  "properties": {
+                    "_links": {
+                      "additionalProperties": true,
+                      "description": "HAL-formatted hypermedia links relating to the sandbox. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                      "minProperties": 1,
+                      "type": "object",
+                      "properties": {
+                        "resource": {
+                          "additionalProperties": true,
+                          "description": "Contains a link to the current resource.",
+                          "type": "object",
+                          "required": [
+                            "href"
+                          ],
+                          "properties": {
+                            "href": {
+                              "description": "A relative link to access the resource.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/Links.yaml"
+                      }
+                    },
+                    "createdBy": {
+                      "description": "The identifier for the developer who created the sandbox.",
+                      "type": "string"
+                    },
+                    "createdOn": {
+                      "description": "A timestamp representing when the system created the sandbox.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "isClonable": {
+                      "description": "Indicates whether the sandbox can be copied for another developer's use.",
+                      "type": "boolean"
+                    },
+                    "jwtToken": {
+                      "description": "Java Web Token that is returned in the JSON response when you create a sandbox and is used for authentication. You need this string value to configure the Sandbox Client.",
+                      "type": "string"
+                    },
+                    "name": {
+                      "description": "The name of the sandbox defined by the developer when the sandbox was created. If you do not specify a name, the default is the `sandboxId`.",
+                      "type": "string"
+                    },
+                    "properties": {
+                      "description": "A list of the properties available for testing in the sandbox environment. A sandbox can contain more than one property, but a given hostname may only be associated to one property within a sandbox.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "_links": {
+                            "additionalProperties": true,
+                            "description": "HAL-formatted hypermedia links relating to the sandbox's properties. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                            "minProperties": 1,
+                            "type": "object",
+                            "properties": {
+                              "resource": {
+                                "additionalProperties": true,
+                                "description": "Contains a link to the current resource.",
+                                "type": "object",
+                                "required": [
+                                  "href"
+                                ],
+                                "properties": {
+                                  "href": {
+                                    "description": "A relative link to access the resource.",
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/Links.yaml"
+                            }
+                          },
+                          "additionalRequestHostnamesInProperty": {
+                            "description": "A list of hostnames that are associated with the property referenced in the create sandbox POST request that were not included as request hostnames in the JSON body.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "editedRuleBehaviors": {
+                            "description": "Behaviors in the rule tree that were modified for use in the Sandbox.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "filteredRuleBehaviors": {
+                            "description": "Behaviors in the rule tree that were removed because they are not supported by Sandbox.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "requestHostnames": {
+                            "description": "A set of hostnames you can use for testing requests within your sandbox.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "sandboxPropertyId": {
+                            "description": "The unique identifier for the sandbox.",
+                            "type": "string"
+                          },
+                          "validationWarnings": {
+                            "description": "Contains warnings related to validating the rule tree when a sandbox is created or a property is added.",
+                            "type": "array",
+                            "items": {
+                              "additionalProperties": false,
+                              "description": "Contains warnings related to validating the rule tree. For details, refer to [Errors](https://techdocs.akamai.com/sandbox/reference/errors).",
+                              "type": "object",
+                              "properties": {
+                                "detail": {
+                                  "description": "Provides specific information related to this validation warning.",
+                                  "readOnly": true,
+                                  "type": "string"
+                                },
+                                "errorLocation": {
+                                  "description": "Provides a path expression to the offending rule.",
+                                  "readOnly": true,
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "description": "A unique name for this particular validation.",
+                                  "readOnly": true,
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/ValidationWarnings.yaml"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "sandboxId": {
+                      "description": "The unique identifier for the sandbox.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The status of the sandbox. `OK` indicates that the sandbox is able to send traffic.",
+                      "type": "string"
+                    },
+                    "statusReason": {
+                      "description": "Provides more information when the status field is `ERROR`.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/sandbox.yaml"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Provides a URL link to GET the newly created resource.",
+                "schema": {
+                  "example": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002/properties/f48caeff-68e5-11e8-8870-0242ac110003",
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/Location.yaml"
+                }
+              },
+              "X-Limit-Sandboxes-Limit": {
+                "description": "Unique identifier for the sandbox.",
+                "schema": {
+                  "example": 100,
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/X-Limit-Sandboxes-Limit.yaml"
+                }
+              },
+              "X-Limit-Sandboxes-Remaining": {
+                "description": "Unique identifier for the sandbox.",
+                "schema": {
+                  "example": 98,
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/X-Limit-Sandboxes-Remaining.yaml"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Unique identifier for the sandbox.",
+          "example": "{{sandboxId}}",
+          "in": "path",
+          "name": "sandboxId",
+          "required": true,
+          "schema": {
+            "example": "2956607f-854e-11e8-898a-0242ac110002",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/sandboxId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/sandboxes/{sandboxId}/edgeworkers/{edgeWorkerId}": {
+      "get": {
+        "description": "Retrieve the script bundle in `.tgz` form for the specified `sandboxId` and `edgeWorkerId`. To learn more about EdgeWorkers, refer to the [EdgeWorkers API](https://techdocs.akamai.com/edgeworkers/reference/api).",
+        "operationId": "get-sandbox-edgeworker",
+        "summary": "Download EdgeWorker code",
+        "tags": [
+          "EdgeWorkers"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/get-sandbox-edgeworker"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Indicates the access level of the request. Specify either `USER` to perform the request for the sandboxes that you can access, or `ACCOUNT` to perform the request for all sandboxes within the account.",
+            "example": "{{access}}",
+            "in": "query",
+            "name": "access",
+            "schema": {
+              "default": "USER",
+              "example": "ACCOUNT",
+              "type": "string",
+              "enum": [
+                "USER",
+                "ACCOUNT"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/accessParam-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "description": "Add a script bundle for a given `edgeWorkerId` to the specified `sandboxId`.",
+        "operationId": "put-sandbox-edgeworker",
+        "summary": "Upload EdgeWorker code",
+        "tags": [
+          "EdgeWorkers"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/put-sandbox-edgeworker"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/tar+gzip": {
+              "example": "A binary file bundle.",
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The resource was created.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Indicates the access level of the request. Specify either `USER` to perform the request for the sandboxes that you can access, or `ACCOUNT` to perform the request for all sandboxes within the account.",
+            "example": "{{access}}",
+            "in": "query",
+            "name": "access",
+            "schema": {
+              "default": "USER",
+              "example": "ACCOUNT",
+              "type": "string",
+              "enum": [
+                "USER",
+                "ACCOUNT"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/accessParam-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "description": "Delete an EdgeWorker with an `edgeWorkerId` from the specified `sandboxId`.",
+        "operationId": "delete-sandbox-edgeworker",
+        "summary": "Delete EdgeWorker",
+        "tags": [
+          "EdgeWorkers"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/delete-sandbox-edgeworker"
+        },
+        "responses": {
+          "204": {
+            "description": "The request was successfully processed.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Indicates the access level of the request. Specify either `USER` to perform the request for the sandboxes that you can access, or `ACCOUNT` to perform the request for all sandboxes within the account.",
+            "example": "{{access}}",
+            "in": "query",
+            "name": "access",
+            "schema": {
+              "default": "USER",
+              "example": "ACCOUNT",
+              "type": "string",
+              "enum": [
+                "USER",
+                "ACCOUNT"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/accessParam-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Unique identifier for the EdgeWorker.",
+          "example": "{{edgeWorkerId}}",
+          "in": "path",
+          "name": "edgeWorkerId",
+          "required": true,
+          "schema": {
+            "example": 123,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/edgeWorkerId-path.yaml"
+          }
+        },
+        {
+          "description": "Unique identifier for the sandbox.",
+          "example": "{{sandboxId}}",
+          "in": "path",
+          "name": "sandboxId",
+          "required": true,
+          "schema": {
+            "example": "2956607f-854e-11e8-898a-0242ac110002",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/sandboxId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/sandboxes/{sandboxId}/properties": {
+      "post": {
+        "description": "You can add a property to a sandbox. Use this if you need to support more than one `hostname` in your sandbox environment.",
+        "operationId": "post-sandbox-properties",
+        "summary": "Add a property to a sandbox",
+        "tags": [
+          "Properties"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/post-sandbox-properties"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "propertyId": "470031",
+                "ruleFormat": "latest",
+                "requestHostnames": [
+                  "portal.example.com"
+                ]
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Create a JSON request body for the sandbox property including data member as described in the table below.",
+                "minProperties": 1,
+                "type": "object",
+                "properties": {
+                  "contractId": {
+                    "description": "The identifier you can use to create a sandbox from a specific contract. If you use this, you also need to specify the `groupId`.",
+                    "example": "{{contractId}}",
+                    "type": "string"
+                  },
+                  "cpcode": {
+                    "description": "Unique code that enables you to isolate sandbox traffic in report data. If you do not specify a value, the system creates one.",
+                    "example": "{{cpcode}}",
+                    "type": "number"
+                  },
+                  "edgeHostname": {
+                    "description": "The edge hostname for the property as configured in Property Manager. May be specified instead of `propertyId`, `hostname`, or `propertyName`.",
+                    "example": "{{edgeHostname}}",
+                    "type": "string"
+                  },
+                  "groupId": {
+                    "description": "The identifier you can use to create a sandbox from a specific group. If you use this, you also need to specify the `contractId`.",
+                    "example": "{{groupId}}",
+                    "type": "string"
+                  },
+                  "hostname": {
+                    "description": "The hostname for the property as configured in Property Manager. May be specified instead of `propertyId`, `edgeHostname`, or `propertyName`.",
+                    "example": "{{hostname}}",
+                    "type": "string"
+                  },
+                  "propertyId": {
+                    "description": "The unique identifier for the property as it appears in Property Manager. May be specified instead of `hostname`, `edgeHostname`, or `propertyName`.",
+                    "example": "{{propertyId}}",
+                    "type": "string"
+                  },
+                  "propertyName": {
+                    "description": "The name of the property as it appears in Property Manager. May be specified instead of `propertyId`, `edgeHostname`, or `hostname`.",
+                    "example": "{{propertyName}}",
+                    "type": "string"
+                  },
+                  "propertyVersion": {
+                    "description": "If not specified, the API uses the version that is active in production. If an active version is not found, the API uses the most recent version.",
+                    "example": "{{propertyVersion}}",
+                    "type": "number"
+                  },
+                  "requestHostnames": {
+                    "description": "Specifies the hostnames for the request. If you try to create a sandbox property with a `requestHostname` that is not already contained in the property configuration, you may get unexpected results. The Sandbox API automatically converts any specified request hostnames to lower case.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "ruleFormat": {
+                    "description": "Specifies the rule format. The rule format is a dated version of the rule object in a property configuration. For more information, refer to the [Property Manager API](https://developer.akamai.com/api/core_features/property_manager/v1.html#understandingruleformats).",
+                    "example": "{{ruleFormat}}",
+                    "type": "string"
+                  },
+                  "rules": {
+                    "description": "Defines how your website and applications process requests and the behaviors to apply to those requests. Include a `rules` object if you want to apply specific rules to test within your sandbox. The content-handling rules are defined in the [Property Manager API](https://techdocs.akamai.com/property-mgr/reference/rule-trees).",
+                    "type": "object"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/property-create-request.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The resource was created.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "cpcode": 1234567,
+                  "productId": "prd_Fresca",
+                  "propertyId": 470031,
+                  "ruleFormat": "latest",
+                  "sandboxPropertyId": "e4ae2447-7430-11e8-8f80-0242ac110007",
+                  "validationStatus": "SUCCESS",
+                  "additionalRequestHostnamesInProperty": [
+                    "portal.example.com"
+                  ],
+                  "editedRuleBehaviors": [
+                    "cpCode"
+                  ],
+                  "filteredRuleBehaviors": [
+                    "http2"
+                  ],
+                  "requestHostnames": [
+                    "shop.example.com"
+                  ],
+                  "_links": {
+                    "rules": {
+                      "href": "/sandbox-api/v1/sandboxes/e43a53d6-7430-11e8-8f80-0242ac110007/properties/e4ae2447-7430-11e8-8f80-0242ac110007/rules"
+                    },
+                    "sandbox": {
+                      "href": "/sandbox-api/v1/sandboxes/e43a53d6-7430-11e8-8f80-0242ac110007"
+                    },
+                    "self": {
+                      "href": "/sandbox-api/v1/sandboxes/e43a53d6-7430-11e8-8f80-0242ac110007/properties/e4ae2447-7430-11e8-8f80-0242ac110007"
+                    }
+                  },
+                  "validationWarnings": [
+                    {
+                      "detail": "If your `Origin Server` uses HTTPS, make sure to follow <a href=\"/dl/property-manager/property-manager-help/csh_lookup.html?id=PM_0034\" target=\"_blank\">this procedure</a> to avoid a service outage or a security breach when you rotate your origin's certificate.",
+                      "errorLocation": "#/rules/behaviors/0",
+                      "type": "https://problems.luna.akamaiapis.net/papi/v1/validation/validation_message.ssl_delegate_warning_rotate"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Each sandbox contains at least one property. The property configuration describes the origin location and content-handling specifications.",
+                  "type": "object",
+                  "required": [
+                    "requestHostnames"
+                  ],
+                  "properties": {
+                    "_links": {
+                      "additionalProperties": true,
+                      "description": "HAL-formatted hypermedia links relating to the property. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                      "minProperties": 1,
+                      "type": "object",
+                      "properties": {
+                        "resource": {
+                          "additionalProperties": true,
+                          "description": "Contains a link to the current resource.",
+                          "type": "object",
+                          "required": [
+                            "href"
+                          ],
+                          "properties": {
+                            "href": {
+                              "description": "A relative link to access the resource.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/Links.yaml"
+                      }
+                    },
+                    "additionalRequestHostnamesInProperty": {
+                      "description": "A list of hostnames found in the [property configuration](https://techdocs.akamai.com/property-mgr/docs/key-concepts-terms) that were not specified in the [Create a sandbox](https://techdocs.akamai.com/sandbox/reference/post-sandbox) request.",
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "cpcode": {
+                      "description": "Unique identifier used for reporting traffic served. The Sandbox API tries to use the same CP code for all traffic within a particular Control Center access group.",
+                      "type": "number"
+                    },
+                    "editedRuleBehaviors": {
+                      "description": "Behaviors in the rule tree that were modified for use in the Sandbox.",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "filteredRuleBehaviors": {
+                      "description": "Behaviors in the rule tree that were removed because they are not supported by Sandbox.",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "productId": {
+                      "description": "The Akamai product associated with the property, as defined in Property Manager.",
+                      "type": "string"
+                    },
+                    "propertyId": {
+                      "description": "The identifier for the property from which the sandbox was created.",
+                      "type": "string"
+                    },
+                    "requestHostnames": {
+                      "description": "Customer-specific hostnames included in the property configuration that you can use to make requests and test changes in the sandbox. The Sandbox API defaults to the hostnames configured in the property unless you specify alternates.",
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "ruleFormat": {
+                      "description": "The Property Manager rule format used within the property.",
+                      "type": "string"
+                    },
+                    "sandboxPropertyId": {
+                      "description": "Unique identifier for a property within the sandbox.",
+                      "type": "string"
+                    },
+                    "validationStatus": {
+                      "description": "The validation status for the property. If the status is `OK` the sandbox can serve traffic. If the status is `ERROR` you can find the `statusReason` in the sandbox response object.",
+                      "type": "string"
+                    },
+                    "validationWarnings": {
+                      "description": "Contains warnings related to validating the rule tree when a sandbox is created or a property is added.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Contains warnings related to validating the rule tree. For details, refer to [Errors](https://techdocs.akamai.com/sandbox/reference/errors).",
+                        "type": "object",
+                        "properties": {
+                          "detail": {
+                            "description": "Provides specific information related to this validation warning.",
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "errorLocation": {
+                            "description": "Provides a path expression to the offending rule.",
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "A unique name for this particular validation.",
+                            "readOnly": true,
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/ValidationWarnings.yaml"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/property.yaml"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Provides a URL link to GET the newly created resource.",
+                "schema": {
+                  "example": "/sandbox-api/v1/sandboxes/2956607f-854e-11e8-898a-0242ac110002/properties/f48caeff-68e5-11e8-8870-0242ac110003",
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/Location.yaml"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "get": {
+        "description": "This operation returns a list of sandbox properties available to the current user.",
+        "operationId": "get-sandbox-properties",
+        "summary": "List properties",
+        "tags": [
+          "Properties"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/get-sandbox-properties"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "properties": [
+                    {
+                      "cpcode": 1234567,
+                      "productId": "prd_Fresca",
+                      "propertyId": "prp_1712",
+                      "ruleFormat": "latest",
+                      "sandboxPropertyId": "ad37282c-8549-11e8-898a-0242ac110002",
+                      "validationStatus": "SUCCESS",
+                      "additionalRequestHostnamesInProperty": [
+                        "portal.example.com"
+                      ],
+                      "editedRuleBehaviors": [
+                        "cpCode"
+                      ],
+                      "filteredRuleBehaviors": [
+                        "http2"
+                      ],
+                      "requestHostnames": [
+                        "shop.example.com"
+                      ],
+                      "_links": {
+                        "rules": {
+                          "href": "/sandbox-api/v1/sandboxes/ac6ef62b-8549-11e8-898a-0242ac110002/properties/ad37282c-8549-11e8-898a-0242ac110002/rules"
+                        },
+                        "sandbox": {
+                          "href": "/sandbox-api/v1/sandboxes/ac6ef62b-8549-11e8-898a-0242ac110002"
+                        },
+                        "self": {
+                          "href": "/sandbox-api/v1/sandboxes/ac6ef62b-8549-11e8-898a-0242ac110002/properties/ad37282c-8549-11e8-898a-0242ac110002"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "properties"
+                  ],
+                  "properties": {
+                    "properties": {
+                      "description": "The set of properties in this sandbox.",
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Detailed information on the property.",
+                        "type": "object",
+                        "required": [
+                          "requestHostnames"
+                        ],
+                        "properties": {
+                          "_links": {
+                            "additionalProperties": true,
+                            "description": "HAL-formatted hypermedia links relating to the property. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                            "minProperties": 1,
+                            "type": "object",
+                            "properties": {
+                              "resource": {
+                                "additionalProperties": true,
+                                "description": "Contains a link to the current resource.",
+                                "type": "object",
+                                "required": [
+                                  "href"
+                                ],
+                                "properties": {
+                                  "href": {
+                                    "description": "A relative link to access the resource.",
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/Links.yaml"
+                            }
+                          },
+                          "additionalRequestHostnamesInProperty": {
+                            "description": "A list of hostnames found in the [property configuration](https://techdocs.akamai.com/property-mgr/docs/key-concepts-terms) that were not specified in the [Create a sandbox](https://techdocs.akamai.com/sandbox/reference/post-sandbox) request.",
+                            "minItems": 1,
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "cpcode": {
+                            "description": "Unique identifier used for reporting traffic served. The Sandbox API tries to use the same CP code for all traffic within a particular Control Center access group.",
+                            "type": "number"
+                          },
+                          "editedRuleBehaviors": {
+                            "description": "Behaviors in the rule tree that were modified for use in the Sandbox.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "filteredRuleBehaviors": {
+                            "description": "Behaviors in the rule tree that were removed because they are not supported by Sandbox.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "productId": {
+                            "description": "The Akamai product associated with the property, as defined in Property Manager.",
+                            "type": "string"
+                          },
+                          "propertyId": {
+                            "description": "The identifier for the property from which the sandbox was created.",
+                            "type": "string"
+                          },
+                          "requestHostnames": {
+                            "description": "Customer-specific hostnames included in the property configuration that you can use to make requests and test changes in the sandbox. The Sandbox API defaults to the hostnames configured in the property unless you specify alternates.",
+                            "minItems": 1,
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "ruleFormat": {
+                            "description": "The Property Manager rule format used within the property.",
+                            "type": "string"
+                          },
+                          "sandboxPropertyId": {
+                            "description": "Unique identifier for a property within the sandbox.",
+                            "type": "string"
+                          },
+                          "validationStatus": {
+                            "description": "The validation status for the property. If the status is `OK` the sandbox can serve traffic. If the status is `ERROR` you can find the `statusReason` in the sandbox response object.",
+                            "type": "string"
+                          },
+                          "validationWarnings": {
+                            "description": "Contains warnings related to validating the rule tree when a sandbox is created or a property is added.",
+                            "type": "array",
+                            "items": {
+                              "additionalProperties": false,
+                              "description": "Contains warnings related to validating the rule tree. For details, refer to [Errors](https://techdocs.akamai.com/sandbox/reference/errors).",
+                              "type": "object",
+                              "properties": {
+                                "detail": {
+                                  "description": "Provides specific information related to this validation warning.",
+                                  "readOnly": true,
+                                  "type": "string"
+                                },
+                                "errorLocation": {
+                                  "description": "Provides a path expression to the offending rule.",
+                                  "readOnly": true,
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "description": "A unique name for this particular validation.",
+                                  "readOnly": true,
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/ValidationWarnings.yaml"
+                            }
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/property.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/properties.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Indicates the access level of the request. Specify either `USER` to perform the request for the sandboxes that you can access, or `ACCOUNT` to perform the request for all sandboxes within the account.",
+            "example": "{{access}}",
+            "in": "query",
+            "name": "access",
+            "schema": {
+              "default": "USER",
+              "example": "ACCOUNT",
+              "type": "string",
+              "enum": [
+                "USER",
+                "ACCOUNT"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/accessParam-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Unique identifier for the sandbox.",
+          "example": "{{sandboxId}}",
+          "in": "path",
+          "name": "sandboxId",
+          "required": true,
+          "schema": {
+            "example": "2956607f-854e-11e8-898a-0242ac110002",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/sandboxId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/sandboxes/{sandboxId}/properties/{sandboxPropertyId}": {
+      "get": {
+        "description": "Get a specific property of a sandbox so you can review the information in the response body.",
+        "operationId": "get-sandbox-property",
+        "summary": "Read a property",
+        "tags": [
+          "Properties"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/get-sandbox-property"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "cpcode": 1234567,
+                  "productId": "prd_Fresca",
+                  "propertyId": "prp_1712",
+                  "ruleFormat": "latest",
+                  "sandboxPropertyId": "ad37282c-8549-11e8-898a-0242ac110002",
+                  "validationStatus": "SUCCESS",
+                  "additionalRequestHostnamesInProperty": [
+                    "portal.example.com"
+                  ],
+                  "editedRuleBehaviors": [
+                    "cpCode"
+                  ],
+                  "filteredRuleBehaviors": [
+                    "http2"
+                  ],
+                  "requestHostnames": [
+                    "shop.example.com"
+                  ],
+                  "_links": {
+                    "rules": {
+                      "href": "/sandbox-api/v1/sandboxes/ac6ef62b-8549-11e8-898a-0242ac110002/properties/ad37282c-8549-11e8-898a-0242ac110002/rules"
+                    },
+                    "sandbox": {
+                      "href": "/sandbox-api/v1/sandboxes/ac6ef62b-8549-11e8-898a-0242ac110002"
+                    },
+                    "self": {
+                      "href": "/sandbox-api/v1/sandboxes/ac6ef62b-8549-11e8-898a-0242ac110002/properties/ad37282c-8549-11e8-898a-0242ac110002"
+                    }
+                  }
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Each sandbox contains at least one property. The property configuration describes the origin location and content-handling specifications.",
+                  "type": "object",
+                  "required": [
+                    "requestHostnames"
+                  ],
+                  "properties": {
+                    "_links": {
+                      "additionalProperties": true,
+                      "description": "HAL-formatted hypermedia links relating to the property. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                      "minProperties": 1,
+                      "type": "object",
+                      "properties": {
+                        "resource": {
+                          "additionalProperties": true,
+                          "description": "Contains a link to the current resource.",
+                          "type": "object",
+                          "required": [
+                            "href"
+                          ],
+                          "properties": {
+                            "href": {
+                              "description": "A relative link to access the resource.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/Links.yaml"
+                      }
+                    },
+                    "additionalRequestHostnamesInProperty": {
+                      "description": "A list of hostnames found in the [property configuration](https://techdocs.akamai.com/property-mgr/docs/key-concepts-terms) that were not specified in the [Create a sandbox](https://techdocs.akamai.com/sandbox/reference/post-sandbox) request.",
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "cpcode": {
+                      "description": "Unique identifier used for reporting traffic served. The Sandbox API tries to use the same CP code for all traffic within a particular Control Center access group.",
+                      "type": "number"
+                    },
+                    "editedRuleBehaviors": {
+                      "description": "Behaviors in the rule tree that were modified for use in the Sandbox.",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "filteredRuleBehaviors": {
+                      "description": "Behaviors in the rule tree that were removed because they are not supported by Sandbox.",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "productId": {
+                      "description": "The Akamai product associated with the property, as defined in Property Manager.",
+                      "type": "string"
+                    },
+                    "propertyId": {
+                      "description": "The identifier for the property from which the sandbox was created.",
+                      "type": "string"
+                    },
+                    "requestHostnames": {
+                      "description": "Customer-specific hostnames included in the property configuration that you can use to make requests and test changes in the sandbox. The Sandbox API defaults to the hostnames configured in the property unless you specify alternates.",
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "ruleFormat": {
+                      "description": "The Property Manager rule format used within the property.",
+                      "type": "string"
+                    },
+                    "sandboxPropertyId": {
+                      "description": "Unique identifier for a property within the sandbox.",
+                      "type": "string"
+                    },
+                    "validationStatus": {
+                      "description": "The validation status for the property. If the status is `OK` the sandbox can serve traffic. If the status is `ERROR` you can find the `statusReason` in the sandbox response object.",
+                      "type": "string"
+                    },
+                    "validationWarnings": {
+                      "description": "Contains warnings related to validating the rule tree when a sandbox is created or a property is added.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Contains warnings related to validating the rule tree. For details, refer to [Errors](https://techdocs.akamai.com/sandbox/reference/errors).",
+                        "type": "object",
+                        "properties": {
+                          "detail": {
+                            "description": "Provides specific information related to this validation warning.",
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "errorLocation": {
+                            "description": "Provides a path expression to the offending rule.",
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "A unique name for this particular validation.",
+                            "readOnly": true,
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/ValidationWarnings.yaml"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/property.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Indicates the access level of the request. Specify either `USER` to perform the request for the sandboxes that you can access, or `ACCOUNT` to perform the request for all sandboxes within the account.",
+            "example": "{{access}}",
+            "in": "query",
+            "name": "access",
+            "schema": {
+              "default": "USER",
+              "example": "ACCOUNT",
+              "type": "string",
+              "enum": [
+                "USER",
+                "ACCOUNT"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/accessParam-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "description": "Update the `requestHostnames` of the sandbox property. Your sandbox can support multiple hostnames for testing purposes.",
+        "operationId": "put-sandbox-property",
+        "summary": "Update a property",
+        "tags": [
+          "Properties"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/put-sandbox-property"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "cpcode": 1234567,
+                "requestHostnames": [
+                  "host1.example.com",
+                  "host2.example.com"
+                ]
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Each sandbox contains at least one property. The property configuration describes the origin location and content-handling specifications.",
+                "type": "object",
+                "required": [
+                  "requestHostnames"
+                ],
+                "properties": {
+                  "_links": {
+                    "additionalProperties": true,
+                    "description": "HAL-formatted hypermedia links relating to the property. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                    "minProperties": 1,
+                    "type": "object",
+                    "properties": {
+                      "resource": {
+                        "additionalProperties": true,
+                        "description": "Contains a link to the current resource.",
+                        "type": "object",
+                        "required": [
+                          "href"
+                        ],
+                        "properties": {
+                          "href": {
+                            "description": "A relative link to access the resource.",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/Links.yaml"
+                    }
+                  },
+                  "additionalRequestHostnamesInProperty": {
+                    "description": "A list of hostnames found in the [property configuration](https://techdocs.akamai.com/property-mgr/docs/key-concepts-terms) that were not specified in the [Create a sandbox](https://techdocs.akamai.com/sandbox/reference/post-sandbox) request.",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "cpcode": {
+                    "description": "Unique identifier used for reporting traffic served. The Sandbox API tries to use the same CP code for all traffic within a particular Control Center access group.",
+                    "example": "{{cpcode}}",
+                    "type": "number"
+                  },
+                  "editedRuleBehaviors": {
+                    "description": "Behaviors in the rule tree that were modified for use in the Sandbox.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "filteredRuleBehaviors": {
+                    "description": "Behaviors in the rule tree that were removed because they are not supported by Sandbox.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "productId": {
+                    "description": "The Akamai product associated with the property, as defined in Property Manager.",
+                    "example": "{{productId}}",
+                    "type": "string"
+                  },
+                  "propertyId": {
+                    "description": "The identifier for the property from which the sandbox was created.",
+                    "example": "{{propertyId}}",
+                    "type": "string"
+                  },
+                  "requestHostnames": {
+                    "description": "Customer-specific hostnames included in the property configuration that you can use to make requests and test changes in the sandbox. The Sandbox API defaults to the hostnames configured in the property unless you specify alternates.",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "ruleFormat": {
+                    "description": "The Property Manager rule format used within the property.",
+                    "example": "{{ruleFormat}}",
+                    "type": "string"
+                  },
+                  "sandboxPropertyId": {
+                    "description": "Unique identifier for a property within the sandbox.",
+                    "example": "{{sandboxPropertyId}}",
+                    "type": "string"
+                  },
+                  "validationStatus": {
+                    "description": "The validation status for the property. If the status is `OK` the sandbox can serve traffic. If the status is `ERROR` you can find the `statusReason` in the sandbox response object.",
+                    "example": "{{validationStatus}}",
+                    "type": "string"
+                  },
+                  "validationWarnings": {
+                    "description": "Contains warnings related to validating the rule tree when a sandbox is created or a property is added.",
+                    "type": "array",
+                    "items": {
+                      "additionalProperties": false,
+                      "description": "Contains warnings related to validating the rule tree. For details, refer to [Errors](https://techdocs.akamai.com/sandbox/reference/errors).",
+                      "type": "object",
+                      "properties": {
+                        "detail": {
+                          "description": "Provides specific information related to this validation warning.",
+                          "readOnly": true,
+                          "type": "string"
+                        },
+                        "errorLocation": {
+                          "description": "Provides a path expression to the offending rule.",
+                          "readOnly": true,
+                          "type": "string"
+                        },
+                        "type": {
+                          "description": "A unique name for this particular validation.",
+                          "readOnly": true,
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/ValidationWarnings.yaml"
+                    }
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/property.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "The request was successfully processed.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Indicates the access level of the request. Specify either `USER` to perform the request for the sandboxes that you can access, or `ACCOUNT` to perform the request for all sandboxes within the account.",
+            "example": "{{access}}",
+            "in": "query",
+            "name": "access",
+            "schema": {
+              "default": "USER",
+              "example": "ACCOUNT",
+              "type": "string",
+              "enum": [
+                "USER",
+                "ACCOUNT"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/accessParam-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "description": "Remove a property from a sandbox. This operation applies when the sandbox contains more than one property. You cannot delete the only property of a sandbox.",
+        "operationId": "delete-sandbox-property",
+        "summary": "Delete a property",
+        "tags": [
+          "Properties"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/delete-sandbox-property"
+        },
+        "responses": {
+          "204": {
+            "description": "The request was successfully processed.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Indicates the access level of the request. Specify either `USER` to perform the request for the sandboxes that you can access, or `ACCOUNT` to perform the request for all sandboxes within the account.",
+            "example": "{{access}}",
+            "in": "query",
+            "name": "access",
+            "schema": {
+              "default": "USER",
+              "example": "ACCOUNT",
+              "type": "string",
+              "enum": [
+                "USER",
+                "ACCOUNT"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/accessParam-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Unique identifier for the property within a sandbox.",
+          "example": "{{sandboxPropertyId}}",
+          "in": "path",
+          "name": "sandboxPropertyId",
+          "required": true,
+          "schema": {
+            "example": "e4ae2447-7430-11e8-8f80-0242ac110007",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/sandboxPropertyId-path.yaml"
+          }
+        },
+        {
+          "description": "Unique identifier for the sandbox.",
+          "example": "{{sandboxId}}",
+          "in": "path",
+          "name": "sandboxId",
+          "required": true,
+          "schema": {
+            "example": "2956607f-854e-11e8-898a-0242ac110002",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/sandboxId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/sandboxes/{sandboxId}/properties/{sandboxPropertyId}/rules": {
+      "get": {
+        "description": "Get a specific rule tree of a sandbox property. Each sandbox property references one rule tree. For more information on how content-handling rules are defined, review the [Property Manager API](https://techdocs.akamai.com/property-mgr/reference/api).",
+        "operationId": "get-sandbox-properties-rules",
+        "summary": "Get a rule tree",
+        "tags": [
+          "Properties"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/get-sandbox-properties-rules"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "_links": {
+                    "property": {
+                      "href": "/sandbox-api/v1/sandboxes/ac6ef62b-8549-11e8-898a-0242ac110002/properties/ad37282c-8549-11e8-898a-0242ac110002"
+                    },
+                    "sandbox": {
+                      "href": "/sandbox-api/v1/sandboxes/ac6ef62b-8549-11e8-898a-0242ac110002"
+                    },
+                    "self": {
+                      "href": "/sandbox-api/v1/sandboxes/ac6ef62b-8549-11e8-898a-0242ac110002/properties/ad37282c-8549-11e8-898a-0242ac110002/rules"
+                    }
+                  },
+                  "rules": {
+                    "name": "default",
+                    "children": [
+                      {
+                        "criteriaMustSatisfy": "all",
+                        "name": "Handle /my-path",
+                        "behaviors": [
+                          {
+                            "behavior": "max-age",
+                            "name": "caching",
+                            "ttl": "1m"
+                          }
+                        ],
+                        "criteria": [
+                          {
+                            "name": "path",
+                            "value": [
+                              "/my-path"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Each sandbox property references one rule tree.",
+                  "type": "object",
+                  "required": [
+                    "rules"
+                  ],
+                  "properties": {
+                    "_links": {
+                      "additionalProperties": true,
+                      "description": "HAL-formatted hypermedia links relating to the rule tree. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                      "minProperties": 1,
+                      "type": "object",
+                      "properties": {
+                        "resource": {
+                          "additionalProperties": true,
+                          "description": "Contains a link to the current resource.",
+                          "type": "object",
+                          "required": [
+                            "href"
+                          ],
+                          "properties": {
+                            "href": {
+                              "description": "A relative link to access the resource.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/Links.yaml"
+                      }
+                    },
+                    "rules": {
+                      "description": "Specifies the rule tree for this sandbox property. The content-handling rules are defined in the [Property Manager API](https://techdocs.akamai.com/property-mgr/reference/rule-trees).",
+                      "type": "object"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/rules.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Indicates the access level of the request. Specify either `USER` to perform the request for the sandboxes that you can access, or `ACCOUNT` to perform the request for all sandboxes within the account.",
+            "example": "{{access}}",
+            "in": "query",
+            "name": "access",
+            "schema": {
+              "default": "USER",
+              "example": "ACCOUNT",
+              "type": "string",
+              "enum": [
+                "USER",
+                "ACCOUNT"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/accessParam-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "description": "Modify the rules of a sandbox property to make changes to content-handling behaviors for testing purposes within your development environment. Once you are satisfied with the results in your sandbox, you can use the [Property Manager API](https://techdocs.akamai.com/property-mgr/reference/api) to apply the rule changes to your property configuration.",
+        "operationId": "put-sandbox-properties-rules",
+        "summary": "Update a rule tree",
+        "tags": [
+          "Properties"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/put-sandbox-properties-rules"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "rules": {
+                  "name": "default",
+                  "children": [
+                    {
+                      "criteriaMustSatisfy": "all",
+                      "name": "Handle /my-path",
+                      "behaviors": [
+                        {
+                          "behavior": "max-age",
+                          "name": "caching",
+                          "ttl": "5m"
+                        }
+                      ],
+                      "criteria": [
+                        {
+                          "name": "path",
+                          "value": [
+                            "/my-path"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Each sandbox property references one rule tree.",
+                "type": "object",
+                "required": [
+                  "rules"
+                ],
+                "properties": {
+                  "_links": {
+                    "additionalProperties": true,
+                    "description": "HAL-formatted hypermedia links relating to the rule tree. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                    "minProperties": 1,
+                    "type": "object",
+                    "properties": {
+                      "resource": {
+                        "additionalProperties": true,
+                        "description": "Contains a link to the current resource.",
+                        "type": "object",
+                        "required": [
+                          "href"
+                        ],
+                        "properties": {
+                          "href": {
+                            "description": "A relative link to access the resource.",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/Links.yaml"
+                    }
+                  },
+                  "rules": {
+                    "description": "Specifies the rule tree for this sandbox property. The content-handling rules are defined in the [Property Manager API](https://techdocs.akamai.com/property-mgr/reference/rule-trees).",
+                    "type": "object"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/rules.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ruleFormat": "latest",
+                  "editedRuleBehaviors": [
+                    "cpCode"
+                  ],
+                  "filteredRuleBehaviors": [
+                    "http2"
+                  ],
+                  "_links": {
+                    "property": {
+                      "href": "/sandbox-api/v1/sandboxes/e43a53d6-7430-11e8-8f80-0242ac110007/properties/e4ae2447-7430-11e8-8f80-0242ac110007"
+                    },
+                    "sandbox": {
+                      "href": "/sandbox-api/v1/sandboxes/e43a53d6-7430-11e8-8f80-0242ac110007"
+                    },
+                    "self": {
+                      "href": "/sandbox-api/v1/sandboxes/e43a53d6-7430-11e8-8f80-0242ac110007/properties/e4ae2447-7430-11e8-8f80-0242ac110007/rules"
+                    }
+                  },
+                  "validationWarnings": [
+                    {
+                      "detail": "If your `Origin Server` uses HTTPS, make sure to follow <a href=\"/dl/property-manager/property-manager-help/csh_lookup.html?id=PM_0034\" target=\"_blank\">this procedure</a> to avoid a service outage or a security breach when you rotate your origin's certificate.",
+                      "errorLocation": "#/rules/behaviors/0",
+                      "type": "https://problems.luna.akamaiapis.net/papi/v1/validation/validation_message.ssl_delegate_warning_rotate"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Response from updating a properties rules. It includes information related to the validation, and any modifications for the sandbox environment. The response does not include the rules themselves to reduce size of the response.",
+                  "type": "object",
+                  "properties": {
+                    "_links": {
+                      "additionalProperties": true,
+                      "description": "HAL-formatted hypermedia links relating to the property. See [Hypermedia](https://techdocs.akamai.com/sandbox/reference/hypermedia) for more information.",
+                      "minProperties": 1,
+                      "type": "object",
+                      "properties": {
+                        "resource": {
+                          "additionalProperties": true,
+                          "description": "Contains a link to the current resource.",
+                          "type": "object",
+                          "required": [
+                            "href"
+                          ],
+                          "properties": {
+                            "href": {
+                              "description": "A relative link to access the resource.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/Links.yaml"
+                      }
+                    },
+                    "editedRuleBehaviors": {
+                      "description": "Behaviors in the rule tree that were modified for use in the Sandbox.",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "filteredRuleBehaviors": {
+                      "description": "Behaviors in the rule tree that were removed because they are not supported by Sandbox.",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "ruleFormat": {
+                      "description": "The Property Manager rule format used for validation.",
+                      "type": "string"
+                    },
+                    "validationWarnings": {
+                      "description": "Contains warnings related to validating the rule tree.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Contains warnings related to validating the rule tree. For details, refer to [Errors](https://techdocs.akamai.com/sandbox/reference/errors).",
+                        "type": "object",
+                        "properties": {
+                          "detail": {
+                            "description": "Provides specific information related to this validation warning.",
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "errorLocation": {
+                            "description": "Provides a path expression to the offending rule.",
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "A unique name for this particular validation.",
+                            "readOnly": true,
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/ValidationWarnings.yaml"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/update-rules-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Indicates the access level of the request. Specify either `USER` to perform the request for the sandboxes that you can access, or `ACCOUNT` to perform the request for all sandboxes within the account.",
+            "example": "{{access}}",
+            "in": "query",
+            "name": "access",
+            "schema": {
+              "default": "USER",
+              "example": "ACCOUNT",
+              "type": "string",
+              "enum": [
+                "USER",
+                "ACCOUNT"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/accessParam-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Unique identifier for the property within a sandbox.",
+          "example": "{{sandboxPropertyId}}",
+          "in": "path",
+          "name": "sandboxPropertyId",
+          "required": true,
+          "schema": {
+            "example": "e4ae2447-7430-11e8-8f80-0242ac110007",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/sandboxPropertyId-path.yaml"
+          }
+        },
+        {
+          "description": "Unique identifier for the sandbox.",
+          "example": "{{sandboxId}}",
+          "in": "path",
+          "name": "sandboxId",
+          "required": true,
+          "schema": {
+            "example": "2956607f-854e-11e8-898a-0242ac110002",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/sandboxId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/sandboxes/{sandboxId}/rotateJWT": {
+      "post": {
+        "description": "Generate a new `jwtToken` (JSON Web Token) for the specified sandbox instance. Use this to prevent access to a particular sandbox by developers who had the previous JWT.",
+        "operationId": "post-sandbox-rotate-jwt",
+        "summary": "Rotate the JWT",
+        "tags": [
+          "Rotate JWT"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Sandbox API",
+          "url": "https://techdocs.akamai.com/sandbox/reference/post-sandbox-rotate-jwt"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "jwtToken": "eyJ0eXAiOiJKV1QiLC...NwpuL1f8z9U6Se3p_uYa_sgfWzw"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "jwtToken"
+                  ],
+                  "properties": {
+                    "jwtToken": {
+                      "description": "Generates a new JSON Web Token for the specified sandbox instance.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/rotate-jwt-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Indicates the access level of the request. Specify either `USER` to perform the request for the sandboxes that you can access, or `ACCOUNT` to perform the request for all sandboxes within the account.",
+            "example": "{{access}}",
+            "in": "query",
+            "name": "access",
+            "schema": {
+              "default": "USER",
+              "example": "ACCOUNT",
+              "type": "string",
+              "enum": [
+                "USER",
+                "ACCOUNT"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/accessParam-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Unique identifier for the sandbox.",
+          "example": "{{sandboxId}}",
+          "in": "path",
+          "name": "sandboxId",
+          "required": true,
+          "schema": {
+            "example": "2956607f-854e-11e8-898a-0242ac110002",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/sandboxId-path.yaml"
+          }
+        }
+      ]
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/sandbox-api/v1"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+id: resource:/descriptors/papi/v1/schemas/GetAvailableCriteriaResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array.
+  
+x-akamai:
+  file-path: schemas/available-criteria-get-response.yaml
+additionalProperties: false
+properties:
+  contractId:
+    type: string
+    description: |
+      Identifies the prevailing contract under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ctr_` prefix.
+  criteria:
+    type: object
+    description: |
+      The set of available criteria, available within an `items` array.
+    additionalProperties: false
+    properties:
+      items:
+        type: array
+        description: |
+          Details of available criteria for [properties](ref:get-available-criteria) or [includes](ref:get-include-available-criteria) under your current contract.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - name
+          - schemaLink
+          properties:
+            name:
+              type: string
+              description: |
+                The name of the currently available criteria.
+            schemaLink:
+              type: string
+              description: |
+                A link to the rule format that describes the criteria. Use the file link to [Get a rule format's schema](ref:get-rule-formats), then use the appended JSON Pointer expression to navigate to the schema that catalogs its options.
+  groupId:
+    type: string
+    description: |
+      Identifies the prevailing group under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+  productId:
+    type: string
+    description: |
+      The product under which these criteria are available.
+  ruleFormat:
+    type: string
+    description: |
+      The rule format version under which these matches are available. See [API versioning](ref:api-versioning) for more information.
+$schema: http://json-schema.org/draft-04/schema#

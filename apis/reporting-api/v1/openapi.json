@@ -1,0 +1,3028 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Reporting API",
+    "url": "https://techdocs.akamai.com/reporting/reference"
+  },
+  "info": {
+    "title": "Akamai: Reporting API",
+    "version": "v1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/reports": {
+      "get": {
+        "description": "List all versions of all report types, optionally filtering out older deprecated versions.",
+        "operationId": "get-reports",
+        "summary": "List report types",
+        "tags": [
+          "Report types"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Reporting API",
+          "url": "https://techdocs.akamai.com/reporting/reference/get-reports"
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "This schema describes array of immutable list of Metrics.",
+                  "type": "array",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "Describes the range of query options available for each report.",
+                    "type": "object",
+                    "required": [
+                      "name",
+                      "version",
+                      "deprecated",
+                      "status",
+                      "available",
+                      "dataRetentionDays",
+                      "intervals",
+                      "requiredRoles"
+                    ],
+                    "properties": {
+                      "available": {
+                        "description": "When enabled, indicates the report can be executed by the current user.",
+                        "type": "boolean"
+                      },
+                      "dataRetentionDays": {
+                        "description": "The number of days for which this report's data is available.",
+                        "type": "integer"
+                      },
+                      "deprecated": {
+                        "description": "When enabled, indicates that this is an older version of the report.",
+                        "type": "boolean"
+                      },
+                      "filters": {
+                        "description": "The set of available filters available for this report.",
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "type": "object",
+                          "properties": {
+                            "fullDescription": {
+                              "description": "Provides documentation describing the available filter.",
+                              "type": "string"
+                            },
+                            "name": {
+                              "description": "The name of the available filter.",
+                              "type": "string"
+                            },
+                            "required": {
+                              "description": "When enabled, you need to specify this filter when executing the report.",
+                              "type": "boolean"
+                            },
+                            "type": {
+                              "description": "The type of data this filter expects, either arbitrary `int` or `string`, or a fixed `enum` specified by `values`.",
+                              "type": "string",
+                              "enum": [
+                                "string",
+                                "int",
+                                "enum"
+                              ]
+                            },
+                            "values": {
+                              "description": "When the `type` of filter is `enum`, this lists available values.",
+                              "type": "array",
+                              "items": {
+                                "additionalProperties": false,
+                                "type": "object",
+                                "required": [
+                                  "value"
+                                ],
+                                "properties": {
+                                  "fullDescription": {
+                                    "description": "Where necessary, provides documentation describing the enumerated value.",
+                                    "type": "string"
+                                  },
+                                  "value": {
+                                    "description": "Specifies each enumerated string value.",
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "fullDescription": {
+                        "description": "Documentation that describes this report.",
+                        "type": "string"
+                      },
+                      "groupBy": {
+                        "description": "This indicates names of columns by which reported data is grouped. It's reflected in the generated report's metadata.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "groupOutlyingValues": {
+                        "additionalProperties": false,
+                        "description": "Specifies this report's support for grouping outlying values under a single category.",
+                        "type": "object",
+                        "required": [
+                          "enabled"
+                        ],
+                        "properties": {
+                          "enabled": {
+                            "description": "Indicates whether this report allows you to group outlying values.",
+                            "type": "boolean"
+                          },
+                          "groupName": {
+                            "default": "Other",
+                            "description": "Indicates the default category name under which outlying values group within a single category. You can provide your own name to override this default.",
+                            "type": "string"
+                          },
+                          "groupThreshold": {
+                            "default": 9,
+                            "description": "Indicates the default number of categories to report on separately before grouping under a single category. You can provide your own threshold value to override this default.",
+                            "type": "integer"
+                          }
+                        }
+                      },
+                      "intervals": {
+                        "description": "Specifies the set of available spans of time to aggregate data by. Use one of these values as the `interval` query parameter when executing the report.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "limit": {
+                        "description": "The default number of data rows included for this report.",
+                        "type": "integer"
+                      },
+                      "links": {
+                        "description": "Specifies dynamic hypermedia links to report-generating operations.",
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "type": "object",
+                          "required": [
+                            "rel",
+                            "href"
+                          ],
+                          "properties": {
+                            "href": {
+                              "description": "The hypermedia URL linking the API resource.",
+                              "type": "string"
+                            },
+                            "method": {
+                              "default": "GET",
+                              "description": "The HTTP method to call the `href` link with. If unspecified, uses the GET method.",
+                              "type": "string"
+                            },
+                            "rel": {
+                              "description": "Identifies the type of resource.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "maxLimit": {
+                        "description": "The maximum number of data rows permitted for this report.",
+                        "type": "integer"
+                      },
+                      "metrics": {
+                        "description": "The set of available metrics available for this report.",
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "type": "object",
+                          "required": [
+                            "name",
+                            "description"
+                          ],
+                          "properties": {
+                            "fullDescription": {
+                              "description": "Provides documentation describing the available metric.",
+                              "type": "string"
+                            },
+                            "name": {
+                              "description": "The name of the available metric.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "name": {
+                        "description": "Specifies the name of the report.",
+                        "type": "string"
+                      },
+                      "outputType": {
+                        "description": "The report type. Either `HIERARCHICAL` with two columns you can group data by, with the first being Time, or `FLAT`.",
+                        "type": "string",
+                        "enum": [
+                          "FLAT",
+                          "HIERARCHICAL"
+                        ]
+                      },
+                      "requiredProducts": {
+                        "description": "If specified, this lists any product you need to execute the report.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "requiredRoles": {
+                        "description": "Information about required role to run this report.",
+                        "type": "array",
+                        "items": {
+                          "description": "A set of permissions, any of which you need to execute the report. Some permissions may correspond to specific `requiredProducts`.",
+                          "type": "string"
+                        }
+                      },
+                      "status": {
+                        "description": "Whether this version of the report is `PUBLISHED` or `DEPRECATED`. Selecting `DEPRECATED` enables the `deprecated` JSON member.",
+                        "type": "string",
+                        "enum": [
+                          "PUBLISHED",
+                          "DEPRECATED"
+                        ]
+                      },
+                      "version": {
+                        "description": "The version of this report.",
+                        "type": "integer"
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/report-list-row-schema.yaml"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/ReportList.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "available": true,
+                    "businessObjectName": "cpcode",
+                    "dataRetentionDays": 92,
+                    "deprecated": true,
+                    "name": "ipatraffic-by-time",
+                    "outputType": "FLAT",
+                    "status": "DEPRECATED",
+                    "supportsPagination": false,
+                    "timeBased": true,
+                    "version": 1,
+                    "groupBy": [
+                      "startdatetime"
+                    ],
+                    "intervals": [
+                      "MONTH",
+                      "WEEK",
+                      "DAY",
+                      "HOUR",
+                      "FIVE_MINUTES"
+                    ],
+                    "requiredProducts": [
+                      "IP Application Accelerator"
+                    ],
+                    "requiredRoles": [
+                      "Pulsar IPA/SXL Read Only"
+                    ],
+                    "groupOutlyingValues": {
+                      "enabled": false
+                    },
+                    "filters": [
+                      {
+                        "name": "slot",
+                        "required": false,
+                        "type": "int"
+                      }
+                    ],
+                    "links": [
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions/1",
+                        "rel": "self"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions",
+                        "rel": "versions"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports",
+                        "rel": "all-reports"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions/1/report-data",
+                        "rel": "execute-report"
+                      }
+                    ],
+                    "metrics": [
+                      {
+                        "label": "Concurrent Users",
+                        "name": "concurrentUsers",
+                        "summaryStatistic": false,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "label": "Concurrent Users Latest",
+                        "name": "concurrentUsersLatest",
+                        "summaryStatistic": true,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "label": "Concurrent Users Peak",
+                        "name": "concurrentUsersMax",
+                        "summaryStatistic": true,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "label": "Incoming Traffic Throughput",
+                        "name": "incomingBitsPerSecond",
+                        "summaryStatistic": false,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "label": "Total Incoming Traffic Volume Percentage",
+                        "name": "incomingBytesPercent",
+                        "summaryStatistic": true,
+                        "unit": "RATIO"
+                      },
+                      {
+                        "label": "Total Incoming Traffic Volume",
+                        "name": "incomingBytesTotal",
+                        "summaryStatistic": true,
+                        "unit": "BYTE"
+                      },
+                      {
+                        "label": "Outgoing Traffic Throughput",
+                        "name": "outgoingBitsPerSecond",
+                        "summaryStatistic": false,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "label": "Total Outgoing Traffic Volume Percentage",
+                        "name": "outgoingBytesPercent",
+                        "summaryStatistic": true,
+                        "unit": "RATIO"
+                      },
+                      {
+                        "label": "Total Outgoing Traffic Volume",
+                        "name": "outgoingBytesTotal",
+                        "summaryStatistic": true,
+                        "unit": "BYTE"
+                      },
+                      {
+                        "label": "Latest Total Throughput",
+                        "name": "throughputBitsPerSecondLatest",
+                        "summaryStatistic": true,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "label": "Peak Total Throughput",
+                        "name": "throughputBitsPerSecondMax",
+                        "summaryStatistic": true,
+                        "unit": "BIT_PER_SECOND"
+                      }
+                    ]
+                  },
+                  {
+                    "available": true,
+                    "businessObjectName": "cpcode",
+                    "dataRetentionDays": 92,
+                    "deprecated": false,
+                    "name": "ipatraffic-by-time",
+                    "outputType": "FLAT",
+                    "status": "PUBLISHED",
+                    "supportsPagination": false,
+                    "timeBased": true,
+                    "version": 3,
+                    "groupBy": [
+                      "startdatetime"
+                    ],
+                    "intervals": [
+                      "MONTH",
+                      "WEEK",
+                      "DAY",
+                      "HOUR",
+                      "FIVE_MINUTES"
+                    ],
+                    "requiredProducts": [
+                      "IP Application Accelerator"
+                    ],
+                    "requiredRoles": [
+                      "Pulsar IPA/SXL Read Only"
+                    ],
+                    "groupOutlyingValues": {
+                      "enabled": false
+                    },
+                    "filters": [
+                      {
+                        "name": "slot",
+                        "required": false,
+                        "type": "int"
+                      }
+                    ],
+                    "links": [
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions/3",
+                        "rel": "self"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions",
+                        "rel": "versions"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports",
+                        "rel": "all-reports"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions/3/report-data",
+                        "rel": "execute-report"
+                      }
+                    ],
+                    "metrics": [
+                      {
+                        "label": "Concurrent Users",
+                        "name": "concurrentUsers",
+                        "summaryStatistic": false,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "label": "Concurrent Users Latest",
+                        "name": "concurrentUsersLatest",
+                        "summaryStatistic": true,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "label": "Concurrent Users Peak",
+                        "name": "concurrentUsersMax",
+                        "summaryStatistic": true,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "label": "Incoming Traffic Throughput",
+                        "name": "incomingBitsPerSecond",
+                        "summaryStatistic": false,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "label": "Total Incoming Traffic Volume Percentage",
+                        "name": "incomingBytesPercent",
+                        "summaryStatistic": true,
+                        "unit": "RATIO"
+                      },
+                      {
+                        "label": "Total Incoming Traffic Volume",
+                        "name": "incomingBytesTotal",
+                        "summaryStatistic": true,
+                        "unit": "BYTE"
+                      },
+                      {
+                        "label": "Outgoing Traffic Throughput",
+                        "name": "outgoingBitsPerSecond",
+                        "summaryStatistic": false,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "label": "Total Outgoing Traffic Volume Percentage",
+                        "name": "outgoingBytesPercent",
+                        "summaryStatistic": true,
+                        "unit": "RATIO"
+                      },
+                      {
+                        "label": "Total Outgoing Traffic Volume",
+                        "name": "outgoingBytesTotal",
+                        "summaryStatistic": true,
+                        "unit": "BYTE"
+                      },
+                      {
+                        "label": "Latest Total Throughput",
+                        "name": "throughputBitsPerSecondLatest",
+                        "summaryStatistic": true,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "label": "Peak Total Throughput",
+                        "name": "throughputBitsPerSecondMax",
+                        "summaryStatistic": true,
+                        "unit": "BIT_PER_SECOND"
+                      }
+                    ]
+                  },
+                  {
+                    "available": true,
+                    "businessObjectName": "cpcode",
+                    "dataRetentionDays": 92,
+                    "deprecated": true,
+                    "description": "Provides traffic and bandwidth data associated with TCP application delivery via IPA.",
+                    "name": "ipatraffic-by-time",
+                    "outputType": "FLAT",
+                    "status": "DEPRECATED",
+                    "supportsPagination": false,
+                    "timeBased": true,
+                    "version": 2,
+                    "groupBy": [
+                      "startdatetime"
+                    ],
+                    "intervals": [
+                      "MONTH",
+                      "WEEK",
+                      "DAY",
+                      "HOUR",
+                      "FIVE_MINUTES"
+                    ],
+                    "requiredProducts": [
+                      "IP Application Accelerator"
+                    ],
+                    "requiredRoles": [
+                      "Pulsar IPA/SXL Read Only"
+                    ],
+                    "groupOutlyingValues": {
+                      "enabled": false
+                    },
+                    "filters": [
+                      {
+                        "description": "A unique configuration for a hostname.",
+                        "name": "slot",
+                        "required": false,
+                        "type": "int"
+                      }
+                    ],
+                    "links": [
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions/2",
+                        "rel": "self"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions",
+                        "rel": "versions"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports",
+                        "rel": "all-reports"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions/2/report-data",
+                        "rel": "execute-report"
+                      }
+                    ],
+                    "metrics": [
+                      {
+                        "description": "The number of currently connected users.",
+                        "label": "Concurrent Users",
+                        "name": "concurrentUsers",
+                        "summaryStatistic": false,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "description": "The most recent number of connections.",
+                        "label": "Concurrent Users Latest",
+                        "name": "concurrentUsersLatest",
+                        "summaryStatistic": true,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "description": "The highest number of connections.",
+                        "label": "Concurrent Users Peak",
+                        "name": "concurrentUsersMax",
+                        "summaryStatistic": true,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "description": "The rate of traffic from the client to the origin (Incoming) for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals, based on connectivity from Akamai's distributed network to edge nodes on your network. For other services, the estimated number of incoming edge requests per second.",
+                        "label": "Incoming Traffic Throughput",
+                        "name": "incomingBitsPerSecond",
+                        "summaryStatistic": false,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "description": "The portion of traffic volume from the client to the origin (Incoming) for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals, based on connectivity from Akamai's distributed network to edge nodes on your network.",
+                        "label": "Total Incoming Traffic Volume Percentage",
+                        "name": "incomingBytesPercent",
+                        "summaryStatistic": true,
+                        "unit": "RATIO"
+                      },
+                      {
+                        "description": "The total volume of traffic from the client to the origin (Incoming) for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals, based on connectivity from Akamai's distributed network to edge nodes on your network.",
+                        "label": "Total Incoming Traffic Volume",
+                        "name": "incomingBytesTotal",
+                        "summaryStatistic": true,
+                        "unit": "BYTE"
+                      },
+                      {
+                        "description": "The rate of traffic to the client from the origin (Outgoing) for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals. Based on connectivity from Akamai's distributed network to edge nodes on your network. For other services, the estimated number of outgoing edge requests.",
+                        "label": "Outgoing Traffic Throughput",
+                        "name": "outgoingBitsPerSecond",
+                        "summaryStatistic": false,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "description": "The portion of traffic volume to the client from the origin (Outgoing) for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals. Based on connectivity from Akamai's distributed network to edge nodes on your network.",
+                        "label": "Total Outgoing Traffic Volume Percentage",
+                        "name": "outgoingBytesPercent",
+                        "summaryStatistic": true,
+                        "unit": "RATIO"
+                      },
+                      {
+                        "description": "The total volume of traffic to the client from the origin (Outgoing) for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals. Based on connectivity from Akamai's distributed network to edge nodes on your network.",
+                        "label": "Total Outgoing Traffic Volume",
+                        "name": "outgoingBytesTotal",
+                        "summaryStatistic": true,
+                        "unit": "BYTE"
+                      },
+                      {
+                        "description": "The latest rate of traffic from the client to the origin (Incoming) and the rate of traffic to the client from the origin (Outgoing), for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals. Based on connectivity from Akamai's distributed network to edge nodes on your network.",
+                        "label": "Latest Total Throughput",
+                        "name": "throughputBitsPerSecondLatest",
+                        "summaryStatistic": true,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "description": "The highest rate of traffic from the client to the origin (Incoming) and the rate of traffic to the client from the origin (Outgoing), for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals. Based on connectivity from Akamai's distributed network to edge nodes on your network.",
+                        "label": "Peak Total Throughput",
+                        "name": "throughputBitsPerSecondMax",
+                        "summaryStatistic": true,
+                        "unit": "BIT_PER_SECOND"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "Specifies if deprecated reports should be shown.",
+            "example": "{{showDeprecated}}",
+            "in": "query",
+            "name": "showDeprecated",
+            "schema": {
+              "default": true,
+              "example": true,
+              "type": "boolean"
+            },
+            "x-akamai": {
+              "file-path": "parameters/ListReport_showDeprecated.yaml"
+            }
+          },
+          {
+            "description": "Specifies if unavailable reports should be shown.",
+            "example": "{{showUnavailable}}",
+            "in": "query",
+            "name": "showUnavailable",
+            "schema": {
+              "default": true,
+              "example": true,
+              "type": "boolean"
+            },
+            "x-akamai": {
+              "file-path": "parameters/ListReport_showUnavailable.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/reports/{name}/versions": {
+      "get": {
+        "description": "List all versions for a specific report type.",
+        "operationId": "get-report-versions",
+        "summary": "List versions",
+        "tags": [
+          "Report types"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Reporting API",
+          "url": "https://techdocs.akamai.com/reporting/reference/get-report-versions"
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "This schema describes array of immutable list of Metrics.",
+                  "type": "array",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "Describes the range of query options available for each report.",
+                    "type": "object",
+                    "required": [
+                      "name",
+                      "version",
+                      "deprecated",
+                      "status",
+                      "available",
+                      "dataRetentionDays",
+                      "intervals",
+                      "requiredRoles"
+                    ],
+                    "properties": {
+                      "available": {
+                        "description": "When enabled, indicates the report can be executed by the current user.",
+                        "type": "boolean"
+                      },
+                      "dataRetentionDays": {
+                        "description": "The number of days for which this report's data is available.",
+                        "type": "integer"
+                      },
+                      "deprecated": {
+                        "description": "When enabled, indicates that this is an older version of the report.",
+                        "type": "boolean"
+                      },
+                      "filters": {
+                        "description": "The set of available filters available for this report.",
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "type": "object",
+                          "properties": {
+                            "fullDescription": {
+                              "description": "Provides documentation describing the available filter.",
+                              "type": "string"
+                            },
+                            "name": {
+                              "description": "The name of the available filter.",
+                              "type": "string"
+                            },
+                            "required": {
+                              "description": "When enabled, you need to specify this filter when executing the report.",
+                              "type": "boolean"
+                            },
+                            "type": {
+                              "description": "The type of data this filter expects, either arbitrary `int` or `string`, or a fixed `enum` specified by `values`.",
+                              "type": "string",
+                              "enum": [
+                                "string",
+                                "int",
+                                "enum"
+                              ]
+                            },
+                            "values": {
+                              "description": "When the `type` of filter is `enum`, this lists available values.",
+                              "type": "array",
+                              "items": {
+                                "additionalProperties": false,
+                                "type": "object",
+                                "required": [
+                                  "value"
+                                ],
+                                "properties": {
+                                  "fullDescription": {
+                                    "description": "Where necessary, provides documentation describing the enumerated value.",
+                                    "type": "string"
+                                  },
+                                  "value": {
+                                    "description": "Specifies each enumerated string value.",
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "fullDescription": {
+                        "description": "Documentation that describes this report.",
+                        "type": "string"
+                      },
+                      "groupBy": {
+                        "description": "This indicates names of columns by which reported data is grouped. It's reflected in the generated report's metadata.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "groupOutlyingValues": {
+                        "additionalProperties": false,
+                        "description": "Specifies this report's support for grouping outlying values under a single category.",
+                        "type": "object",
+                        "required": [
+                          "enabled"
+                        ],
+                        "properties": {
+                          "enabled": {
+                            "description": "Indicates whether this report allows you to group outlying values.",
+                            "type": "boolean"
+                          },
+                          "groupName": {
+                            "default": "Other",
+                            "description": "Indicates the default category name under which outlying values group within a single category. You can provide your own name to override this default.",
+                            "type": "string"
+                          },
+                          "groupThreshold": {
+                            "default": 9,
+                            "description": "Indicates the default number of categories to report on separately before grouping under a single category. You can provide your own threshold value to override this default.",
+                            "type": "integer"
+                          }
+                        }
+                      },
+                      "intervals": {
+                        "description": "Specifies the set of available spans of time to aggregate data by. Use one of these values as the `interval` query parameter when executing the report.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "limit": {
+                        "description": "The default number of data rows included for this report.",
+                        "type": "integer"
+                      },
+                      "links": {
+                        "description": "Specifies dynamic hypermedia links to report-generating operations.",
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "type": "object",
+                          "required": [
+                            "rel",
+                            "href"
+                          ],
+                          "properties": {
+                            "href": {
+                              "description": "The hypermedia URL linking the API resource.",
+                              "type": "string"
+                            },
+                            "method": {
+                              "default": "GET",
+                              "description": "The HTTP method to call the `href` link with. If unspecified, uses the GET method.",
+                              "type": "string"
+                            },
+                            "rel": {
+                              "description": "Identifies the type of resource.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "maxLimit": {
+                        "description": "The maximum number of data rows permitted for this report.",
+                        "type": "integer"
+                      },
+                      "metrics": {
+                        "description": "The set of available metrics available for this report.",
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "type": "object",
+                          "required": [
+                            "name",
+                            "description"
+                          ],
+                          "properties": {
+                            "fullDescription": {
+                              "description": "Provides documentation describing the available metric.",
+                              "type": "string"
+                            },
+                            "name": {
+                              "description": "The name of the available metric.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "name": {
+                        "description": "Specifies the name of the report.",
+                        "type": "string"
+                      },
+                      "outputType": {
+                        "description": "The report type. Either `HIERARCHICAL` with two columns you can group data by, with the first being Time, or `FLAT`.",
+                        "type": "string",
+                        "enum": [
+                          "FLAT",
+                          "HIERARCHICAL"
+                        ]
+                      },
+                      "requiredProducts": {
+                        "description": "If specified, this lists any product you need to execute the report.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "requiredRoles": {
+                        "description": "Information about required role to run this report.",
+                        "type": "array",
+                        "items": {
+                          "description": "A set of permissions, any of which you need to execute the report. Some permissions may correspond to specific `requiredProducts`.",
+                          "type": "string"
+                        }
+                      },
+                      "status": {
+                        "description": "Whether this version of the report is `PUBLISHED` or `DEPRECATED`. Selecting `DEPRECATED` enables the `deprecated` JSON member.",
+                        "type": "string",
+                        "enum": [
+                          "PUBLISHED",
+                          "DEPRECATED"
+                        ]
+                      },
+                      "version": {
+                        "description": "The version of this report.",
+                        "type": "integer"
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/report-list-row-schema.yaml"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/ReportList.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "available": true,
+                    "businessObjectName": "cpcode",
+                    "dataRetentionDays": 92,
+                    "deprecated": true,
+                    "name": "ipatraffic-by-time",
+                    "outputType": "FLAT",
+                    "status": "DEPRECATED",
+                    "supportsPagination": false,
+                    "timeBased": true,
+                    "version": 1,
+                    "groupBy": [
+                      "startdatetime"
+                    ],
+                    "intervals": [
+                      "MONTH",
+                      "WEEK",
+                      "DAY",
+                      "HOUR",
+                      "FIVE_MINUTES"
+                    ],
+                    "requiredProducts": [
+                      "IP Application Accelerator"
+                    ],
+                    "requiredRoles": [
+                      "Pulsar IPA/SXL Read Only"
+                    ],
+                    "groupOutlyingValues": {
+                      "enabled": false
+                    },
+                    "filters": [
+                      {
+                        "name": "slot",
+                        "required": false,
+                        "type": "int"
+                      }
+                    ],
+                    "links": [
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions/1",
+                        "rel": "self"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions",
+                        "rel": "versions"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports",
+                        "rel": "all-reports"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions/1/report-data",
+                        "rel": "execute-report"
+                      }
+                    ],
+                    "metrics": [
+                      {
+                        "label": "Concurrent Users",
+                        "name": "concurrentUsers",
+                        "summaryStatistic": false,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "label": "Concurrent Users Latest",
+                        "name": "concurrentUsersLatest",
+                        "summaryStatistic": true,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "label": "Concurrent Users Peak",
+                        "name": "concurrentUsersMax",
+                        "summaryStatistic": true,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "label": "Incoming Traffic Throughput",
+                        "name": "incomingBitsPerSecond",
+                        "summaryStatistic": false,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "label": "Total Incoming Traffic Volume Percentage",
+                        "name": "incomingBytesPercent",
+                        "summaryStatistic": true,
+                        "unit": "RATIO"
+                      },
+                      {
+                        "label": "Total Incoming Traffic Volume",
+                        "name": "incomingBytesTotal",
+                        "summaryStatistic": true,
+                        "unit": "BYTE"
+                      },
+                      {
+                        "label": "Outgoing Traffic Throughput",
+                        "name": "outgoingBitsPerSecond",
+                        "summaryStatistic": false,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "label": "Total Outgoing Traffic Volume Percentage",
+                        "name": "outgoingBytesPercent",
+                        "summaryStatistic": true,
+                        "unit": "RATIO"
+                      },
+                      {
+                        "label": "Total Outgoing Traffic Volume",
+                        "name": "outgoingBytesTotal",
+                        "summaryStatistic": true,
+                        "unit": "BYTE"
+                      },
+                      {
+                        "label": "Latest Total Throughput",
+                        "name": "throughputBitsPerSecondLatest",
+                        "summaryStatistic": true,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "label": "Peak Total Throughput",
+                        "name": "throughputBitsPerSecondMax",
+                        "summaryStatistic": true,
+                        "unit": "BIT_PER_SECOND"
+                      }
+                    ]
+                  },
+                  {
+                    "available": true,
+                    "businessObjectName": "cpcode",
+                    "dataRetentionDays": 92,
+                    "deprecated": false,
+                    "name": "ipatraffic-by-time",
+                    "outputType": "FLAT",
+                    "status": "PUBLISHED",
+                    "supportsPagination": false,
+                    "timeBased": true,
+                    "version": 3,
+                    "groupBy": [
+                      "startdatetime"
+                    ],
+                    "intervals": [
+                      "MONTH",
+                      "WEEK",
+                      "DAY",
+                      "HOUR",
+                      "FIVE_MINUTES"
+                    ],
+                    "requiredProducts": [
+                      "IP Application Accelerator"
+                    ],
+                    "requiredRoles": [
+                      "Pulsar IPA/SXL Read Only"
+                    ],
+                    "groupOutlyingValues": {
+                      "enabled": false
+                    },
+                    "filters": [
+                      {
+                        "name": "slot",
+                        "required": false,
+                        "type": "int"
+                      }
+                    ],
+                    "links": [
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions/3",
+                        "rel": "self"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions",
+                        "rel": "versions"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports",
+                        "rel": "all-reports"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions/3/report-data",
+                        "rel": "execute-report"
+                      }
+                    ],
+                    "metrics": [
+                      {
+                        "label": "Concurrent Users",
+                        "name": "concurrentUsers",
+                        "summaryStatistic": false,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "label": "Concurrent Users Latest",
+                        "name": "concurrentUsersLatest",
+                        "summaryStatistic": true,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "label": "Concurrent Users Peak",
+                        "name": "concurrentUsersMax",
+                        "summaryStatistic": true,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "label": "Incoming Traffic Throughput",
+                        "name": "incomingBitsPerSecond",
+                        "summaryStatistic": false,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "label": "Total Incoming Traffic Volume Percentage",
+                        "name": "incomingBytesPercent",
+                        "summaryStatistic": true,
+                        "unit": "RATIO"
+                      },
+                      {
+                        "label": "Total Incoming Traffic Volume",
+                        "name": "incomingBytesTotal",
+                        "summaryStatistic": true,
+                        "unit": "BYTE"
+                      },
+                      {
+                        "label": "Outgoing Traffic Throughput",
+                        "name": "outgoingBitsPerSecond",
+                        "summaryStatistic": false,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "label": "Total Outgoing Traffic Volume Percentage",
+                        "name": "outgoingBytesPercent",
+                        "summaryStatistic": true,
+                        "unit": "RATIO"
+                      },
+                      {
+                        "label": "Total Outgoing Traffic Volume",
+                        "name": "outgoingBytesTotal",
+                        "summaryStatistic": true,
+                        "unit": "BYTE"
+                      },
+                      {
+                        "label": "Latest Total Throughput",
+                        "name": "throughputBitsPerSecondLatest",
+                        "summaryStatistic": true,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "label": "Peak Total Throughput",
+                        "name": "throughputBitsPerSecondMax",
+                        "summaryStatistic": true,
+                        "unit": "BIT_PER_SECOND"
+                      }
+                    ]
+                  },
+                  {
+                    "available": true,
+                    "businessObjectName": "cpcode",
+                    "dataRetentionDays": 92,
+                    "deprecated": true,
+                    "description": "Provides traffic and bandwidth data associated with TCP application delivery via IPA.",
+                    "name": "ipatraffic-by-time",
+                    "outputType": "FLAT",
+                    "status": "DEPRECATED",
+                    "supportsPagination": false,
+                    "timeBased": true,
+                    "version": 2,
+                    "groupBy": [
+                      "startdatetime"
+                    ],
+                    "intervals": [
+                      "MONTH",
+                      "WEEK",
+                      "DAY",
+                      "HOUR",
+                      "FIVE_MINUTES"
+                    ],
+                    "requiredProducts": [
+                      "IP Application Accelerator"
+                    ],
+                    "requiredRoles": [
+                      "Pulsar IPA/SXL Read Only"
+                    ],
+                    "groupOutlyingValues": {
+                      "enabled": false
+                    },
+                    "filters": [
+                      {
+                        "description": "A unique configuration for a hostname.",
+                        "name": "slot",
+                        "required": false,
+                        "type": "int"
+                      }
+                    ],
+                    "links": [
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions/2",
+                        "rel": "self"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions",
+                        "rel": "versions"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports",
+                        "rel": "all-reports"
+                      },
+                      {
+                        "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions/2/report-data",
+                        "rel": "execute-report"
+                      }
+                    ],
+                    "metrics": [
+                      {
+                        "description": "The number of currently connected users.",
+                        "label": "Concurrent Users",
+                        "name": "concurrentUsers",
+                        "summaryStatistic": false,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "description": "The most recent number of connections.",
+                        "label": "Concurrent Users Latest",
+                        "name": "concurrentUsersLatest",
+                        "summaryStatistic": true,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "description": "The highest number of connections.",
+                        "label": "Concurrent Users Peak",
+                        "name": "concurrentUsersMax",
+                        "summaryStatistic": true,
+                        "unit": "COUNT"
+                      },
+                      {
+                        "description": "The rate of traffic from the client to the origin (Incoming) for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals, based on connectivity from Akamai's distributed network to edge nodes on your network. For other services, the estimated number of incoming edge requests per second.",
+                        "label": "Incoming Traffic Throughput",
+                        "name": "incomingBitsPerSecond",
+                        "summaryStatistic": false,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "description": "The portion of traffic volume from the client to the origin (Incoming) for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals, based on connectivity from Akamai's distributed network to edge nodes on your network.",
+                        "label": "Total Incoming Traffic Volume Percentage",
+                        "name": "incomingBytesPercent",
+                        "summaryStatistic": true,
+                        "unit": "RATIO"
+                      },
+                      {
+                        "description": "The total volume of traffic from the client to the origin (Incoming) for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals, based on connectivity from Akamai's distributed network to edge nodes on your network.",
+                        "label": "Total Incoming Traffic Volume",
+                        "name": "incomingBytesTotal",
+                        "summaryStatistic": true,
+                        "unit": "BYTE"
+                      },
+                      {
+                        "description": "The rate of traffic to the client from the origin (Outgoing) for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals. Based on connectivity from Akamai's distributed network to edge nodes on your network. For other services, the estimated number of outgoing edge requests.",
+                        "label": "Outgoing Traffic Throughput",
+                        "name": "outgoingBitsPerSecond",
+                        "summaryStatistic": false,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "description": "The portion of traffic volume to the client from the origin (Outgoing) for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals. Based on connectivity from Akamai's distributed network to edge nodes on your network.",
+                        "label": "Total Outgoing Traffic Volume Percentage",
+                        "name": "outgoingBytesPercent",
+                        "summaryStatistic": true,
+                        "unit": "RATIO"
+                      },
+                      {
+                        "description": "The total volume of traffic to the client from the origin (Outgoing) for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals. Based on connectivity from Akamai's distributed network to edge nodes on your network.",
+                        "label": "Total Outgoing Traffic Volume",
+                        "name": "outgoingBytesTotal",
+                        "summaryStatistic": true,
+                        "unit": "BYTE"
+                      },
+                      {
+                        "description": "The latest rate of traffic from the client to the origin (Incoming) and the rate of traffic to the client from the origin (Outgoing), for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals. Based on connectivity from Akamai's distributed network to edge nodes on your network.",
+                        "label": "Latest Total Throughput",
+                        "name": "throughputBitsPerSecondLatest",
+                        "summaryStatistic": true,
+                        "unit": "BIT_PER_SECOND"
+                      },
+                      {
+                        "description": "The highest rate of traffic from the client to the origin (Incoming) and the rate of traffic to the client from the origin (Outgoing), for origins that are served by associated Sureroute IP (SRIP) endpoints, converted into bits per second at 5-minute intervals. Based on connectivity from Akamai's distributed network to edge nodes on your network.",
+                        "label": "Peak Total Throughput",
+                        "name": "throughputBitsPerSecondMax",
+                        "summaryStatistic": true,
+                        "unit": "BIT_PER_SECOND"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "Specifies if deprecated reports should be shown.",
+            "example": "{{showDeprecated}}",
+            "in": "query",
+            "name": "showDeprecated",
+            "schema": {
+              "default": true,
+              "example": true,
+              "type": "boolean"
+            },
+            "x-akamai": {
+              "file-path": "parameters/ListReport_showDeprecated.yaml"
+            }
+          },
+          {
+            "description": "Specifies if unavailable reports should be shown.",
+            "example": "{{showUnavailable}}",
+            "in": "query",
+            "name": "showUnavailable",
+            "schema": {
+              "default": true,
+              "example": true,
+              "type": "boolean"
+            },
+            "x-akamai": {
+              "file-path": "parameters/ListReport_showUnavailable.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Identifies the type of report.",
+          "example": "{{name}}",
+          "in": "path",
+          "name": "name",
+          "required": true,
+          "schema": {
+            "example": "opresponses-by-time",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/name-path.yaml"
+          }
+        }
+      ]
+    },
+    "/reports/{name}/versions/{version}": {
+      "get": {
+        "description": "Get a specific version of a report type.",
+        "operationId": "get-report-version",
+        "summary": "Get a report type",
+        "tags": [
+          "Report types"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Reporting API",
+          "url": "https://techdocs.akamai.com/reporting/reference/get-report-version"
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "available": true,
+                  "businessObjectName": "cpcode",
+                  "dataRetentionDays": 92,
+                  "deprecated": false,
+                  "name": "ipatraffic-by-time",
+                  "outputType": "FLAT",
+                  "status": "PUBLISHED",
+                  "supportsPagination": false,
+                  "timeBased": true,
+                  "version": 3,
+                  "groupBy": [
+                    "startdatetime"
+                  ],
+                  "intervals": [
+                    "MONTH",
+                    "WEEK",
+                    "DAY",
+                    "HOUR",
+                    "FIVE_MINUTES"
+                  ],
+                  "requiredProducts": [
+                    "IP Application Accelerator"
+                  ],
+                  "requiredRoles": [
+                    "Pulsar IPA/SXL Read Only"
+                  ],
+                  "groupOutlyingValues": {
+                    "enabled": false
+                  },
+                  "filters": [
+                    {
+                      "name": "slot",
+                      "required": false,
+                      "type": "int"
+                    }
+                  ],
+                  "links": [
+                    {
+                      "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions/3",
+                      "rel": "self"
+                    },
+                    {
+                      "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions",
+                      "rel": "versions"
+                    },
+                    {
+                      "href": "/reporting-api/v1/reports",
+                      "rel": "all-reports"
+                    },
+                    {
+                      "href": "/reporting-api/v1/reports/ipatraffic-by-time/versions/3/report-data",
+                      "rel": "execute-report"
+                    }
+                  ],
+                  "metrics": [
+                    {
+                      "label": "Concurrent Users",
+                      "name": "concurrentUsers",
+                      "summaryStatistic": false,
+                      "unit": "COUNT"
+                    },
+                    {
+                      "label": "Concurrent Users Latest",
+                      "name": "concurrentUsersLatest",
+                      "summaryStatistic": true,
+                      "unit": "COUNT"
+                    },
+                    {
+                      "label": "Concurrent Users Peak",
+                      "name": "concurrentUsersMax",
+                      "summaryStatistic": true,
+                      "unit": "COUNT"
+                    },
+                    {
+                      "label": "Incoming Traffic Throughput",
+                      "name": "incomingBitsPerSecond",
+                      "summaryStatistic": false,
+                      "unit": "BIT_PER_SECOND"
+                    },
+                    {
+                      "label": "Total Incoming Traffic Volume Percentage",
+                      "name": "incomingBytesPercent",
+                      "summaryStatistic": true,
+                      "unit": "RATIO"
+                    },
+                    {
+                      "label": "Total Incoming Traffic Volume",
+                      "name": "incomingBytesTotal",
+                      "summaryStatistic": true,
+                      "unit": "BYTE"
+                    },
+                    {
+                      "label": "Outgoing Traffic Throughput",
+                      "name": "outgoingBitsPerSecond",
+                      "summaryStatistic": false,
+                      "unit": "BIT_PER_SECOND"
+                    },
+                    {
+                      "label": "Total Outgoing Traffic Volume Percentage",
+                      "name": "outgoingBytesPercent",
+                      "summaryStatistic": true,
+                      "unit": "RATIO"
+                    },
+                    {
+                      "label": "Total Outgoing Traffic Volume",
+                      "name": "outgoingBytesTotal",
+                      "summaryStatistic": true,
+                      "unit": "BYTE"
+                    },
+                    {
+                      "label": "Latest Total Throughput",
+                      "name": "throughputBitsPerSecondLatest",
+                      "summaryStatistic": true,
+                      "unit": "BIT_PER_SECOND"
+                    },
+                    {
+                      "label": "Peak Total Throughput",
+                      "name": "throughputBitsPerSecondMax",
+                      "summaryStatistic": true,
+                      "unit": "BIT_PER_SECOND"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Describes the range of query options available for each report.",
+                  "type": "object",
+                  "required": [
+                    "available",
+                    "dataRetentionDays",
+                    "deprecated",
+                    "intervals",
+                    "name",
+                    "requiredRoles",
+                    "status",
+                    "version"
+                  ],
+                  "properties": {
+                    "available": {
+                      "description": "When enabled, indicates the report can be executed by the current user.",
+                      "type": "boolean"
+                    },
+                    "businessObjectName": {
+                      "description": "The name of the object by which data is queried.",
+                      "type": "string"
+                    },
+                    "dataRetentionDays": {
+                      "description": "The number of days for which this report's data is available.",
+                      "type": "integer"
+                    },
+                    "deprecated": {
+                      "description": "When enabled, indicates that this is an older version of the report.",
+                      "type": "boolean"
+                    },
+                    "filters": {
+                      "description": "The set of available filters available for this report.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "fullDescription": {
+                            "description": "Provides documentation describing the available filter.",
+                            "type": "string"
+                          },
+                          "name": {
+                            "description": "The name of the available filter.",
+                            "type": "string"
+                          },
+                          "required": {
+                            "description": "When enabled, you need to specify this filter when executing the report.",
+                            "type": "boolean"
+                          },
+                          "type": {
+                            "description": "The type of data this filter expects, either arbitrary `int` or `string`, or a fixed `enum` specified by `values`.",
+                            "type": "string",
+                            "enum": [
+                              "string",
+                              "int",
+                              "enum"
+                            ]
+                          },
+                          "values": {
+                            "description": "When the `type` of filter is `enum`, this lists available values.",
+                            "type": "array",
+                            "items": {
+                              "additionalProperties": false,
+                              "type": "object",
+                              "required": [
+                                "value"
+                              ],
+                              "properties": {
+                                "fullDescription": {
+                                  "description": "Where necessary, provides documentation describing the enumerated value.",
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "description": "Specifies each enumerated string value.",
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "fullDescription": {
+                      "description": "Documentation that describes this report.",
+                      "type": "string"
+                    },
+                    "groupBy": {
+                      "description": "This indicates names of columns by which reported data is grouped. It's reflected in the generated report's metadata.",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "groupOutlyingValues": {
+                      "additionalProperties": false,
+                      "description": "Specifies this report's support for grouping outlying values under a single category.",
+                      "type": "object",
+                      "required": [
+                        "enabled"
+                      ],
+                      "properties": {
+                        "enabled": {
+                          "description": "Indicates whether this report allows you to group outlying values.",
+                          "type": "boolean"
+                        },
+                        "groupName": {
+                          "default": "Other",
+                          "description": "Indicates the default category name under which outlying values group within a single category. You can provide your own name to override this default.",
+                          "type": "string"
+                        },
+                        "groupThreshold": {
+                          "default": 9,
+                          "description": "Indicates the default number of categories to report on separately before grouping under a single category. You can provide your own threshold value to override this default.",
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "intervals": {
+                      "description": "Specifies the set of available spans of time to aggregate data by. Use one of these values as the `interval` query parameter when executing the report.",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "limit": {
+                      "description": "The default number of data rows included for this report.",
+                      "type": "integer"
+                    },
+                    "links": {
+                      "description": "Specifies dynamic hypermedia links to report-generating operations.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "required": [
+                          "href",
+                          "rel"
+                        ],
+                        "properties": {
+                          "href": {
+                            "description": "The hypermedia URL linking the API resource.",
+                            "type": "string"
+                          },
+                          "method": {
+                            "default": "GET",
+                            "description": "The HTTP method to call the `href` link with. If unspecified, uses the GET method.",
+                            "type": "string"
+                          },
+                          "rel": {
+                            "description": "Identifies the type of resource.",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "maxLimit": {
+                      "description": "The maximum number of data rows permitted for this report.",
+                      "type": "integer"
+                    },
+                    "metrics": {
+                      "description": "The set of available metrics available for this report.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "required": [
+                          "name"
+                        ],
+                        "properties": {
+                          "fullDescription": {
+                            "description": "Provides documentation describing the available metric.",
+                            "type": "string"
+                          },
+                          "name": {
+                            "description": "The name of the available metric.",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "name": {
+                      "description": "Specifies the name of the report.",
+                      "type": "string"
+                    },
+                    "outputType": {
+                      "description": "The report type. Either `HIERARCHICAL` with two columns you can group data by, with the first being Time, or `FLAT`.",
+                      "type": "string",
+                      "enum": [
+                        "FLAT",
+                        "HIERARCHICAL"
+                      ]
+                    },
+                    "requiredProducts": {
+                      "description": "If specified, this lists any product you need to execute the report.",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "requiredRoles": {
+                      "description": "Information about required role to run this report.",
+                      "type": "array",
+                      "items": {
+                        "description": "A set of permissions, any of which you need to execute the report. Some permissions may correspond to specific `requiredProducts`.",
+                        "type": "string"
+                      }
+                    },
+                    "status": {
+                      "description": "Whether this version of the report is `PUBLISHED` or `DEPRECATED`. Selecting `DEPRECATED` enables the `deprecated` JSON member.",
+                      "type": "string",
+                      "enum": [
+                        "PUBLISHED",
+                        "DEPRECATED"
+                      ]
+                    },
+                    "supportsPagination": {
+                      "description": "Allows to use `page` and `pageSize` parameters to retrieve non aggregated data.",
+                      "type": "boolean"
+                    },
+                    "timeBased": {
+                      "description": "Groups report results by time.",
+                      "type": "boolean"
+                    },
+                    "version": {
+                      "description": "The version of this report.",
+                      "type": "integer"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/ReportListRow.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The version of the report type.",
+          "example": "{{version}}",
+          "in": "path",
+          "name": "version",
+          "required": true,
+          "schema": {
+            "example": 1,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/version-path.yaml"
+          }
+        },
+        {
+          "description": "Identifies the type of report.",
+          "example": "{{name}}",
+          "in": "path",
+          "name": "name",
+          "required": true,
+          "schema": {
+            "example": "opresponses-by-time",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/name-path.yaml"
+          }
+        }
+      ]
+    },
+    "/reports/{name}/versions/{version}/report-data": {
+      "post": {
+        "description": "Produce a report in either JSON or CSV format for a specific version of a type of report. In CSV data, values with commas or space characters are quoted. Query parameters specify the range of data and the aggregation interval for each record.",
+        "operationId": "post-report-version-data",
+        "summary": "Generate a report",
+        "tags": [
+          "Reports"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Reporting API",
+          "url": "https://techdocs.akamai.com/reporting/reference/post-report-version-data"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "metrics": [
+                  "top_hits",
+                  "top_urls",
+                  "browser_hits",
+                  "edgres_hits_success",
+                  "edgres_hits_success_total",
+                  "edgres_hits_success_min",
+                  "edgres_hits_success_max",
+                  "origin_hits_success",
+                  "origin_hits_success_total",
+                  "origin_hits_success_min",
+                  "origin_hits_success_max"
+                ],
+                "objectIds": [
+                  "536194",
+                  "536198",
+                  "539651",
+                  "539798",
+                  "539987"
+                ],
+                "filters": {
+                  "ip_version": [
+                    "ipv4"
+                  ],
+                  "traffic_type": [
+                    "standard_secure"
+                  ]
+                }
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Specifies available metrics for the report type, filters to reduce the data, and a set of objects to report on.",
+                "type": "object",
+                "required": [
+                  "objectIds"
+                ],
+                "properties": {
+                  "filters": {
+                    "description": "Specifies a set of custom filters, with each filter's name keying an array with each filter's set of values. The set of available filters depends on the type of report.",
+                    "type": "object"
+                  },
+                  "metrics": {
+                    "description": "The set of desired metrics. The set of available metrics depends on the type of report. If omitted, the report includes all available metrics.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "objectIds": {
+                    "description": "Unique IDs for the given object type you want to report on.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/ReportRequest.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "metadata": {
+                    "availableDataEnds": "2022-09-27T19:00:00Z",
+                    "end": "2022-09-28T00:00:00Z",
+                    "interval": "HOUR",
+                    "name": "hits-by-time",
+                    "objectType": "cpcode",
+                    "outputType": "FLAT",
+                    "rowCount": 24,
+                    "start": "2022-09-27T00:00:00Z",
+                    "suggestedRetryTime": "2022-09-28T11:54:08.901648Z",
+                    "version": "1",
+                    "groupBy": [
+                      "startdatetime"
+                    ],
+                    "objectIds": [
+                      "16399"
+                    ],
+                    "columns": [
+                      {
+                        "label": "startdatetime",
+                        "name": "groupBy"
+                      },
+                      {
+                        "label": "Edge Hits/Sec",
+                        "name": "edgeHitsPerSecond"
+                      },
+                      {
+                        "label": "Offloaded Hits",
+                        "name": "hitsOffload"
+                      },
+                      {
+                        "label": "Origin Hits/Sec",
+                        "name": "originHitsPerSecond"
+                      }
+                    ],
+                    "filters": [
+                      {
+                        "name": "delivery_type",
+                        "values": [
+                          "secure"
+                        ]
+                      }
+                    ]
+                  },
+                  "summaryStatistics": {},
+                  "data": [
+                    {
+                      "edgeHitsPerSecond": "11638.79055555556",
+                      "hitsOffload": "99.80207947341608",
+                      "originHitsPerSecond": "23.03555555555556",
+                      "startdatetime": "2022-09-27T00:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "11528.85722222222",
+                      "hitsOffload": "99.80730238127582",
+                      "originHitsPerSecond": "22.21583333333333",
+                      "startdatetime": "2022-09-27T01:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "10813.27194444444",
+                      "hitsOffload": "99.77512459675647",
+                      "originHitsPerSecond": "24.31638888888889",
+                      "startdatetime": "2022-09-27T02:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "10115.34694444444",
+                      "hitsOffload": "99.79656050134382",
+                      "originHitsPerSecond": "20.57861111111111",
+                      "startdatetime": "2022-09-27T03:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "8982.198055555556",
+                      "hitsOffload": "99.79820579057100",
+                      "originHitsPerSecond": "18.12555555555556",
+                      "startdatetime": "2022-09-27T04:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "8748.658611111111",
+                      "hitsOffload": "99.81821022657727",
+                      "originHitsPerSecond": "15.90416666666667",
+                      "startdatetime": "2022-09-27T05:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "9083.933055555556",
+                      "hitsOffload": "99.79853623731693",
+                      "originHitsPerSecond": "18.30083333333333",
+                      "startdatetime": "2022-09-27T06:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "9410.549722222222",
+                      "hitsOffload": "99.80943078098018",
+                      "originHitsPerSecond": "17.93361111111111",
+                      "startdatetime": "2022-09-27T07:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "9655.309166666667",
+                      "hitsOffload": "99.80189943281924",
+                      "originHitsPerSecond": "19.12722222222222",
+                      "startdatetime": "2022-09-27T08:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "10095.22222222222",
+                      "hitsOffload": "99.80545252429642",
+                      "originHitsPerSecond": "19.64",
+                      "startdatetime": "2022-09-27T09:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "11075.87222222222",
+                      "hitsOffload": "99.82769353003049",
+                      "originHitsPerSecond": "19.08444444444444",
+                      "startdatetime": "2022-09-27T10:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "13070.17583333333",
+                      "hitsOffload": "99.86389284527393",
+                      "originHitsPerSecond": "17.78944444444444",
+                      "startdatetime": "2022-09-27T11:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "14777.06972222222",
+                      "hitsOffload": "99.87547335679674",
+                      "originHitsPerSecond": "18.40138888888889",
+                      "startdatetime": "2022-09-27T12:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "15994.95472222222",
+                      "hitsOffload": "99.88541873021522",
+                      "originHitsPerSecond": "18.32722222222222",
+                      "startdatetime": "2022-09-27T13:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "16352.24194444444",
+                      "hitsOffload": "99.88731582524591",
+                      "originHitsPerSecond": "18.42638888888889",
+                      "startdatetime": "2022-09-27T14:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "16292.22222222222",
+                      "hitsOffload": "99.88244390643115",
+                      "originHitsPerSecond": "19.1525",
+                      "startdatetime": "2022-09-27T15:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "15759.10888888889",
+                      "hitsOffload": "99.88705473899469",
+                      "originHitsPerSecond": "17.79916666666667",
+                      "startdatetime": "2022-09-27T16:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "15293.54583333333",
+                      "hitsOffload": "99.88316785412292",
+                      "originHitsPerSecond": "17.86777777777778",
+                      "startdatetime": "2022-09-27T17:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "15228.42194444444",
+                      "hitsOffload": "99.85940215334561",
+                      "originHitsPerSecond": "21.41083333333333",
+                      "startdatetime": "2022-09-27T18:00:00Z"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates the response report, including aggregated data and reflecting details on the request.",
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "metadata",
+                    "summaryStatistics"
+                  ],
+                  "properties": {
+                    "data": {
+                      "description": "Array of objects representing data rows suitable for aggregation. The value of the `groupBy` array always appears as a key for each row to indicate by which metric it is grouped and sorted.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": true,
+                        "description": "Array of objects representing data rows suitable for aggregation. The value of the `groupBy` array always appears as a key for each row to indicate by which metric it is grouped and sorted.",
+                        "type": "object",
+                        "properties": {
+                          "startdatetime": {
+                            "description": "For certain time series reports, an ISO 8601 timestamp marking the start of each record.",
+                            "type": "string"
+                          },
+                          "timestamp": {
+                            "description": "For certain time series reports, an ISO 8601 timestamp marking the start of each record.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/data-row-schema.yaml"
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "additionalProperties": false,
+                      "description": "Collects context about the requested data set based on the request's parameters and contents of the query request object, and supplies presentational information for use in report output.",
+                      "type": "object",
+                      "required": [
+                        "columns",
+                        "filters",
+                        "rowCount",
+                        "interval",
+                        "groupBy",
+                        "end",
+                        "availableDataEnds",
+                        "suggestedRetryTime",
+                        "start",
+                        "objectIds"
+                      ],
+                      "properties": {
+                        "_links": {
+                          "description": "Links to self/previous/next pages of data.",
+                          "type": "object"
+                        },
+                        "availableDataEnds": {
+                          "description": "If data has not been finalized, this ISO 8601 timestamp indicates for when data is no longer available. Otherwise the value is `null` for finalized data.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "columns": {
+                          "description": "Provides interface labels for `data` and `summaryStatistics` items.",
+                          "type": "array",
+                          "items": {
+                            "additionalProperties": false,
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "description": "The interface label to assign to the corresponding `name`.",
+                                "type": "string"
+                              },
+                              "name": {
+                                "description": "The name of the `data` or `summaryStatistics` member.",
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "end": {
+                          "description": "The end range of the requested data in ISO 8601 format. This reflects the value of the [Generate a report](https://techdocs.akamai.com/reporting/reference/post-report-version-data) operation's `end` parameter.",
+                          "type": "string"
+                        },
+                        "filters": {
+                          "description": "List of all filters (explicitly provided by user as well as implicitly resolved) used when retrieving data for this report.",
+                          "type": "array",
+                          "items": {
+                            "additionalProperties": false,
+                            "description": "Reflects the set of `filters` from the query request.",
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "description": "Reflects the name of the filter specified in the request, or included in the default set for the report type.",
+                                "type": "string"
+                              },
+                              "value": {
+                                "description": "Reflects the set of requested filter values.",
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "groupBy": {
+                          "description": "Specifies the set of fields by which `data` is grouped and sorted. The `groupBy` field is specified along with the request `metrics` in each `data` row.",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "interval": {
+                          "description": "The duration of each record in the report, either `FIVE_MINUTES`, `HOUR`, `DAY`, `WEEK`, or `MONTH`. This reflects the value of the [Generate a report](https://techdocs.akamai.com/reporting/reference/post-report-version-data) operation's `interval` parameter.",
+                          "type": "string",
+                          "enum": [
+                            "FIVE_MINUTES",
+                            "HOUR",
+                            "DAY",
+                            "WEEK",
+                            "MONTH"
+                          ]
+                        },
+                        "name": {
+                          "description": "The name of the current report type.",
+                          "type": "string"
+                        },
+                        "objectIds": {
+                          "description": "Reflects the set of `objectIds` from the query request.",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "page": {
+                          "description": "Current page of the data.",
+                          "type": "integer"
+                        },
+                        "pageSize": {
+                          "description": "Size of the current page.",
+                          "type": "integer"
+                        },
+                        "rowCount": {
+                          "description": "The total number of `data` records included in the report.",
+                          "minimum": 0,
+                          "multipleOf": 1,
+                          "type": "integer"
+                        },
+                        "start": {
+                          "description": "The start range of the requested data in ISO 8601 format. This reflects the value of the [operation's](https://techdocs.akamai.com/reporting/reference/post-report-version-data) `start` parameter.",
+                          "type": "string"
+                        },
+                        "suggestedRetryTime": {
+                          "description": "If data has not been finalized, this ISO 8601 timestamp indicates when it is estimated to complete. Otherwise the value is `null` for finalized data.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "uri": {
+                          "description": "Reflects the URL called to retrieve this data.",
+                          "type": "string"
+                        },
+                        "version": {
+                          "description": "The version of the current report type.",
+                          "type": "string"
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/metadata-schema.yaml"
+                      }
+                    },
+                    "summaryStatistics": {
+                      "additionalProperties": false,
+                      "description": "Collects Key Performance Indicator data. The name of each KPI metric serves as the object key.",
+                      "type": "object",
+                      "properties": {
+                        "keyPerformanceIndicator": {
+                          "additionalProperties": false,
+                          "description": "Encapsulates information for each Key Performance Indicator. The name of each KPI metric is the object key within the `summaryStatistics` object.",
+                          "type": "object",
+                          "required": [
+                            "details",
+                            "value"
+                          ],
+                          "properties": {
+                            "details": {
+                              "additionalProperties": true,
+                              "description": "Collects additional context for each reported KPI. Otherwise the object is empty.",
+                              "minProperties": 0,
+                              "type": "object",
+                              "properties": {
+                                "startdatetime": {
+                                  "description": "ISO 8601 timestamp indicating when this metric reached this value, for example when a desired minimum or maximum threshold was fulfilled.",
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "value": {
+                              "description": "The value that qualifies a fulfilling the KPI. Numeric values are represented as strings.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/kpi-result-schema.yaml"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/ReportResponse.yaml"
+                  }
+                }
+              },
+              "text/csv": {
+                "example": "#METADATA_START\nname,some_category\nversion,1\nsource,some_category/versions/1\ngroupBy,service,url\nstart,2017-01-01T00:00:00Z\nend,2017-01-01T00:15:00Z\ninterval,FIVE_MINUTES,\navailableDataEnds,\nsuggestedRetryTime,\nrowCount,2\nobjectType,cpcode\nobjectIds,113453,313508\nhttp_method,include_putpost\nip_version,ipv4\n#METADATA_END\n\n#SUMMARYSTATISTICS_START\n#SUMMARYSTATISTICS_END\n\n#COLUMNS_START\nservice,url,metric1,metric2\n#COLUMNS_END\n\n#DATA_START\nts.download.akamai.com,/../login.php,11,21\nts.download.akamai.com,/:443,12,22\n#DATA_END",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid report request. Appropriate message is returned.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "instance": "8a346f8a-0919-4a02-b6ac-e2819e6e3c08",
+                  "title": "Request is invalid.",
+                  "type": "reporting.re.invalid.request",
+                  "errors": [
+                    {
+                      "title": "Missing or invalid interval, should be one of [FIVE_MINUTES, HOUR, DAY, WEEK, MONTH]",
+                      "type": "date.range.invalid.unrecognized.interval"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access is forbidden for requested object IDs.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "instance": "583e39eb-47f4-4a76-b513-34a5f6d884d4",
+                  "title": "Reporting exception",
+                  "type": "reporting.re.problem",
+                  "errors": [
+                    {
+                      "title": "Some of the requested objects are unauthorized: [163902]",
+                      "type": "reporting.re.problem.forbidden.objects"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "Specifies the start of the reported period as an ISO 8601 date with timezone.",
+            "example": "{{start}}",
+            "in": "query",
+            "name": "start",
+            "required": true,
+            "schema": {
+              "example": "2021-07-01T00:00:00Z",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/start-query.yaml"
+            }
+          },
+          {
+            "description": "Specifies the end of the reported period as an ISO 8601 date with timezone. Any data that matches the `end` value's timestamp is excluded from the report.",
+            "example": "{{end}}",
+            "in": "query",
+            "name": "end",
+            "required": true,
+            "schema": {
+              "example": "2021-07-02T00:00:00Z",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/end-query.yaml"
+            }
+          },
+          {
+            "description": "__Enum__ The duration of each data record, either `FIVE_MINUTES`, `HOUR`, `DAY`, `WEEK`, or `MONTH`. Support for specific interval values may vary by report type.",
+            "example": "{{interval}}",
+            "in": "query",
+            "name": "interval",
+            "required": true,
+            "schema": {
+              "example": "DAY",
+              "type": "string",
+              "enum": [
+                "FIVE_MINUTES",
+                "HOUR",
+                "DAY",
+                "WEEK",
+                "MONTH"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/interval-query.yaml"
+            }
+          },
+          {
+            "description": "For reports that allow non-top values to cluster, this specifies the number of top values to report on separately.",
+            "example": "{{dataWrapNumberOfItems}}",
+            "in": "query",
+            "name": "dataWrapNumberOfItems",
+            "schema": {
+              "example": 5,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/dataWrapNumberOfItems-query.yaml"
+            }
+          },
+          {
+            "description": "Label used as title for grouped record.",
+            "example": "{{dataWrapLabel}}",
+            "in": "query",
+            "name": "dataWrapLabel",
+            "schema": {
+              "example": "Other",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/dataWrapLabel-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "get": {
+        "description": "Produce a report in either JSON or CSV format for a specific version of a type of report.  While functionally identical to [Generate a report](https://techdocs.akamai.com/reporting/reference/post-report-version-data), this alternative GET operation specifies all request data as query parameters.",
+        "operationId": "get-report-version-data",
+        "summary": "Get a cacheable report",
+        "tags": [
+          "Reports"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Reporting API",
+          "url": "https://techdocs.akamai.com/reporting/reference/get-report-version-data"
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "metadata": {
+                    "availableDataEnds": "2022-09-27T19:00:00Z",
+                    "end": "2022-09-28T00:00:00Z",
+                    "interval": "HOUR",
+                    "name": "hits-by-time",
+                    "objectType": "cpcode",
+                    "outputType": "FLAT",
+                    "rowCount": 24,
+                    "start": "2022-09-27T00:00:00Z",
+                    "suggestedRetryTime": "2022-09-28T11:54:08.901648Z",
+                    "version": "1",
+                    "groupBy": [
+                      "startdatetime"
+                    ],
+                    "objectIds": [
+                      "16399"
+                    ],
+                    "columns": [
+                      {
+                        "label": "startdatetime",
+                        "name": "groupBy"
+                      },
+                      {
+                        "label": "Edge Hits/Sec",
+                        "name": "edgeHitsPerSecond"
+                      },
+                      {
+                        "label": "Offloaded Hits",
+                        "name": "hitsOffload"
+                      },
+                      {
+                        "label": "Origin Hits/Sec",
+                        "name": "originHitsPerSecond"
+                      }
+                    ],
+                    "filters": [
+                      {
+                        "name": "delivery_type",
+                        "values": [
+                          "secure"
+                        ]
+                      }
+                    ]
+                  },
+                  "summaryStatistics": {},
+                  "data": [
+                    {
+                      "edgeHitsPerSecond": "11638.79055555556",
+                      "hitsOffload": "99.80207947341608",
+                      "originHitsPerSecond": "23.03555555555556",
+                      "startdatetime": "2022-09-27T00:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "11528.85722222222",
+                      "hitsOffload": "99.80730238127582",
+                      "originHitsPerSecond": "22.21583333333333",
+                      "startdatetime": "2022-09-27T01:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "10813.27194444444",
+                      "hitsOffload": "99.77512459675647",
+                      "originHitsPerSecond": "24.31638888888889",
+                      "startdatetime": "2022-09-27T02:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "10115.34694444444",
+                      "hitsOffload": "99.79656050134382",
+                      "originHitsPerSecond": "20.57861111111111",
+                      "startdatetime": "2022-09-27T03:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "8982.198055555556",
+                      "hitsOffload": "99.79820579057100",
+                      "originHitsPerSecond": "18.12555555555556",
+                      "startdatetime": "2022-09-27T04:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "8748.658611111111",
+                      "hitsOffload": "99.81821022657727",
+                      "originHitsPerSecond": "15.90416666666667",
+                      "startdatetime": "2022-09-27T05:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "9083.933055555556",
+                      "hitsOffload": "99.79853623731693",
+                      "originHitsPerSecond": "18.30083333333333",
+                      "startdatetime": "2022-09-27T06:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "9410.549722222222",
+                      "hitsOffload": "99.80943078098018",
+                      "originHitsPerSecond": "17.93361111111111",
+                      "startdatetime": "2022-09-27T07:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "9655.309166666667",
+                      "hitsOffload": "99.80189943281924",
+                      "originHitsPerSecond": "19.12722222222222",
+                      "startdatetime": "2022-09-27T08:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "10095.22222222222",
+                      "hitsOffload": "99.80545252429642",
+                      "originHitsPerSecond": "19.64",
+                      "startdatetime": "2022-09-27T09:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "11075.87222222222",
+                      "hitsOffload": "99.82769353003049",
+                      "originHitsPerSecond": "19.08444444444444",
+                      "startdatetime": "2022-09-27T10:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "13070.17583333333",
+                      "hitsOffload": "99.86389284527393",
+                      "originHitsPerSecond": "17.78944444444444",
+                      "startdatetime": "2022-09-27T11:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "14777.06972222222",
+                      "hitsOffload": "99.87547335679674",
+                      "originHitsPerSecond": "18.40138888888889",
+                      "startdatetime": "2022-09-27T12:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "15994.95472222222",
+                      "hitsOffload": "99.88541873021522",
+                      "originHitsPerSecond": "18.32722222222222",
+                      "startdatetime": "2022-09-27T13:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "16352.24194444444",
+                      "hitsOffload": "99.88731582524591",
+                      "originHitsPerSecond": "18.42638888888889",
+                      "startdatetime": "2022-09-27T14:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "16292.22222222222",
+                      "hitsOffload": "99.88244390643115",
+                      "originHitsPerSecond": "19.1525",
+                      "startdatetime": "2022-09-27T15:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "15759.10888888889",
+                      "hitsOffload": "99.88705473899469",
+                      "originHitsPerSecond": "17.79916666666667",
+                      "startdatetime": "2022-09-27T16:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "15293.54583333333",
+                      "hitsOffload": "99.88316785412292",
+                      "originHitsPerSecond": "17.86777777777778",
+                      "startdatetime": "2022-09-27T17:00:00Z"
+                    },
+                    {
+                      "edgeHitsPerSecond": "15228.42194444444",
+                      "hitsOffload": "99.85940215334561",
+                      "originHitsPerSecond": "21.41083333333333",
+                      "startdatetime": "2022-09-27T18:00:00Z"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates the response report, including aggregated data and reflecting details on the request.",
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "metadata",
+                    "summaryStatistics"
+                  ],
+                  "properties": {
+                    "data": {
+                      "description": "Array of objects representing data rows suitable for aggregation. The value of the `groupBy` array always appears as a key for each row to indicate by which metric it is grouped and sorted.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": true,
+                        "description": "Array of objects representing data rows suitable for aggregation. The value of the `groupBy` array always appears as a key for each row to indicate by which metric it is grouped and sorted.",
+                        "type": "object",
+                        "properties": {
+                          "startdatetime": {
+                            "description": "For certain time series reports, an ISO 8601 timestamp marking the start of each record.",
+                            "type": "string"
+                          },
+                          "timestamp": {
+                            "description": "For certain time series reports, an ISO 8601 timestamp marking the start of each record.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/data-row-schema.yaml"
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "additionalProperties": false,
+                      "description": "Collects context about the requested data set based on the request's parameters and contents of the query request object, and supplies presentational information for use in report output.",
+                      "type": "object",
+                      "required": [
+                        "columns",
+                        "filters",
+                        "rowCount",
+                        "interval",
+                        "groupBy",
+                        "end",
+                        "availableDataEnds",
+                        "suggestedRetryTime",
+                        "start",
+                        "objectIds"
+                      ],
+                      "properties": {
+                        "_links": {
+                          "description": "Links to self/previous/next pages of data.",
+                          "type": "object"
+                        },
+                        "availableDataEnds": {
+                          "description": "If data has not been finalized, this ISO 8601 timestamp indicates for when data is no longer available. Otherwise the value is `null` for finalized data.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "columns": {
+                          "description": "Provides interface labels for `data` and `summaryStatistics` items.",
+                          "type": "array",
+                          "items": {
+                            "additionalProperties": false,
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "description": "The interface label to assign to the corresponding `name`.",
+                                "type": "string"
+                              },
+                              "name": {
+                                "description": "The name of the `data` or `summaryStatistics` member.",
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "end": {
+                          "description": "The end range of the requested data in ISO 8601 format. This reflects the value of the [Generate a report](https://techdocs.akamai.com/reporting/reference/post-report-version-data) operation's `end` parameter.",
+                          "type": "string"
+                        },
+                        "filters": {
+                          "description": "List of all filters (explicitly provided by user as well as implicitly resolved) used when retrieving data for this report.",
+                          "type": "array",
+                          "items": {
+                            "additionalProperties": false,
+                            "description": "Reflects the set of `filters` from the query request.",
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "description": "Reflects the name of the filter specified in the request, or included in the default set for the report type.",
+                                "type": "string"
+                              },
+                              "value": {
+                                "description": "Reflects the set of requested filter values.",
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "groupBy": {
+                          "description": "Specifies the set of fields by which `data` is grouped and sorted. The `groupBy` field is specified along with the request `metrics` in each `data` row.",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "interval": {
+                          "description": "The duration of each record in the report, either `FIVE_MINUTES`, `HOUR`, `DAY`, `WEEK`, or `MONTH`. This reflects the value of the [Generate a report](https://techdocs.akamai.com/reporting/reference/post-report-version-data) operation's `interval` parameter.",
+                          "type": "string",
+                          "enum": [
+                            "FIVE_MINUTES",
+                            "HOUR",
+                            "DAY",
+                            "WEEK",
+                            "MONTH"
+                          ]
+                        },
+                        "name": {
+                          "description": "The name of the current report type.",
+                          "type": "string"
+                        },
+                        "objectIds": {
+                          "description": "Reflects the set of `objectIds` from the query request.",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "page": {
+                          "description": "Current page of the data.",
+                          "type": "integer"
+                        },
+                        "pageSize": {
+                          "description": "Size of the current page.",
+                          "type": "integer"
+                        },
+                        "rowCount": {
+                          "description": "The total number of `data` records included in the report.",
+                          "minimum": 0,
+                          "multipleOf": 1,
+                          "type": "integer"
+                        },
+                        "start": {
+                          "description": "The start range of the requested data in ISO 8601 format. This reflects the value of the [operation's](https://techdocs.akamai.com/reporting/reference/post-report-version-data) `start` parameter.",
+                          "type": "string"
+                        },
+                        "suggestedRetryTime": {
+                          "description": "If data has not been finalized, this ISO 8601 timestamp indicates when it is estimated to complete. Otherwise the value is `null` for finalized data.",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "uri": {
+                          "description": "Reflects the URL called to retrieve this data.",
+                          "type": "string"
+                        },
+                        "version": {
+                          "description": "The version of the current report type.",
+                          "type": "string"
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/metadata-schema.yaml"
+                      }
+                    },
+                    "summaryStatistics": {
+                      "additionalProperties": false,
+                      "description": "Collects Key Performance Indicator data. The name of each KPI metric serves as the object key.",
+                      "type": "object",
+                      "properties": {
+                        "keyPerformanceIndicator": {
+                          "additionalProperties": false,
+                          "description": "Encapsulates information for each Key Performance Indicator. The name of each KPI metric is the object key within the `summaryStatistics` object.",
+                          "type": "object",
+                          "required": [
+                            "details",
+                            "value"
+                          ],
+                          "properties": {
+                            "details": {
+                              "additionalProperties": true,
+                              "description": "Collects additional context for each reported KPI. Otherwise the object is empty.",
+                              "minProperties": 0,
+                              "type": "object",
+                              "properties": {
+                                "startdatetime": {
+                                  "description": "ISO 8601 timestamp indicating when this metric reached this value, for example when a desired minimum or maximum threshold was fulfilled.",
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "value": {
+                              "description": "The value that qualifies a fulfilling the KPI. Numeric values are represented as strings.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/kpi-result-schema.yaml"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/ReportResponse.yaml"
+                  }
+                }
+              },
+              "text/csv": {
+                "example": "#METADATA_START\nname,some_category\nversion,1\nsource,some_category/versions/1\ngroupBy,service,url\nstart,2017-01-01T00:00:00Z\nend,2017-01-01T00:15:00Z\ninterval,FIVE_MINUTES,\navailableDataEnds,\nsuggestedRetryTime,\nrowCount,2\nobjectType,cpcode\nobjectIds,113453,313508\nhttp_method,include_putpost\nip_version,ipv4\n#METADATA_END\n\n#SUMMARYSTATISTICS_START\n#SUMMARYSTATISTICS_END\n\n#COLUMNS_START\nservice,url,metric1,metric2\n#COLUMNS_END\n\n#DATA_START\nts.download.akamai.com,/../login.php,11,21\nts.download.akamai.com,/:443,12,22\n#DATA_END",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid report request. Appropriate message is returned.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "instance": "f8e2d636-1f21-4e1e-a26b-e7f28571105c",
+                  "title": "Reporting exception",
+                  "type": "reporting.re.problem",
+                  "errors": [
+                    {
+                      "title": "Could not parse provided date",
+                      "type": "date.range.invalid.date.format"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access is forbidden for requested object IDs.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "instance": "583e39eb-47f4-4a76-b513-34a5f6d884d4",
+                  "title": "Reporting exception",
+                  "type": "reporting.re.problem",
+                  "errors": [
+                    {
+                      "title": "Some of the requested objects are unauthorized: [163902]",
+                      "type": "reporting.re.problem.forbidden.objects"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "Specifies the start of the reported period as an ISO 8601 date with timezone.",
+            "example": "{{start}}",
+            "in": "query",
+            "name": "start",
+            "required": true,
+            "schema": {
+              "example": "2021-07-01T00:00:00Z",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/start-query.yaml"
+            }
+          },
+          {
+            "description": "Specifies the end of the reported period as an ISO 8601 date with timezone. Any data that matches the `end` value's timestamp is excluded from the report.",
+            "example": "{{end}}",
+            "in": "query",
+            "name": "end",
+            "required": true,
+            "schema": {
+              "example": "2021-07-02T00:00:00Z",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/end-query.yaml"
+            }
+          },
+          {
+            "description": "__Enum__ The duration of each data record, either `FIVE_MINUTES`, `HOUR`, `DAY`, `WEEK`, or `MONTH`. Support for specific interval values may vary by report type.",
+            "example": "{{interval}}",
+            "in": "query",
+            "name": "interval",
+            "required": true,
+            "schema": {
+              "example": "DAY",
+              "type": "string",
+              "enum": [
+                "FIVE_MINUTES",
+                "HOUR",
+                "DAY",
+                "WEEK",
+                "MONTH"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/interval-query.yaml"
+            }
+          },
+          {
+            "description": "As an alternative to `allObjectIds`, specifies the set of unique IDs for the given object type you want to report on, formatted as a comma-delimited list.",
+            "example": "{{objectIds}}",
+            "in": "query",
+            "name": "objectIds",
+            "schema": {
+              "example": "55232,23433,32433",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/objectIds-query.yaml"
+            }
+          },
+          {
+            "description": "As an alternative to `objectIds`, enabling this generates a report that includes all IDs available for the specified object type (each report supports only one specific object type). This parameter is ignored if the request also specifies a set of `objectIds`.",
+            "example": "{{allObjectIds}}",
+            "in": "query",
+            "name": "allObjectIds",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            },
+            "x-akamai": {
+              "file-path": "parameters/allObjectIds-query.yaml"
+            }
+          },
+          {
+            "description": "Specifies a comma-separated list of metrics to include in the report, otherwise all metrics if omitted.  The set of available metrics depends on the type of report.",
+            "example": "{{metrics}}",
+            "in": "query",
+            "name": "metrics",
+            "schema": {
+              "example": "top_urls,browser_hits, edgres_hits_success",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/metrics-query.yaml"
+            }
+          },
+          {
+            "description": "Specifies criteria to filter the report's data.  The set of available filters depends on the type of report.  Separate each filter name and value with an equals (`=`) character, and separate various name/value pairs with commas (`,`). To specify more than one filter value, repeat the filter name. See the accompanying example for guidance. URL-encode the entire value in the GET request.",
+            "example": "{{filters}}",
+            "in": "query",
+            "name": "filters",
+            "schema": {
+              "example": "ip_version=ipv4,ip_version=ipv6, traffic_type=standard_secure",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/filters-query.yaml"
+            }
+          },
+          {
+            "description": "For reports that allow non-top values to cluster, this specifies the number of top values to report on separately.",
+            "example": "{{dataWrapNumberOfItems}}",
+            "in": "query",
+            "name": "dataWrapNumberOfItems",
+            "schema": {
+              "example": 5,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/dataWrapNumberOfItems-query.yaml"
+            }
+          },
+          {
+            "description": "Label used as title for grouped record.",
+            "example": "{{dataWrapLabel}}",
+            "in": "query",
+            "name": "dataWrapLabel",
+            "schema": {
+              "example": "Other",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/dataWrapLabel-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The version of the report type.",
+          "example": "{{version}}",
+          "in": "path",
+          "name": "version",
+          "required": true,
+          "schema": {
+            "example": 1,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/version-path.yaml"
+          }
+        },
+        {
+          "description": "Identifies the type of report.",
+          "example": "{{name}}",
+          "in": "path",
+          "name": "name",
+          "required": true,
+          "schema": {
+            "example": "opresponses-by-time",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/name-path.yaml"
+          }
+        }
+      ]
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/reporting-api/v1"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+x-akamai:
+  file-path: paths/bulk-versions.yaml
+  path-for-file: /bulk/property-version-creations
+post:
+  operationId: post-bulk-version
+  summary: Bulk version a set of properties
+  tags:
+  - Bulk versioning
+  description: |
+    Create new versions of a set of properties based on any previous version. This operation launches an asynchronous process to increment versions. To check its progress, run the [List bulk-versioned properties](ref:get-bulk-version) operation, whose link is available in the `Location` header or `bulkCreateVersionLink` member of this operation's response. Run this operation only after [bulk searching](ref:post-bulk-search) a set of properties you want to change, to prepare new versions to bulk patch. See [Bulk Search and Update](ref:bulk-search-and-update) for guidance on this feature.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional-bulk.yaml
+  - $ref: ../parameters/groupId-optional-bulk.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/property-version-bulk-create-request.json
+        schema:
+          $ref: ../schemas/bulk-property-version-create-request.yaml
+  responses:
+    202:
+      description: |
+        The response links the bulk-versioning process.
+      headers:
+        Location:
+          $ref: ../headers/Location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/property-version-bulk-create-response.json
+          schema:
+            $ref: ../schemas/bulk-property-version-post-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: bulkPropertyVersions
+  group: Bulk property versions

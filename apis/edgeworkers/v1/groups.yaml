@@ -1,0 +1,51 @@
+openapi: 3.0.0
+info:
+  title: Groups
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edgeworkers/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: groups.yaml
+paths:
+  /groups:
+    get:
+      operationId: get-groups
+      summary: List permission groups
+      tags:
+      - Permission groups
+      description: |
+        View a list of groups and the associated permission capabilities, for example: activate a version or fetch an EdgeWorker ID.
+      responses:
+        200:
+          description: |
+            Describes a list of EdgeWorker Groups.
+          content:
+            application/json:
+              example:
+                $ref: examples/groups-get-200.json
+              schema:
+                $ref: schemas/groups-get-200.yaml
+  /groups/{groupId}:
+    parameters:
+    - $ref: parameters/groupId-path.yaml
+    get:
+      operationId: get-group
+      summary: Get a permission group
+      tags:
+      - Permission groups
+      description: |
+        View details on the capabilities enabled within a specified group, for example: activate a version or fetch an EdgeWorker ID.
+      responses:
+        200:
+          description: |
+            This section describes EdgeWorker capabilities allowed within the Akamai group.
+          content:
+            application/json:
+              example:
+                $ref: examples/group-get-200.json
+              schema:
+                $ref: schemas/group-get-200.yaml

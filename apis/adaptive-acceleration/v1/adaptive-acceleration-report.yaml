@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: Adaptive Acceleration Report
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/adaptive-acceleration/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: adaptive-acceleration-report.yaml
+paths:
+  /properties/{propertyId}:
+    parameters:
+    - $ref: parameters/propertyId-path.yaml
+    get:
+      operationId: get-property
+      summary: Report on a property
+      tags:
+      - Properties
+      description: |
+        Get the current Adaptive Acceleration report for a specific Ion property.
+      responses:
+        200:
+          description: |
+            The operation returns the report.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-property.json
+              schema:
+                $ref: schemas/property.yaml
+        403:
+          description: |
+            [Unauthorized](ref:403). Your credential is incorrect.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+  /properties/{propertyId}/reset:
+    parameters:
+    - $ref: parameters/propertyId-path.yaml
+    post:
+      operationId: post-property-reset
+      summary: Reset a property report
+      tags:
+      - Properties
+      description: |
+        Reset the report Adaptive Acceleration uses to define server push and preconnect assets. Adaptive Acceleration reviews current real-user monitoring data to reestablish this report.
+      responses:
+        204:
+          description: |
+            The operation reset the report.
+        403:
+          description: |
+            [Unauthorized](ref:403). Your credential is incorrect or your API client doesn't have read/write access for this operation.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json

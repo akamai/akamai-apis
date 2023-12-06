@@ -1,0 +1,49 @@
+type: object
+description: |-
+  Removes a specified color from an image and replaces it with transparent pixels. This transformation is ideal for removing solid background colors from product images photographed on clean, consistent backgrounds without any shadows.
+  
+x-akamai:
+  file-path: schemas/t-remove-color.yaml
+title: RemoveColor
+additionalProperties: false
+required:
+- transformation
+- color
+properties:
+  color:
+    description: |
+      The hexadecimal CSS color value to remove.
+    oneOf:
+    - pattern: ^#[0-9a-fA-Z]{3,8}$
+      type: string
+      title: String
+    - $ref: variable-inline.yaml
+  feather:
+    description: |
+      The RemoveColor transformation may create a hard edge around an image. To minimize these hard edges and make the removal of the color more gradual in appearance, use the Feather option. This option allows you to extend the color removal beyond the specified Tolerance. The pixels in this extended tolerance become semi-transparent, creating a softer edge. The first real-time request for an image using the feather option may result in a slow transformation time. Subsequent requests are not impacted as they are served directly out of cache.
+    oneOf:
+    - default: 0
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 1
+    - $ref: variable-inline.yaml
+  tolerance:
+    description: |
+      The Tolerance option defines how close the color needs to be to the selected color before it's changed to fully transparent. Set the Tolerance to 0.0 to remove only the exact color specified.
+    oneOf:
+    - default: 0.2
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 1
+    - $ref: variable-inline.yaml
+  transformation:
+    type: string
+    description: |
+      Identifies the type of transformation, `RemoveColor` in this case.
+    default: RemoveColor
+    enum:
+    - RemoveColor

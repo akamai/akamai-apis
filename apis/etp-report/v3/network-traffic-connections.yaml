@@ -1,0 +1,110 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Network traffic connections reports
+  version: v3
+servers:
+- url: https://{hostname}/etp-report/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: network-traffic-connections.yaml
+paths:
+  /configs/{configId}/network-traffic/connections/aggregate:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-network-traffic-connections
+      summary: Report network traffic connections totals
+      tags:
+      - Network traffic connections
+      description: |
+        Lists the count of network traffic connections totals, grouped by query parameters.
+      parameters:
+      - $ref: parameters/dimension-nt-traffic-query.yaml
+      - $ref: parameters/cardinality-query.yaml
+      - $ref: parameters/startTimeSec-query.yaml
+      - $ref: parameters/endTimeSec-query.yaml
+      - $ref: parameters/filters-nt-traffic-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/network-traffic-connections-aggregate-dropped-reason-200.json
+              schema:
+                $ref: schemas/networkTrafficConnectionsAggregate.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /configs/{configId}/network-traffic/connections/details:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-network-traffic-connections-details
+      summary: Report network traffic connections details
+      tags:
+      - Network traffic connections
+      description: |
+        Lists network traffic connections for a given time period.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/events-details-postRequest.json
+            schema:
+              $ref: schemas/networkTrafficEventsDetailsRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/network-traffic-details-postResponse-200.json
+              schema:
+                $ref: schemas/networkTrafficEventsDetailsResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /configs/{configId}/network-traffic/connections/time-series:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-connections-time-series
+      summary: Report network traffic connections time series
+      tags:
+      - Network traffic connections
+      description: |
+        Lists network traffic connections totals, aggregated by hour.
+      parameters:
+      - $ref: parameters/dimension-nt-traffic-query.yaml
+      - $ref: parameters/startTimeSec-query.yaml
+      - $ref: parameters/endTimeSec-query.yaml
+      - $ref: parameters/filters-nt-traffic-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/network-traffic-connections-time-series-200.json
+              schema:
+                $ref: schemas/networkTrafficConnectionsTimeSeries.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml

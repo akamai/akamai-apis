@@ -1,0 +1,730 @@
+openapi: 3.0.0
+info:
+  title: EdgeWorker IDs
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edgeworkers/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: ids.yaml
+paths:
+  /ids:
+    post:
+      operationId: post-ids
+      summary: Create a new EdgeWorker ID
+      tags:
+      - EdgeWorker IDs
+      description: |
+        Register a new EdgeWorker within a particular group.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/ids-post.json
+            schema:
+              $ref: schemas/ids-post.yaml
+      responses:
+        201:
+          description: |
+            This section describes attributes of an EdgeWorker registration.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/ids-post-201.json
+              schema:
+                $ref: schemas/ids-post-201.yaml
+    get:
+      operationId: get-ids
+      summary: List EdgeWorker IDs
+      tags:
+      - EdgeWorker IDs
+      description: |
+        View a list of EdgeWorker IDs created for your account. You can choose to specify the group and resource tier in the request to filter the response.
+      parameters:
+      - $ref: parameters/groupId-query.yaml
+      - $ref: parameters/resourceTierId-query.yaml
+      responses:
+        200:
+          description: |
+            Describes a list of EdgeWorker IDs.
+          content:
+            application/json:
+              example:
+                $ref: examples/ids-get-200.json
+              schema:
+                $ref: schemas/ids-get-200.yaml
+  /ids/{edgeWorkerId}:
+    parameters:
+    - $ref: parameters/edgeWorkerId-path.yaml
+    get:
+      operationId: get-id
+      summary: Get an EdgeWorker ID
+      tags:
+      - EdgeWorker IDs
+      description: |
+        View details for a specific EdgeWorker.
+      responses:
+        200:
+          description: |
+            This section describes attributes of an EdgeWorker registration.
+          content:
+            application/json:
+              example:
+                $ref: examples/id-get-200.json
+              schema:
+                $ref: schemas/id-get-200.yaml
+    put:
+      operationId: put-id
+      summary: Update an EdgeWorker ID
+      tags:
+      - EdgeWorker IDs
+      description: |
+        Update the `name` or `groupId` of an existing EdgeWorker.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/id-put.json
+            schema:
+              $ref: schemas/id-put.yaml
+      responses:
+        200:
+          description: |
+            This section describes attributes of an EdgeWorker registration.
+          content:
+            application/json:
+              example:
+                $ref: examples/id-put-200.json
+              schema:
+                $ref: schemas/id-put-200.yaml
+    delete:
+      operationId: delete-id
+      summary: Delete an EdgeWorker ID
+      tags:
+      - EdgeWorker IDs
+      description: |
+        Delete a specific EdgeWorker ID.
+      responses:
+        204:
+          description: |
+            Confirms the deletion of the EdgeWorker ID.
+  /ids/{edgeWorkerId}/activations:
+    parameters:
+    - $ref: parameters/edgeWorkerId-path.yaml
+    post:
+      operationId: post-activations
+      summary: Activate an EdgeWorker version
+      tags:
+      - Activations
+      description: |
+        Activate an existing EdgeWorker version on the Akamai network, either staging or production.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/activations-post.json
+            schema:
+              $ref: schemas/activations-post.yaml
+      responses:
+        201:
+          description: |
+            Provides details for an EdgeWorker activation.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/activations-post-201.json
+              schema:
+                $ref: schemas/activations-post-201.yaml
+    get:
+      operationId: get-activations
+      summary: List activations
+      tags:
+      - Activations
+      description: |
+        View the list of activations for an existing EdgeWorker based on ID. You can choose to specify the version in the request. The response filters the list of activations down by version number.
+      parameters:
+      - $ref: parameters/version-query.yaml
+      - $ref: parameters/activeOnNetwork-query.yaml
+      - $ref: parameters/activationNetwork-query.yaml
+      responses:
+        200:
+          description: |
+            This section describes a list of EdgeWorker activations.
+          content:
+            application/json:
+              example:
+                $ref: examples/activations-get-200.json
+              schema:
+                $ref: schemas/activations-get-200.yaml
+  /ids/{edgeWorkerId}/activations/rollback:
+    parameters:
+    - $ref: parameters/edgeWorkerId-path.yaml
+    post:
+      operationId: post-rollback-to-previous-active-version
+      summary: Roll back to the previous active EdgeWorker version
+      tags:
+      - Activations
+      description: |
+        Reactivate the EdgeWorker version that was previously active on the Akamai network, either staging or production.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/activation-rollback-post.json
+            schema:
+              $ref: schemas/activation-rollback-post.yaml
+      responses:
+        201:
+          description: |
+            Provides details for an EdgeWorker activation.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/activations-post-201.json
+              schema:
+                $ref: schemas/activations-post-201.yaml
+  /ids/{edgeWorkerId}/activations/{activationId}:
+    parameters:
+    - $ref: parameters/activationId-path.yaml
+    - $ref: parameters/edgeWorkerId-path.yaml
+    get:
+      operationId: get-activation
+      summary: Get an activation
+      tags:
+      - Activations
+      description: |
+        View details for a specific activation.
+      responses:
+        200:
+          description: |
+            Provides details for an EdgeWorker activation.
+          content:
+            application/json:
+              example:
+                $ref: examples/activation-get-200.json
+              schema:
+                $ref: schemas/activation-get-200.yaml
+    delete:
+      operationId: delete-activation
+      summary: Cancel an activation
+      tags:
+      - Activations
+      description: |
+        Cancel a pending activation. You can cancel any activation whose `status` is still `PENDING`. After that you need to wait for the activation to complete and then deactivate it. Once the deactivation is complete you can then delete the EdgeWorker version.
+      parameters:
+      - $ref: parameters/activationId-path.yaml
+      - $ref: parameters/edgeWorkerId-path.yaml
+      responses:
+        200:
+          description: |
+            Provides details for an EdgeWorker activation.
+          content:
+            application/json:
+              example:
+                $ref: examples/activation-delete-200.json
+              schema:
+                $ref: schemas/activation-delete-200.yaml
+  /ids/{edgeWorkerId}/clone:
+    parameters:
+    - $ref: parameters/edgeWorkerId-path.yaml
+    post:
+      operationId: post-id-clone
+      summary: Clone an EdgeWorker ID
+      tags:
+      - EdgeWorker IDs
+      description: |
+        Clone an EdgeWorker ID to change the resource tier.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/id-clone.json
+            schema:
+              $ref: schemas/id-clone.yaml
+      responses:
+        201:
+          description: |
+            This section describes attributes of an EdgeWorker registration.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/id-clone-201.json
+              schema:
+                $ref: schemas/id-clone-201.yaml
+  /ids/{edgeWorkerId}/deactivations:
+    parameters:
+    - $ref: parameters/edgeWorkerId-path.yaml
+    post:
+      operationId: post-deactivations
+      summary: Deactivate an EdgeWorker version
+      tags:
+      - Deactivations
+      description: |
+        Deactivate an existing EdgeWorker version on the Akamai network, either staging or production.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/deactivations-post.json
+            schema:
+              $ref: schemas/deactivations-post.yaml
+      responses:
+        201:
+          description: |
+            Provides details for an EdgeWorker deactivation.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/deactivations-post-201.json
+              schema:
+                $ref: schemas/deactivations-post-201.yaml
+    get:
+      operationId: get-deactivations
+      summary: List deactivations
+      tags:
+      - Deactivations
+      description: |
+        View the list of deactivations for an existing EdgeWorker. You can limit the results to a specific `version`.
+      parameters:
+      - $ref: parameters/version-query.yaml
+      responses:
+        200:
+          description: |
+            This section describes a list of EdgeWorker deactivations.
+          content:
+            application/json:
+              example:
+                $ref: examples/deactivations-get-200.json
+              schema:
+                $ref: schemas/deactivations-get-200.yaml
+  /ids/{edgeWorkerId}/deactivations/{deactivationId}:
+    parameters:
+    - $ref: parameters/deactivationId-path.yaml
+    - $ref: parameters/edgeWorkerId-path.yaml
+    get:
+      operationId: get-deactivation
+      summary: Get a deactivation
+      tags:
+      - Deactivations
+      description: |
+        View details for a specific deactivation.
+      responses:
+        200:
+          description: |
+            Provides details for an EdgeWorker deactivation.
+          content:
+            application/json:
+              example:
+                $ref: examples/deactivation-get-200.json
+              schema:
+                $ref: schemas/deactivation-get-200.yaml
+  /ids/{edgeWorkerId}/properties:
+    parameters:
+    - $ref: parameters/edgeWorkerId-path.yaml
+    get:
+      operationId: get-properties
+      summary: List properties
+      tags:
+      - Properties
+      description: |
+        View the list of properties using an existing EdgeWorker ID. You can limit the results to active properties.
+      parameters:
+      - $ref: parameters/activeOnly-query.yaml
+      responses:
+        200:
+          description: |
+            This section describes a list of properties.
+          content:
+            application/json:
+              example:
+                $ref: examples/properties-get-200.json
+              schema:
+                $ref: schemas/properties-get-200.yaml
+  /ids/{edgeWorkerId}/resource-tier:
+    parameters:
+    - $ref: parameters/edgeWorkerId-path.yaml
+    get:
+      operationId: get-id-resource-tier
+      summary: Get the resource tier
+      tags:
+      - EdgeWorker IDs
+      description: |
+        View the details of the resource tier assigned to the EdgeWorker ID.
+      responses:
+        200:
+          description: |
+            The resource tier defines the limits and billing rate applied to an EdgeWorker.
+          content:
+            application/json:
+              example:
+                $ref: examples/resource-tier-get-200.json
+              schema:
+                $ref: schemas/resource-tier-get-200.yaml
+  /ids/{edgeWorkerId}/revisions:
+    parameters:
+    - $ref: parameters/edgeWorkerId-path.yaml
+    get:
+      operationId: get-revisions
+      summary: List revisions
+      tags:
+      - Revisions
+      description: |
+        View the list of revisions for an existing EdgeWorker based on ID. You can limit the results to a specific version or activation. To learn more about Flexible composition refer to the [EdgeWorkers guide](doc:flexible-composition).
+      x-akamai:
+        status: BETA
+      parameters:
+      - $ref: parameters/version-query.yaml
+      - $ref: parameters/activationId-query.yaml
+      - $ref: parameters/network-query.yaml
+      - $ref: parameters/pinnedOnly-query.yaml
+      - $ref: parameters/currentlyPinned-query.yaml
+      responses:
+        200:
+          description: |
+            This section describes a list of EdgeWorker revisions.
+          content:
+            application/json:
+              example:
+                $ref: examples/revisions-get-200.json
+              schema:
+                $ref: schemas/revisions-get-200.yaml
+  /ids/{edgeWorkerId}/revisions/activations:
+    parameters:
+    - $ref: parameters/edgeWorkerId-path.yaml
+    post:
+      operationId: post-revision-activations
+      summary: Activate a fallback revision
+      tags:
+      - Revisions
+      description: |
+        Reactivate a previously active revision on Akamai's staging or production network. To learn more about Flexible composition refer to the [EdgeWorkers guide](doc:flexible-composition).
+      x-akamai:
+        status: BETA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/revision-activations-post.json
+            schema:
+              $ref: schemas/revision-activations-post.yaml
+      responses:
+        200:
+          description: |
+            Provides details for the revision activation.
+          content:
+            application/json:
+              example:
+                $ref: examples/revision-activations-post-200.json
+              schema:
+                $ref: schemas/revision-activations-post-200.yaml
+    get:
+      operationId: get-revision-activations
+      summary: List revision activations
+      tags:
+      - Revisions
+      description: |
+        List activations for an existing EdgeWorker revision based on the EdgeWorker's ID. To learn more about Flexible composition refer to the [EdgeWorkers guide](doc:flexible-composition).
+      x-akamai:
+        status: BETA
+      parameters:
+      - $ref: parameters/version-query.yaml
+      - $ref: parameters/activationId-query.yaml
+      - $ref: parameters/network-query.yaml
+      responses:
+        200:
+          description: |
+            The response lists EdgeWorker revision activations.
+          content:
+            application/json:
+              example:
+                $ref: examples/revision-activations-get-200.json
+              schema:
+                $ref: schemas/revision-activations-get-200.yaml
+  /ids/{edgeWorkerId}/revisions/{revisionId}:
+    parameters:
+    - $ref: parameters/revisionId-path.yaml
+    - $ref: parameters/edgeWorkerId-path.yaml
+    get:
+      operationId: get-revision
+      summary: Get a revision
+      tags:
+      - Revisions
+      description: |
+        View details for a specific revision. To learn more about Flexible composition refer to the [EdgeWorkers guide](doc:flexible-composition).
+      x-akamai:
+        status: BETA
+      responses:
+        200:
+          description: |
+            Provides details for an EdgeWorker revision.
+          content:
+            application/json:
+              example:
+                $ref: examples/revision-get-200.json
+              schema:
+                $ref: schemas/revision-get-200.yaml
+  /ids/{edgeWorkerId}/revisions/{revisionId}/bom:
+    parameters:
+    - $ref: parameters/revisionId-path.yaml
+    - $ref: parameters/edgeWorkerId-path.yaml
+    get:
+      operationId: get-revision-bom
+      summary: Get a revision BOM
+      tags:
+      - Revisions
+      description: |
+        View the Bill of Materials for a specific revision. To learn more about Flexible composition refer to the [EdgeWorkers guide](doc:flexible-composition).
+      x-akamai:
+        status: BETA
+      parameters:
+      - $ref: parameters/includeActiveVersions-query.yaml
+      - $ref: parameters/includePinnedRevisions-query.yaml
+      responses:
+        200:
+          description: |
+            Provides the Bill of Materials for an EdgeWorker revision.
+          content:
+            application/json:
+              example:
+                $ref: examples/revision-bom-get-200.json
+              schema:
+                $ref: schemas/revision-bom-get-200.yaml
+  /ids/{edgeWorkerId}/revisions/{revisionId}/compare:
+    parameters:
+    - $ref: parameters/revisionId-path.yaml
+    - $ref: parameters/edgeWorkerId-path.yaml
+    post:
+      operationId: post-revision-compare
+      summary: Compare revisions
+      tags:
+      - Revisions
+      description: |
+        View dependency differences between two revisions of the same EdgeWorker activation. To learn more about Flexible composition refer to the [EdgeWorkers guide](doc:flexible-composition).
+      x-akamai:
+        status: BETA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/revision-compare-post.json
+            schema:
+              $ref: schemas/revision-compare-post.yaml
+      responses:
+        200:
+          description: |
+            Provides dependency differences between two revisions.
+          content:
+            application/json:
+              example:
+                $ref: examples/revision-compare-post-200.json
+              schema:
+                $ref: schemas/revision-compare-post-200.yaml
+  /ids/{edgeWorkerId}/revisions/{revisionId}/content:
+    parameters:
+    - $ref: parameters/revisionId-path.yaml
+    - $ref: parameters/edgeWorkerId-path.yaml
+    get:
+      operationId: get-revision-content
+      summary: Download the combined code bundle
+      tags:
+      - Revisions
+      description: |
+        Download the combined code bundle that contains the code and the dependencies that the EdgeWorker executes. To learn more about Flexible composition refer to the [EdgeWorkers guide](doc:flexible-composition).
+      x-akamai:
+        status: BETA
+      responses:
+        200:
+          description: |
+            Downloaded combined code bundle for the revision.
+          content:
+            application/gzip:
+              schema:
+                type: string
+                format: binary
+  /ids/{edgeWorkerId}/revisions/{revisionId}/pin:
+    parameters:
+    - $ref: parameters/edgeWorkerId-path.yaml
+    - $ref: parameters/revisionId-path.yaml
+    post:
+      operationId: post-revision-pin
+      summary: Pin an active revision
+      tags:
+      - Revisions
+      description: |
+        Disable dynamic activation for an EdgeWorker revision on Akamai's staging or production network. To learn more about Flexible composition refer to the [EdgeWorkers guide](doc:flexible-composition).
+      x-akamai:
+        status: BETA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/revision-pin-post.json
+            schema:
+              $ref: schemas/revision-pin-post.yaml
+      responses:
+        200:
+          description: |
+            Provides details for the pinned EdgeWorker revision.
+          content:
+            application/json:
+              example:
+                $ref: examples/revision-pin-post-200.json
+              schema:
+                $ref: schemas/revision-pin-post-200.yaml
+  /ids/{edgeWorkerId}/revisions/{revisionId}/unpin:
+    parameters:
+    - $ref: parameters/edgeWorkerId-path.yaml
+    - $ref: parameters/revisionId-path.yaml
+    post:
+      operationId: post-revision-unpin
+      summary: Unpin an active revision
+      tags:
+      - Revisions
+      description: |
+        Enable dynamic activation for an EdgeWorker revision on Akamai's staging or production network. To learn more about Flexible composition refer to the [EdgeWorkers guide](doc:flexible-composition).
+      x-akamai:
+        status: BETA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/revision-unpin-post.json
+            schema:
+              $ref: schemas/revision-unpin-post.yaml
+      responses:
+        200:
+          description: |
+            Provides details for the unpinned EdgeWorker revision.
+          content:
+            application/json:
+              example:
+                $ref: examples/revision-unpin-post-200.json
+              schema:
+                $ref: schemas/revision-unpin-post-200.yaml
+  /ids/{edgeWorkerId}/versions:
+    parameters:
+    - $ref: parameters/edgeWorkerId-path.yaml
+    post:
+      operationId: post-versions
+      summary: Create a new version
+      tags:
+      - Versions
+      description: |
+        Create a new version of an EdgeWorker. In order to run this operation you need to build an [EdgeWorkers code bundle](doc:create-a-code-bundle) and save it in GZIP format. You need to provide the GZIP binary file in the request body, with a `Content-Type` of `application/gzip`.
+      requestBody:
+        required: true
+        content:
+          application/gzip:
+            schema:
+              type: string
+              format: binary
+      responses:
+        201:
+          description: |
+            Provides details for an EdgeWorker version.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/versions-post-201.json
+              schema:
+                $ref: schemas/versions-post-201.yaml
+    get:
+      operationId: get-versions
+      summary: List versions
+      tags:
+      - Versions
+      description: |
+        View a list of EdgeWorker versions.
+      responses:
+        200:
+          description: |
+            This section describes a list of EdgeWorker versions.
+          content:
+            application/json:
+              example:
+                $ref: examples/versions-get-200.json
+              schema:
+                $ref: schemas/versions-get-200.yaml
+  /ids/{edgeWorkerId}/versions/{version}:
+    parameters:
+    - $ref: parameters/version-path.yaml
+    - $ref: parameters/edgeWorkerId-path.yaml
+    get:
+      operationId: get-version
+      summary: Get version details
+      tags:
+      - Versions
+      description: |
+        View details for a specific version.
+      responses:
+        200:
+          description: |
+            Provides details for an EdgeWorker version.
+          content:
+            application/json:
+              example:
+                $ref: examples/version-get-200.json
+              schema:
+                $ref: schemas/version-get-200.yaml
+    delete:
+      operationId: delete-version
+      summary: Delete version
+      tags:
+      - Versions
+      description: |
+        Delete a specific version.
+      responses:
+        204:
+          description: |
+            Confirms the deletion of the EdgeWorker version.
+  /ids/{edgeWorkerId}/versions/{version}/content:
+    parameters:
+    - $ref: parameters/version-path.yaml
+    - $ref: parameters/edgeWorkerId-path.yaml
+    get:
+      operationId: get-version-content
+      summary: Download an EdgeWorkers code bundle
+      tags:
+      - Versions
+      description: |
+        Download the bundle containing the code the EdgeWorker executes.
+      responses:
+        200:
+          description: |
+            Downloaded EdgeWorkers code bundle.
+          content:
+            application/gzip:
+              schema:
+                type: string
+                format: binary

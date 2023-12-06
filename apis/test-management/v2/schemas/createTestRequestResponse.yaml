@@ -1,0 +1,60 @@
+type: object
+description: |-
+  Response for creating the test requests.
+  
+x-akamai:
+  file-path: schemas/createTestRequestResponse.yaml
+additionalProperties: false
+required:
+- failures
+- successes
+properties:
+  failures:
+    type: array
+    description: |
+      Contains a list of unique identifiers of test requests that failed to be created and details about errors.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      - title
+      properties:
+        type:
+          type: string
+          description: |
+            Type of error.
+          minLength: 1
+        title:
+          type: string
+          description: |
+            Title of the error.
+          minLength: 1
+        existingEntities:
+          type: array
+          description: |
+            Test request objects that already exist.
+          minItems: 1
+          items:
+            $ref: get-test-request-response.yaml
+        requestField:
+          type: string
+          description: |
+            Request field name. It can be a URL or query parameter or any request payload field name.
+          minLength: 1
+        requestValues:
+          type: array
+          description: |
+            Request field values.
+          minItems: 1
+          items:
+            type: string
+            minLength: 1
+  successes:
+    type: array
+    description: |
+      Contains a list of unique identifiers of test requests created successfully.
+    minItems: 0
+    items:
+      $ref: get-test-request-response.yaml

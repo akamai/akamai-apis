@@ -1,0 +1,64 @@
+x-akamai:
+  file-path: paths/policy-reputation-profile.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/reputation-profiles/{reputationProfileId}
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/policyId-path.yaml
+- $ref: ../parameters/reputationProfileId-path.yaml
+get:
+  operationId: get-reputation-profile-action
+  summary: Get the action for a reputation profile
+  tags:
+  - Client reputation
+  description: |
+    Return the action a reputation profile takes when triggered. _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module.
+  responses:
+    200:
+      description: |
+        Successfully retrieved the reputation profile action.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-put-eval-rule-action-200.json
+          schema:
+            $ref: ../schemas/reputation-profile-action-get-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-reputation-profile-action
+  summary: Modify the action for a reputation profile
+  tags:
+  - Client reputation
+  description: |
+    Update what action to take when reputation profile's rule triggers. Use `alert` to record the trigger of the event, `deny` to block the request, or `none` to take no action. Currently the only member in the reputation profile object is `action`. _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/reputation-profile-put-action.json
+        schema:
+          $ref: ../schemas/reputation-profile-put-action.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the reputation profile's action.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/reputation-profile-put-action-200.json
+          schema:
+            $ref: ../schemas/reputation-profile-action-put-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

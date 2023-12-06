@@ -1,0 +1,53 @@
+type: object
+description: |-
+  Collects data needed for condition matches on request headers.
+  
+x-akamai:
+  file-path: schemas/url-protection-bypass-request-header-condition.yaml
+title: RequestHeaderCondition
+additionalProperties: false
+required:
+- className
+- name
+properties:
+  name:
+    type: array
+    description: |
+      Use `name` to check whether the specified header exists.
+    minItems: 1
+    uniqueItems: true
+    items:
+      type: string
+      minLength: 1
+  value:
+    type: array
+    description: |
+      A list of unique header values. Use both `value` and `name` to check whether the requesting client’s header matches the specified headers.
+    nullable: true
+    uniqueItems: true
+    items:
+      type: string
+      minLength: 1
+  className:
+    type: string
+    description: |
+      Choose `RequestHeaderCondition` to match a header from the requesting client to the specified header. 
+    enum:
+    - RequestHeaderCondition
+  nameWildcard:
+    type: boolean
+    description: |
+      Whether to interpret `?` and `*` as wildcards in the specified `name`.
+  positiveMatch:
+    type: boolean
+    description: |
+      Whether the condition triggers on a match or lack of match.
+    readOnly: true
+  valueCase:
+    type: boolean
+    description: |
+      Whether to consider case when matching header values, `true` for case-sensitive matches.
+  valueWildcard:
+    type: boolean
+    description: |
+      Whether to interpret `?` and `*` as wildcards in the specified `value`.

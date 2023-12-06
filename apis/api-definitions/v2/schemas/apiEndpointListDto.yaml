@@ -1,0 +1,258 @@
+type: object
+description: |-
+  Contains information about a collection of requested endpoints.
+  
+x-akamai:
+  file-path: schemas/apiEndpointListDto.yaml
+additionalProperties: false
+properties:
+  apiEndPoints:
+    type: array
+    description: |
+      The collection of the returned endpoint objects.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - apiEndPointName
+      properties:
+        description:
+          type: string
+          description: |
+            The description of the endpoint. If you specify `null` in the request or omit this member from the object, the JSON response reflects it as an empty string.
+        apiCategoryIds:
+          type: array
+          description: |
+            The category identifiers that apply to this endpoint. The value is `null` for uncategorized endpoints.
+          items:
+            type: integer
+        apiEndPointHosts:
+          type: array
+          description: |
+            The hostnames that may receive traffic for the endpoint. You need at least one hostname to activate the endpoint.
+          items:
+            type: string
+        apiEndPointId:
+          type: integer
+          description: |
+            The unique identifier for the endpoint.
+        apiEndPointLocked:
+          type: boolean
+          description: |
+            Whether the endpoint version is read-only.
+        apiEndPointName:
+          type: string
+          description: |
+            The name of the endpoint, unique within the account.
+        apiEndPointScheme:
+          type: string
+          description: |
+            The URL scheme to which the endpoint may respond, either `http`, `https`, or `http/https` for both.
+          enum:
+          - http
+          - https
+          - http/https
+        apiEndPointVersion:
+          type: integer
+          description: |
+            The unique identifier for the endpoint version.
+        apiResourceBaseInfo:
+          type: array
+          description: |
+            The collection of resource objects assigned to the endpoint.
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              description:
+                type: string
+                description: |
+                  The description to clarify the resource's function within the API. If you specify an empty string in the request or omit this member from the object, the JSON response reflects it as `null`.
+              apiResourceClonedFromId:
+                type: integer
+                description: |
+                  For cloned resources, the unique identifier for the source resource.
+                nullable: true
+              apiResourceId:
+                type: integer
+                description: |
+                  The unique identifier for the resource.
+              apiResourceLogicId:
+                type: integer
+                description: |
+                  The unique identifier for the resource across different endpoint versions.
+              apiResourceName:
+                type: string
+                description: |
+                  The name of the resource.
+              createDate:
+                type: string
+                description: |
+                  The ISO 6801 timestamp indicating when you created the resource.
+                format: date-time
+              createdBy:
+                type: string
+                description: |
+                  The identifier for the user who created the resource.
+              link:
+                type: string
+                description: |
+                  The location of the navigable resource within this API, for use by API clients.
+                nullable: true
+              lockVersion:
+                type: integer
+                description: |
+                  The identifier for the last modification of an endpoint version, used for optimistic locking. See [Concurrency control](ref:concurrency-control) for details.
+              resourcePath:
+                type: string
+                description: |
+                  The URL path relative to the hostnames on which the resource resides.
+              updateDate:
+                type: string
+                description: |
+                  The ISO 6801 timestamp indicating when you last modified the resource.
+                format: date-time
+              updatedBy:
+                type: string
+                description: |
+                  The identifier for the user who last modified the resource.
+        apiVersionInfo:
+          description: |
+            Contains information about a major API version. This refers to REST API versioning and is a different concept than the endpoint configuration versions you create at Akamai.
+          $ref: apiVersionInfo.yaml
+        availableActions:
+          type: array
+          description: |
+            The collection of available actions that you can perform on the endpoint depending on its versions' activation status.
+          items:
+            type: string
+            enum:
+            - DELETE
+            - CLONE_ENDPOINT
+            - COMPARE_ENDPOINT
+            - COMPARE_AAG_SETTINGS
+            - COMPARE_RAPID_SETTINGS
+            - EDIT_ENDPOINT_DEFINITION
+            - ACTIVATE_ON_STAGING
+            - ACTIVATE_ON_PRODUCTION
+            - DEACTIVATE_ON_STAGING
+            - DEACTIVATE_ON_PRODUCTION
+            - HIDE_ENDPOINT
+            - SHOW_ENDPOINT
+        basePath:
+          type: string
+          description: |
+            The URL path that serves as a root prefix for all resources' `resourcePath` values. This is `/` if empty. Don't append a `/` character to the path. If you specify `null` in the request or omit this member from the object, the JSON response reflects it as an empty string.
+        caseSensitive:
+          type: boolean
+          description: |
+            Whether the URLs and parameters within the endpoint are case sensitive.
+        clonedFromVersion:
+          type: integer
+          description: |
+            For cloned endpoints, the unique identifier for the source endpoint version.
+        consumeType:
+          type: string
+          description: |
+            The content type the endpoint exchanges, either `json`, `xml`, `json/xml` for dual-format APIs, `any`, or `none`.
+          enum:
+          - none
+          - json
+          - xml
+          - json/xml
+          - any
+        contractId:
+          type: string
+          description: |
+            The unique identifier for the contract with Akamai under which you provisioned security and delivery settings for this API.
+        createDate:
+          type: string
+          description: |
+            The ISO 6801 timestamp indicating when you created the endpoint.
+          format: date-time
+        createdBy:
+          type: string
+          description: |
+            The identifier for the user who created the resource.
+        endpointHidden:
+          type: boolean
+          description: |
+            Indicates whether the endpoint is hidden. You can't activate or delete versions of a hidden endpoint. If you want to do so, you first need to reveal the endpoint by running the [Show an endpoint](ref:post-endpoint-show) operation.
+        groupId:
+          type: integer
+          description: |
+            The unique identifier for the group in the Control Center portal under which you activated security and delivery settings for this API.
+        isGraphQL:
+          type: boolean
+          description: |
+            Whether the endpoint uses GraphQL to deliver structured content to clients.
+        lockVersion:
+          type: integer
+          description: |
+            The identifier for the last modification of an endpoint version, used for optimistic locking. See [Concurrency control](ref:concurrency-control) for details.
+        pii:
+          type: object
+          description: |
+            Personally identifiable information. See (API concepts)[ref:api-concepts] for more information.
+          additionalProperties: false
+          properties:
+            types:
+              type: array
+              description: |
+                The PII type. Either `PERSONAL_EMAIL` or `CREDIT_OR_DEBIT_CARD_NUMBER`.
+              items:
+                type: string
+                enum:
+                - PERSONAL_EMAIL
+                - CREDIT_OR_DEBIT_CARD_NUMBER
+        positiveConstrainsEnabled:
+          type: boolean
+          description: |
+            Enables Kona Site Defender (KSD) firewall policies for the endpoint.
+        productionVersion:
+          type: object
+          description: |
+            Contains information about an endpoint version's activation status on the production network.
+        responseConstraintsEnabled:
+          type: boolean
+          description: |
+            Enables Kona Site Defender (KSD) firewall policies for the responses.
+        source:
+          type: object
+          description: |
+            Contains information about the import file used to create the endpoint.
+          nullable: true
+        stagingVersion:
+          type: object
+          description: |
+            Contains information about an endpoint version's activation status on the staging network.
+        updateDate:
+          type: string
+          description: |
+            The ISO 6801 timestamp indicating when you last modified the endpoint.
+          format: date-time
+        updatedBy:
+          type: string
+          description: |
+            The identifier for the user who last modified the resource.
+        versionHidden:
+          type: boolean
+          description: |
+            Indicates whether the endpoint version is hidden. You cannot activate or delete hidden versions. If you want to do so, you first need to reveal the version by running the [Show a version](ref:post-version-show) operation.
+        versionNumber:
+          type: integer
+          description: |
+            The endpoint version number.
+  page:
+    type: integer
+    description: |
+      The number of the current page with results.
+    minimum: 1
+  pageSize:
+    type: integer
+    description: |
+      The number of endpoints on each page with results.
+  totalSize:
+    type: integer
+    description: |
+      The total number of endpoints available in the returned set.

@@ -1,0 +1,103 @@
+x-akamai:
+  file-path: paths/include-activations.yaml
+  path-for-file: /includes/{includeId}/activations
+parameters:
+- $ref: ../parameters/includeId-path.yaml
+post:
+  operationId: post-include-activation
+  summary: Activate or deactivate an include
+  tags:
+  - Include activations
+  description: |
+    This operation creates a new include activation, which deactivates any current activation. After a necessary delay, this activates your version's rule tree modifying how your edge content responds to end-user requests. To reduce software vulnerability, avoid calling PAPI with separate clients on the same data and frequent polling of status values, progressively increasing the delay.
+  x-akamai:
+    status: LA
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/include-activation-create-request.json
+        schema:
+          $ref: ../schemas/include-activation-create-request.yaml
+  responses:
+    201:
+      description: |
+        The response provides a URL link to the newly created activation.
+      headers:
+        Location:
+          $ref: ../headers/Location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/include-activation-create-response.json
+          schema:
+            $ref: ../schemas/include-activation-post-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    409:
+      $ref: ../errors/409.yaml
+    415:
+      $ref: ../errors/415.yaml
+    422:
+      $ref: ../errors/422.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+get:
+  operationId: get-include-activations
+  summary: List include's activations
+  tags:
+  - Include activations
+  description: |
+    This lists all activations for all versions of an include, on both production and staging networks.
+  x-akamai:
+    status: LA
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  responses:
+    200:
+      description: |
+        The response lists all activations for the requested include.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/include-activation-list-response.json
+          schema:
+            $ref: ../schemas/include-activation-list-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: includeActivations
+  group: Include activations

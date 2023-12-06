@@ -1,0 +1,198 @@
+type: object
+description: |-
+  Attack Group Recommendation details.
+  
+x-akamai:
+  file-path: schemas/group-recommendations.yaml
+additionalProperties: false
+properties:
+  declinedRecommendations:
+    type: array
+    description: |
+      Exception recommendations you previously chose to ignore. Run [Respond to exception recommendations](ref:post-recommendations) with a value of `RESET` if you want to undo your previous setting.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        description:
+          type: string
+          description: |
+            Describes why the proposed tuning exception is recommended.
+        evidences:
+          type: string
+          description: |
+            Provides additional information about the recommendation.
+        exceptions:
+          type: array
+          description: |
+            Conditionally exclude requests from inspection.
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              recommendationId:
+                type: integer
+                description: |
+                  The unique identifier for the recommendation.
+              selector:
+                type: object
+                description: |
+                  Identifies the part of the request to exclude.
+                additionalProperties: false
+                required:
+                - enhanced
+                properties:
+                  type:
+                    type: string
+                    description: |
+                      See [Selector type values](ref:recommendation-selector-values) for available values.
+                    enum:
+                    - GENERIC
+                    - SPECIFIC
+                    - WILDCARD
+                    - EXACT
+                    - AAG_SPECIFIC
+                    - ENHANCED_GENERIC
+                    - ENHANCED_SPECIFIC
+                    - ENHANCED_EXACT
+                    - ENHANCED_VALUES
+                  enhanced:
+                    type: boolean
+                    description: |
+                      Whether the exception recommendations are for enhanced selectors.
+                  numberOfExceptions:
+                    type: integer
+                    description: |
+                      The number of exceptions Adaptive Security Engine recommends.
+                  selector:
+                    type: string
+                    description: |
+                      Identifies the part of the request to exclude. See [selector values](ref:exception-selector-values) for available values.
+                    enum:
+                    - REQUEST_HEADERS
+                    - ARGS
+                    - JSON_PAIRS
+                    - XML_PAIRS
+                    - REQUEST_COOKIES
+                    - REQUEST_HEADERS_NAMES
+                    - REQUEST_COOKIES_NAMES
+                    - ARGS_NAMES
+                    - JSON_NAMES
+                    - REQUEST_PROTOCOL
+                    - REQUEST_URI
+                    - REQUEST_METHOD
+                    - REQUEST_FILENAME
+                    - QUERY_STRING
+                    - REQUEST_PATH_SEGMENT
+                    - FILES_NAMES
+                    - REQUEST_BODY
+                    - REQBODY_PROCESSOR_ERROR
+                    - VALUES
+              selectorId:
+                type: integer
+                description: |
+                  The unique identifier for the selector referenced in the recommendation.
+        ruleSetType:
+          type: string
+          description: |
+            Identifies the recommendation type. This value populates only when the query type is `ALL`. Use `ACTIVE` for active rule sets. Use `EVALUATION` for evaluation rule sets.
+          enum:
+          - ACTIVE
+          - EVALUATION
+  group:
+    type: string
+    description: |
+      The attack group the recommendations are for.
+  recommendations:
+    type: array
+    description: |
+      Lists recommended exception values for an attack group.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        description:
+          type: string
+          description: |
+            Describes why the proposed tuning exception is recommended.
+        evidences:
+          type: string
+          description: |
+            Provides additional information about the recommendation.
+        exceptions:
+          type: array
+          description: |
+            Describes the exception members that allow you to conditionally exclude requests from inspection.
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              recommendationId:
+                type: integer
+                description: |
+                  The unique identifier for the recommendation.
+              selector:
+                type: object
+                description: |
+                  Identifies the part of the request to exclude.
+                additionalProperties: false
+                required:
+                - enhanced
+                properties:
+                  type:
+                    type: string
+                    description: |
+                      Additional request attributes to exclude from inspection. See [Selector type values](ref:recommendation-selector-values) for available values.
+                    enum:
+                    - GENERIC
+                    - SPECIFIC
+                    - WILDCARD
+                    - EXACT
+                    - AAG_SPECIFIC
+                    - ENHANCED_GENERIC
+                    - ENHANCED_SPECIFIC
+                    - ENHANCED_EXACT
+                    - ENHANCED_VALUES
+                  enhanced:
+                    type: boolean
+                    description: |
+                      Whether the exception recommendations are for enhanced selectors.
+                  numberOfExceptions:
+                    type: integer
+                    description: |
+                      The number of exceptions Adaptive Security Engine recommends.
+                  selector:
+                    type: string
+                    description: |
+                      Identifies the part of the request to exclude. See [selector values](ref:exception-selector-values) for available values.
+                    enum:
+                    - REQUEST_HEADERS
+                    - ARGS
+                    - JSON_PAIRS
+                    - XML_PAIRS
+                    - REQUEST_COOKIES
+                    - REQUEST_HEADERS_NAMES
+                    - REQUEST_COOKIES_NAMES
+                    - ARGS_NAMES
+                    - JSON_NAMES
+                    - REQUEST_PROTOCOL
+                    - REQUEST_URI
+                    - REQUEST_METHOD
+                    - REQUEST_FILENAME
+                    - QUERY_STRING
+                    - REQUEST_PATH_SEGMENT
+                    - FILES_NAMES
+                    - REQUEST_BODY
+                    - REQBODY_PROCESSOR_ERROR
+                    - VALUES
+              selectorId:
+                type: integer
+                description: |
+                  The unique identifier for the selector referenced in the recommendation.
+        ruleSetType:
+          type: string
+          description: |
+            Identifies the recommendation type. This value populates only when the query type is `ALL`. Use `ACTIVE` for active rule sets. Use `EVALUATION` for evaluation rule sets.
+          enum:
+          - ACTIVE
+          - EVALUATION

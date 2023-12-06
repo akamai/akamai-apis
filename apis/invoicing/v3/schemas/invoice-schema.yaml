@@ -1,0 +1,89 @@
+type: object
+description: |-
+  List of invoices and credit memos.
+  
+x-akamai:
+  file-path: schemas/invoice-schema.yaml
+additionalProperties: false
+required:
+- invoiceId
+- invoiceDate
+- invoiceTotal
+- invoiceCurrency
+- invoiceType
+- contractId
+- accountId
+- files
+properties:
+  accountId:
+    type: string
+    description: |
+      Identifies the account.
+    minLength: 1
+  contractId:
+    type: string
+    description: |
+      Identifies the contract the data reflects.
+    minLength: 1
+  files:
+    type: array
+    description: |
+      Specifies invoice and credit memo files.
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - fileName
+      - fileFormat
+      - fileVersion
+      properties:
+        fileFormat:
+          type: string
+          description: |
+            The format of the file, either `PDF`, `CSV`, or `JSON`.
+          enum:
+          - PDF
+          - CSV
+          - JSON
+        fileName:
+          type: string
+          description: |
+            The name of the file.
+          minLength: 1
+        fileVersion:
+          type: integer
+          description: |
+            The version of the file.
+          minimum: 1
+  invoiceCurrency:
+    type: string
+    description: |
+      Three-letter ISO 4217 code indicating the currency that measures all totals.
+    minLength: 1
+  invoiceDate:
+    type: string
+    description: |
+      The invoice's or credit memo's published date, formatted as ISO 8601 date.
+    format: date
+  invoiceDueDate:
+    type: string
+    description: |
+      The invoice's or credit memo's due date.
+    format: date
+  invoiceId:
+    type: integer
+    description: |
+      Identifies the invoice or credit memo.
+    minimum: 1
+  invoiceTotal:
+    type: number
+    description: |
+      The amount billed.
+  invoiceType:
+    type: string
+    description: |
+      The overall category for the document, such as `INVOICE` or `CREDIT_MEMO` for adjustments.
+    enum:
+    - INVOICE
+    - CREDIT_MEMO

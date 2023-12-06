@@ -1,0 +1,78 @@
+type: object
+description: |-
+  Application bundle application information.
+  
+x-akamai:
+  file-path: schemas/app-bundle.yaml
+additionalProperties: false
+required:
+- status
+- app_details
+- description
+- group_apps
+- uuid_url
+- resource_uri
+- name
+properties:
+  name:
+    type: string
+    description: |
+      A display label for the application bundle.
+    minLength: 1
+  description:
+    type: string
+    description: |
+      A description of the application bundle. Specify `null` if you want to provide this later.
+    nullable: true
+    minLength: 1
+  app_details:
+    type: array
+    description: |
+      Detailed application data for the this application bundle.
+    minItems: 0
+    items:
+      $ref: app-bundle-details.yaml
+  created_at:
+    type: string
+    description: |
+      ISO 8601 timestamp marking this object's creation.
+    format: date-time
+  group_apps:
+    type: array
+    description: |
+      The applications assigned to the application bundle group.
+    minItems: 1
+    items:
+      type: string
+      minLength: 1
+  modified_at:
+    type: string
+    description: |
+      ISO 8601 timestamp marking this object's last modification. If the object wasn't modified since first being created, the value matches `created_at`.
+    format: date-time
+  resource_uri:
+    type: object
+    description: |
+      Contains location information for the application bundle.
+    additionalProperties: false
+    required:
+    - href
+    properties:
+      href:
+        type: string
+        description: |
+          Specifies the location for the application bundle.
+        minLength: 1
+  status:
+    type: integer
+    description: |
+      Status of the application bundle. Either `0` for disabled or `1` for enabled.
+    default: 0
+    enum:
+    - 0
+    - 1
+  uuid_url:
+    type: string
+    description: |
+      A unique identifier for the application bundle.
+    minLength: 1

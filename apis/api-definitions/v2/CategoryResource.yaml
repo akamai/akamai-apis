@@ -1,0 +1,177 @@
+openapi: 3.0.0
+info:
+  title: Categories
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/api-definitions/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: CategoryResource.yaml
+paths:
+  /categories:
+    post:
+      operationId: post-category
+      summary: Create a category
+      tags:
+      - Categories
+      description: |
+        Creates a category that you can use to tag endpoints. The request's `apiCategoryName` needs to be unique per account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/categoryDto-post-example.json
+            schema:
+              $ref: schemas/categoryDto.yaml
+      responses:
+        201:
+          description: |
+            New resource successfully created.
+          headers:
+            Location:
+              description: |
+                Relative URL for created API endpoint category.
+              schema:
+                type: string
+          content:
+            application/json:
+              example:
+                $ref: examples/categoryDto-example.json
+              schema:
+                $ref: schemas/categoryDto.yaml
+        400:
+          description: |
+            Some of user input is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    get:
+      operationId: get-categories
+      summary: List categories
+      tags:
+      - Categories
+      description: |
+        Lists all categories available to tag endpoints and optionally indicates the number of endpoints tagged under each category.
+      parameters:
+      - $ref: parameters/withUsageInfo-query.yaml
+      responses:
+        200:
+          description: |
+            The response lists unique categories, or an empty list if there are none.
+          content:
+            application/json:
+              example:
+                $ref: examples/categoryDtos-example.json
+              schema:
+                $ref: schemas/categoryDtos.yaml
+        403:
+          description: |
+            You don't have permission to retrieve API endpoint category list.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/httpProblemDetails-403-example.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /categories/{apiCategoryId}:
+    parameters:
+    - $ref: parameters/apiCategoryId-path.yaml
+    get:
+      operationId: get-category
+      summary: Get a category
+      tags:
+      - Categories
+      description: |
+        Returns a specific category that you can use to tag endpoints.
+      responses:
+        200:
+          description: |
+            Response data shows the category.
+          content:
+            application/json:
+              example:
+                $ref: examples/categoryDto-example.json
+              schema:
+                $ref: schemas/categoryDto.yaml
+        403:
+          description: |
+            You don't have permission to get the API endpoint category.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/httpProblemDetails-403-example.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            The API endpoint category doesn't exist.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    put:
+      operationId: put-category
+      summary: Edit a category
+      tags:
+      - Categories
+      description: |
+        Updates a category's description or unique name.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/categoryDto-example.json
+            schema:
+              $ref: schemas/categoryDtoPut.yaml
+      responses:
+        200:
+          description: |
+            The response shows the updated category.
+          content:
+            application/json:
+              example:
+                $ref: examples/categoryDto-example.json
+              schema:
+                $ref: schemas/categoryDto.yaml
+        400:
+          description: |
+            Some of the request input is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            You don't have permission to edit API endpoint category.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/httpProblemDetails-403-example.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    delete:
+      operationId: delete-category
+      summary: Delete a category
+      tags:
+      - Categories
+      description: |
+        Removes an unassigned category. If you assigned the category to at least one endpoint, the operation returns a 403 error.
+      responses:
+        204:
+          description: |
+            Category successfully deleted.
+        403:
+          description: |
+            You don't have permission to edit the API endpoint category.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/httpProblemDetails-403-example.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml

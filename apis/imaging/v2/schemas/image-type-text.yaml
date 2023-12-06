@@ -1,0 +1,73 @@
+type: object
+description: |-
+  A snippet of text. Defines the font family, font size, fill color, outline stroke width, and outline color.
+  
+x-akamai:
+  file-path: schemas/image-type-text.yaml
+title: Text image
+additionalProperties: false
+required:
+- type
+- text
+properties:
+  type:
+    type: string
+    description: |
+      Identifies the type of image, `Text` in this case.
+    default: Text
+    enum:
+    - Text
+  fill:
+    description: |
+      The main fill color of the text.
+    oneOf:
+    - default: '#000'
+      type: string
+      title: String
+      pattern: ^#[0-9a-fA-Z]{3,8}$
+    - $ref: variable-inline.yaml
+  size:
+    description: |
+      The size in pixels to render the text.
+    oneOf:
+    - default: 72.0
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+    - $ref: variable-inline.yaml
+  stroke:
+    description: |
+      The color of the outline of the text.
+    oneOf:
+    - default: '#FFF'
+      type: string
+      title: String
+      pattern: ^#[0-9a-fA-Z]{3,8}$
+    - $ref: variable-inline.yaml
+  strokeSize:
+    description: |
+      The thickness in points of the outline of the text.
+    oneOf:
+    - format: float
+      type: number
+      title: Number
+      minimum: 0
+    - $ref: variable-inline.yaml
+  text:
+    description: |
+      The line of text to render.
+    oneOf:
+    - title: String
+      type: string
+    - $ref: variable-inline.yaml
+  transformation:
+    $ref: transformation-nested.yaml
+  typeface:
+    description: |
+      The font family to apply to the text image. This may be the URL of a TrueType or WOFF (v1) typeface, or a string that refers to one of the standard built-in browser fonts.
+    oneOf:
+    - default: DejaVuSans
+      type: string
+      title: String
+    - $ref: variable-inline.yaml

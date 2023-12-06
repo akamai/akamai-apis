@@ -1,0 +1,49 @@
+type: object
+description: |-
+  Provides detailed information about the Splunk destination that you can use in your stream. Note that DataStream 2 currently supports only endpoint URLs ending with `collector/raw`. If you choose this destination, the stream pushes a sample POST request to the endpoint to validate write access. For `STRUCTURED` logs, the data is sent as `0,access_validation`, and for `JSON` it's `{"access_validation":true}`. You can see the data only if the destination validates, and you can access the destination storage.
+  
+x-akamai:
+  file-path: schemas/SplunkSavedDestination.yaml
+title: SPLUNK
+additionalProperties: false
+required:
+- destinationType
+- displayName
+- endpoint
+- compressLogs
+properties:
+  compressLogs:
+    type: boolean
+    description: |
+      Enables gzip compression for a log file sent to a destination. If not set, this member's value is `true` by default.
+    default: true
+  customHeaderName:
+    type: string
+    description: |
+      A human-readable name for the request's custom header, containing only alphanumeric, dash, and underscore characters.
+  customHeaderValue:
+    type: string
+    description: |
+      The custom header's contents passed with the request that contains information about the client connection.
+  destinationType:
+    type: string
+    description: |
+      The name of the destination type. Set this value to `SPLUNK` for this destination type.
+    enum:
+    - SPLUNK
+  displayName:
+    type: string
+    description: |
+      The name of the destination.
+  endpoint:
+    type: string
+    description: |
+      The raw event Splunk URL where you want to store your logs. You can use Akamaized property hostnames as endpoint URLs. See [Stream logs to Splunk](https://techdocs.akamai.com/datastream2/v2/docs/stream-splunk#akamaized-hostname-as-endpoint).
+  mTlsEnabled:
+    type: boolean
+    description: |
+      Identifies if the stream has the mTLS authentication enabled. The response returns this field only if you set the `clientCert` and `clientKey` members while creating or editing a stream.
+  tlsHostname:
+    type: string
+    description: |
+      The hostname that verifies the server's certificate and matches the Subject Alternative Names (SANs) in the certificate. If not provided, DataStream fetches the hostname from the endpoint URL.

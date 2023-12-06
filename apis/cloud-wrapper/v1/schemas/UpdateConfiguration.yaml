@@ -1,0 +1,60 @@
+type: object
+description: |-
+  Describes the fields you can update in a configuration.
+  
+x-akamai:
+  file-path: schemas/UpdateConfiguration.yaml
+additionalProperties: false
+required:
+- comments
+- locations
+- propertyIds
+properties:
+  capacityAlertsThreshold:
+    type: integer
+    description: |
+      Capacity Alerts enablement information for the configuration.
+    nullable: true
+    format: int64
+    minimum: 50
+    maximum: 100
+  comments:
+    type: string
+    description: |
+      Additional information you provide to differentiate or track changes of the configuration.
+    minLength: 1
+    maxLength: 255
+  locations:
+    type: array
+    description: |
+      List of [locations](ref:get-locations) to use with the configuration. Locations need to have a [pre-approved capacity](ref:get-capacity-inventory) for the selected contract.
+    minItems: 1
+    maxItems: 2147483647
+    items:
+      $ref: ../schemas/ConfigLocation.yaml
+  multiCdnSettings:
+    description: |
+      Specify details about the Multi CDN settings.
+    $ref: ../schemas/ConfigMultiCdnSettings.yaml
+  notificationEmails:
+    type: array
+    description: |
+      Email addresses to receive notifications.
+    minItems: 0
+    items:
+      type: string
+      format: email
+  propertyIds:
+    type: array
+    description: |
+      List of properties belonging to supported delivery products. Properties need to be unique across configurations. For example, a property can associate with a single Cloud Wrapper configuration. Properties don't need be from the same contract specified for the configuration.
+    minItems: 1
+    items:
+      type: string
+      minimum: 1
+      maximum: 1000000000
+  retainIdleObjects:
+    type: boolean
+    description: |
+      Retain idle objects beyond their max idle lifetime.
+    default: false

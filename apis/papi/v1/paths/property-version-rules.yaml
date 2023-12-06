@@ -1,0 +1,252 @@
+x-akamai:
+  file-path: paths/property-version-rules.yaml
+  path-for-file: /properties/{propertyId}/versions/{propertyVersion}/rules
+parameters:
+- $ref: ../parameters/propertyId-path.yaml
+- $ref: ../parameters/propertyVersion-path.yaml
+get:
+  operationId: get-property-version-rules
+  summary: Get a property's rule tree
+  tags:
+  - Property version rules
+  description: |
+    Gets the entire rule tree for a property version. See the [Rule Trees](ref:rule-trees) section for details on the response object's structure. Also use this operation to update from one rule format to another more recent version, incrementing the assigned set of features. See [Update rules to a newer set of features](ref:rule-format-schemas#update-rules-to-a-newer-set-of-features).
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  - $ref: ../parameters/validateRules-query.yaml
+  - $ref: ../parameters/validateMode-query.yaml
+  responses:
+    200:
+      description: |
+        The response shows the rule tree for the requested property version.
+      headers:
+        ETag:
+          $ref: ../headers/Etag.yaml
+        X-Limit-Clientip-Per-Property-Limit:
+          $ref: ../headers/X-Limit-Clientip-Per-Property-Limit.yaml
+        X-Limit-Clientip-Per-Property-Remaining:
+          $ref: ../headers/X-Limit-Clientip-Per-Property-Remaining.yaml
+        X-Limit-Elements-Per-Property-Limit:
+          $ref: ../headers/X-Limit-Elements-Per-Property-Limit.yaml
+        X-Limit-Elements-Per-Property-Remaining:
+          $ref: ../headers/X-Limit-Elements-Per-Property-Remaining.yaml
+        X-Limit-Max-Clientip-Per-Match-Limit:
+          $ref: ../headers/X-Limit-Max-Clientip-Per-Match-Limit.yaml
+        X-Limit-Max-Clientip-Per-Match-Remaining:
+          $ref: ../headers/X-Limit-Max-Clientip-Per-Match-Remaining.yaml
+        X-Limit-Max-Nested-Rules-Limit:
+          $ref: ../headers/X-Limit-Max-Nested-Rules-Limit.yaml
+        X-Limit-Max-Nested-Rules-Remaining:
+          $ref: ../headers/X-Limit-Max-Nested-Rules-Remaining.yaml
+      content:
+        '*/*':
+          example:
+            $ref: ../examples/rules-get-response.json
+          schema:
+            $ref: ../schemas/property-version-rules-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+put:
+  operationId: put-property-version-rules
+  summary: Update a property's rule tree
+  tags:
+  - Property version rules
+  description: |
+    To write a rule tree to a property version, make a PUT request to the same resource as the GET request that reads it. Pass in the rule object in the body of the request. See the [Rule Trees](ref:rule-trees) section for details on the rule tree's structure. Use this operation also to [freeze a set of rules](ref:rule-format-schemas#freeze-a-feature-set-for-a-rule-tree) to a rule format version to ensure no change in a deployed activation's behavior. Set the `validateRules` query parameter to `false` to bypass a set of validation tests that may significantly slow this operation's execution time. See [Validation best practices](ref:validation-best-practices) for guidance on when to defer validation. See [Rule tree errors and warnings](ref:rule-tree-errors-and-warnings) and [Validation errors](ref:validation-errors) for information on how validation data is embedded within the response object.
+  parameters:
+  - $ref: ../parameters/If-Match-header.yaml
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  - $ref: ../parameters/validateRules-query.yaml
+  - $ref: ../parameters/validateMode-query.yaml
+  - $ref: ../parameters/dryRun-query.yaml
+  requestBody:
+    required: true
+    content:
+      '*/*':
+        example:
+          $ref: ../examples/rules-set-request.json
+        schema:
+          $ref: ../schemas/property-version-rules-set-request.yaml
+      application/json:
+        example:
+          $ref: ../examples/rules-set-request.json
+        schema:
+          $ref: ../schemas/property-version-rules-set-request.yaml
+  responses:
+    200:
+      description: |
+        The response shows updated rule tree for the specified property version.
+      headers:
+        ETag:
+          $ref: ../headers/Etag.yaml
+        X-Limit-Clientip-Per-Property-Limit:
+          $ref: ../headers/X-Limit-Clientip-Per-Property-Limit.yaml
+        X-Limit-Clientip-Per-Property-Remaining:
+          $ref: ../headers/X-Limit-Clientip-Per-Property-Remaining.yaml
+        X-Limit-Elements-Per-Property-Limit:
+          $ref: ../headers/X-Limit-Elements-Per-Property-Limit.yaml
+        X-Limit-Elements-Per-Property-Remaining:
+          $ref: ../headers/X-Limit-Elements-Per-Property-Remaining.yaml
+        X-Limit-Max-Clientip-Per-Match-Limit:
+          $ref: ../headers/X-Limit-Max-Clientip-Per-Match-Limit.yaml
+        X-Limit-Max-Clientip-Per-Match-Remaining:
+          $ref: ../headers/X-Limit-Max-Clientip-Per-Match-Remaining.yaml
+        X-Limit-Max-Nested-Rules-Limit:
+          $ref: ../headers/X-Limit-Max-Nested-Rules-Limit.yaml
+        X-Limit-Max-Nested-Rules-Remaining:
+          $ref: ../headers/X-Limit-Max-Nested-Rules-Remaining.yaml
+      content:
+        '*/*':
+          example:
+            $ref: ../examples/rules-get-response.json
+          schema:
+            $ref: ../schemas/property-version-rules-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    412:
+      $ref: ../errors/412.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+patch:
+  operationId: patch-property-version-rules
+  summary: Patch a property's rule tree
+  tags:
+  - Property version rules
+  description: |
+    Selectively modify a rule tree using [JSON patch](http://jsonpatch.com) syntax.  As a component of the larger [Bulk patch a set of properties](ref:post-bulk-patch), this operation patches an individual rule tree.  See [Bulk Search and Update](ref:bulk-search-and-update) for more information. To bypass a set of validation tests that may significantly slow this operation's execution time, set the `validateRules` query parameter to `false` or `validateMode` to `fast`.  See [Validation best practices](ref:validation-best-practices) for guidance on when to defer validation. See [Rule tree errors and warnings](ref:rule-tree-errors-and-warnings) and [Validation errors](ref:validation-errors) for information on how validation data is embedded within the response object.
+  parameters:
+  - $ref: ../parameters/If-Match-header.yaml
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  - $ref: ../parameters/validateRules-query.yaml
+  - $ref: ../parameters/validateMode-query.yaml
+  - $ref: ../parameters/dryRun-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/json-patch+json:
+        example:
+          $ref: ../examples/rules-patch-request.json
+        schema:
+          $ref: ../schemas/property-version-rules-patch-request.yaml
+  responses:
+    200:
+      description: |
+        The response shows modified rule tree for the specified property version.
+      headers:
+        ETag:
+          $ref: ../headers/Etag.yaml
+        X-Limit-Clientip-Per-Property-Limit:
+          $ref: ../headers/X-Limit-Clientip-Per-Property-Limit.yaml
+        X-Limit-Clientip-Per-Property-Remaining:
+          $ref: ../headers/X-Limit-Clientip-Per-Property-Remaining.yaml
+        X-Limit-Elements-Per-Property-Limit:
+          $ref: ../headers/X-Limit-Elements-Per-Property-Limit.yaml
+        X-Limit-Elements-Per-Property-Remaining:
+          $ref: ../headers/X-Limit-Elements-Per-Property-Remaining.yaml
+        X-Limit-Max-Clientip-Per-Match-Limit:
+          $ref: ../headers/X-Limit-Max-Clientip-Per-Match-Limit.yaml
+        X-Limit-Max-Clientip-Per-Match-Remaining:
+          $ref: ../headers/X-Limit-Max-Clientip-Per-Match-Remaining.yaml
+        X-Limit-Max-Nested-Rules-Limit:
+          $ref: ../headers/X-Limit-Max-Nested-Rules-Limit.yaml
+        X-Limit-Max-Nested-Rules-Remaining:
+          $ref: ../headers/X-Limit-Max-Nested-Rules-Remaining.yaml
+      content:
+        '*/*':
+          example:
+            $ref: ../examples/rules-get-response.json
+          schema:
+            $ref: ../schemas/property-version-rules-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    412:
+      $ref: ../errors/412.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+head:
+  operationId: head-property-version-rules
+  summary: Get a digest for a property's rule tree
+  tags:
+  - Property version rules
+  description: |
+    Gets the rule tree's ETag without the rule tree object. Ordinarily when you [get a rule tree](ref:get-property-version-rules), the response includes a large rule tree object. As discussed in [Concurrency control](ref:concurrency-control), it includes a top-level `etag` data digest to use when [writing back the data](ref:put-property-version-rules). Use this operation if you simply want to get the `ETag` as a header without the data.
+  parameters:
+  - $ref: ../parameters/Accept-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  - $ref: ../parameters/validateRules-query.yaml
+  - $ref: ../parameters/validateMode-query.yaml
+  responses:
+    204:
+      description: |
+        The response provides the `ETag` header representing the current state of the rule tree data. See Concurrency control for guidance.
+      headers:
+        ETag:
+          $ref: ../headers/Etag.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: propertyVersionRules
+  group: Property version rules

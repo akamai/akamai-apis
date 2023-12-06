@@ -1,0 +1,66 @@
+id: resource:/descriptors/papi/v1/schemas/CreateNewIncludeActivationOrDeactivationRequestV0.json#
+javaType: com.akamai.luna.papi.model.IncludeActivationRequest
+type: object
+description: |-
+  Activates include versions on a specific network. Relevant response objects appear within the outer envelope's `activations.items` array.
+  
+x-akamai:
+  file-path: schemas/include-activation-create-request.yaml
+required:
+- includeVersion
+- network
+- notifyEmails
+properties:
+  acknowledgeAllWarnings:
+    type: boolean
+    description: |
+      When POSTing an activation, you can skip acknowledging each warning. With this enabled, you can omit the `acknowledgeWarnings` array.
+    default: false
+  acknowledgeWarnings:
+    type: array
+    description: |
+      String IDs prefixed with `msg_` to acknowledge any warnings noted in responses to previous activation requests.
+    items:
+      type: string
+  activationType:
+    type: string
+    description: |
+      Either `ACTIVATE` or `DEACTIVATE`. The default is `ACTIVATE`. Any new activation automatically deactivates the current activation. Note that if you were to POST a `DEACTIVATE` type on an active include, it would no longer serve any traffic. You'd need to modify your DNS configuration and specify a different way to field the traffic.
+    default: ACTIVATE
+    enum:
+    - ACTIVATE
+    - DEACTIVATE
+  delayValidations:
+    type: boolean
+    description: |
+      This makes the operation respond with an `activationLink` more quickly. Some time-consuming validations ordinarily result in a direct error response. Enabling this delays them so that any errors appear later once you [Get an include activation](ref:get-include-activation). In that case, the activation's `status` is `FAILED`.
+    nullalble: true
+  ignoreHttpErrors:
+    type: boolean
+    description: |
+      Ignore any HTTP errors when pushing fast metadata activation, `true` by default.
+    default: true
+  includeVersion:
+    type: integer
+    description: |
+      The version of the include to activate.
+    minimum: 1
+  network:
+    type: string
+    description: |
+      The network to activate on, either `STAGING` or `PRODUCTION`.
+    enum:
+    - STAGING
+    - PRODUCTION
+  note:
+    type: string
+    description: |
+      A descriptive log comment.
+  notifyEmails:
+    type: array
+    description: |
+      Email addresses to notify when the activation status changes.
+    minItems: 1
+    items:
+      type: string
+$schema: http://json-schema.org/draft-04-schema#

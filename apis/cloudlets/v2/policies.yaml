@@ -1,0 +1,108 @@
+openapi: 3.0.0
+info:
+  title: Policies
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cloudlets/api/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: policies.yaml
+paths:
+  /policies:
+    post:
+      operationId: post-policy
+      summary: Create a policy
+      description: |
+        Create a new Cloudlet policy. If a policy already exists with the same policy name, you receive a 409 (Conflict) status response that contains data for the existing policy. New policies are automatically assigned version number 1.
+      parameters:
+      - $ref: parameters/clonePolicyId-query.yaml
+      - $ref: parameters/version-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/policies-post.json
+            schema:
+              $ref: schemas/post-policies-request.yaml
+      responses:
+        201:
+          description: |
+            The Cloudlet policy was created.
+          content:
+            application/json:
+              example:
+                $ref: examples/policies-post-201.json
+              schema:
+                $ref: schemas/policy.yaml
+    get:
+      operationId: get-policies
+      summary: List policies
+      description: |
+        Returns information for all available policies.
+      parameters:
+      - $ref: parameters/includeDeleted-query.yaml
+      - $ref: parameters/cloudletId-query.yaml
+      responses:
+        200:
+          description: |
+            Return list of policies.
+          content:
+            application/json:
+              example:
+                $ref: examples/policies-get-200.json
+              schema:
+                $ref: schemas/get-policies-response.yaml
+  /policies/{policyId}:
+    parameters:
+    - $ref: parameters/policyId-path.yaml
+    get:
+      operationId: get-policy
+      summary: Get a policy
+      description: |
+        Returns information about a specific Cloudlets policy.
+      responses:
+        200:
+          description: |
+            Provides data for the Cloudlets policy.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-get-200.json
+              schema:
+                $ref: schemas/policy.yaml
+    put:
+      operationId: put-policy
+      summary: Update a policy
+      description: |
+        Update attributes of an existing policy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/policy-put.json
+            schema:
+              $ref: schemas/put-policy-request.yaml
+      responses:
+        200:
+          description: |
+            The response reflects the updated policy.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-put-200.json
+              schema:
+                $ref: schemas/policy.yaml
+    delete:
+      operationId: delete-policy
+      summary: Remove a policy
+      description: |
+        Deletes an existing Cloudlets policy.
+      responses:
+        204:
+          description: |
+            The Cloudlet policy is deleted.

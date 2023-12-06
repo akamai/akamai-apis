@@ -1,0 +1,58 @@
+type: object
+description: |-
+  A report on the difference between two zone versions or a version and a change list.
+  
+x-akamai:
+  file-path: schemas/diff-report.yaml
+additionalProperties: false
+required:
+- metadata
+- diffs
+properties:
+  diffs:
+    type: object
+    description: |
+      Collections of differences between the two versions.
+    additionalProperties: false
+    properties:
+      recordSetDiffs:
+        type: array
+        description: |
+          A collection of record sets that have changed between two versions.
+        items:
+          $ref: diff-recordset.yaml
+      settingsDiffs:
+        type: array
+        description: |
+          A collection of settings fields that have changed between two versions.
+        items:
+          $ref: diff-setting.yaml
+  metadata:
+    type: object
+    description: |
+      Metadata about this diff report, describing the versions being diffed.
+    additionalProperties: false
+    required:
+    - fromVersionId
+    - toVersionId
+    - fromVersionLastModifiedDate
+    - toVersionLastModifiedDate
+    properties:
+      fromVersionId:
+        type: string
+        description: |
+          The version ID of the base version.
+      fromVersionLastModifiedDate:
+        type: string
+        description: |
+          ISO 8601 timestamp indicating when the base version was last modified.
+        format: date-time
+      toVersionId:
+        type: string
+        description: |
+          The version ID of the new version or change list.
+      toVersionLastModifiedDate:
+        type: string
+        description: |
+          ISO 8601 timestamp indicating when the new change list version was last modified.
+        format: date-time

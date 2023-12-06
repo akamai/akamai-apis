@@ -1,0 +1,37 @@
+type: object
+description: |-
+  Contains information about the cache key settings configured for an endpoint or resource.
+  
+x-akamai:
+  file-path: schemas/cacheKeyDto.yaml
+additionalProperties: false
+required:
+- customize
+properties:
+  parameters:
+    type: array
+    description: |
+      The list of parameters to include in or exclude from cache keys, depending on the `option` you selected. This is only relevant if you set the corresponding `option` member to either `INCLUDE` or `IGNORE`.
+    nullable: true
+    items:
+      type: string
+  customize:
+    type: boolean
+    description: |
+      Whether you want to customize cache key settings for an endpoint.
+  exactMatch:
+    type: boolean
+    description: |
+      Whether query parameters in incoming requests should match exactly the string items in the corresponding `parameters` member. If false, even the parameters that just begin with the strings you specified in the `parameters` member will match. This is only relevant if you set the corresponding `option` member to either `INCLUDE` or `IGNORE`.
+    nullable: true
+  option:
+    type: string
+    description: |
+      The option for cache key customization. If you select `INCLUDE` or `IGNORE`, also specify the corresponding `parameters` member.
+    nullable: true
+    enum:
+    - INCLUDE_ALL_PRESERVE_ORDER
+    - INCLUDE_ALL_ALPHABETIZE_ORDER
+    - IGNORE_ALL
+    - INCLUDE
+    - IGNORE

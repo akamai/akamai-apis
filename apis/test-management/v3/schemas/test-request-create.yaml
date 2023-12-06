@@ -1,0 +1,77 @@
+type: object
+description: |-
+  Specifies a test request included in the test case.
+  
+x-akamai:
+  file-path: schemas/test-request-create.yaml
+additionalProperties: false
+required:
+- testRequestUrl
+- requestMethod
+properties:
+  tags:
+    type: array
+    description: |
+      Lists keywords for the test request. They're useful to filter test cases in the Test Center application.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  requestBody:
+    type: string
+    description: |
+      Request body for the `testRequestUrl`. Provide it only if `clientType` is set to `CURL` and `requestMethod` is `POST`. For a `requestMethod` of `GET` or `HEAD`, the `requestBody` reflects a `null` value for an empty request body.
+    nullable: true
+    minLength: 1
+    maxLength: 4000
+  encodeRequestBody:
+    type: boolean
+    description: |
+      Encodes `requestBody`. It applies only if `clientType` is set to `CURL` and `requestMethod` to `POST`. For `requestMethod` set to `GET` or `HEAD`, the `requestBody` is `null` by default. For `requestMethod` set to `POST` the default value is `true`.
+    default: true
+    nullable: true
+  requestHeaders:
+    type: array
+    description: |
+      Lists request or Akamai Pragma headers included in the functional test case. See [Pragma headers](https://techdocs.akamai.com/edge-diagnostics/docs/pragma-headers) for the list of supported values.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - headerName
+      - headerValue
+      - headerAction
+      properties:
+        headerAction:
+          type: string
+          description: |
+            Request header settings. Possible values are: `ADD` to add the entered request headers, `MODIFY` to modify the existing request headers, or `FILTER` to filter entered request headers from this functional test case.
+          enum:
+          - ADD
+          - MODIFY
+          - FILTER
+        headerName:
+          type: string
+          description: |
+            Name of the request header.
+          minLength: 1
+        headerValue:
+          type: string
+          description: |
+            Value of the request header.
+          minLength: 1
+  requestMethod:
+    type: string
+    description: |
+      Request method for the `testRequestUrl`. The available values are: `HEAD`, `GET`, and `POST`.
+    enum:
+    - HEAD
+    - GET
+    - POST
+  testRequestUrl:
+    type: string
+    description: |
+      Fully qualified URL of the page or object you want to test. The URL needs to include a protocol, a hostname, a path, and any optional query parameters. Test Center requests this URL from a browser, as well as any requests triggered by it.
+    minLength: 1
+    maxLength: 2048

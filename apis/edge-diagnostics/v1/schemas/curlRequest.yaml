@@ -1,0 +1,57 @@
+type: object
+description: |-
+  Collects data to use in the `curl` request.
+  
+x-akamai:
+  file-path: schemas/curlRequest.yaml
+additionalProperties: false
+required:
+- url
+properties:
+  edgeIp:
+    type: string
+    description: |
+      IP of the edge server you want to run the operation from. If you don't know if an IP is the edge IP, run the [Verify an IP](ref:post-verify-edge-ip) operation. You need to provide either this value or `edgeLocationId`.
+    minLength: 1
+  edgeLocationId:
+    type: string
+    description: |
+      Unique identifier for an edge server location closest to your end users. To get this value, run the [List available edge server locations](ref:get-edge-locations) operation first. You need to provide either this value or `edgeIp`.
+    minLength: 1
+  ipVersion:
+    type: string
+    description: |
+      IP version to use to run the operation, either `IPV4` or `IPV6`.
+    enum:
+    - IPV4
+    - IPV6
+  requestHeaders:
+    type: array
+    description: |
+      Customized headers for `curl` request in the format `header: value`. Check [Pragma headers](doc:pragma-headers) for the list of Akamaized Pragma headers you can use here.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  runFromSiteShield:
+    type: boolean
+    description: |
+      Runs `curl` from a Site Shield map. To learn more, check [Site Shield requests](ref:site-shield-requests).
+  sensitiveRequestHeaderKeys:
+    type: array
+    description: |
+      Sensitive `requestHeaders` you don't want to store in the database after running the request. Check [Sensitive headers](ref:sensitive-headers) to see the list of request headers treated as sensitive by default.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  spoofEdgeIp:
+    type: string
+    description: |
+      IP of the edge server you want to serve traffic from.
+    minLength: 1
+  url:
+    type: string
+    description: |
+      URL you want to get the raw HTML for.
+    format: uri

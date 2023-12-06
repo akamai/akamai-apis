@@ -1,0 +1,81 @@
+openapi: 3.0.0
+info:
+  title: Edge hostnames
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/chinacdn/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: edge-hostnames.yaml
+paths:
+  /edge-hostnames:
+    get:
+      operationId: get-edge-hostnames
+      summary: List edge hostnames
+      tags:
+      - Edge hostnames
+      description: |
+        Returns a filtered list of provided edge hostnames available for use on a China CDN enabled contract.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.chinacdn.edge-hostnames.v1+json:
+              example:
+                $ref: examples/edge-hostnames-get-200.json
+              schema:
+                $ref: schemas/edge-hostnames-v1.yaml
+            application/vnd.akamai.chinacdn.edge-hostnames.v2+json:
+              example:
+                $ref: examples/edge-hostnames-get-200.json
+              schema:
+                $ref: schemas/edge-hostnames-v2.yaml
+  /edge-hostnames/{edgehostname}/deprovision-policy:
+    parameters:
+    - $ref: parameters/edgehostname-path.yaml
+    get:
+      operationId: get-edge-hostname-deprovision-policy
+      summary: Get deprovision policy
+      tags:
+      - Edge hostnames
+      description: |
+        Returns the deprovision policy for the provided edge hostname.
+      responses:
+        200:
+          description: |
+            Contains information about the deprovision policy assigned to the edge hostname.
+          content:
+            application/vnd.akamai.chinacdn.deprovision-policy.v1+json:
+              example:
+                $ref: examples/deprovision-policy-200.json
+              schema:
+                $ref: schemas/edge-hostname-deprovision-policy-get-response.yaml
+    put:
+      operationId: put-edge-hostname-deprovision-policy
+      summary: Specify a deprovision policy
+      tags:
+      - Edge hostnames
+      description: |
+        Specify a deprovision policy for the provided edge hostname.
+      requestBody:
+        required: true
+        content:
+          application/vnd.akamai.chinacdn.deprovision-policy.v1+json:
+            example:
+              $ref: examples/deprovision-policy-put.json
+            schema:
+              $ref: schemas/edge-hostname-deprovision-policy-put-request.yaml
+      responses:
+        200:
+          description: |
+            Contains information about the deprovision policy assigned to the edge hostname.
+          content:
+            application/vnd.akamai.chinacdn.deprovision-policy.v1+json:
+              example:
+                $ref: examples/deprovision-policy-200.json
+              schema:
+                $ref: schemas/edge-hostname-deprovision-policy-put-response.yaml

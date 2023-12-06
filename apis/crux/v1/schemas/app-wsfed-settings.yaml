@@ -1,0 +1,171 @@
+type: array
+x-akamai:
+  file-path: schemas/app-wsfed-settings.yaml
+title: Web Services Federation (WSFED) settings
+items:
+  type: object
+  description: |
+    Web Services Federation (WSFED) configuration for an application.
+  additionalProperties: false
+  required:
+  - sp
+  - attrmap
+  - idp
+  - subject
+  properties:
+    attrmap:
+      type: array
+      description: |
+        Contains mapped attributes for the WSFED configuration.
+      minItems: 1
+      uniqueItems: true
+      items:
+        type: object
+        description: |
+          Mapped attributes for the WSFED configuration.
+        additionalProperties: false
+        required:
+        - fmt
+        properties:
+          name:
+            type: string
+            description: |
+              The name of the attribute.
+            minLength: 1
+          custom_fmt:
+            type: string
+            description: |
+              The custom format of the attribute.
+            minLength: 1
+          fmt:
+            type: string
+            description: |
+              The name format of the attribute.
+            minLength: 1
+          rule:
+            type: string
+            description: |
+              The custom rule language for the attribute.
+            minLength: 1
+          src:
+            type: string
+            description: |
+              The source of the attribute.
+            minLength: 1
+          val:
+            type: string
+            description: |
+              The value of the attribute.
+            minLength: 1
+    idp:
+      type: object
+      description: |
+        Specifies identity provider (IDP) settings for the WSFED configuration.
+      additionalProperties: false
+      required:
+      - entity_id
+      - sign_key
+      - sign_cert
+      - sign_algo
+      properties:
+        entity_id:
+          type: string
+          description: |
+            The entity ID of the identity provider.
+          minLength: 1
+        sign_algo:
+          type: string
+          description: |
+            The type of signing algorithm. Either `SHA256` or `SHA1`.
+          default: SHA256
+          enum:
+          - SHA256
+          - SHA1
+        sign_cert:
+          type: string
+          description: |
+            The signing certificate.
+          minLength: 1
+        sign_key:
+          type: string
+          description: |
+            The signing key.
+          minLength: 1
+    sp:
+      type: object
+      description: |
+        Specifies service provider settings for the WSFED configuration.
+      additionalProperties: false
+      required:
+      - entity_id
+      - slo_url
+      - dst_url
+      - resp_bind
+      - token_life
+      properties:
+        dst_url:
+          type: string
+          description: |
+            The destination URL.
+          minLength: 1
+        entity_id:
+          type: string
+          description: |
+            The entity ID of the service provider.
+          minLength: 1
+        resp_bind:
+          type: string
+          description: |
+            The response binding. Set to `post`.
+          default: post
+          enum:
+          - post
+        slo_url:
+          type: string
+          description: |
+            The single log-out URL.
+          minLength: 1
+        token_life:
+          type: integer
+          description: |
+            The number of seconds a token is valid.
+          default: 3600
+          minimum: 0
+    subject:
+      type: object
+      description: |
+        Specifies subject settings for the WSFED configuration.
+      additionalProperties: false
+      required:
+      - fmt
+      properties:
+        custom_fmt:
+          type: string
+          description: |
+            The custom format of the subject.
+          minLength: 1
+        fmt:
+          type: string
+          description: |
+            The format for the `NameID` element of the subject. Either `email`, `persistent`, `unspecified`, or `transient`.
+          enum:
+          - email
+          - persistent
+          - unspecified
+          - transient
+          minLength: 1
+        rule:
+          type: string
+          description: |
+            The custom rule language for the subject.
+          minLength: 1
+        src:
+          type: string
+          description: |
+            The source of the subject.
+          minLength: 1
+        val:
+          type: string
+          description: |
+            The value of the subject.
+          minLength: 1

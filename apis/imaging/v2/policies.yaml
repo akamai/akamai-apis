@@ -1,0 +1,191 @@
+openapi: 3.0.0
+info:
+  title: Policies
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/imaging/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: policies.yaml
+paths:
+  /network/{network}/policies:
+    parameters:
+    - $ref: parameters/network-path.yaml
+    - $ref: parameters/contractId-header.yaml
+    - $ref: parameters/policySetId-header.yaml
+    get:
+      operationId: get-policies
+      summary: List policies
+      tags:
+      - Policies
+      description: |
+        Returns a list of all policies belonging to the specified policy set.
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-array-image.json
+              schema:
+                $ref: schemas/policy-array.yaml
+  /network/{network}/policies/history/{policyId}:
+    parameters:
+    - $ref: parameters/network-path.yaml
+    - $ref: parameters/policyId-path.yaml
+    - $ref: parameters/contractId-header.yaml
+    - $ref: parameters/policySetId-header.yaml
+    get:
+      operationId: get-policy-history
+      summary: Get policy history
+      tags:
+      - Policy history
+      description: |
+        Returns the policy history by policy ID. This operation returns the full state of the policy at various points in time. Time stamps are in ISO 8601 extended notation format.
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-history.json
+              schema:
+                $ref: schemas/policy-history.yaml
+  /network/{network}/policies/rollback/{policyId}:
+    parameters:
+    - $ref: parameters/network-path.yaml
+    - $ref: parameters/policyId-path.yaml
+    - $ref: parameters/contractId-header.yaml
+    - $ref: parameters/policySetId-header.yaml
+    put:
+      operationId: put-rollback-policy
+      summary: Roll back a policy
+      tags:
+      - Policies
+      description: |
+        Use this operation to revert the previous version of the policy and deploy it to the network. Use this operation to stop and reverse a policy rollout.
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-rollback.json
+              schema:
+                $ref: schemas/operation-performed.yaml
+        400:
+          description: |
+            Rollback failed.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-rollback-400-none.json
+              schema:
+                $ref: schemas/error.yaml
+  /network/{network}/policies/{policyId}:
+    parameters:
+    - $ref: parameters/network-path.yaml
+    - $ref: parameters/policyId-path.yaml
+    - $ref: parameters/contractId-header.yaml
+    - $ref: parameters/policySetId-header.yaml
+    get:
+      operationId: get-policy
+      summary: Get a policy
+      tags:
+      - Policies
+      description: |
+        Returns a specific policy assigned to the specified policy set.
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-image.json
+              schema:
+                $ref: schemas/policy.yaml
+        404:
+          description: |
+            Not found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-get-404.json
+              schema:
+                $ref: schemas/error.yaml
+    put:
+      operationId: put-policy
+      summary: Create or modify a policy
+      tags:
+      - Policies
+      description: |
+        Run this operation to update an existing policy or create a new policy.  Run the [List policies](ref:get-policies) operation to get the list of existing policies and their policy IDs. Confirm the `policyId` doesn't already exist.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/policy-put.json
+            schema:
+              $ref: schemas/policy.yaml
+      responses:
+        200:
+          description: |
+            Policy updated.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-updated-200.json
+              schema:
+                $ref: schemas/operation-performed.yaml
+        201:
+          description: |
+            Policy created.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-created-201.json
+              schema:
+                $ref: schemas/operation-performed.yaml
+        400:
+          description: |
+            Invalid policy.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-put-400-widths.json
+              schema:
+                $ref: schemas/error.yaml
+    delete:
+      operationId: delete-policy
+      summary: Remove a policy
+      tags:
+      - Policies
+      description: |
+        Delete a specific policy.
+      responses:
+        200:
+          description: |
+            Policy deleted.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-deleted-200.json
+              schema:
+                $ref: schemas/operation-performed.yaml
+        400:
+          description: |
+            Could not delete policy.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-delete-400-auto.json
+              schema:
+                $ref: schemas/error.yaml

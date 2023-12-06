@@ -1,0 +1,77 @@
+type: object
+description: |-
+  Lists MTR results and details about the request.
+  
+x-akamai:
+  file-path: schemas/mtrResponse.yaml
+additionalProperties: false
+required:
+- completedTime
+- createdBy
+- createdTime
+- destinationInternalIp
+- destinationIpLocation
+- executionStatus
+- request
+- result
+- sourceInternalIp
+- sourceIpLocation
+properties:
+  completedTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the request was completed.
+    format: date-time
+  createdBy:
+    type: string
+    description: |
+      Username who submitted the request.
+    minLength: 1
+  createdTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the request was submitted.
+    format: date-time
+  destinationInternalIp:
+    type: string
+    description: |
+      Resolved IP for the MTR destination. It appears only when the `destination` in the request was a hostname.
+    minLength: 1
+  destinationIpLocation:
+    description: |
+      Specifies the geolocation of the requested `destination`.
+    $ref: edgeIpLocation.yaml
+  executionStatus:
+    type: string
+    description: |
+      Status of the request's execution, either `SUCCESS` or `FAILURE`.
+    enum:
+    - SUCCESS
+    - FAILURE
+  request:
+    description: |
+      Specifies your MTR request.
+    $ref: mtrRequest.yaml
+  result:
+    description: |
+      Standard MTR results.
+    $ref: mtrData.yaml
+  siteShieldIp:
+    type: string
+    description: |
+      For Site Shield hostnames requests, this is the IP used to run MTR.
+    minLength: 1
+  siteShieldIpLocation:
+    description: |
+      Specifies the geolocation of the edge server used to run the operation. It appears only for Site Shield hostnames requests.
+    $ref: edgeIpLocation.yaml
+  sourceInternalIp:
+    type: string
+    description: |
+      For VIP or location as the source in the request, it's the real IP address behind that VIP or location used for MTR.
+    minLength: 1
+  sourceIpLocation:
+    description: |-
+      Specifies the geolocation of the requested `source`.
+      
+    $ref: edgeIpLocation.yaml

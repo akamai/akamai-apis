@@ -1,0 +1,103 @@
+openapi: 3.0.0
+info:
+  title: Alert summaries
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/alerts/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: AlertSummaries.yaml
+paths:
+  /alert-summaries:
+    get:
+      operationId: get-summaries
+      summary: List alert summaries
+      tags:
+      - Alert summaries
+      description: |
+        Lists only high-level metadata about each alert: its name, ID, and when it was last fired. This operation wraps data available from other operations to generate simple, accessible listings.
+      responses:
+        200:
+          description: |
+            The response lists alert summaries.
+          content:
+            application/json:
+              example:
+                $ref: examples/alert-summaries-get-200.json
+              schema:
+                $ref: schemas/summaries.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /alert-summaries/{definitionId}:
+    parameters:
+    - $ref: parameters/definitionId-path.yaml
+    get:
+      operationId: get-summaries-definition
+      summary: Get an alert summary
+      tags:
+      - Alert summaries
+      description: |
+        Get the summary of basic metadata for a single alert.
+      responses:
+        200:
+          description: |
+            The response provides the alert summary.
+          content:
+            application/json:
+              example:
+                $ref: examples/alert-summary-get-200.json
+              schema:
+                $ref: schemas/summary.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /alert-summaries/{definitionId}/details:
+    parameters:
+    - $ref: parameters/definitionId-path.yaml
+    get:
+      operationId: get-summaries-definition-details
+      summary: Get alert details
+      tags:
+      - Alert details
+      description: |
+        Get verbose details for a single alert, including its definition, firings, and sparklines report.
+      responses:
+        200:
+          description: |
+            The response provides alert details.
+          content:
+            application/json:
+              example:
+                $ref: examples/alert-details-get-200.json
+              schema:
+                $ref: schemas/detail.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml

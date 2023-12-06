@@ -1,0 +1,317 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Security connectors
+  version: v3
+servers:
+- url: https://{hostname}/etp-config/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: security-connectors.yaml
+paths:
+  /configs/{configId}/akamai-sinkholes:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-security-connector
+      summary: Create a security connector
+      tags:
+      - Security connectors
+      description: |
+        Creates a security connector.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/sinkhole-create-request.json
+            schema:
+              $ref: schemas/sinkhole.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/sinkhole-response-200.json
+              schema:
+                $ref: schemas/sinkhole.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    get:
+      operationId: get-security-connectors
+      summary: List security connectors
+      tags:
+      - Security connectors
+      description: |
+        Returns a list of security connectors.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/sinkholes-listResponse-200.json
+              schema:
+                $ref: schemas/sinkholesList.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/akamai-sinkholes/latest-version:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-security-connectors-latest-version
+      summary: List the current security connector versions
+      tags:
+      - Security connectors
+      description: |
+        Provides the current version of the security connectors.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/sinkhole-current-version-response-200.json
+              schema:
+                $ref: schemas/sinkholeCurrentVersion.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/akamai-sinkholes/sc-latest-versions:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-security-connector-latest-versions
+      summary: Get the security connector's latest available version
+      tags:
+      - Security connectors
+      description: |
+        Provides the latest available version for the security connector.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/sinkhole-latest-versionresponse-200.json
+              schema:
+                $ref: schemas/sinkholeLatestVersion.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/akamai-sinkholes/{sinkholeId}:
+    parameters:
+    - $ref: parameters/sinkholeId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-security-connector
+      summary: Get a security connector
+      tags:
+      - Security connectors
+      description: |
+        Returns the details of a specific security connector.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/sinkhole-response-200.json
+              schema:
+                $ref: schemas/sinkhole.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    delete:
+      operationId: delete-security-connector
+      summary: Delete a security connector
+      tags:
+      - Security connectors
+      description: |
+        Deletes the specified security connector.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/akamai-sinkholes/{sinkholeId}/op/change-local-password:
+    parameters:
+    - $ref: parameters/sinkholeId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-security-connector-change-local-password
+      summary: Change local security connector password
+      tags:
+      - Security connectors
+      description: |
+        Changes the local password for the specified security connector.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/sinkhole-change-pwd-200.json
+            schema:
+              $ref: schemas/sinkholeChangePwd.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+  /configs/{configId}/akamai-sinkholes/{sinkholeId}/op/generate-activation-code:
+    parameters:
+    - $ref: parameters/sinkholeId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-security-connector-generate-activation-code
+      summary: Generate activation code for a security connector
+      tags:
+      - Security connectors
+      description: |
+        Generates the activation code for a security connector.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/sinkhole-generate-code-post-response-200.json
+              schema:
+                $ref: schemas/sinkholeCodeGeneration.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+  /configs/{configId}/akamai-sinkholes/{sinkholeId}/op/upgrade:
+    parameters:
+    - $ref: parameters/sinkholeId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-security-connector-upgrade
+      summary: Upgrade a security connector
+      tags:
+      - Security connectors
+      description: |
+        Upgrades software of a specific security connector.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+  /configs/{configId}/akamai-sinkholes/{sinkholeId}/policy-assignment:
+    parameters:
+    - $ref: parameters/sinkholeId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    put:
+      operationId: put-security-connector
+      summary: Update a security connector
+      tags:
+      - Security connectors
+      description: |
+        Modifies details of the current security connector.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/sinkhole-policy-assignment-body-200.json
+            schema:
+              $ref: schemas/sinkholePolicyAssignment.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml

@@ -1,0 +1,193 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Report schedules
+  version: v3
+servers:
+- url: https://{hostname}/etp-report/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: report-schedule.yaml
+paths:
+  /configs/{configId}/schedules:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-config-schedule
+      summary: Create a report schedule
+      tags:
+      - Report schedules
+      description: |
+        Creates a new report schedule for a given SIA configuration.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-report-schedule.json
+            schema:
+              $ref: schemas/reportSchedulePostRequest.yaml
+      responses:
+        201:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/report-schedule.json
+              schema:
+                $ref: schemas/response.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+    get:
+      operationId: get-config-schedules
+      summary: List report schedules
+      tags:
+      - Report schedules
+      description: |
+        Lists all configured report schedules for a given configuration.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/report-schedules-200.json
+              schema:
+                $ref: schemas/reportSchedule.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /configs/{configId}/schedules/{scheduleId}:
+    parameters:
+    - $ref: parameters/scheduleId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-config-schedule
+      summary: Get a report schedule
+      tags:
+      - Report schedules
+      description: |
+        Lists the configuration of a specified report schedule.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/report-schedule-200.json
+              schema:
+                $ref: schemas/reportSchedule.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+    put:
+      operationId: put-config-schedule
+      summary: Update a report schedule
+      tags:
+      - Report schedules
+      description: |
+        Updates the configuration of a specified report schedule.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/edit-report-schedule.json
+            schema:
+              $ref: schemas/reportSchedulePostRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/report-schedule-200.json
+              schema:
+                $ref: schemas/reportSchedule.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+    delete:
+      operationId: delete-config-schedule
+      summary: Remove a report schedule
+      tags:
+      - Report schedules
+      description: |
+        Removes the configuration of a specified report schedule.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/report-schedule.json
+              schema:
+                $ref: schemas/response.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /configs/{configId}/schedules/{scheduleId}/disable:
+    parameters:
+    - $ref: parameters/scheduleId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-config-schedule-disable
+      summary: Disable a report schedule
+      tags:
+      - Report schedules
+      description: |
+        Disables the configuration of a specified report schedule.
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /configs/{configId}/schedules/{scheduleId}/enable:
+    parameters:
+    - $ref: parameters/scheduleId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-config-schedule-enable
+      summary: Enable a report schedule
+      tags:
+      - Report schedules
+      description: |
+        Enables the configuration of a specified report schedule.
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml

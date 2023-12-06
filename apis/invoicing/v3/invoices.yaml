@@ -1,0 +1,117 @@
+openapi: 3.0.0
+info:
+  title: Invoices
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/invoicing-api/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: invoices.yaml
+paths:
+  /contracts/{contractId}/invoices:
+    parameters:
+    - $ref: parameters/contractId-path.yaml
+    get:
+      operationId: get-contracts-invoices
+      summary: List invoices and credit memos for a contract
+      tags:
+      - Invoices
+      description: |
+        Returns invoices and credit memos for the specified contract and the selected month.
+      parameters:
+      - $ref: parameters/monthQueryParam_month.yaml
+      responses:
+        200:
+          description: |
+            The response lists invoices and credit memos.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-invoices-200.json
+              schema:
+                $ref: schemas/list-invoices-schema.yaml
+        204:
+          description: |
+            No content. No data to be returned for the requested parameters.
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /contracts/{contractId}/invoices/{invoiceId}/download:
+    parameters:
+    - $ref: parameters/invoiceId-path.yaml
+    - $ref: parameters/contractId-path.yaml
+    get:
+      operationId: get-contract-invoice-download
+      summary: Download an invoice or a credit memo file
+      tags:
+      - Invoices
+      description: |
+        Returns the content of the selected contract's invoice or credit memo file. The downloadable file is available in the response body. The `Content-Type` depends on the format of the file you're downloading.
+      parameters:
+      - $ref: parameters/fileFormat-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides requested file.
+        204:
+          description: |
+            No content. No data to be returned for the requested parameters.
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /invoices:
+    get:
+      operationId: get-invoices
+      summary: List invoices and credit memos for an account
+      tags:
+      - Invoices
+      description: |
+        Returns invoices and credit memos for the current account and the selected month.
+      parameters:
+      - $ref: parameters/monthQueryParam_month.yaml
+      responses:
+        200:
+          description: |
+            The response lists invoices and credit memos.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-invoices-200.json
+              schema:
+                $ref: schemas/list-invoices-schema.yaml
+        204:
+          description: |
+            No content. No data to be returned for the requested parameters.
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml

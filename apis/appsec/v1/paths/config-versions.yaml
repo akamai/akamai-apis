@@ -1,0 +1,65 @@
+x-akamai:
+  file-path: paths/config-versions.yaml
+  path-info: /configs/{configId}/versions
+parameters:
+- $ref: ../parameters/configId-path.yaml
+post:
+  operationId: post-config-versions
+  summary: Clone a configuration version
+  tags:
+  - General configuration settings
+  description: |
+    Creates a new version of the specified security configuration. _Products:_ All.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/config-clone.json
+        schema:
+          $ref: ../schemas/config-clone-post.yaml
+  responses:
+    200:
+      description: |
+        Successfully cloned Configuration Version.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/waf-config-version-200.json
+          schema:
+            $ref: ../schemas/waf-config-version.yaml
+    400:
+      $ref: ../errors/400.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    412:
+      $ref: ../errors/412.yaml
+get:
+  operationId: get-config-versions
+  summary: List configuration versions
+  tags:
+  - General configuration settings
+  description: |
+    Lists available versions for the specified security configuration, with results optionally paginated. _Products:_ All.
+  parameters:
+  - $ref: ../parameters/page-query.yaml
+  - $ref: ../parameters/pageSize-query.yaml
+  - $ref: ../parameters/detail-query.yaml
+  responses:
+    200:
+      description: |
+        Successfully retrieved resource.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/waf-config-versions.json
+          schema:
+            $ref: ../schemas/waf-config-versions.yaml
+    400:
+      $ref: ../errors/400.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml

@@ -1,0 +1,110 @@
+type: object
+description: |-
+  Describes what conditions can be set for an action to occur.
+  
+x-akamai:
+  file-path: schemas/condition.yaml
+additionalProperties: false
+required:
+- type
+- positiveMatch
+properties:
+  name:
+    type: string
+    description: |
+      The query parameter name that triggers the condition. This only applies to the `uriQueryMatch` condition `type`.
+  type:
+    type: string
+    description: |
+      The condition type to match on. See [Export condition type values](ref:etval).
+    enum:
+    - hostMatch
+    - pathMatch
+    - filenameMatch
+    - extensionMatch
+    - uriQueryMatch
+    - ipMatch
+    - requestMethodMatch
+    - requestHeaderMatch
+  paths:
+    type: array
+    description: |
+      The paths that trigger the condition. This only applies to the  `pathMatch` condition `type`.
+    items:
+      type: string
+  value:
+    type: string
+    description: |
+      The query parameter value if the condition `type` is `uriQueryMatch` and header value if the condition `type` is `requestHeaderMatch`. This only applies when the condition `type` is `uriQueryMatch` or `requestHeaderMatch`.
+  caseSensitive:
+    type: boolean
+    description: |
+      Whether to consider the case-sensitivity of the provided query parameter `value`. This only applies to the `uriQueryMatch` condition `type`.
+  extensions:
+    type: array
+    description: |
+      The file extensions that trigger the condition. This only applies to the `extensionMatch` condition `type`.
+    items:
+      type: string
+  filenames:
+    type: array
+    description: |
+      The filenames that trigger the condition. This only applies to the `filenameMatch` condition `type`.
+    items:
+      type: string
+  header:
+    type: string
+    description: |
+      The HTTP header that triggers the condition. This only applies to the `requestHeaderMatch` condition `type`.
+  hosts:
+    type: array
+    description: |
+      The hostnames that trigger the condition. This only applies to the `hostMatch` condition `type`.
+    items:
+      type: string
+  ips:
+    type: array
+    description: |
+      The IPs that trigger the condition. This only applies to the `ipMatch` condition `type`.
+    items:
+      type: string
+  methods:
+    type: array
+    description: |
+      The HTTP request methods that trigger the condition. The possible values are `GET`, `POST`, `HEAD`, `PUT`, `DELETE`, `OPTIONS`, `TRACE`, `CONNECT` and `PATCH`. This only applies to the `requestMethodMatch` condition `type`.
+    items:
+      type: string
+      enum:
+      - GET
+      - POST
+      - HEAD
+      - PUT
+      - DELETE
+      - OPTIONS
+      - TRACE
+      - CONNECT
+      - PATCH
+  nameCase:
+    type: boolean
+    description: |
+      Whether to consider the case-sensitivity of the provided query parameter `name`. This only applies to the `uriQueryMatch` condition `type`.
+  positiveMatch:
+    type: boolean
+    description: |
+      Whether the condition should trigger on a match (`true`) or a lack of match (`false`).
+  useHeaders:
+    type: boolean
+    description: |
+      Whether the condition should include `X-Forwarded-For` (XFF) header. This only applies to the `ipMatch` condition `type`.
+  valueCase:
+    type: boolean
+    description: |
+      Whether to consider the case-sensitivity of the provided header `value`. This only applies to the `requestHeaderMatch` condition `type`.
+  valueWildcard:
+    type: boolean
+    description: |
+      Whether the provided header `value` is a wildcard. This only applies to the `requestHeaderMatch` condition `type`.
+  wildcard:
+    type: boolean
+    description: |
+      Whether the provided query parameter `value` is a wildcard. This only applies to the `uriQueryMatch` condition `type`.

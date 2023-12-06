@@ -1,0 +1,140 @@
+openapi: 3.0.0
+info:
+  title: Key Collections
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/jwt-api/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: key-collections.yaml
+paths:
+  /key-collections:
+    post:
+      operationId: post-key-collection
+      summary: Create a key collection
+      tags:
+      - Key collections
+      description: |
+        Creates an empty key collection. To upload public keys to a newly created collection, run the [Create a key collection version](ref:post-key-collection-version) operation. Also, store the `id` of the key collection for when you want to start referring to this collection in the JWT behavior of your property. See [API concepts](ref:api-concepts).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/exampleKeyCollectionRQ.json
+            schema:
+              $ref: schemas/keyCollectionRequest.yaml
+      responses:
+        201:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleKeyCollectionRS.json
+              schema:
+                $ref: schemas/keyCollectionResponse.yaml
+        409:
+          description: |
+            A name collision has occurred.
+    get:
+      operationId: get-key-collections
+      summary: List key collections
+      tags:
+      - Key collections
+      description: |
+        Returns a list of key collections for the associated account. Also, for each returned collection, it specifies if any key collection versions are active in the staging and production environments.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleKeyCollectionsListRS.json
+              schema:
+                $ref: schemas/keyCollectionsListResponse.yaml
+  /key-collections/{collectionId}:
+    parameters:
+    - $ref: parameters/collectionId-path.yaml
+    get:
+      operationId: get-key-collection
+      summary: View a key collection
+      tags:
+      - Key collections
+      description: |
+        Returns details about the key collection, listing all created versions and specifying the ones active in the production and staging environments. If you don't already have the `collectionId`, run the [Get a collection](ref:get-key-collections) operation and use the appropriate `id` value from the returned array.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleKeyCollectionWithVersionsRS.json
+              schema:
+                $ref: schemas/keyCollectionWithVersionsResponse.yaml
+        404:
+          description: |
+            Key collection couldn't be found.
+  /key-collections/{collectionId}/versions:
+    parameters:
+    - $ref: parameters/collectionId-path.yaml
+    post:
+      operationId: post-key-collection-version
+      summary: Create a key collection version
+      tags:
+      - Versions
+      description: |
+        Creates a version of the key collection. This lets you provide primary and secondary public keys to verify JWTs passed in client requests. If you don't already have the `collectionId`, run the [Get a collection](ref:get-key-collections) operation and use the appropriate `id` value from the returned array. Also, to start using the public keys on staging or production, run the [Activate this key collection version](ref:post-activation) operation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/examplePemPublicKeysRQ.json
+            schema:
+              $ref: schemas/pemPublicKeysRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleKeyCollectionVersionRS.json
+              schema:
+                $ref: schemas/keyCollectionVersionResponse.yaml
+        400:
+          description: |
+            You need at least one public key to create a key collection version.
+        404:
+          description: |
+            The system can't find the key collection.
+  /key-collections/{collectionId}/versions/{versionId}:
+    parameters:
+    - $ref: parameters/versionId-path.yaml
+    - $ref: parameters/collectionId-path.yaml
+    get:
+      operationId: get-key-collection-version
+      summary: View a key collection version
+      tags:
+      - Versions
+      description: |
+        Returns details about the key collection version. It returns the public keys the version uses to verify JWTs and reports on whether they're are active in the production and staging environments.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleKeyCollectionVersionDetailsRS.json
+              schema:
+                $ref: schemas/keyCollectionVersionDetailsResponse.yaml
+        404:
+          description: |
+            The system can't find this key collection version.

@@ -1,0 +1,71 @@
+type: object
+description: |-
+  Collects data to use in the Connectivity problems scenario request.
+  
+x-akamai:
+  file-path: schemas/connectivityProblemsRequest.yaml
+additionalProperties: false
+required:
+- url
+properties:
+  clientIp:
+    type: string
+    description: |
+      Client IP for the Connectivity problems scenario to start MTR from. You can use the `ip` value from the `edgeIps` array in the [collected diagnostic data](ref:get-user-diagnostic-data-group-records).
+    minLength: 1
+  edgeLocationId:
+    type: string
+    description: |
+      Unique identifier for an edge server location closest to end users experiencing issues with the URL. Run the [List available edge server locations](ref:get-edge-locations) operation to get this value.
+    minLength: 1
+  ipVersion:
+    type: string
+    description: |
+      IP version for the Connectivity problems scenario to use to run cURL and MTR commands, either `IPV4` or `IPV6`.
+    enum:
+    - IPV4
+    - IPV6
+  packetType:
+    type: string
+    description: |
+      Packet type for the Connectivity problems scenario to use to run MTR, either `ICMP` or `TCP`.
+    enum:
+    - ICMP
+    - TCP
+  port:
+    type: integer
+    description: |
+      Port number for the Connectivity problems scenario to use to run MTR, either `80` or `443`.
+    enum:
+    - 80
+    - 443
+  requestHeaders:
+    type: array
+    description: |
+      Customized headers for the `curl` request in the format `header: value`. The request includes [Akamai Pragma headers](doc:pragma-headers) by default.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  runFromSiteShield:
+    type: boolean
+    description: |
+      Runs Connectivity problems from a Site Shield map. To learn more, check [Site Shield requests](ref:site-shield-requests).
+  sensitiveRequestHeaderKeys:
+    type: array
+    description: |
+      Sensitive `requestHeaders` you don't want to store in the database after running the request. Check [Sensitive headers](ref:sensitive-headers) to see the list of request headers treated as sensitive by default.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  spoofEdgeIp:
+    type: string
+    description: |
+      IP of the edge server you want to serve traffic from. You can use the `ip` value from the `edgeIps` array in the [collected diagnostic data](ref:get-user-diagnostic-data-group-records).
+    minLength: 1
+  url:
+    type: string
+    description: |
+      URL you want to run the Connectivity problems scenario for.
+    format: uri

@@ -1,0 +1,49 @@
+type: object
+description: |-
+  Adjusts the hue, saturation, and lightness (HSL) of an image. Hue is the number of degrees that colors rotate around the color wheel. Saturation is a multiplier to increase or decrease color saturation. Lightness is a multiplier to increase or decrease the lightness of an image. Other transformations can also affect color, such as `Grayscale` and `MaxColors`. If you're using more than one, consider the order to apply them for the desired results.
+  
+x-akamai:
+  file-path: schemas/t-hsl.yaml
+title: HSL
+additionalProperties: false
+required:
+- transformation
+properties:
+  hue:
+    description: |
+      The number of degrees to rotate colors around the color wheel, `0` by default.
+    oneOf:
+    - default: 0
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 360
+    - $ref: variable-inline.yaml
+  lightness:
+    description: |
+      A multiplier to adjust the lightness of colors in the image. Note that lightness is distinct from brightness. For example, reducing the lightness of a light green might give you a lime green, whereas reducing the brightness of a light green might give you a darker shade of the same green. Values less than `1.0` decrease the lightness of colors in the image. Values greater than `1.0` increase the lightness of colors in the image.
+    oneOf:
+    - default: 1
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+    - $ref: variable-inline.yaml
+  saturation:
+    description: |
+      A multiplier to adjust the saturation of colors in the image. Values less than `1.0` decrease saturation and values greater than `1.0` increase the saturation. A value of `0.0` removes all color from the image.
+    oneOf:
+    - default: 1
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+    - $ref: variable-inline.yaml
+  transformation:
+    type: string
+    description: |
+      Identifies the type of transformation, `HSL` in this case.
+    default: HSL
+    enum:
+    - HSL

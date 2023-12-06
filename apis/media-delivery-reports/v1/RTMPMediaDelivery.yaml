@@ -1,0 +1,82 @@
+openapi: 3.0.0
+info:
+  title: RTMP Media Delivery
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/media-delivery-reports/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: RTMPMediaDelivery.yaml
+paths:
+  /rtmp-media-delivery/data:
+    get:
+      operationId: get-rtmp-media-delivery-data
+      summary: Get RTMP Media Delivery data
+      tags:
+      - RTMP Media Delivery
+      description: |
+        Retrieves RTMP Media Delivery data using parameters you specify.
+      parameters:
+      - $ref: parameters/dimensions-leg-query.yaml
+      - $ref: parameters/metrics-leg-query.yaml
+      - $ref: parameters/cpcodes-query.yaml
+      - $ref: parameters/endDate-query.yaml
+      - $ref: parameters/startDate-query.yaml
+      - $ref: parameters/limit-query.yaml
+      - $ref: parameters/offset-query.yaml
+      - $ref: parameters/aggWithKeywordParamOp_aggregation.yaml
+      - $ref: parameters/filterParams-query.yaml
+      - $ref: parameters/sortParams-query.yaml
+      - $ref: parameters/deliveryType-query.yaml
+      - $ref: parameters/enableCPCodeName-query.yaml
+      responses:
+        200:
+          description: |
+            OK. Empty rows are returned in the response body when there's no available data.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-rtmp-media-delivery-data-200.json
+              schema:
+                $ref: schemas/data.yaml
+  /rtmp-media-delivery/data-stores:
+    get:
+      operationId: get-rtmp-media-delivery-data-stores
+      summary: List RTMP Media Delivery data stores
+      tags:
+      - RTMP Media Delivery
+      description: |
+        Data stores are collections of reporting dimensions and the individual metrics supported for use with those dimensions. Each data store is unique to its delivery product. For example, you can't combine RTMP Media Delivery's dimensions and metrics with those from another product in this API. This operation's response can be very long, so the example here is truncated.
+      responses:
+        200:
+          description: |
+            OK. Empty rows are returned in the response body when there's no available data.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-data-stores-rtmp-media-delivery-200-trunc.json
+              schema:
+                $ref: schemas/dataStores.yaml
+  /rtmp-media-delivery/data-stores/{dataStoreId}:
+    parameters:
+    - $ref: parameters/dataStoreId-path.yaml
+    get:
+      operationId: get-rtmp-media-delivery-data-store
+      summary: Get an RTMP Media Delivery data store
+      tags:
+      - RTMP Media Delivery
+      description: |
+        This fetches a list of dimensions and metrics used with RTMP Media Delivery, as well as the aggregation interval, purge interval, maximum allowed query interval, and other details for a data store you specify. Responses can be long, so the example here is truncated.
+      responses:
+        200:
+          description: |
+            OK. Empty rows are returned in the response body when there's no available data.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-data-store-rtmp-media-delivery-200-trunc.json
+              schema:
+                $ref: schemas/dataStores.yaml

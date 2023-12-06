@@ -1,0 +1,42 @@
+type: object
+description: |-
+  Contains information about a customizable error response. You can customize the following error types: `API_KEY_INVALID`, `API_KEY_FORBIDDEN`, `QUOTA_EXCEEDED`, `JWT_SIGNATURE_INVALID`, `JWT_CLAIM_VALUE_INVALID`.
+  
+x-akamai:
+  file-path: schemas/errorResponseDto.yaml
+additionalProperties: false
+required:
+- statusCode
+properties:
+  headers:
+    type: array
+    description: |
+      The list of HTTP headers to return in case of the error. By default, API Gateway returns the `Content-Type` header with a value of `application/problem+json` which reflects the default response body. If the `body` member indicates a different content type, set the `Content-Type` header to the appropriate value. For example, in case of an XML body, the value could be `application/problem+xml`.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - value
+      properties:
+        name:
+          type: string
+          description: |
+            The name of the HTTP header to return in case of the error.
+        value:
+          type: string
+          description: |
+            The value of the HTTP header to return in case of the error.
+  body:
+    type: string
+    description: |
+      The response body to return in case of the error. The value should have the proper formatting to reflect the content type. For example, in case of a JSON body format, enclose the text in curly brackets (`{}`).
+  overrideDefaults:
+    type: boolean
+    description: |
+      Whether you overrode the default error response.
+    readOnly: true
+  statusCode:
+    type: integer
+    description: |
+      The status code to return in case of the error.

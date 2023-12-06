@@ -1,0 +1,275 @@
+openapi: 3.0.0
+info:
+  title: Data centers
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/config-gtm/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: DataCenters.yaml
+paths:
+  /domains/{domainName}/datacenters:
+    parameters:
+    - $ref: parameters/domainName-path.yaml
+    post:
+      operationId: post-datacenter
+      summary: Create a data center
+      tags:
+      - Data centers
+      description: |
+        This operation creates a specific data center.
+      requestBody:
+        required: true
+        content:
+          datacenter-vnd-config-gtm.v1.0+json:
+            example:
+              $ref: examples/create-a-data-center.json
+            schema:
+              $ref: schemas/datacenter-vnd-config-gtm.v1.0.yaml
+          datacenter-vnd-config-gtm.v1.1+json:
+            schema:
+              $ref: schemas/datacenter-vnd-config-gtm.v1.1.yaml
+          datacenter-vnd-config-gtm.v1.2+json:
+            schema:
+              $ref: schemas/datacenter-vnd-config-gtm.v1.2.yaml
+          datacenter-vnd-config-gtm.v1.3+json:
+            schema:
+              $ref: schemas/datacenter-vnd-config-gtm.v1.3.yaml
+          datacenter-vnd-config-gtm.v1.4+json:
+            schema:
+              $ref: schemas/datacenter-vnd-config-gtm.v1.4.yaml
+          datacenter-vnd-config-gtm.v1.5+json:
+            schema:
+              $ref: schemas/datacenter-vnd-config-gtm.v1.5.yaml
+      responses:
+        201:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              example: /config-gtm/v1/domains/example.akadns.net/datacenters/3133
+              schema:
+                type: string
+          content:
+            datacenter-vnd-config-gtm.v1.0+json:
+              example:
+                $ref: examples/create-a-data-center-201.json
+              schema:
+                $ref: schemas/update-response.yaml
+            datacenter-vnd-config-gtm.v1.1+json:
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.1.yaml
+            datacenter-vnd-config-gtm.v1.2+json:
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.2.yaml
+            datacenter-vnd-config-gtm.v1.3+json:
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.3.yaml
+            datacenter-vnd-config-gtm.v1.4+json:
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.4.yaml
+            datacenter-vnd-config-gtm.v1.5+json:
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.5.yaml
+    get:
+      operationId: get-datacenters
+      summary: List data centers
+      tags:
+      - Data centers
+      description: |
+        This operation returns a list of data centers.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-data-centers-200.json
+              schema:
+                $ref: schemas/get-all.yaml
+  /domains/{domainName}/datacenters/datacenter-for-ip-version-selector-ipv4:
+    parameters:
+    - $ref: parameters/domainName-path.yaml
+    post:
+      operationId: post-datacenter-for-ipv
+      summary: Create an IPv4 datacenter for ip-version-selector
+      tags:
+      - Data centers
+      description: |
+        This operation creates a data center which is solely reserved for use by properties of the IP Version Selector type `qtr`. The data center created by this resource  is assigned the `datacenterId` 5401, which is interpreted as the target for `A` record requests.
+      responses:
+        201:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              schema:
+                type: string
+          content:
+            application/json:
+              example:
+                $ref: examples/create-a-datacenter-for-ip-version-selector-ipv4-201.json
+              schema:
+                $ref: schemas/update-response.yaml
+  /domains/{domainName}/datacenters/datacenter-for-ip-version-selector-ipv6:
+    parameters:
+    - $ref: parameters/domainName-path.yaml
+    post:
+      operationId: post-datacenter-for-ipv6
+      summary: Create an IPv6 datacenter for ip-version-selector
+      tags:
+      - Data centers
+      description: |
+        This operation creates a data center which is solely reserved for use by properties of type `qtr` (IP Version Selector). The data center created by this resource  is assigned the `datacenterId` 5402, which is interpreted as the target for `AAAA` record requests.
+      responses:
+        201:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              schema:
+                type: string
+          content:
+            application/json:
+              example:
+                $ref: examples/create-a-datacenter-for-ip-version-selector-ipv6-201.json
+              schema:
+                $ref: schemas/update-response.yaml
+  /domains/{domainName}/datacenters/default-datacenter-for-maps:
+    parameters:
+    - $ref: parameters/domainName-path.yaml
+    post:
+      operationId: post-default-datacenter-for-maps
+      summary: Create a default data center
+      tags:
+      - Data centers
+      description: |
+        This operation creates a data center for use by the map-type properties CIDR, Geographic or AS mapping as the default data center.
+      responses:
+        201:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              schema:
+                type: string
+          content:
+            application/json:
+              example:
+                $ref: examples/create-a-default-data-center-201.json
+              schema:
+                $ref: schemas/update-response.yaml
+  /domains/{domainName}/datacenters/{datacenterId}:
+    parameters:
+    - $ref: parameters/datacenterId-path.yaml
+    - $ref: parameters/domainName-path.yaml
+    get:
+      operationId: get-datacenter
+      summary: Get a data center
+      tags:
+      - Data centers
+      description: |
+        This operation returns information for a specific data center.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            datacenter-vnd-config-gtm.v1.0+json:
+              example:
+                $ref: examples/get-a-data-center-200.json
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.0.yaml
+            datacenter-vnd-config-gtm.v1.1+json:
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.1.yaml
+            datacenter-vnd-config-gtm.v1.2+json:
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.2.yaml
+            datacenter-vnd-config-gtm.v1.3+json:
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.3.yaml
+            datacenter-vnd-config-gtm.v1.4+json:
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.4.yaml
+            datacenter-vnd-config-gtm.v1.5+json:
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.5.yaml
+    put:
+      operationId: put-datacenter
+      summary: Update a data center
+      tags:
+      - Data centers
+      description: |
+        This operation updates a specific data center.
+      parameters:
+      - $ref: parameters/domain-modification-comments-query.yaml
+      requestBody:
+        required: true
+        content:
+          datacenter-vnd-config-gtm.v1.0+json:
+            example:
+              $ref: examples/update-a-data-center.json
+            schema:
+              $ref: schemas/datacenter-vnd-config-gtm.v1.0.yaml
+          datacenter-vnd-config-gtm.v1.1+json:
+            schema:
+              $ref: schemas/datacenter-vnd-config-gtm.v1.1.yaml
+          datacenter-vnd-config-gtm.v1.2+json:
+            schema:
+              $ref: schemas/datacenter-vnd-config-gtm.v1.2.yaml
+          datacenter-vnd-config-gtm.v1.3+json:
+            schema:
+              $ref: schemas/datacenter-vnd-config-gtm.v1.3.yaml
+          datacenter-vnd-config-gtm.v1.4+json:
+            schema:
+              $ref: schemas/datacenter-vnd-config-gtm.v1.4.yaml
+          datacenter-vnd-config-gtm.v1.5+json:
+            schema:
+              $ref: schemas/datacenter-vnd-config-gtm.v1.5.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            datacenter-vnd-config-gtm.v1.0+json:
+              example:
+                $ref: examples/update-a-data-center.json
+              schema:
+                $ref: schemas/update-response.yaml
+            datacenter-vnd-config-gtm.v1.1+json:
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.1.yaml
+            datacenter-vnd-config-gtm.v1.2+json:
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.2.yaml
+            datacenter-vnd-config-gtm.v1.3+json:
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.3.yaml
+            datacenter-vnd-config-gtm.v1.4+json:
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.4.yaml
+            datacenter-vnd-config-gtm.v1.5+json:
+              schema:
+                $ref: schemas/datacenter-vnd-config-gtm.v1.5.yaml
+    delete:
+      operationId: delete-datacenter
+      summary: Remove a data center
+      tags:
+      - Data centers
+      description: |
+        Remove a data center: This operation removes a data center. You can only remove a data center when no properties or resources are assigned to it.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/remove-a-data-center-200.json
+              schema:
+                $ref: schemas/update-response.yaml

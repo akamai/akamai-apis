@@ -1,0 +1,122 @@
+x-akamai:
+  file-path: paths/property-hostnames.yaml
+  path-for-file: /properties/{propertyId}/hostnames
+parameters:
+- $ref: ../parameters/propertyId-path.yaml
+get:
+  operationId: get-property-hostnames
+  summary: List hostnames for a property
+  tags:
+  - Active property hostnames
+  description: |
+    This operation lists active property hostnames assigned to a specific property. Use the optional query parameters to paginate, sort, and filter the results. You can nest and combine filters to obtain desired results. To view paginated results, use the response's `nextLink` and `previousLink`. You can call this operation by specifying any of the `propertyId` members from a [list of properties](ref:get-properties), or by running a GET on the `propertyLink` response when [creating a new property](ref:post-properties).
+  parameters:
+  - $ref: ../parameters/offset-query.yaml
+  - $ref: ../parameters/limit-optional.yaml
+  - $ref: ../parameters/sort-query.yaml
+  - $ref: ../parameters/hostname-query.yaml
+  - $ref: ../parameters/cnameTo-query.yaml
+  - $ref: ../parameters/network-query.yaml
+  - $ref: ../parameters/includeCertStatus-query.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  responses:
+    200:
+      description: |
+        The response lists active property hostnames for the requested property.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/property-hostnames-get-response.json
+          schema:
+            $ref: ../schemas/property-hostnames-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    422:
+      $ref: ../errors/422.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+patch:
+  operationId: patch-property-hostnames
+  summary: Add or remove hostnames for a property's hostname bucket
+  tags:
+  - Hostname buckets
+  description: |
+    For a property with `useHostnameBucket` set to `true` [when created](ref:post-properties), this operation adds or removes up to 1000 property hostnames without incrementing the property version. Changes automatically activate on the selected network. If a property doesn't have hostname buckets enabled, this operation returns a [403](ref:403) error. If another activation is in progress, whether it's a hostname activation or a property version activation, the operation fails with a [409](ref:409) error. Once you perform this operation, it blocks subsequent requests until all the property hostnames are active. Note that to build the request body, you need to first obtain the `edgeHostnameId` either from an existing edge hostname or a new one you create by running the [Create a new edge hostname](ref:post-edgehostnames) operation.
+
+    **Note**: If you're using a new account, first register it on the Akamai network by activating any property version on either staging or production. Otherwise, your attempts to create or specify certificates will fail with a [403](ref:403) error.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/property-hostname-bucket-request.json
+        schema:
+          $ref: ../schemas/property-hostnames-bucket-add-remove-request.yaml
+  responses:
+    201:
+      description: |
+        The response lists hostnames added or removed from the property.
+      headers:
+        X-Limit-Default-Certs-Per-Contract-Limit:
+          $ref: ../headers/X-Limit-Default-Certs-Per-Contract-Limit.yaml
+        X-Limit-Default-Certs-Per-Contract-Remaining:
+          $ref: ../headers/X-Limit-Default-Certs-Per-Contract-Remaining.yaml
+        X-Limit-Hosts-Per-Account-Limit:
+          $ref: ../headers/X-Limit-Hosts-Per-Account-Limit.yaml
+        X-Limit-Hosts-Per-Account-Remaining:
+          $ref: ../headers/X-Limit-Hosts-Per-Account-Remaining.yaml
+        X-Limit-Hosts-Per-Property-Limit:
+          $ref: ../headers/X-Limit-Hosts-Per-Property-Limit.yaml
+        X-Limit-Hosts-Per-Property-Remaining:
+          $ref: ../headers/X-Limit-Hosts-Per-Property-Remaining.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/property-hostname-bucket-response.json
+          schema:
+            $ref: ../schemas/property-hostnames-bucket-add-remove-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    409:
+      $ref: ../errors/409.yaml
+    413:
+      $ref: ../errors/413.yaml
+    415:
+      $ref: ../errors/415.yaml
+    422:
+      $ref: ../errors/422.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: propertyHostnames
+  group: Property Hostnames

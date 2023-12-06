@@ -1,0 +1,119 @@
+type: object
+x-akamai:
+  file-path: schemas/certificate_list.yaml
+definitions:
+  Meta:
+    properties:
+      limit:
+        type: integer
+        description: |
+          Specify the number of elements to display per page.
+      next:
+        type: string
+        description: |
+          URI of the next page relative to the current page settings.
+      offset:
+        type: integer
+        description: |
+          Specify the offset to start displaying elements on a page.
+      previous:
+        type: string
+        description: |
+          URI of the previous page relative to the current page settings.
+      total_count:
+        type: int
+        description: |
+          Total items count for the all collection.
+  Objects:
+    id: Objects
+    properties:
+      certificates:
+        type: array
+        description: |
+          Contains the certificate details.
+        items:
+          $ref: certificate_list.yaml#/definitions/certificates
+  certificates:
+    additionalProperties: false
+    required:
+    - name
+    - issued_at
+    - subject
+    - expired_at
+    - cn
+    - issuer
+    - cert
+    - description
+    properties:
+      name:
+        type: string
+        description: |
+          A display label for the certificate.
+      description:
+        type: string
+        description: |
+          A description for the certificate. 
+      cert:
+        type: string
+        description: |
+          The body of the certificate.
+      cert_type:
+        type: integer
+        description: |
+          The certificate type. Either `1` for application, `2` for agent, `3` for internal, `4` for user, `5` for self-signed, or `6` for cloud CA.
+        default: 1
+        enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+      cn:
+        type: string
+        description: |
+          The Common Name. This is the server name protected by the SSL certificate.
+      created_at:
+        type: string
+        description: |
+          ISO 8601 timestamp marking the certificate creation. 
+        format: date-time
+      expired_at:
+        type: string
+        description: |
+          ISO 8601 timestamp marking the certificate's expiry.
+        format: date-time
+      issued_at:
+        type: string
+        description: |
+          ISO 8601 timestamp marking the certificate's issue. 
+        format: date-time
+      issuer:
+        type: string
+        description: |
+          Entity that has verified the certificate's contents. 
+      modified_at:
+        type: string
+        description: |
+          ISO 8601 timestamp marking the certificate's last modification. 
+        format: date-time
+      resource_uri:
+        type: string
+        description: |
+          Unique resource identifier. 
+      status:
+        type: integer
+        description: |
+          The certificate status. Either `0` for disabled or `1` for enabled.
+        default: 1
+        enum:
+        - 0
+        - 1
+      subject:
+        type: string
+        description: |
+          The entity whose identity the certificate confirms.
+      uuid_url:
+        type: string
+        description: |
+          A unique identifier for the certificate. 

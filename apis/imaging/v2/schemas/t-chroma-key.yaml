@@ -1,0 +1,95 @@
+type: object
+description: |-
+  Changes any color in an image within the specified volume of the HSL colorspace to transparent or semi-transparent. This transformation applies a 'green screen' technique commonly used to isolate and remove background colors.
+  
+x-akamai:
+  file-path: schemas/t-chroma-key.yaml
+title: ChromaKey
+additionalProperties: false
+required:
+- transformation
+properties:
+  hue:
+    description: |
+      The hue to remove. Enter the degree of rotation between 0 and 360 degrees around the color wheel. By default Chroma Key removes a green hue, 120° on the color wheel.
+    oneOf:
+    - default: 120
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 360
+    - $ref: variable-inline.yaml
+  hueFeather:
+    description: |
+      How much additional hue to make semi-transparent beyond the Hue Tolerance. By default Hue Feather is 0.083 which applies semi-transparency to hues 30° around the Hue Tolerance.
+    oneOf:
+    - default: 0.083
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 1
+    - $ref: variable-inline.yaml
+  hueTolerance:
+    description: |
+      How close a color's hue needs to be to the selected hue for it to be changed to fully transparent. If you enter the maximum value of 1.0 the entire image is made transparent. By default Hue Tolerance is approximately 0.083 or 8.3% of the color wheel. This value corresponds to 30° around the specified hue.
+    oneOf:
+    - default: 0.083
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 1
+    - $ref: variable-inline.yaml
+  lightnessFeather:
+    description: |
+      How much additional lightness to make semi-transparent beyond the Lightness Tolerance. The default value of 0.1 corresponds to 10% away from the tolerated lightness towards full black or full white.
+    oneOf:
+    - default: 0.1
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 1
+    - $ref: variable-inline.yaml
+  lightnessTolerance:
+    description: |
+      How much of the lightest part and darkest part of a color to preserve. For example, you can space this value out from the middle (i.e. 0.5 lightness or full color) to help preserve the splash lighting impact in the image. You can define how close the color needs to be to the full color to remove it from your image. The default value of 0.75 means that a color must be within 75% of the full color to full white or full black for full removal.
+    oneOf:
+    - default: 0.75
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 1
+    - $ref: variable-inline.yaml
+  saturationFeather:
+    description: |
+      How much additional saturation to make semi-transparent beyond the Saturation Tolerance. By default Saturation Feather is 0.1 which applies semi-transparency to hues 10% below the Saturation Tolerance.
+    oneOf:
+    - default: 0.1
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 1
+    - $ref: variable-inline.yaml
+  saturationTolerance:
+    description: |
+      How close a color's saturation needs to be to full saturation for it to be changed to fully transparent. For example, you can define how green the color needs to be to remove it from your image. The default value of 0.75 means that a color must be within 75% of full saturation in order to be made fully transparent.
+    oneOf:
+    - default: 0.75
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 1
+    - $ref: variable-inline.yaml
+  transformation:
+    type: string
+    description: |
+      Identifies the type of transformation, `ChromaKey` in this case.
+    default: ChromaKey
+    enum:
+    - ChromaKey

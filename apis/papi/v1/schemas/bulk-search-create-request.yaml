@@ -1,0 +1,43 @@
+id: resource:/descriptors/papi/v1/schemas/CreateNewBulkSearchRequestV0.json#
+javaType: com.akamai.devops.model.BulkSearchRequest
+type: object
+description: |-
+  A bulk search job. The request specifies JSONPath search queries, and the response includes JSON path locations within matching rule trees. Check the `searchTargetStatus` of potentially long-running asynchronous jobs for when they're `COMPLETE`. See [Bulk Search and Update](ref:bulk-search-and-update) for guidance on how to use this object.
+  
+x-akamai:
+  file-path: schemas/bulk-search-create-request.yaml
+required:
+- bulkSearchQuery
+properties:
+  bulkSearchQuery:
+    description: |
+      Specifies the set of bulk search criteria.
+    required:
+    - syntax
+    - match
+    properties:
+      bulkSearchQualifiers:
+        type: array
+        description: |
+          An additional set of JSON Path test expressions that must all succeed for the main `match` on the rule tree to yield results.
+        items:
+          type: string
+      match:
+        type: string
+        description: |
+          The JSON Path expression to search within available rule trees.
+      syntax:
+        type: string
+        description: |
+          Identifies the query syntax for the search. The only currently supported syntax system is `JSONPATH`.
+        enum:
+        - JSONPATH
+  propertyType:
+    type: string
+    description: |
+      Specifies the type of the property, either `TRADITIONAL`, `INCLUDE`, or `HOSTNAME_BUCKET`.
+    enum:
+    - TRADITIONAL
+    - HOSTNAME_BUCKET
+    - INCLUDE
+$schema: http://json-schema.org/draft-04/schema#

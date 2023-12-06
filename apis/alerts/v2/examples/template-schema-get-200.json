@@ -1,0 +1,552 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Alert template describing a type of alert that can be defined/configured for monitoring.",
+  "title": "Alert Template",
+  "type": "object",
+  "required": [
+    "templateId",
+    "name",
+    "origin",
+    "firingFields",
+    "fields",
+    "links"
+  ],
+  "definitions": {
+    "abstractField": {
+      "type": "object",
+      "required": [
+        "key"
+      ],
+      "properties": {
+        "description": {
+          "description": "text describing a field",
+          "type": "string"
+        },
+        "key": {
+          "description": "name or key of field",
+          "type": "string"
+        }
+      }
+    },
+    "abstractNumberField": {
+      "description": "Represents a generic number field",
+      "allOf": [
+        {
+          "$ref": "#/definitions/abstractField"
+        },
+        {
+          "properties": {
+            "default": {
+              "description": "default value of field.  Used for fields with a single value.",
+              "type": "number"
+            },
+            "label": {
+              "description": "label tag associated with this field",
+              "type": "string"
+            },
+            "maximum": {
+              "description": "maximum allowed value",
+              "type": "number"
+            },
+            "minimum": {
+              "description": "minimum allowed value",
+              "type": "number"
+            },
+            "units": {
+              "description": "Describes unit type associated with the object",
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "abstractSelectField": {
+      "description": "Represents a field populated from an endpoint",
+      "allOf": [
+        {
+          "$ref": "#/definitions/abstractField"
+        },
+        {
+          "required": [
+            "itemType",
+            "href"
+          ],
+          "properties": {
+            "href": {
+              "description": "If present, represents a url where content for the field can be found.  This content is often complex and has been filtered due to users permissions.",
+              "type": "string"
+            },
+            "itemType": {
+              "description": "Describes type of objects returned by the endpoint",
+              "enum": [
+                "acg",
+                "adaptivemetric",
+                "adaptiveprofile",
+                "adaptivecpcode",
+                "altatest",
+                "arlfile",
+                "arlid",
+                "chamonixtest",
+                "contract",
+                "cpcode",
+                "drcpcode",
+                "dsatest",
+                "edns",
+                "eventlog",
+                "fpdomain",
+                "fpproperty",
+                "httpErrorCode",
+                "ionhtest",
+                "ionnatest",
+                "ionrmtest",
+                "ionspmtest",
+                "iphoneFile",
+                "network",
+                "roacontract",
+                "satest",
+                "slatest",
+                "sripslot",
+                "statest",
+                "stream",
+                "sxlslot",
+                "trigger",
+                "visibility",
+                "waatest"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "adaptiveThresholdField": {
+      "description": "Represents a set of adaptive alert thresholds field with value populated from an endpoint",
+      "allOf": [
+        {
+          "$ref": "#/definitions/abstractField"
+        },
+        {
+          "required": [
+            "type",
+            "jsonSchema"
+          ],
+          "properties": {
+            "jsonSchema": {
+              "description": "definition of fields the adaptive threshold must contain",
+              "type": "object"
+            },
+            "type": {
+              "description": "field value type",
+              "enum": [
+                "adaptive-threshold"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "booleanField": {
+      "description": "Represents a boolean value field",
+      "allOf": [
+        {
+          "$ref": "#/definitions/abstractField"
+        },
+        {
+          "required": [
+            "type",
+            "default"
+          ],
+          "properties": {
+            "default": {
+              "description": "default value of field.  Used for fields with a single boolean value.",
+              "type": "boolean"
+            },
+            "type": {
+              "description": "field value type",
+              "enum": [
+                "bool"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "ednsField": {
+      "description": "Represents a collection of acg or edns objects populated from specified multi-select endpoints",
+      "allOf": [
+        {
+          "$ref": "#/definitions/abstractField"
+        },
+        {
+          "required": [
+            "type",
+            "href_acg",
+            "href_edns",
+            "jsonSchema"
+          ],
+          "properties": {
+            "href_acg": {
+              "description": "Represents a url where acg content can be found.  This content is often complex and has been filtered due to users permissions. Only objectId is needed in the value array.",
+              "type": "string"
+            },
+            "href_edns": {
+              "description": "Represents a url where edns content can be found.  This content is often complex and has been filtered due to users permissions. Only objectId is needed in the value array.",
+              "type": "string"
+            },
+            "jsonSchema": {
+              "description": "stream json-schema representation",
+              "type": "object"
+            },
+            "type": {
+              "description": "field value type",
+              "enum": [
+                "edns"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "emailField": {
+      "description": "Represents an email field",
+      "allOf": [
+        {
+          "$ref": "#/definitions/abstractField"
+        },
+        {
+          "required": [
+            "type",
+            "default"
+          ],
+          "properties": {
+            "default": {
+              "description": "Array of string values for field.",
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string"
+              }
+            },
+            "type": {
+              "description": "field value type",
+              "enum": [
+                "email"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "floatField": {
+      "description": "Represents a float value field",
+      "allOf": [
+        {
+          "$ref": "#/definitions/abstractNumberField"
+        },
+        {
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "sizeFloat": {
+              "description": "number digits after zero",
+              "type": "number"
+            },
+            "type": {
+              "description": "field value type",
+              "enum": [
+                "float"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "integerField": {
+      "description": "Represents a integer value field",
+      "allOf": [
+        {
+          "$ref": "#/definitions/abstractNumberField"
+        },
+        {
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "description": "field value type",
+              "enum": [
+                "int"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "scheduleField": {
+      "description": "Represents a schedule field",
+      "allOf": [
+        {
+          "$ref": "#/definitions/abstractField"
+        },
+        {
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "jsonSchema": {
+              "description": "schedule json-schema representation",
+              "type": "object"
+            },
+            "type": {
+              "description": "field value type",
+              "enum": [
+                "schedule",
+                "maintenance-schedule"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "selectMultiValueField": {
+      "description": "Represents a field with multiple values populated from an endpoint",
+      "allOf": [
+        {
+          "$ref": "#/definitions/abstractSelectField"
+        },
+        {
+          "required": [
+            "type",
+            "default"
+          ],
+          "properties": {
+            "default": {
+              "description": "Array of string values for field.",
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string"
+              }
+            },
+            "maxItems": {
+              "description": "Maximum number of items required in array",
+              "type": "number"
+            },
+            "minItems": {
+              "description": "Minimum number of items required in array",
+              "type": "number"
+            },
+            "type": {
+              "description": "field value type",
+              "enum": [
+                "multi-select"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "selectSingleValueField": {
+      "description": "Represents a field with value populated from an endpoint",
+      "allOf": [
+        {
+          "$ref": "#/definitions/abstractSelectField"
+        },
+        {
+          "required": [
+            "type",
+            "default"
+          ],
+          "properties": {
+            "default": {
+              "description": "Single value for field",
+              "type": "string"
+            },
+            "type": {
+              "description": "field value type",
+              "enum": [
+                "single-select"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "streamField": {
+      "description": "Represents a collection of nameable streams with multiple values populated from an endpoint",
+      "allOf": [
+        {
+          "$ref": "#/definitions/abstractField"
+        },
+        {
+          "required": [
+            "type",
+            "href",
+            "jsonSchema"
+          ],
+          "properties": {
+            "href": {
+              "description": "If present, represents a url where content for the field can be found.  This content is often complex and has been filtered due to users permissions.",
+              "type": "string"
+            },
+            "jsonSchema": {
+              "description": "stream json-schema representation",
+              "type": "object"
+            },
+            "maxItems": {
+              "description": "Maximum number of items required in array",
+              "type": "number"
+            },
+            "minItems": {
+              "description": "Minimum number of items required in array",
+              "type": "number"
+            },
+            "type": {
+              "description": "field value type",
+              "enum": [
+                "stream"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "stringField": {
+      "description": "Represents a string value field",
+      "allOf": [
+        {
+          "$ref": "#/definitions/abstractField"
+        },
+        {
+          "required": [
+            "type",
+            "default"
+          ],
+          "properties": {
+            "default": {
+              "description": "default value of field.  Used for fields with a single value.",
+              "type": "string"
+            },
+            "type": {
+              "description": "field value type",
+              "enum": [
+                "string",
+                "hidden"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "properties": {
+    "fields": {
+      "description": "set of fields required to populate this template",
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/definitions/adaptiveThresholdField"
+          },
+          {
+            "$ref": "#/definitions/booleanField"
+          },
+          {
+            "$ref": "#/definitions/ednsField"
+          },
+          {
+            "$ref": "#/definitions/emailField"
+          },
+          {
+            "$ref": "#/definitions/floatField"
+          },
+          {
+            "$ref": "#/definitions/integerField"
+          },
+          {
+            "$ref": "#/definitions/scheduleField"
+          },
+          {
+            "$ref": "#/definitions/selectMultiValueField"
+          },
+          {
+            "$ref": "#/definitions/selectSingleValueField"
+          },
+          {
+            "$ref": "#/definitions/streamField"
+          },
+          {
+            "$ref": "#/definitions/stringField"
+          }
+        ]
+      }
+    },
+    "firingFields": {
+      "description": "array of alert fields associated with this template",
+      "type": "array",
+      "items": {
+        "description": "field names expected in alert firing objects associated with this template (may change over time)",
+        "type": "string"
+      }
+    },
+    "links": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "description": "Link relations to schemas and rest endpoints",
+      "minItems": 2,
+      "title": "Json link relations",
+      "type": "array",
+      "uniqueItems": true,
+      "required": [
+        "rel",
+        "href"
+      ],
+      "items": {
+        "href": {
+          "description": "link to resource of type described by rel",
+          "type": "string"
+        },
+        "rel": {
+          "description": "Describes type of link",
+          "type": "string"
+        }
+      }
+    },
+    "name": {
+      "description": "name of template. not internationalized",
+      "type": "string"
+    },
+    "origin": {
+      "description": "name of system of record",
+      "enum": [
+        "STATIC",
+        "ADAPTIVE"
+      ]
+    },
+    "products": {
+      "description": "array of products associated with this template",
+      "type": "array",
+      "items": {
+        "description": "represents a CDN solution offering",
+        "type": "object",
+        "required": [
+          "objectId",
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "description": "a basic description of content",
+            "type": "string"
+          },
+          "objectId": {
+            "description": "a unique identifier for this content",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "templateId": {
+      "description": "Id for template",
+      "type": "string"
+    }
+  }
+}

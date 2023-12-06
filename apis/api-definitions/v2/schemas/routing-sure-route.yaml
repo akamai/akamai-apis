@@ -1,0 +1,40 @@
+type: object
+x-akamai:
+  file-path: schemas/routing-sure-route.yaml
+additionalProperties: false
+required:
+- origin
+- testObjectPath
+- forceSslForward
+properties:
+  forceSslForward:
+    type: boolean
+    description: |
+      Forces SureRoute to use SSL when requesting the test object from your alternate origin server. Set the value to `true` when the origin doesn't respond to HTTP requests or responds with a redirect to HTTPS.
+  origin:
+    type: string
+    description: |
+      Specifies the origin server where the SureRoute definitions are applied.
+  raceKey:
+    type: string
+    description: |
+      Specifies a custom key to store race results.
+    nullable: true
+  raceKeyMode:
+    type: string
+    description: |
+      Specifies which hostname to use to store race results. Either `DEFAULT` for the race destination's hostname or `CUSTOM` for a custom hostname.
+    nullable: true
+    enum:
+    - DEFAULT
+    - CUSTOM
+  raceStatTtl:
+    type: object
+    description: |
+      Specifies the TTL to hold the SureRoute race results. Races only run when certain thresholds exceed their limit. If traffic drops below the thresholds, the edge server continues to use the last race results to determine the optimal route until this TTL expires. When traffic next increases over the thresholds, the edge server uses the direct route until SureRoute determines a new optimal route.
+    $ref: durationDto.yaml
+  testObjectPath:
+    type: string
+    description: |
+      Specifies the test object's path on your alternate origin server. SureRoute uses this path in races to test routes. For example, `/akamai/testobject.html`.
+    nullable: true

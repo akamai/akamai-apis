@@ -1,0 +1,179 @@
+openapi: 3.0.0
+info:
+  title: Event subscriptions
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://control.akamai.com/storage-services/events/v1
+x-akamai:
+  file-path: event-subscription.yaml
+paths:
+  /{cpCode}:
+    parameters:
+    - $ref: parameters/X-Akamai-ACS-Action-subscribe.yaml
+    - $ref: parameters/X-Akamai-ACS-Auth-Data.yaml
+    - $ref: parameters/X-Akamai-ACS-Auth-Sign.yaml
+    - $ref: parameters/cpCode.yaml
+    get:
+      operationId: list-all-event-subscriptions
+      summary: List event subscriptions
+      tags:
+      - Manage subscriptions
+      description: |
+        View a list of event subscription configurations.
+      responses:
+        200:
+          description: |
+            List of all event subscriptions
+          content:
+            application/json:
+              example:
+                $ref: examples/GetAllEventSubscriptions.json
+              schema:
+                $ref: schemas/get-all-event-subscriptions-response.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+    put:
+      operationId: create-update-event-subscription-all-paths
+      summary: Create or update an event subscription for all paths
+      tags:
+      - Manage subscriptions
+      description: |
+        This operation creates or updates a subscription for notifications of NetStorage events. If no `pathPrefix` is specified, all paths under the CP code will generate notifications.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/CreateEventSubscription.json
+            schema:
+              $ref: schemas/event-subscription-put.yaml
+      responses:
+        202:
+          description: |
+            Created or updated event subscription.
+          content:
+            application/json:
+              example:
+                $ref: examples/EventNotificationResponse.json
+              schema:
+                $ref: schemas/event-subscription-response.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+      callbacks:
+        eventNotification:
+          ? '{$request.body#/notificationConfig/endpointConfig/endPointURL}?{$request.body#/noficationConfig/endpointConfig/endPointAccessToken}'
+          : post:
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    example:
+                      $ref: examples/EventNotification.json
+                    schema:
+                      $ref: schemas/event-notification-callback-post.yaml
+              responses:
+                200:
+                  description: |
+                    Notification accepted.
+  /{cpCode}/{pathPrefix}:
+    parameters:
+    - $ref: parameters/X-Akamai-ACS-Action-subscribe.yaml
+    - $ref: parameters/X-Akamai-ACS-Auth-Data.yaml
+    - $ref: parameters/X-Akamai-ACS-Auth-Sign.yaml
+    - $ref: parameters/cpCode.yaml
+    - $ref: parameters/pathPrefix.yaml
+    put:
+      operationId: create-update-event-subscription
+      summary: Create or update an event subscription
+      tags:
+      - Manage subscriptions
+      description: |
+        This operation creates or updates a subscription for notifications of NetStorage events. Some of this API exchanges XML, but this part exchanges JSON.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/CreateEventSubscription.json
+            schema:
+              $ref: schemas/event-subscription-put.yaml
+      responses:
+        202:
+          description: |
+            Created or updated event subscription.
+          content:
+            application/json:
+              example:
+                $ref: examples/EventNotificationResponse.json
+              schema:
+                $ref: schemas/event-subscription-response.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+      callbacks:
+        eventNotification:
+          ? '{$request.body#/notificationConfig/endpointConfig/endPointURL}?{$request.body#/noficationConfig/endpointConfig/endPointAccessToken}'
+          : post:
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    example:
+                      $ref: examples/EventNotification.json
+                    schema:
+                      $ref: schemas/event-notification-callback-post.yaml
+              responses:
+                200:
+                  description: |
+                    Notification accepted.
+  /{cpCode}/{subscriptionName}:
+    parameters:
+    - $ref: parameters/X-Akamai-ACS-Action-subscribe.yaml
+    - $ref: parameters/X-Akamai-ACS-Auth-Data.yaml
+    - $ref: parameters/X-Akamai-ACS-Auth-Sign.yaml
+    - $ref: parameters/cpCode.yaml
+    - $ref: parameters/subscriptionName.yaml
+    get:
+      operationId: get-event-subscription
+      summary: Get an event subscription
+      tags:
+      - Manage subscriptions
+      description: |
+        View the configuration details of an event subscription.
+      responses:
+        200:
+          description: |
+            An event subscription.
+          content:
+            application/json:
+              example:
+                $ref: examples/GetEventSubscription.json
+              schema:
+                $ref: schemas/get-event-subscription-response.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+    delete:
+      operationId: delete-event-subscription
+      summary: Delete an event subscription
+      tags:
+      - Manage subscriptions
+      description: |
+        Remove an event subscription configuration.
+      responses:
+        200:
+          description: |
+            Deleted an event subscription.
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml

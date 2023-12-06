@@ -1,0 +1,499 @@
+openapi: 3.0.0
+info:
+  title: Comparative testing
+  version: v2
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/test-management/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: comparative.yaml
+paths:
+  /comparative/test-definition-executions/{testDefinitionExecutionId}/differences/{differenceId}/raw-request-response:
+    parameters:
+    - $ref: parameters/differenceId-path.yaml
+    - $ref: parameters/testDefinitionExecutionId-path.yaml
+    get:
+      operationId: get-test-definition-execution-difference-raw-request-response
+      summary: Get transaction details for a diff
+      tags:
+      - Executions
+      description: |
+        Returns transaction details for both compared environments from which a diff was generated.
+      responses:
+        200:
+          description: |
+            The response provides transaction details.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-raw-request-response.json
+              schema:
+                $ref: schemas/getRawRequestResponseResponse.yaml
+  /comparative/test-definition-executions:
+    get:
+      operationId: get-test-definition-executions
+      summary: List executions
+      tags:
+      - Executions
+      description: |
+        Lists all test definition executions.
+      parameters:
+      - $ref: parameters/testDefinitionIds-query.yaml
+      - $ref: parameters/latestPerTestDefinition-query.yaml
+      responses:
+        200:
+          description: |
+            The response lists executions.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-test-definition-executions-response.json
+              schema:
+                $ref: schemas/getTestDefinitionExecutionsResponse.yaml
+  /comparative/test-definition-executions/{testDefinitionExecutionId}:
+    parameters:
+    - $ref: parameters/testDefinitionExecutionId-path.yaml
+    get:
+      operationId: get-test-definition-execution
+      summary: Get an execution
+      tags:
+      - Executions
+      description: |
+        Returns details of a test definition execution. The response includes identifiers of comparative test cases that belong to the test definition. It also includes details about the test run in which the test definition was executed, including target hostname, target environment, IP versions, and notes. Depending on the execution's `status`, the response includes different objects. For the `completed` status, there's a `diffCount` object. For the `failed` status, there's an `errors` array. If the test run is in progress when you call this operation, it returns a 404 error.
+      responses:
+        200:
+          description: |
+            The response provides execution details.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-comparative-test-definition-execution-response.json
+              schema:
+                $ref: schemas/get-comparative-test-definition-execution-response.yaml
+  /comparative/test-definition-executions/{testDefinitionExecutionId}/differences:
+    parameters:
+    - $ref: parameters/testDefinitionExecutionId-path.yaml
+    get:
+      operationId: get-test-definition-execution-differences
+      summary: List diffs
+      tags:
+      - Executions
+      description: |
+        Lists diffs found for a test definition execution. The response is an array of objects. You can follow up and update the status of the diffs. See [Update diffs](ref:put-test-definition-execution-differences).
+      responses:
+        200:
+          description: |
+            The response lists diffs.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-differences-response.json
+              schema:
+                $ref: schemas/getDifferencesResponse.yaml
+    put:
+      operationId: put-test-definition-execution-differences
+      summary: Update diffs
+      tags:
+      - Executions
+      description: |
+        Updates the status of diffs. To learn more about diffs, check [Comparative testing concepts](ref:test-center-concepts#comparative-testing). The operation responds with a [partial-success 207 response](ref:partial-success-responses) that consists of two arrays: `successes` and `failures`. The `successes` array lists diffs updated successfully, whereas the `failures` array provides details on any remainders that failed.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/update-differences-request.json
+            schema:
+              $ref: schemas/updateDifferencesRequest.yaml
+      responses:
+        207:
+          description: |
+            [Partial success responses](ref:partial-success-responses)
+          content:
+            application/json:
+              example:
+                $ref: examples/update-differences-response.json
+              schema:
+                $ref: schemas/updateDifferencesResponse.yaml
+  /comparative/test-definition-executions/{testDefinitionExecutionId}/differences/notes:
+    parameters:
+    - $ref: parameters/testDefinitionExecutionId-path.yaml
+    post:
+      operationId: post-test-definition-execution-differences-notes
+      summary: Create notes for a set of diffs
+      tags:
+      - Executions
+      description: |
+        Creates notes for a set of diffs in bulk, under `testDefinitionExecutionId`. To access created notes, run the [List activities](ref:get-activities) operation and set the value of `activityResource` to `test_difference_note`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-diff-note-request.json
+            schema:
+              $ref: schemas/createDiffNoteRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /comparative/test-definition-executions/{testDefinitionExecutionId}/differences/{differenceId}:
+    parameters:
+    - $ref: parameters/differenceId-path.yaml
+    - $ref: parameters/testDefinitionExecutionId-path.yaml
+    get:
+      operationId: get-test-definition-execution-difference
+      summary: Get a diff
+      tags:
+      - Executions
+      description: |
+        Returns details of a test definition execution diff.
+      responses:
+        200:
+          description: |
+            The response provides execution diff details.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-difference-response.json
+              schema:
+                $ref: schemas/get-difference-response.yaml
+  /comparative/test-definitions:
+    post:
+      operationId: post-test-definitions
+      summary: Create a new test definition
+      tags:
+      - Test definitions
+      description: |
+        Creates a new test definition. Specify a `hostname` you're using Property Manager to deliver content for. Hostnames that use Instant Config, Slot Matching, or Zone Apex Mapping don't work. Once you specify a `hostname`, you cannot change it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-test-definition-request.json
+            schema:
+              $ref: schemas/createTestDefinitionRequest.yaml
+      responses:
+        201:
+          description: |
+            Successfully created new test definition.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-test-definition-response.json
+              schema:
+                $ref: schemas/get-test-definition-response.yaml
+    get:
+      operationId: get-test-definitions
+      summary: List test definitions
+      tags:
+      - Test definitions
+      description: |
+        Lists test definitions created in your organization. The list can also include deleted test definitions that you can restore. The response is an array of objects, each keyed by `testDefinitionId`.
+      parameters:
+      - $ref: parameters/includeRecentlyDeleted-query.yaml
+      responses:
+        200:
+          description: |
+            The response lists test definitions.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-test-definitions-response.json
+              schema:
+                $ref: schemas/getTestDefinitionsResponse.yaml
+  /comparative/test-definitions/{testDefinitionId}:
+    parameters:
+    - $ref: parameters/testDefinitionId-path.yaml
+    get:
+      operationId: get-test-definition
+      summary: Get a test definition
+      tags:
+      - Test definitions
+      description: |
+        Returns details of a test definition, including its status. To check the included test cases, run the [List comparative test cases](ref:get-test-definition-test-cases) operation.
+      responses:
+        200:
+          description: |
+            The response provides test definition details.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-test-definition-response.json
+              schema:
+                $ref: schemas/get-test-definition-response.yaml
+    put:
+      operationId: put-test-definition
+      summary: Update a test definition
+      tags:
+      - Test definitions
+      description: |
+        Updates a test definition except for its `hostname`, which you set once when creating the test definition.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/update-test-definition-request.json
+            schema:
+              $ref: schemas/updateTestDefinitionRequest.yaml
+      responses:
+        200:
+          description: |
+            The response returns the updated test definition.
+          content:
+            application/json:
+              example:
+                $ref: examples/update-test-definition-response.json
+              schema:
+                $ref: schemas/get-test-definition-response.yaml
+    delete:
+      operationId: delete-test-definition
+      summary: Delete a test definition
+      tags:
+      - Test definitions
+      description: |
+        Deletes a test definition. You can [restore](ref:post-test-definition-restore) test definitions within 30 days of deleting them.
+      responses:
+        204:
+          description: |
+            Successfully deleted test definition.
+  /comparative/test-definitions/{testDefinitionId}/clone:
+    parameters:
+    - $ref: parameters/testDefinitionId-path.yaml
+    post:
+      operationId: post-test-definition-clone
+      summary: Clone a test definition
+      tags:
+      - Test definitions
+      description: |
+        Clones a test definition. Cloned test definitions have the same hostname and associated config as the source test definition. The operation also clones the included comparative test cases. If an optional request member of the request is missing, Test Center uses the value from the source test suite.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/clone-test-definition-request.json
+            schema:
+              $ref: schemas/cloneTestDefinitionRequest.yaml
+      responses:
+        201:
+          description: |
+            Successfully cloned test definition.
+          content:
+            application/json:
+              example:
+                $ref: examples/clone-test-definition-response.json
+              schema:
+                $ref: schemas/get-test-definition-response.yaml
+  /comparative/test-definitions/{testDefinitionId}/remove:
+    parameters:
+    - $ref: parameters/testDefinitionId-path.yaml
+    post:
+      operationId: post-test-definition-remove
+      summary: Remove a test definition
+      tags:
+      - Test definitions
+      description: |
+        Removes a test definition. When you remove a test definition and make a GET request for it, its `status` is `inactive`. The API retains removed test definitions for 30 days from the date of the removal. After that, you receive a 404 error if you try to get it.
+      x-akamai:
+        status: DEPRECATED
+      responses:
+        204:
+          description: |
+            Successfully deleted test definition.
+  /comparative/test-definitions/{testDefinitionId}/restore:
+    parameters:
+    - $ref: parameters/testDefinitionId-path.yaml
+    post:
+      operationId: post-test-definition-restore
+      summary: Restore a test definition
+      tags:
+      - Test definitions
+      description: |
+        Restores a deleted test definition. A successful operation responds with the 200 status and the restored object in the `successes` array.
+      responses:
+        200:
+          description: |
+            The response returns the restored test definition.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-test-definition-response.json
+              schema:
+                $ref: schemas/get-test-definition-response.yaml
+  /comparative/test-definitions/{testDefinitionId}/test-cases:
+    parameters:
+    - $ref: parameters/testDefinitionId-path.yaml
+    post:
+      operationId: post-test-definition-test-cases
+      summary: Create a comparative test case
+      tags:
+      - Test definitions
+      description: |
+        Creates a comparative test case and includes it in a test definition. The hostname of the `url` you provide needs to match the `hostname` in the test definition the test case belongs to. You can't test authenticated content.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-test-case-request.json
+            schema:
+              $ref: schemas/createTestCaseRequest.yaml
+      responses:
+        201:
+          description: |
+            Successfully created new comparative test case.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-test-case-response.json
+              schema:
+                $ref: schemas/getTestCaseResponse.yaml
+    get:
+      operationId: get-test-definition-test-cases
+      summary: List comparative test cases included in a test definition
+      tags:
+      - Test definitions
+      description: |
+        Lists comparative test cases included in a test definition. The list can also include deleted test cases that you can restore. The response is an array of objects, each keyed by `testCaseId`.
+      parameters:
+      - $ref: parameters/includeRecentlyDeleted-query.yaml
+      responses:
+        200:
+          description: |
+            The response lists test cases.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-test-cases-response.json
+              schema:
+                $ref: schemas/getComparativeTestCasesResponse.yaml
+  /comparative/test-definitions/{testDefinitionId}/test-cases/{testCaseId}:
+    parameters:
+    - $ref: parameters/testCaseId-path.yaml
+    - $ref: parameters/testDefinitionId-path.yaml
+    get:
+      operationId: get-test-definition-test-case
+      summary: Get a comparative test case
+      tags:
+      - Test definitions
+      description: |
+        Returns details of a comparative test case, including its request headers and comparison settings.
+      responses:
+        200:
+          description: |
+            The response provides test case details.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-test-case-response.json
+              schema:
+                $ref: schemas/getTestCaseResponse.yaml
+    put:
+      operationId: put-test-definition-test-case
+      summary: Update a comparative test case
+      tags:
+      - Test definitions
+      description: |
+        Updates a comparative test case. You can modify all members except for the `testCaseId` and the `testDefinitionId`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/update-test-case-request.json
+            schema:
+              $ref: schemas/updateTestCaseRequest.yaml
+      responses:
+        200:
+          description: |
+            The response returns the updated test case.
+          content:
+            application/json:
+              example:
+                $ref: examples/update-test-case-response.json
+              schema:
+                $ref: schemas/getTestCaseResponse.yaml
+    delete:
+      operationId: delete-test-definition-test-case
+      summary: Delete a comparative test case
+      tags:
+      - Test definitions
+      description: |
+        Deletes a comparative test case. You can [restore](ref:post-test-definition-test-case-restore) test cases within 30 days of deleting them.
+      responses:
+        204:
+          description: |
+            Successfully deleted test case.
+  /comparative/test-definitions/{testDefinitionId}/test-cases/{testCaseId}/clone:
+    parameters:
+    - $ref: parameters/testCaseId-path.yaml
+    - $ref: parameters/testDefinitionId-path.yaml
+    post:
+      operationId: post-test-definition-test-case-clone
+      summary: Clone a comparative test case
+      tags:
+      - Test definitions
+      description: |
+        Clones a comparative test case. If an optional request member of the request is missing, Test Center uses the value from the source test suite.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/clone-test-case-request.json
+            schema:
+              $ref: schemas/clone-test-case-request.yaml
+      responses:
+        201:
+          description: |
+            Successfully cloned test case.
+          content:
+            application/json:
+              example:
+                $ref: examples/clone-test-case-response.json
+              schema:
+                $ref: schemas/getTestCaseResponse.yaml
+  /comparative/test-definitions/{testDefinitionId}/test-cases/{testCaseId}/remove:
+    parameters:
+    - $ref: parameters/testCaseId-path.yaml
+    - $ref: parameters/testDefinitionId-path.yaml
+    post:
+      operationId: post-test-definition-test-case-remove
+      summary: Remove a comparative test case
+      tags:
+      - Test definitions
+      description: |
+        Removes a comparative test case included in a test definition. When you remove a test case and make a GET request for it, its `status` is `inactive`. The API retains removed test cases for 30 days from the date of the removal. After that, you receive a 404 error if you try to get it.
+      x-akamai:
+        status: DEPRECATED
+      responses:
+        204:
+          description: |
+            Successfully deleted test case.
+  /comparative/test-definitions/{testDefinitionId}/test-cases/{testCaseId}/restore:
+    parameters:
+    - $ref: parameters/testCaseId-path.yaml
+    - $ref: parameters/testDefinitionId-path.yaml
+    post:
+      operationId: post-test-definition-test-case-restore
+      summary: Restore a comparative test case
+      tags:
+      - Test definitions
+      description: |
+        Restores a deleted comparative test case. A successful operation responds with the 200 status and the restored object in the `successes` array.
+      responses:
+        200:
+          description: |
+            The response returns the restored test case.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-test-case-response.json
+              schema:
+                $ref: schemas/getTestCaseResponse.yaml

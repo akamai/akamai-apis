@@ -1,0 +1,139 @@
+type: object
+description: |-
+  Contains information about a collection.
+  
+x-akamai:
+  file-path: schemas/keyCollectionDto.yaml
+additionalProperties: false
+required:
+- name
+- groupId
+- contractId
+properties:
+  id:
+    type: integer
+    description: |
+      The unique identifier for the collection.
+    readOnly: true
+    minimum: 0
+  name:
+    type: string
+    description: |
+      The name of the collection.
+    minLength: 1
+  description:
+    type: string
+    description: |
+      The description that you provide for the collection. If you specify an empty string in the request or omit this member from the object, the JSON response reflects it as `null`.
+    nullable: true
+    minLength: 0
+  contractId:
+    type: string
+    description: |
+      The unique identifier for the contract with Akamai under which you provision the collection.
+    minLength: 1
+  dirty:
+    type: boolean
+    description: |
+      Whether the collection contains changes that are being propagated to the Akamai network.
+    readOnly: true
+  dirtyACL:
+    type: array
+    description: |
+      The endpoints or resources with ACL changes that are being propagated to the Akamai network.
+    readOnly: true
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  grantedACL:
+    type: array
+    description: |
+      The endpoints, resources, and HTTP methods accessible to API consumers that identify with keys included in the collection.
+    readOnly: true
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  groupId:
+    type: integer
+    description: |
+      The unique identifier for the group in Control Center under which you provision the collection.
+    minimum: 0
+  keyCount:
+    type: integer
+    description: |
+      The number of keys included in the collection.
+    nullable: true
+    readOnly: true
+    minimum: 0
+  quota:
+    type: object
+    description: |
+      Contains information about quota settings for the collection.
+    additionalProperties: false
+    required:
+    - value
+    - headers
+    - enabled
+    - interval
+    readOnly: true
+    properties:
+      value:
+        type: integer
+        description: |
+          The number of requests that each key from the collection can send to an API within the specified time period.
+        minimum: 100
+        maximum: 1000000000
+      headers:
+        type: object
+        description: |
+          Contains information about the criteria for sending the quota limit response headers.
+        additionalProperties: false
+        required:
+        - allowLimitHeaderShown
+        - allowRemainingHeaderShown
+        - allowResetHeaderShown
+        - denyLimitHeaderShown
+        - denyNextHeaderShown
+        - denyRemainingHeaderShown
+        properties:
+          allowLimitHeaderShown:
+            type: boolean
+            description: |
+              Whether to send the `X-RateLimit-Limit` header in a response when the quota remains.
+          allowRemainingHeaderShown:
+            type: boolean
+            description: |
+              Whether to send the `X-RateLimit-Remaining` header in a response when the quota remains.
+          allowResetHeaderShown:
+            type: boolean
+            description: |
+              Whether to send the `X-RateLimit-Reset` header in a response when the quota remains.
+          denyLimitHeaderShown:
+            type: boolean
+            description: |
+              Whether to send the `X-RateLimit-Limit` header in a response when the quota is full.
+          denyNextHeaderShown:
+            type: boolean
+            description: |
+              Whether to send the `X-RateLimit-Next` header in a response when the quota is full.
+          denyRemainingHeaderShown:
+            type: boolean
+            description: |
+              Whether to send the `X-RateLimit-Remaining` header in a response when the quota is full.
+      enabled:
+        type: boolean
+        description: |
+          Whether you enabled quota settings in the collection.
+      interval:
+        type: string
+        description: |
+          The time period for the quota limit in UTC, either `HOUR_1` to reset at the start of each hour, `HOUR_6` at the start of each sixth hour, `HOUR_12` for twice daily, `DAY` for midnight each day, `WEEK` for midnight on each Monday, or `MONTH` for midnight on the first day of each month.
+        enum:
+        - HOUR_1
+        - HOUR_6
+        - HOUR_12
+        - DAY
+        - WEEK
+        - MONTH

@@ -1,0 +1,47 @@
+type: object
+description: |-
+  Standard MTR results.
+  
+x-akamai:
+  file-path: schemas/mtrData.yaml
+additionalProperties: false
+required:
+- startTime
+- host
+- packetLoss
+- averageLatency
+- hops
+- result
+properties:
+  averageLatency:
+    type: number
+    description: |
+      Average latency for all hops, in seconds.
+    minimum: 0
+  hops:
+    type: array
+    description: |
+      Lists network hops with their data.
+    minItems: 0
+    items:
+      $ref: mtrHopInstance.yaml
+  host:
+    type: string
+    description: |
+      Hostname within the edge network that corresponds to the `source` IP address.
+    format: hostname
+  packetLoss:
+    type: number
+    description: |
+      Percentage of packets lost, maximum `100`.
+    minimum: 0
+    maximum: 100
+  result:
+    type: string
+    description: |
+      Raw MTR utility output.
+    minLength: 1
+  startTime:
+    type: integer
+    description: |
+      Epoch timestamp marking when MTR was run.

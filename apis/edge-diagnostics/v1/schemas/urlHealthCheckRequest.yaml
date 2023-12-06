@@ -1,0 +1,92 @@
+type: object
+description: |-
+  Collects data to use in the URL health check request.
+  
+x-akamai:
+  file-path: schemas/urlHealthCheckRequest.yaml
+additionalProperties: false
+required:
+- url
+properties:
+  edgeLocationId:
+    type: string
+    description: |
+      Unique identifier for an edge server location closest to your end users. Run the [List available edge server locations](ref:get-edge-locations) operation to get this value.
+    minLength: 1
+  ipVersion:
+    type: string
+    description: |
+      IP version for the URL health check to use to run cURL and MTR, either `IPV4` or `IPV6`.
+    enum:
+    - IPV4
+    - IPV6
+  packetType:
+    type: string
+    description: |
+      Packet type for the URL health check to use to run MTR, either `ICMP` or `TCP`. Provide it only for requests with `CONNECTIVITY` in the `viewsAllowed` array.
+    enum:
+    - ICMP
+    - TCP
+  port:
+    type: integer
+    description: |
+      Port number for the URL health check to use to run MTR, either `80` or `443`. Provide it only for requests with `CONNECTIVITY` in the `viewsAllowed` array.
+    enum:
+    - 80
+    - 443
+  queryType:
+    type: string
+    description: |
+      DNS query type you want to get the records of with the DIG command. Possible values are: `A`, `AAAA`, `SOA`, `CNAME`, `PTR`, `MX`, `NS`, `TXT`, `SRV`, `CAA`, and `ANY`. To learn more about them, check [Supported DNS record types](doc:domain-details-dig#supported-dns-record-types).
+    enum:
+    - A
+    - SOA
+    - CNAME
+    - PTR
+    - MX
+    - AAAA
+    - NS
+    - TXT
+    - SRV
+    - CAA
+    - ANY
+  requestHeaders:
+    type: array
+    description: |
+      Customized headers for the `curl` request in the format `header: value`. The request includes [Akamai Pragma headers](doc:pragma-headers) by default.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  runFromSiteShield:
+    type: boolean
+    description: |
+      Runs a URL health check from a Site Shield map. To learn more, check [Site Shield requests](ref:site-shield-requests).
+  sensitiveRequestHeaderKeys:
+    type: array
+    description: |
+      Sensitive `requestHeaders` you don't want to store in the database after running the request. Check [Sensitive headers](ref:sensitive-headers) to see the list of request headers treated as sensitive by default.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  spoofEdgeIp:
+    type: string
+    description: |
+      IP of the edge server you want to serve traffic from. You can use the edge server IP value from the `answerSection` array in the [Get domain details with dig](ref:post-dig) operation response.
+    minLength: 1
+  url:
+    type: string
+    description: |
+      URL you want to run the health check for.
+    minLength: 1
+  viewsAllowed:
+    type: array
+    description: |
+      Additional operations for the URL health check to run. `CONNECTIVITY` runs the [Test network connectivity with MTR](ref:post-mtr) operation and `LOGS` runs the [Get specific logs](ref:get-grep) operation.
+    minItems: 0
+    items:
+      type: string
+      enum:
+      - CONNECTIVITY
+      - LOGS

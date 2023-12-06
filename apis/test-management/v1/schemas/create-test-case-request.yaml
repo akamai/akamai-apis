@@ -1,0 +1,184 @@
+type: object
+description: |-
+  Contains information about a test case.
+  
+x-akamai:
+  file-path: schemas/create-test-case-request.yaml
+additionalProperties: false
+required:
+- testDefinitionId
+- url
+- testCaseName
+- requestHeaders
+- comparisonSettings
+properties:
+  comparisonSettings:
+    type: object
+    description: |
+      Comparison settings are attributes which are used for comparison between different environments. By default all comparison settings are included for the test case.
+    additionalProperties: false
+    required:
+    - responseCode
+    - responseHeaders
+    - cpcode
+    - cachingOption
+    - cacheKey
+    - metadataVariables
+    - originServer
+    properties:
+      cacheKey:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      cachingOption:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      cpcode:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      metadataVariables:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        - compareOnly
+        - compareAllExcept
+        properties:
+          compareAllExcept:
+            type: array
+            items:
+              type: string
+          compareOnly:
+            type: array
+            items:
+              type: string
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      originServer:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      responseCode:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      responseHeaders:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        - compareOnly
+        - compareAllExcept
+        properties:
+          compareAllExcept:
+            type: array
+            items:
+              type: string
+          compareOnly:
+            type: array
+            items:
+              type: string
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+  requestHeaders:
+    type: array
+    description: |
+      Add specific request headers to the list of requests that the test case will make. Modify of filter existing request headers in the list of requests that the test case will make.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - headerName
+      - headerValues
+      - headerAction
+      properties:
+        headerAction:
+          type: string
+          enum:
+          - add
+          - modify
+          - filter
+        headerName:
+          type: string
+          description: |
+            The name of the request header.
+        headerValues:
+          type: string
+          description: |
+            The value of the request header.
+  testCaseDescription:
+    type: string
+    maxLength: 4000
+    Description: The description you supply for the test case. Max length is 4000 characters.
+  testCaseName:
+    type: string
+    description: |
+      The name you supply for the test case. Max length is 100 characters.
+    maxLength: 100
+  testDefinitionId:
+    type: string
+    description: |
+      Read-only. Unique identifier for the test definition.
+    readOnly: true
+  url:
+    type: string
+    description: |
+      URL of the page to be tested.
+    format: uri

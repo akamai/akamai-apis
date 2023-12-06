@@ -1,0 +1,60 @@
+x-akamai:
+  file-path: paths/configs.yaml
+  path-info: /configs
+post:
+  operationId: post-config
+  summary: Create a configuration
+  tags:
+  - General configuration settings
+  description: |
+    Create a new WAP or KSD security configuration. KSD security configurations start out empty, and WAP configurations are created with preset values. The contract you pass in the request body determines which product you use.  You can edit the default settings included in the WAP configuration, but you'll need to run additional operations in this API to select specific protections for KSD. Your KSD configuration needs match targets and protection settings before you activate. _Products:_ All.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/config-post.json
+        schema:
+          $ref: ../schemas/config-post.yaml
+  responses:
+    201:
+      description: |
+        Successfully created a security configuration.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/config-post-200.json
+          schema:
+            $ref: ../schemas/config-post.yaml
+    400:
+      $ref: ../errors/400.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have create access for security configurations.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/403.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+get:
+  operationId: get-configs
+  summary: List configurations
+  tags:
+  - General configuration settings
+  description: |
+    Lists available security configurations. _Products:_ All.
+  responses:
+    200:
+      description: |
+        Successful response.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/config-listing-200.json
+          schema:
+            $ref: ../schemas/configs-get.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml

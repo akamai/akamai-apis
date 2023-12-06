@@ -1,0 +1,53 @@
+type: object
+description: |-
+  Contains details about the header logging and prefetch settings in the exported configuration version.
+  
+x-akamai:
+  file-path: schemas/export-advanced-options.yaml
+additionalProperties: false
+required:
+- logging
+- prefetch
+properties:
+  requestBody:
+    description: |-
+      Contains the configuration version level settings for request body inspection limit.
+      
+    $ref: request-body.yaml
+  logging:
+    description: |
+      Contains the configuration version level settings for header logging.
+    $ref: header-logging.yaml#
+  pragmaHeader:
+    description: |
+      Contains the configuration version level settings for the `Pragma` header.
+    $ref: pragma-header.yaml
+  prefetch:
+    type: object
+    description: |
+      Contains the configuration version level prefetch settings. Use this object to apply application firewall rules and rate controls to prefetch requests.
+    additionalProperties: false
+    required:
+    - allExtensions
+    - enableAppLayer
+    - extensions
+    - enableRateControls
+    properties:
+      allExtensions:
+        type: boolean
+        description: |
+          Whether to enable the prefetch settings for all file extensions. This only applies if the `enableAppLayer` member is `true`.
+      enableAppLayer:
+        type: boolean
+        description: |
+          Whether to enable the application layer rules for the prefetch requests.
+      enableRateControls:
+        type: boolean
+        description: |
+          Whether to enable the rate controls for the prefetch requests.
+      extensions:
+        type: array
+        description: |
+          The file extensions to apply the settings to. This only applies if the `enableAppLayer` member is `true`.
+        items:
+          type: string

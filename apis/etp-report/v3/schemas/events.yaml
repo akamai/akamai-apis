@@ -1,0 +1,449 @@
+type: object
+description: |-
+  Details about DNS query or web request events.
+  
+x-akamai:
+  file-path: schemas/events.yaml
+additionalProperties: false
+required:
+- detectionTime
+- detectionType
+- siteId
+- siteName
+- policyId
+- policyName
+- listId
+- listName
+- trigger
+- categoryId
+- categoryName
+- confidenceId
+- confidenceName
+- actionId
+- actionName
+- reason
+- blockDescription
+- correlatedSinkholeEvents
+- listIdentifiers
+properties:
+  operationId:
+    type: string
+    description: |
+      Operation ID for the accessed domain or URL.
+    minLength: 1
+  description:
+    type: string
+    description: |
+      Describes the event.
+  actionId:
+    type: string
+    description: |
+      A unique identifier for the action taken.
+  actionName:
+    type: string
+    description: |
+      A descriptive name for the action identifier.
+    minLength: 1
+  alexaRanking:
+    type: integer
+    description: |
+      The ranking for the event.
+  applicationId:
+    type: integer
+    description: |
+      A unique identifier for the application.
+    minimum: 0
+  applicationName:
+    type: string
+    description: |
+      A descriptive name for the application.
+    minLength: 1
+  aupCategories:
+    type: array
+    description: |
+      AUP categories for the event.
+    minItems: 0
+    items:
+      $ref: identifierId.yaml
+  blockDescription:
+    type: string
+    description: |
+      A short description of the event.
+    minLength: 1
+  catalogId:
+    type: integer
+    description: |
+      A unique identifier for the catalog.
+    minimum: 0
+  categoryId:
+    type: integer
+    description: |
+      A unique identifier for the category.
+    minimum: 0
+  categoryName:
+    type: string
+    description: |
+      A descriptive name for the category identifier.
+    minLength: 1
+  cidr:
+    type: string
+    description: |
+      The IP address CIDR block for the event.
+  clientAgents:
+    type: array
+    description: |
+      Client agent that initiated this traffic.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  clientRequestId:
+    type: string
+    description: |
+      A unique identifier for the request client.
+    minLength: 1
+  confidenceId:
+    type: integer
+    description: |
+      A unique identifier about the event confidence level.
+    minimum: 0
+  confidenceName:
+    type: string
+    description: |
+      A descriptive name for the confidence level identifier.
+    minLength: 1
+  configId:
+    type: string
+    description: |
+      Unique identifier of the configuration for the event.
+  correlatedSinkholeEvents:
+    type: array
+    description: |
+      Sinkhole event details if there are any co-related events from sinkhole.
+    minItems: 0
+    items:
+      $ref: sinkhole-events-details.yaml
+  decryptedInternalClientIp:
+    type: string
+    description: |
+      The decrypted IP address of the client machine.
+    format: ipv4
+  decryptedInternalClientName:
+    type: string
+    description: |
+      The decrypted name of the client machine.
+    minLength: 1
+  deepScanReportDetail:
+    type: string
+    description: |
+      Details of the deepscan report for the event.
+  deepScanned:
+    type: boolean
+    description: |
+      Whether the event generated a deepscan report using static and dynamic malware analysis.
+  deepscanReportPath:
+    type: string
+    description: |
+      The location of a deepscan report.
+    minLength: 1
+  detectionTime:
+    type: string
+    description: |
+      The event detected time in ISO 8601 format.
+    format: date-time
+  detectionType:
+    type: string
+    description: |
+      Event detected during online or while offline batch processing. Either `ONLINE` or `OFFLINE`.
+    enum:
+    - ONLINE
+    - OFFLINE
+  deviceId:
+    type: string
+    description: |
+      A unique identifier for the device for an event.
+    minLength: 1
+  deviceName:
+    type: string
+    description: |
+      The name of the device for an event.
+    minLength: 1
+  deviceOwnerId:
+    type: string
+    description: |
+      Unique identifier of the device owner for the event.
+  devicePostureRisk:
+    type: string
+    description: |
+      Device posture risk level for the event. Either `low` or `medium` based on risk tiers defined in [Enterprise Application Access](ref:https://techdocs.akamai.com/eaa/docs/define-device-risk-tiers)
+    enum:
+    - low
+    - medium
+  dlp:
+    type: array
+    description: |
+      Details about DLP scan.
+    minItems: 0
+    items:
+      $ref: file-detail.yaml
+  dohAttribution:
+    type: string
+    description: |
+      Unique identifier of DNS over HTTP attribution for the event.
+  encryptedInternalClientIp:
+    type: string
+    description: |
+      The encrypted IP address of the client machine.
+    format: ipv4
+  encryptedInternalClientName:
+    type: string
+    description: |
+      The encrypted name of the client machine.
+    minLength: 1
+  eventType:
+    type: string
+    description: |
+      Indicates the type of event, either `aup` or `avc`.
+    enum:
+    - aup
+    - avc
+  files:
+    type: array
+    description: |
+      File information detected during scan if any.
+    minItems: 0
+    items:
+      $ref: file-detail.yaml
+  httpUserAgent:
+    type: string
+    description: |
+      The HTTP user agent for an event.
+    minLength: 1
+  httpVersion:
+    type: string
+    description: |
+      The version of HTTP protocol used.
+    minLength: 1
+  internalClientIP:
+    type: string
+    description: |
+      The IP address of the internal client device used for web traffic.
+    format: ipv4
+  kid:
+    type: string
+    description: |
+      Identifier for a specific JSON web key.
+  listId:
+    type: integer
+    description: |
+      A unique identifier for the list.
+    minimum: 0
+  listIdentifiers:
+    type: array
+    description: |
+      The scanning results from various classifiers. Only available for web requests.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - listId
+      - listName
+      - categoryId
+      - threatId
+      - categoryName
+      - confidenceId
+      - confidenceName
+      - threatName
+      properties:
+        categoryId:
+          type: integer
+          description: |
+            A unique identifier for the category.
+          minimum: 0
+        categoryName:
+          type: string
+          description: |
+            A descriptive name for the category.
+          minLength: 1
+        confidenceId:
+          type: integer
+          description: |
+            A unique identifier about the event confidence level.
+          minimum: 0
+        confidenceName:
+          type: string
+          description: |
+            A descriptive name for the confidence level.
+          minLength: 1
+        listId:
+          type: integer
+          description: |
+            A unique identifier for the list.
+          minimum: 0
+        listName:
+          type: string
+          description: |
+            A descriptive name for the list.
+          minLength: 1
+        threatId:
+          type: integer
+          description: |
+            A unique identifier about the threat.
+          minimum: 0
+        threatName:
+          type: string
+          description: |
+            A descriptive name for the threat.
+          minLength: 1
+  listName:
+    type: string
+    description: |
+      A descriptive name for the list identifier.
+    minLength: 1
+  machineId:
+    type: string
+    description: |
+      Unique identifier of the machine for the event.
+  machineName:
+    type: string
+    description: |
+      Name of the machine for the event.
+  matchedGroups:
+    type: array
+    description: |
+      Matched groups for the authenticated user, for traffic authenticated against the IDP.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  observedAupCategories:
+    type: array
+    description: |
+      Observed AUP categories for the event.
+    minItems: 0
+    items:
+      type: integer
+  onRamp:
+    type: string
+    description: |
+      Indicates an enabled proxy onramp. Either `Yes` or `No`.
+    enum:
+    - Yes
+    - No
+  onrampType:
+    type: string
+    description: |
+      The type of onramp for the event. Either `dns`, `web`, `onramp_dns`, `etp_client`, `etp_offnet_client`, or `explicit_policy`.
+    enum:
+    - dns
+    - web
+    - onramp_dns
+    - etp_client
+    - etp_offnet_client
+    - explicit_policy
+  operationName:
+    type: string
+    description: |
+      Operation name for the accessed domain or URL.
+    minLength: 1
+  policyEvaluationSource:
+    type: string
+    description: |
+      Source of the policy evaluation.
+    minLength: 1
+  policyId:
+    type: integer
+    description: |
+      A unique identifier for the policy.
+    minimum: 0
+  policyName:
+    type: string
+    description: |
+      The descriptive name of the matching policy.
+    minLength: 1
+  reason:
+    type: string
+    description: |
+      The reason for the traffic block.
+    minLength: 1
+  riskId:
+    type: string
+    description: |
+      Risk identifier for the traffic.
+    minLength: 1
+  riskName:
+    type: string
+    description: |
+      Identified risk for the traffic.
+    minLength: 1
+  scId:
+    type: string
+    description: |
+      Unique identifier of security connector for the event.
+  scName:
+    type: string
+    description: |
+      Name of security connector for the event.
+  securityCategoryId:
+    type: string
+    description: |
+      Unique identifier of the security category for the event.
+  securityCategoryName:
+    type: string
+    description: |
+      Name of the security category for the event.
+  severityId:
+    type: integer
+    description: |
+      Indicates the severity of the threat. Refer to [Severity levels](https://techdocs.akamai.com/etp/docs/indicator-search#severity-levels) for more details.
+    minimum: 0
+  severityLevel:
+    type: string
+    description: |
+      A description of the severity level.
+    minLength: 1
+  siteId:
+    type: string
+    description: |
+      A unique identifier for the site.
+    minLength: 1
+  siteName:
+    type: string
+    description: |
+      The descriptive name of the source location or branch.
+    minLength: 1
+  status:
+    type: string
+    description: |
+      Status of the event discovered.
+  sublocationId:
+    type: string
+    description: |
+      Sublocation identifier where the traffic originated.
+    minLength: 1
+  sublocationName:
+    type: string
+    description: |
+      Sublocation name where the traffic originated.
+    minLength: 1
+  threatId:
+    type: integer
+    description: |
+      A unique identifier for a threat event.
+    minimum: 0
+  threatName:
+    type: string
+    description: |
+      The descriptive name for the threat event.
+    minLength: 1
+  transportType:
+    type: string
+    description: |
+      Transport or layer 4 protocol for the event. In this case, whether TCP or the UDP was used. If these protocols are not used, no information is shown in this field.
+    nullable: true
+  trigger:
+    type: string
+    description: |
+      Event triggered due to domain or IP policy settings.
+    minLength: 1

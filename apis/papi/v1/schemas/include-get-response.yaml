@@ -1,0 +1,94 @@
+id: resource:/descriptors/papi/v1/schemas/GetIncludeResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array.
+  
+x-akamai:
+  file-path: schemas/include-get-response.yaml
+additionalProperties: false
+properties:
+  includes:
+    type: object
+    description: |
+      The set of requested includes, available within an `items` array.
+    additionalProperties: false
+    properties:
+      items:
+        type: array
+        description: |
+          Configuration data to apply to edge content. Relevant response objects appear within the outer envelope's `include.items` array.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - accountId
+          - assetId
+          - contractId
+          - groupId
+          - latestVersion
+          - productionVersion
+          - stagingVersion
+          properties:
+            accountId:
+              type: string
+              description: |
+                Identifies the account the include belongs to. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+            assetId:
+              type: string
+              description: |
+                An alternative identifier for the include. Use this value to key the include in the Identity and Access Management API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+            contractId:
+              type: string
+              description: |
+                Identifies the contract the include belongs to. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ctr_` prefix.
+            groupId:
+              type: string
+              description: |
+                Identifies the group to which the include is assigned. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+            includeId:
+              type: string
+              description: |
+                The include's unique identifier. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `inc_` prefix.
+            includeName:
+              type: string
+              description: |
+                A descriptive name for the include.
+            includeType:
+              type: string
+              description: |
+                The type of an include. `MICROSERVICES` specifies includes with a separate access control and activation flow, which allows different teams to work independently on different parts of a single site. In a parent property's rule tree, you add the `MICROSERVICE` includes to rules with mutually exclusive path matches. `COMMON_SETTINGS` specifies includes used across different properties that share a significant number of settings. In a parent property's rule tree, you add the `COMMON_SETTINGS` includes to the default rule or rules without any matches. By updating or activating a single `COMMON_SETTINGS` include, the changes take effect immediately across all sites that use this include. You can use this member for filtering and grouping similar includes together.
+              enum:
+              - COMMON_SETTINGS
+              - MICROSERVICES
+            latestVersion:
+              type: integer
+              description: |
+                Specifies the most recent version of the include.
+              minimum: 1
+            note:
+              type: string
+              description: |
+                Further descriptive commentary.
+            productionVersion:
+              type:
+              - integer
+              - 'null'
+              description: |
+                The most recent version to be activated to the production network, otherwise `null`.
+              nullable: true
+              minimum: 1
+            propertyType:
+              type: string
+              description: |
+                Indicates the type of configuration container, mostly used for the [Bulk Search and Update](ref:bulk-search-and-update) operation.
+              enum:
+              - INCLUDE
+            stagingVersion:
+              type:
+              - integer
+              - 'null'
+              description: |
+                The most recent version to be activated to the test network, otherwise `null`.
+              nullable: true
+              minimum: 1
+$schema: http://json-schema.org/draft-04/schema#

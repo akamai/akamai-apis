@@ -1,0 +1,275 @@
+id: resource:/descriptors/papi/v1/schemas/GetIncludeActivationResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array.
+  
+x-akamai:
+  file-path: schemas/include-activation-get-response.yaml
+additionalProperties: false
+properties:
+  accountId:
+    type: string
+    description: |
+      Identifies the prevailing account under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+    minLength: 1
+  activations:
+    type: object
+    description: |
+      The set of requested activations, available within an `items` array.
+    additionalProperties: false
+    properties:
+      items:
+        type: array
+        description: |
+          Activated include versions on a specific network. Relevant response objects appear within the outer envelope's `activations.items` array.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - includeActivationId
+          - activationType
+          - network
+          - note
+          - notifyEmails
+          - includeId
+          - includeName
+          - status
+          - submitDate
+          - updateDate
+          properties:
+            accountId:
+              type: string
+              description: |
+                Identifies the account the activated include belongs to. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+            activationType:
+              type: string
+              description: |
+                Either `ACTIVATE` or `DEACTIVATE`. The default is `ACTIVATE`. Any new activation automatically deactivates the current activation. Note that if you were to POST a `DEACTIVATE` type on an active include, it would no longer serve any traffic. You'd need to modify your DNS configuration and specify a different way to field the traffic.
+              enum:
+              - ACTIVATE
+              - DEACTIVATE
+            failureCause:
+              type: object
+              description: |
+                If the activation's `status` is `FAILED`, this HTTP problem object describes the reason for the failure.  This only appears when activating with `delayValidations` enabled.
+            fmaActivationState:
+              type: string
+              description: |
+                Indicates fast metadata activation state. A value of `steady` indicates the include is currently active or has been cancelled. Values of `received`, `lived`, and `deployed` represent progressive stages of activation, while `cancelling` happens either after failing a network safety check or in response to a [DELETE operation](ref:delete-include-activation). Note that the `status` member indicates whether the activation is live.
+              readOnly: true
+              enum:
+              - steady
+              - received
+              - lived
+              - deployed
+              - cancelling
+            groupId:
+              type: string
+              description: |
+                Identifies the group under which the include activated. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+            includeActivationId:
+              type: string
+              description: |
+                The activation's unique identifier. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `atv_` prefix.
+            includeId:
+              type: string
+              description: |
+                Identifies include targeted with activation. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `inc_` prefix.
+            includeName:
+              type: string
+              description: |
+                The name of the include targeted with activation.
+            includeVersion:
+              type: integer
+              description: |
+                The include version targeted with activation. Once activated, you can no longer modify that version of the include.
+              minimum: 1
+            network:
+              type: string
+              description: |
+                The network to activate on, either `STAGING` or `PRODUCTION`.
+              enum:
+              - STAGING
+              - PRODUCTION
+            note:
+              type: string
+              description: |
+                Assigns a log message to the activation request.
+            notifyEmails:
+              type: array
+              description: |
+                Email addresses to notify when the activation status changes.
+              minItems: 1
+              items:
+                type: string
+            status:
+              type: string
+              description: |
+                The activation's status. `ACTIVE` if currently serving traffic. `INACTIVE` if another activation has superseded this one. `NEW`, `PENDING`, `ZONE_1`, `ZONE_2`, or `ZONE_3` if not yet active. `ABORTED` if the client followed up with a [DELETE request](ref:delete-include-activation) in time. `FAILED` if the activation causes a range of edge network errors. `PENDING_DEACTIVATION` or `DEACTIVATED` when the `activationType` is `DEACTIVATE` to no longer serve traffic.
+              enum:
+              - ACTIVE
+              - INACTIVE
+              - PENDING
+              - ZONE_1
+              - ZONE_2
+              - ZONE_3
+              - ABORTED
+              - FAILED
+              - DEACTIVATED
+              - PENDING_DEACTIVATION
+              - NEW
+            submitDate:
+              type: string
+              description: |
+                A date stamp marking when the activation initiated.
+              readOnly: true
+            updateDate:
+              type: string
+              description: |
+                A date stamp marking when the `status` last changed.
+              readOnly: true
+  contractId:
+    type: string
+    description: |
+      Identifies the prevailing contract under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ctr_` prefix.
+    minLength: 1
+  groupId:
+    type: string
+    description: |
+      Identifies the prevailing group under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+    minLength: 1
+  validations:
+    type: object
+    description: |
+      The set of include validations against the active parent properties' rule trees that reference the include.
+    additionalProperties: false
+    required:
+    - validationSummary
+    - validationErrorItemList
+    - network
+    properties:
+      network:
+        type: string
+        description: |
+          The network to activate on, either `STAGING` or `PRODUCTION`.
+        enum:
+        - STAGING
+        - PRODUCTION
+      validationErrorItemList:
+        type: object
+        description: |
+          The set of validation results against specific versions of parent properties' rule tree, available within the `items` array.
+        additionalProperties: false
+        required:
+        - items
+        properties:
+          items:
+            type: array
+            description: |
+              Lists parent property versions that reference the requested include, with information on the validation errors and warnings. If the include doesn't have any parent properties, the array is empty.
+            items:
+              type: object
+              additionalProperties: false
+              required:
+              - versionId
+              - propertyName
+              - versionNumber
+              - hasValidationError
+              - hasValidationWarning
+              - validationResultsLink
+              properties:
+                hasValidationError:
+                  type: boolean
+                  description: |
+                    Whether the validation against the rule tree of an active parent property version revealed any blocking problems that would prevent activation. You need to fix these to complete an include activation.
+                  default: true
+                hasValidationWarning:
+                  type: boolean
+                  description: |
+                    Whether the validation against the rule tree of an active parent property version revealed any non-blocking issues.
+                propertyName:
+                  type: string
+                  description: |
+                    A descriptive name for the property.
+                validationResultsLink:
+                  type: string
+                  description: |
+                    Links the details of validation errors and warnings for you to inspect.
+                versionId:
+                  type: integer
+                  description: |
+                    Unique identifier for the property version.
+                  minimum: 1
+                versionNumber:
+                  type: integer
+                  description: |
+                    Property's incremental version number.
+                  minimum: 1
+      validationSummary:
+        type: object
+        description: |
+          An overview of the validation against all parent properties' rule trees. Contains the errors that you need to resolve to complete the include activation.
+        additionalProperties: false
+        properties:
+          completePercent:
+            type: number
+            description: |
+              The progress of the validation completion. If the include doesn't have any parent properties, this completes right away.
+            minimum: 0
+            maximum: 100
+          errorMessage:
+            type: string
+            description: |
+              Provides details on the error, if it occurs.
+          hasClientError:
+            type: boolean
+            description: |
+              Whether the validation revealed any 4XX errors on the user's end.
+          hasSystemError:
+            type: boolean
+            description: |
+              Whether the validation revealed any issues on the Akamai side. When `true`, the validation re-launches automatically.
+          hasValidationError:
+            type: boolean
+            description: |
+              Whether the validation against the rule trees of active parent property versions revealed any blocking problems that would prevent activation. You need to fix these to complete an include activation. If the include doesn't have any parent properties, this defaults to `false`.
+            default: false
+          hasValidationWarning:
+            type: boolean
+            description: |
+              Whether the validation against the rule tree of an active parent property version revealed any non-blocking issues. If the include doesn't have any parent properties, this defaults to `false`.
+          messageState:
+            type: string
+            description: |
+              The validation status, either:
+
+              - `RECEIVED` if the request is received in the provisioning queue,
+              - `VALIDATION_IN_PROGRESS` if the validation has begun for a request,
+              - `CONFLICT` if a 409 status is received from a downstream service,
+              - `CUSTOMER_ABORT` if the user cancelled the request to be processed further,
+              - `VALIDATION_ERROR_ABORT` if any of the validation tasks results in an error,
+              - `HTTP_CLIENT_ERROR` if there's any bad request from the client side,
+              - `HTTP_SYS_ERROR` if there's any system error. This state is eligible for Retry,
+              - `HTTP_SYS_ERROR_EXPIRED` if there's any system error. This state isn't eligible for Retry,
+              - `RETRY_SUBMITTED` if the user has already sent the Retry request,
+              - `SUBMITTED_FOR_ACTIVATION` if the activation request has been successfully submitted,
+              - `SUBMITTED_TO_FMA` if the fast metadata activation request has been successfully submitted,
+              - `SUBMITTED_TO_FMA_IN_PROGRESS` if the fast metadata activation request has been successfully submitted and received an `OK` response,
+              - `VALIDATION_PASSED` if the validation has been successful and returned no validation errors or warnings,
+              - `VALIDATION_PASSED_WITH_WARNINGS` if the validation has been successful but returned some validation warnings.
+            enum:
+            - RECEIVED
+            - VALIDATION_IN_PROGRESS
+            - CONFLICT
+            - CUSTOMER_ABORT
+            - VALIDATION_ERROR_ABORT
+            - HTTP_CLIENT_ERROR
+            - HTTP_SYS_ERROR
+            - HTTP_SYS_ERROR_EXPIRED
+            - RETRY_SUBMITTED
+            - SUBMITTED_FOR_ACTIVATION
+            - SUBMITTED_TO_FMA
+            - SUBMITTED_TO_FMA_IN_PROGRESS
+            - VALIDATION_PASSED
+            - VALIDATION_PASSED_WITH_WARNINGS
+$schema: http://json-schema.org/draft-04/schema#

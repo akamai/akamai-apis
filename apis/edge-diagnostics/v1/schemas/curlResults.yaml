@@ -1,0 +1,82 @@
+type: object
+description: |-
+  Collects results of the `curl` command.
+  
+x-akamai:
+  file-path: schemas/curlResults.yaml
+additionalProperties: false
+minProperties: 1
+required:
+- exitCode
+properties:
+  exitCode:
+    type: integer
+    description: |
+      Curl command exit code. [List of possible curl exit code.](https://curl.se/libcurl/c/libcurl-errors.html) 
+    minimum: 0
+  httpStatusCode:
+    type: integer
+    description: |
+      Returned HTTP response code.
+    minimum: 100
+    maximum: 599
+  httpVersion:
+    type: string
+    description: |
+      HTTP version used for `curl`.
+    minLength: 1
+  reasonPhrase:
+    type: string
+    description: |
+      Reason phrase for the response.
+    minLength: 1
+  responseBody:
+    type: string
+    description: |
+      Entire response body.
+    minLength: 1
+  responseHeaderList:
+    type: array
+    description: |
+      Collects the response headers in the format `header: value`.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  timing:
+    type: object
+    description: |
+      Collects the time related data.
+    additionalProperties: false
+    required:
+    - dnsLookupTime
+    - tcpConnectionTime
+    - sslConnectionTime
+    - timeToFirstByte
+    - totalTime
+    properties:
+      dnsLookupTime:
+        type: number
+        description: |
+          DNS lookup time, in seconds.
+        minimum: 0
+      sslConnectionTime:
+        type: number
+        description: |
+          SSL connection time, in seconds.
+        minimum: 0
+      tcpConnectionTime:
+        type: number
+        description: |
+          TCP connection time, in seconds.
+        minimum: 0
+      timeToFirstByte:
+        type: number
+        description: |
+          Time to first byte, in seconds.
+        minimum: 0
+      totalTime:
+        type: number
+        description: |
+          Total time, in seconds.
+        minimum: 0

@@ -1,0 +1,54 @@
+type: object
+x-akamai:
+  file-path: schemas/deployment.v2.yaml
+additionalProperties: false
+required:
+- certificate
+- networkConfiguration
+- trustChain
+properties:
+  certificate:
+    type: string
+    nullable: true
+  networkConfiguration:
+    type: object
+    additionalProperties: false
+    properties:
+      disallowedTlsVersions:
+        type: array
+        description: |
+          Disallowed TLS protocols.
+        items:
+          type: string
+      mustHaveCiphers:
+        type: string
+      networkType:
+        type: string
+        description: |
+          Type of the network that you want to deploy your certificate in, either `standard-worldwide`, `worldwide-russia`, or `worldwide`.
+        nullable: true
+        enum:
+        - standard-worldwide
+        - worldwide
+        - worldwide-russia
+      preferredCiphers:
+        type: string
+      sni:
+        type: object
+        additionalProperties: false
+        required:
+        - cloneDnsNames
+        nullable: true
+        properties:
+          cloneDnsNames:
+            type: boolean
+          dnsNames:
+            type: array
+            items:
+              type: string
+  signatureAlgorithm:
+    type: string
+    nullable: true
+  trustChain:
+    type: string
+    nullable: true

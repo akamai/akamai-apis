@@ -1,0 +1,50 @@
+type: object
+description: |-
+  Emphasizes edges and details in source images without distorting the colors. Although this effect is often referred to as _sharpening_ an image, it actually creates a blurred, inverted copy of the image known as an unsharp mask. Image & Video Manager combines the unsharp mask with the source image to create an image perceived as clearer.
+  
+x-akamai:
+  file-path: schemas/t-unsharp-mask.yaml
+title: UnsharpMask
+additionalProperties: false
+required:
+- transformation
+properties:
+  gain:
+    description: |
+      Set how much emphasis the filter applies to details. Higher values increase apparent sharpness of details.
+    oneOf:
+    - default: 1
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+    - $ref: variable-inline.yaml
+  sigma:
+    description: |
+      The standard deviation of the Gaussian distribution used in the in unsharp mask, measured in pixels, `1.0` by default. High values emphasize large details and low values emphasize small details.
+    oneOf:
+    - default: 1
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 10
+    - $ref: variable-inline.yaml
+  threshold:
+    description: |
+      Set the minimum change required to include a detail in the filter. Higher values discard more changes.
+    oneOf:
+    - default: 0.05
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 1
+    - $ref: variable-inline.yaml
+  transformation:
+    type: string
+    description: |
+      Identifies the type of transformation, `UnsharpMask` in this case.
+    default: UnsharpMask
+    enum:
+    - UnsharpMask

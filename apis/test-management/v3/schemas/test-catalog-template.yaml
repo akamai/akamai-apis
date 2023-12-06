@@ -1,0 +1,112 @@
+type: object
+description: |-
+  Contains the test catalog template used to create a condition expression for a test case. Condition expressions have a sentence-like structure. The template provides the list of supported condition expressions along with additional information on input needed from you.
+  
+x-akamai:
+  file-path: schemas/test-catalog-template.yaml
+additionalProperties: false
+required:
+- conditionTypes
+properties:
+  conditionTypes:
+    type: array
+    description: |
+      Lists supported condition types and their details.
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - conditionType
+      - conditionExpressions
+      - placeHolders
+      properties:
+        conditionExpressions:
+          type: array
+          description: |
+            Lists supported condition expressions and examples.
+          minItems: 0
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - conditionExpression
+            - examples
+            properties:
+              examples:
+                type: array
+                description: |
+                  Lists examples of condition expressions.
+                minItems: 1
+                items:
+                  type: string
+                  minLength: 1
+              conditionExpression:
+                type: string
+                description: |
+                  Condition expression template.
+                minLength: 1
+        conditionType:
+          type: string
+          description: |
+            Unique name for the condition type. To learn more about it, see the list of [available conditions](https://techdocs.akamai.com/test-ctr/docs/functional-concepts#conditions).
+          minLength: 1
+        label:
+          type: string
+          description: |
+            Label for the condition type.
+          minLength: 1
+        placeHolders:
+          type: array
+          description: |
+            Lists details on supported values for you to provide instead of placeholders in `conditionExpression`.
+          minItems: 0
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - placeHolder
+            - valueInputType
+            - isCustomValueSupported
+            - valueDataType
+            - availableValues
+            properties:
+              availableValues:
+                type: array
+                description: |
+                  Lists predefined values you can use instead of the placeholder.
+                minItems: 0
+                items:
+                  oneOf:
+                  - title: String
+                    type: string
+                  - title: Integer
+                    type: integer
+              isCustomValueSupported:
+                type: boolean
+                description: |
+                  Whether you can provide your own values, or if you're limited to values listed in `availableValues`.
+              placeHolder:
+                type: string
+                description: |
+                  Placeholder name, the same as in `conditionExpression`.
+                minLength: 1
+              valueDataType:
+                type: string
+                description: |
+                  Specifies whether `availableValues` are `STRING` or `INTEGER`. This also specifies the type of data you need to provide instead of placeholders, if `isCustomValueSupported` is `true`.
+                enum:
+                - STRING
+                - INTEGER
+              valueInputType:
+                type: string
+                description: |
+                  Specifies whether `valueDataType` supports `SINGLE_VALUE` or `MULTIPLE_VALUE`.
+                enum:
+                - SINGLE_VALUE
+                - MULTIPLE_VALUE
+              valueSeparator:
+                type: string
+                description: |
+                  Specifies the separator when `valueInputType` is `MULTIPLE_VALUE`.
+                minLength: 1

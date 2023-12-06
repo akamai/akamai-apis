@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-04-schema#",
+  "id": "resource:/descriptors/papi/v0/schemas/CreateNewEdgeHostnameRequestV0.json#",
+  "javaType": "com.akamai.luna.papi.model.EdgeHostnameCreateRequest",
+  "type": "object",
+  "description": "Specifies a set of available hostnames to which a property version may be applied. To POST a new edge hostname, specify a single object with `productId`, `domainPrefix`, and `domainSuffix` members, and optional `ipVersionBehavior` and `secure` members. Relevant response objects appear within the outer [Envelope](#envelope) object's `edgehostnames.items` array.",
+  "required": [
+    "domainPrefix",
+    "domainSuffix",
+    "ipVersionBehavior",
+    "productId"
+  ],
+  "properties": {
+    "productId": {
+      "type": "string"
+    },
+    "domainPrefix": {
+      "type": "string"
+    },
+    "domainSuffix": {
+      "type": "string"
+    },
+    "secure": {
+      "type": "boolean"
+    },
+    "secureNetwork": {
+      "type": "string",
+      "description": "On POST, specifies the type of security for the new edge hostname. With `STANDARD_TLS` specified, specify a `domainSuffix` of `edgesuite.net`. With `SHARED_CERT` specified, specify a `domainSuffix` of `akamaized.net`. With `ENHANCED_TLS` specified, you need to specify a `certEnrollmentId` value along with a `domainSuffix` of `edgekey.net`.",
+      "enum": [
+        "ENHANCED_TLS",
+        "STANDARD_TLS",
+        "SHARED_CERT"
+      ]
+    },
+    "ipVersionBehavior": {
+      "type": "string",
+      "enum": [
+        "IPV4",
+        "IPV6_COMPLIANCE"
+      ]
+    },
+    "slotNumber": {
+      "description": "On POST, sets the slot number for secure ESSL properties.",
+      "type": "integer"
+    },
+    "certEnrollmentId": {
+      "description": "When creating an Enhanced TLS edge hostname, this sets the certificate enrollment ID. Specify this on POST, with `secureNetwork` set to `ENHANCED_TLS`. To obtain a value programmatically, run the Certificate Provisioning System API's [List enrollments](https://developer.akamai.com/api/core_features/certificate_provisioning_system/v2.html#getenrollments) operation. Choose the appropriate enrollment, strip the leading path expression from its `location` member, and use that value as the `certEnrollmentId`.",
+      "type": "integer"
+    },
+    "useCases": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "description": "Optionally when configuring a new edge hostname, this assigns a preset _use case_ that characterizes the type of traffic served, to help optimize deployment over the Akamai edge network.  To gather values to add to this object, run the [List use cases](#getusecases) operation.",
+        "required": [
+          "useCase",
+          "option",
+          "type"
+        ],
+        "properties": {
+          "useCase": {
+            "description": "Uniquely identifies each mapping use case scenario. Use this to specify the same member name available in the [UseCase](#84c668bb) response object.",
+            "type": "string"
+          },
+          "option": {
+            "description": "Specifies one of the available `options` available in the [UseCase](#84c668bb) response object.",
+            "type": "string"
+          },
+          "type": {
+            "description": "Identifies the type of network over which traffic deploys. The only value currently available is `GLOBAL`. Use this to specify the same member name available in the [UseCase](#84c668bb) response object.",
+            "type": "string",
+            "enum": [
+              "GLOBAL"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

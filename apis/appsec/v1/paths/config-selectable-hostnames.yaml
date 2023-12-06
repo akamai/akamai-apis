@@ -1,0 +1,36 @@
+x-akamai:
+  file-path: paths/config-selectable-hostnames.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/selectable-hostnames
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+get:
+  operationId: get-selectable-hostnames
+  summary: List selectable hostnames
+  tags:
+  - Hostnames
+  description: |
+    List the hostnames that a given configuration version has the ability to protect. Hostnames may show as error hosts when they aren't currently available. For example, when a contract expires. _Products:_ All.
+  responses:
+    200:
+      description: |
+        Successful response.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/host-info-in-configuration-200.json
+          schema:
+            $ref: ../schemas/host-info-in-config.yaml
+    400:
+      $ref: ../errors/400.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to the resource.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/403.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    404:
+      $ref: ../errors/404.yaml

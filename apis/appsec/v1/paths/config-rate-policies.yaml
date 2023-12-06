@@ -1,0 +1,86 @@
+x-akamai:
+  file-path: paths/config-rate-policies.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/rate-policies
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+post:
+  operationId: post-rate-policies
+  summary: Create a rate policy
+  tags:
+  - 'Shared resources: Rate policies'
+  description: |
+    Create a new rate policy for a specific configuration version. Now you can match on defined or undefined resources. If you're setting a match for either resource type, both `definedResources` and `undefinedResources` must be present in the request object or the request is considered incomplete. When `true`, match on _any_ defined resources without passing a `resourceId`. When `false`, you'll need to pass a `resourceId`. If you pass `definedResources` and `undefinedResources` with empty values, they default to `false`. You can omit both resources and use this operation without these new match criteria. Contact your account team if you'd like to match on `definedResources` or `undefinedResources`. _Products:_ All.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/rate-policy-post.json
+        schema:
+          $ref: ../schemas/rate-policy.yaml
+  responses:
+    201:
+      description: |
+        Successfully created a  rate policy.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/rate-policy-200.json
+          schema:
+            $ref: ../schemas/rate-policy.yaml
+    400:
+      $ref: ../errors/400.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to rate policies in this security configuration.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/403.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    404:
+      description: |
+        [Not found](ref:404). Security configuration version wasn't found.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/404.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+get:
+  operationId: get-rate-policies
+  summary: List rate policies
+  tags:
+  - 'Shared resources: Rate policies'
+  description: |
+    Returns rate policies for a specific security configuration version. _Products:_ All.
+  responses:
+    200:
+      description: |
+        Successfully returned rate policies.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/rate-policies-200.json
+          schema:
+            $ref: ../schemas/rate-policies.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to rate policy in this security configuration.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/403.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    404:
+      description: |
+        [Not found](ref:404). Security configuration version wasn't found.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/404.json
+          schema:
+            $ref: ../schemas/problem-details.yaml

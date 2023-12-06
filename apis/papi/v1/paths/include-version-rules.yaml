@@ -1,0 +1,258 @@
+x-akamai:
+  file-path: paths/include-version-rules.yaml
+  path-for-file: /includes/{includeId}/versions/{includeVersion}/rules
+parameters:
+- $ref: ../parameters/includeId-path.yaml
+- $ref: ../parameters/includeVersion-path.yaml
+get:
+  operationId: get-include-version-rules
+  summary: Get an include's rule tree
+  tags:
+  - Include version rules
+  description: |
+    Gets the entire rule tree for an include version. See the [Rule Trees](ref:rule-trees) section for details on the response object's structure. Also use this operation to update from one rule format to another more recent version, incrementing the assigned set of features. See [Update rules to a newer set of features](ref:rule-format-schemas#update-rules-to-a-newer-set-of-features).
+  x-akamai:
+    status: LA
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  - $ref: ../parameters/validateRules-query.yaml
+  - $ref: ../parameters/validateMode-query.yaml
+  responses:
+    200:
+      description: |
+        The response shows the rule tree for the requested include version.
+      headers:
+        ETag:
+          $ref: ../headers/Etag.yaml
+        X-Limit-Clientip-Per-Include-Limit:
+          $ref: ../headers/X-Limit-Clientip-Per-Include-Limit.yaml
+        X-Limit-Clientip-Per-Include-Remaining:
+          $ref: ../headers/X-Limit-Clientip-Per-Include-Remaining.yaml
+        X-Limit-Elements-Per-Include-Limit:
+          $ref: ../headers/X-Limit-Elements-Per-Include-Limit.yaml
+        X-Limit-Elements-Per-Include-Remaining:
+          $ref: ../headers/X-Limit-Elements-Per-Include-Remaining.yaml
+        X-Limit-Max-Clientip-Per-Match-Limit:
+          $ref: ../headers/X-Limit-Max-Clientip-Per-Match-Limit.yaml
+        X-Limit-Max-Clientip-Per-Match-Remaining:
+          $ref: ../headers/X-Limit-Max-Clientip-Per-Match-Remaining.yaml
+        X-Limit-Max-Nested-Rules-Per-Include-Limit:
+          $ref: ../headers/X-Limit-Max-Nested-Rules-Per-Include-Limit.yaml
+        X-Limit-Max-Nested-Rules-Per-Include-Remaining:
+          $ref: ../headers/X-Limit-Max-Nested-Rules-Per-Include-Remaining.yaml
+      content:
+        '*/*':
+          example:
+            $ref: ../examples/include-rules-get-response.json
+          schema:
+            $ref: ../schemas/include-version-rules-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+put:
+  operationId: put-include-version-rules
+  summary: Update an include's rule tree
+  tags:
+  - Include version rules
+  description: |
+    To write a rule tree to an include version, make a PUT request to the same resource as the GET request that reads it, passing in the rule object in the body of the request. See the [Rule Trees](ref:rule-trees) section for details on the rule tree's structure. Use this operation also to [freeze a set of rules](ref:rule-format-schemas#freeze-a-feature-set-for-a-rule-tree) to a rule format version to ensure no change in a deployed activation's behavior. Set the `validateRules` query parameter to `false` to bypass a set of validation tests that may significantly slow this operation's execution time. See [Validation best practices](ref:validation-best-practices) for guidance on when to defer validation. See [Rule tree errors and warnings](ref:rule-tree-errors-and-warnings) and [Validation errors](ref:validation-errors) for information on how validation data is embedded within the response object.
+  x-akamai:
+    status: LA
+  parameters:
+  - $ref: ../parameters/If-Match-header.yaml
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  - $ref: ../parameters/validateRules-query.yaml
+  - $ref: ../parameters/validateMode-query.yaml
+  - $ref: ../parameters/dryRun-query.yaml
+  requestBody:
+    required: true
+    content:
+      '*/*':
+        example:
+          $ref: ../examples/rules-set-request.json
+        schema:
+          $ref: ../schemas/property-version-rules-set-request.yaml
+      application/json:
+        example:
+          $ref: ../examples/rules-set-request.json
+        schema:
+          $ref: ../schemas/property-version-rules-set-request.yaml
+  responses:
+    200:
+      description: |
+        The response shows updated rule tree for the specified include version.
+      headers:
+        ETag:
+          $ref: ../headers/Etag.yaml
+        X-Limit-Clientip-Per-Property-Limit:
+          $ref: ../headers/X-Limit-Clientip-Per-Property-Limit.yaml
+        X-Limit-Clientip-Per-Property-Remaining:
+          $ref: ../headers/X-Limit-Clientip-Per-Property-Remaining.yaml
+        X-Limit-Elements-Per-Property-Limit:
+          $ref: ../headers/X-Limit-Elements-Per-Property-Limit.yaml
+        X-Limit-Elements-Per-Property-Remaining:
+          $ref: ../headers/X-Limit-Elements-Per-Property-Remaining.yaml
+        X-Limit-Max-Clientip-Per-Match-Limit:
+          $ref: ../headers/X-Limit-Max-Clientip-Per-Match-Limit.yaml
+        X-Limit-Max-Clientip-Per-Match-Remaining:
+          $ref: ../headers/X-Limit-Max-Clientip-Per-Match-Remaining.yaml
+        X-Limit-Max-Nested-Rules-Limit:
+          $ref: ../headers/X-Limit-Max-Nested-Rules-Limit.yaml
+        X-Limit-Max-Nested-Rules-Remaining:
+          $ref: ../headers/X-Limit-Max-Nested-Rules-Remaining.yaml
+      content:
+        '*/*':
+          example:
+            $ref: ../examples/include-rules-get-response.json
+          schema:
+            $ref: ../schemas/include-version-rules-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    412:
+      $ref: ../errors/412.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+patch:
+  operationId: patch-include-version-rules
+  summary: Patch an include's rule tree
+  tags:
+  - Include version rules
+  description: |
+    Selectively modify a rule tree using [JSON patch](http://jsonpatch.com) syntax. Set the `validateRules` query parameter to `false` to bypass a set of validation tests that may significantly slow this operation's execution time. See [Validation best practices](ref:validation-best-practices) for guidance on when to defer validation. See [Rule tree errors and warnings](ref:rule-tree-errors-and-warnings) and [Validation errors](ref:validation-errors) for information on how validation data is embedded within the response object.
+  x-akamai:
+    status: LA
+  parameters:
+  - $ref: ../parameters/If-Match-header.yaml
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  - $ref: ../parameters/validateRules-query.yaml
+  - $ref: ../parameters/validateMode-query.yaml
+  - $ref: ../parameters/dryRun-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/json-patch+json:
+        example:
+          $ref: ../examples/rules-patch-request.json
+        schema:
+          $ref: ../schemas/property-version-rules-patch-request.yaml
+  responses:
+    200:
+      description: |
+        The response shows modified rule tree for the specified include version.
+      headers:
+        ETag:
+          $ref: ../headers/Etag.yaml
+        X-Limit-Clientip-Per-Property-Limit:
+          $ref: ../headers/X-Limit-Clientip-Per-Property-Limit.yaml
+        X-Limit-Clientip-Per-Property-Remaining:
+          $ref: ../headers/X-Limit-Clientip-Per-Property-Remaining.yaml
+        X-Limit-Elements-Per-Property-Limit:
+          $ref: ../headers/X-Limit-Elements-Per-Property-Limit.yaml
+        X-Limit-Elements-Per-Property-Remaining:
+          $ref: ../headers/X-Limit-Elements-Per-Property-Remaining.yaml
+        X-Limit-Max-Clientip-Per-Match-Limit:
+          $ref: ../headers/X-Limit-Max-Clientip-Per-Match-Limit.yaml
+        X-Limit-Max-Clientip-Per-Match-Remaining:
+          $ref: ../headers/X-Limit-Max-Clientip-Per-Match-Remaining.yaml
+        X-Limit-Max-Nested-Rules-Limit:
+          $ref: ../headers/X-Limit-Max-Nested-Rules-Limit.yaml
+        X-Limit-Max-Nested-Rules-Remaining:
+          $ref: ../headers/X-Limit-Max-Nested-Rules-Remaining.yaml
+      content:
+        '*/*':
+          example:
+            $ref: ../examples/include-rules-get-response.json
+          schema:
+            $ref: ../schemas/include-version-rules-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    412:
+      $ref: ../errors/412.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+head:
+  operationId: head-include-version-rules
+  summary: Get a digest for an include's rule tree
+  tags:
+  - Include version rules
+  description: |
+    Gets the rule tree's ETag without the rule tree object. Ordinarily when you [get a rule tree](ref:get-include-version-rules), the response includes a large rule tree object. As discussed in [Concurrency control](ref:concurrency-control), it includes a top-level `etag` data digest to use when [writing back the data](ref:put-include-version-rules). Use this operation if you simply want to get the `ETag` as a header without the data.
+  x-akamai:
+    status: LA
+  parameters:
+  - $ref: ../parameters/Accept-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  responses:
+    204:
+      description: |
+        The response provides the `ETag` header representing the current state of the rule tree data. See Concurrency control for guidance.
+      headers:
+        ETag:
+          $ref: ../headers/Etag.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: includeVersionRules
+  group: Include version rules

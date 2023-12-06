@@ -1,0 +1,324 @@
+type: object
+x-akamai:
+  file-path: schemas/deployments.v7.yaml
+additionalProperties: false
+required:
+- production
+- staging
+properties:
+  production:
+    type: object
+    additionalProperties: false
+    required:
+    - multiStackedCertificates
+    - networkConfiguration
+    - primaryCertificate
+    properties:
+      multiStackedCertificates:
+        type: array
+        description: |
+          Dual-stacked certificates include an ECDSA certificate in addition to an RSA certificate.
+        items:
+          type: object
+          description: |
+            Deployment may include multiple dual-stacked certificates.
+          additionalProperties: false
+          required:
+          - certificate
+          - trustChain
+          properties:
+            certificate:
+              type: string
+              description: |
+                The certificate text.
+              nullable: true
+            expiry:
+              type: string
+              description: |
+                The expiration date for the certificate.
+            keyAlgorithm:
+              type: string
+              description: |
+                The key algorithm of the certificate.
+              enum:
+              - ECDSA
+              - RSA
+            signatureAlgorithm:
+              type: string
+              description: |
+                The SHA (Secure Hash Algorithm) function.
+              nullable: true
+              enum:
+              - SHA-1
+              - SHA-256
+            trustChain:
+              type: string
+              description: |
+                The trust chain for the certificate.
+              nullable: true
+      networkConfiguration:
+        type: object
+        additionalProperties: false
+        required:
+        - quicEnabled
+        - sniOnly
+        properties:
+          disallowedTlsVersions:
+            type: array
+            description: |
+              Disallowed TLS protocols.
+            items:
+              type: string
+          dnsNames:
+            type: array
+            description: |
+              Names served by SNI-only enabled enrollments.
+            items:
+              type: string
+          geography:
+            type: string
+            description: |
+              The type of the network on which CPS deploys your certificate. `core` is worldwide (includes China and Russia). `china+core` is worldwide and China. `russia+core` is worldwide and Russia.
+            enum:
+            - core
+            - china+core
+            - russia+core
+          mustHaveCiphers:
+            type: string
+            description: |
+              Ciphers that you definitely want to include for your enrollment while deploying it on the network.
+          ocspStapling:
+            type: string
+            description: |
+              OCSP stapling setting for the deployment.
+            enum:
+            - on
+            - off
+            - not-set
+          preferredCiphers:
+            type: string
+            description: |
+              Ciphers that you preferably want to include for your enrollment while deploying it on the network.
+          quicEnabled:
+            type: boolean
+            description: |
+              QUIC transport layer network protocol.
+          secureNetwork:
+            type: string
+            description: |
+              The type of deployment network. `standard-tls` means Akamai's standard secure network, while `enhanced-tls` means Akamai's more secure network with PCI compliance capability.
+            enum:
+            - enhanced-tls
+            - standard-tls
+          sniOnly:
+            type: boolean
+            description: |
+              Server Name Indication (SNI) is an extension of the Transport Layer Security (TLS) networking protocol. It allows a server to present multiple certificates on the same IP address. All modern web browsers support the SNI extension. If you have the same SAN on two or more certificates with the SNI-only option set, Akamai may serve traffic using any certificate which matches the requested SNI hostname. You should avoid multiple certificates with overlapping SAN names when using SNI-only.
+      ocspStapled:
+        type: boolean
+        description: |
+          OCSP Stapling improves performance by including a valid OCSP response in every TLS handshake. We recommend all customers enable this feature.
+      ocspUris:
+        type: array
+        description: |
+          URI used for OCSP stapling validation.
+        nullable: true
+        items:
+          type: string
+      primaryCertificate:
+        type: object
+        description: |
+          Primary certificate of the enrollment.
+        additionalProperties: false
+        required:
+        - certificate
+        - trustChain
+        nullable: true
+        properties:
+          certificate:
+            type: string
+            description: |
+              The certificate text.
+            nullable: true
+          expiry:
+            type: string
+            description: |
+              The expiration date for the certificate.
+          keyAlgorithm:
+            type: string
+            description: |
+              The key algorithm of the certificate.
+            enum:
+            - ECDSA
+            - RSA
+          signatureAlgorithm:
+            type: string
+            description: |
+              The SHA (Secure Hash Algorithm) function.
+            nullable: true
+            enum:
+            - SHA-1
+            - SHA-256
+          trustChain:
+            type: string
+            description: |
+              The trust chain for the certificate.
+            nullable: true
+  staging:
+    type: object
+    additionalProperties: false
+    required:
+    - multiStackedCertificates
+    - networkConfiguration
+    - primaryCertificate
+    properties:
+      multiStackedCertificates:
+        type: array
+        description: |
+          Dual-stacked certificates today include an ECDSA certificate in addition to an RSA certificate.
+        items:
+          type: object
+          description: |
+            Deployment may include multiple dual-stacked certificates.
+          additionalProperties: false
+          required:
+          - certificate
+          - trustChain
+          properties:
+            certificate:
+              type: string
+              description: |
+                The certificate text.
+              nullable: true
+            expiry:
+              type: string
+              description: |
+                The expiration date for the certificate.
+            keyAlgorithm:
+              type: string
+              description: |
+                The key algorithm of the certificate.
+              enum:
+              - ECDSA
+              - RSA
+            signatureAlgorithm:
+              type: string
+              description: |
+                The SHA (Secure Hash Algorithm) function.
+              nullable: true
+              enum:
+              - SHA-1
+              - SHA-256
+            trustChain:
+              type: string
+              description: |
+                The trust chain for the certificate.
+              nullable: true
+      networkConfiguration:
+        type: object
+        additionalProperties: false
+        required:
+        - quicEnabled
+        - sniOnly
+        properties:
+          disallowedTlsVersions:
+            type: array
+            description: |
+              Disallowed TLS protocols.
+            items:
+              type: string
+          dnsNames:
+            type: array
+            description: |
+              Names served by SNI-only enabled enrollments.
+            items:
+              type: string
+          geography:
+            type: string
+            description: |
+              The type of network on which CPS deploys your certificate. `core` is worldwide (includes China and Russia). `china+core` is worldwide and China. `russia+core` is worldwide and Russia.
+            enum:
+            - core
+            - china+core
+            - russia+core
+          mustHaveCiphers:
+            type: string
+            description: |
+              Ciphers that you definitely want to include for your enrollment while deploying it on the network.
+          ocspStapling:
+            type: string
+            description: |
+              OCSP stapling setting for the deployment.
+            enum:
+            - on
+            - off
+            - not-set
+          preferredCiphers:
+            type: string
+            description: |
+              Ciphers that you preferably want to include for your enrollment while deploying it on the network.
+          quicEnabled:
+            type: boolean
+            description: |
+              QUIC transport layer network protocol.
+          secureNetwork:
+            type: string
+            description: |
+              The type of deployment network. `standard-tls` means Akamai's standard secure network, while `enhanced-tls` means Akamai's more secure network with PCI compliance capability.
+            enum:
+            - enhanced-tls
+            - standard-tls
+          sniOnly:
+            type: boolean
+            description: |
+              Server Name Indication (SNI) is an extension of the Transport Layer Security (TLS) networking protocol. It allows a server to present multiple certificates on the same IP address. All modern web browsers support the SNI extension. If you have the same SAN on two or more certificates with the SNI-only option set, Akamai may serve traffic using any certificate which matches the requested SNI hostname. You should avoid multiple certificates with overlapping SAN names when using SNI-only.
+      ocspStapled:
+        type: boolean
+        description: |
+          OCSP Stapling improves performance by including a valid OCSP response in every TLS handshake. We recommend all customers enable this feature.
+      ocspUris:
+        type: array
+        description: |
+          URI used for OCSP stapling validation.
+        nullable: true
+        items:
+          type: string
+      primaryCertificate:
+        type: object
+        description: |
+          The primary certificate of the enrollment.
+        additionalProperties: false
+        required:
+        - certificate
+        - trustChain
+        nullable: true
+        properties:
+          certificate:
+            type: string
+            description: |
+              The certificate text.
+            nullable: true
+          expiry:
+            type: string
+            description: |
+              The expiration date for the certificate.
+          keyAlgorithm:
+            type: string
+            description: |
+              The key algorithm of the certificate.
+            enum:
+            - ECDSA
+            - RSA
+          signatureAlgorithm:
+            type: string
+            description: |
+              The SHA (Secure Hash Algorithm) function.
+            nullable: true
+            enum:
+            - SHA-1
+            - SHA-256
+          trustChain:
+            type: string
+            description: |
+              The trust chain for the certificate.
+            nullable: true

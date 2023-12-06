@@ -1,0 +1,194 @@
+type: object
+description: |-
+  If you use domain validation, the CA that issued the certificate validates that you have control of the domain. CPS supports DV certificates issued by Let's Encrypt, an automated, and open CA, run for public benefit. Domain validation history allows you to view the history and errors associated with your Akamai managed DV certificates. These certificates expire in 90 days.
+  
+x-akamai:
+  file-path: schemas/dv-history.v1.yaml
+additionalProperties: false
+required:
+- results
+properties:
+  results:
+    type: array
+    description: |
+      Domain Validation (DV) challenges are used by Let's Encrypt to verify domain control.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - domain
+      - domainHistory
+      properties:
+        domain:
+          type: string
+          description: |
+            The domain being validated.
+        domainHistory:
+          type: array
+          description: |
+            A history record for a single domain.
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - challenges
+            - validationRecords
+            properties:
+              challenges:
+                type: array
+                description: |
+                  Challenges used for validation.
+                items:
+                  type: object
+                  additionalProperties: false
+                  required:
+                  - validationRecords
+                  properties:
+                    type:
+                      type: string
+                      description: |
+                        Challenge type. Current types include `http-01` and `dns-01`.
+                    error:
+                      type: string
+                      description: |
+                        Validation status for this challenge.
+                      nullable: true
+                    fullPath:
+                      type: string
+                      description: |
+                        Path where Let's Encrypt respects and expects to find `token` as content.
+                    redirectFullPath:
+                      type: string
+                      description: |
+                        The URL where Akamai publishes `responseBody` for Let's Encrypt to validate `http-01` challenges. The client can configure a redirect at `fullPath` to redirect requests to this `redirectFullPath` URL, keeping in mind that the token may change over time.
+                    responseBody:
+                      type: string
+                      description: |
+                        The data Let's Encrypt expects to find served at `fullPath` URL.
+                    status:
+                      type: string
+                      description: |
+                        The domain validation status. Status include `valid` and `pending`.
+                    token:
+                      type: string
+                      description: |
+                        The validation token issued by Let's Encrypt.
+                    validationRecords:
+                      type: array
+                      description: |
+                        The records that you send to Let's Encrypt to validate your domain.
+                      items:
+                        type: object
+                        additionalProperties: false
+                        properties:
+                          authorities:
+                            type: array
+                            description: |
+                              Validation authorities.
+                            items:
+                              type: string
+                          hostname:
+                            type: string
+                            description: |
+                              The name being validated.
+                          port:
+                            type: string
+                            description: |
+                              Port used for validation.
+                          resolvedIp:
+                            type: array
+                            description: |
+                              IPs resolved for name being validated.
+                            items:
+                              type: string
+                          triedIp:
+                            type: string
+                            description: |
+                              IP from `resolvedIp` tried for this validation.
+                          url:
+                            type: string
+                            description: |
+                              URL attempted validated.
+                          usedIp:
+                            type: string
+                            description: |
+                              IP from `resolvedIp` used for this validation.
+              domain:
+                type: string
+                description: |
+                  Domain which is being validated.
+              error:
+                type: string
+                description: |
+                  Current validation status for domains not yet validated.
+                nullable: true
+              expires:
+                type: string
+                description: |
+                  Timestamp when this token or validation will expire. Sample 2017-12-05T18:57:07z.
+              fullPath:
+                type: string
+                description: |
+                  The URL that Let's Encrypt returns for the `token`.
+              redirectFullPath:
+                type: string
+                description: |
+                  The URL that Let's Encrypt returns. This is the path to the server to which you want to redirect and find the token.
+              requestTimestamp:
+                type: string
+                description: |
+                  The timestamp when the domain was successfully requested. Sample 2014-08-12T18:57:07z.
+              responseBody:
+                type: string
+                description: |
+                  The data Let's Encrypt expects to find served at `fullPath` URL.
+              status:
+                type: string
+                description: |
+                  The domain validation status.
+              token:
+                type: string
+                description: |
+                  The validation token issued by Let's Encrypt.
+              validatedTimestamp:
+                type: string
+                description: |
+                  The timestamp when the domain was successfully validated. Sample 2014-08-12T18:57:07z.
+              validationRecords:
+                type: array
+                description: |
+                  Validation attempts and status.
+                items:
+                  type: object
+                  description: |
+                    Validation attempt.
+                  additionalProperties: false
+                  properties:
+                    hostname:
+                      type: string
+                      description: |
+                        The records that Let's Encrypt returns to you to validate your domain.
+                    port:
+                      type: string
+                      description: |
+                        Port used for validation.
+                    resolvedIp:
+                      type: array
+                      description: |
+                        IPs resolved for name being validated.
+                      items:
+                        type: string
+                        description: |
+                          IP address.
+                    url:
+                      type: string
+                      description: |
+                        URL attempted validated.
+                    usedIp:
+                      type: string
+                      description: |
+                        IP from `resolvedIp` used for this validation.
+              validationStatus:
+                type: string
+                description: |
+                  Status of the domain validation process.

@@ -1,0 +1,230 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Events
+  version: '3.0'
+servers:
+- url: https://{hostname}/events/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: events.yaml
+paths:
+  /events:
+    post:
+      operationId: post-events
+      summary: Create an event
+      tags:
+      - Events
+      description: |
+        Creates an event with the specified parameters.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/event-post.json
+            schema:
+              $ref: schemas/event-post.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/event-post-200.json
+              schema:
+                $ref: schemas/event-post-200.yaml
+        400:
+          description: |
+            Invalid request. Details may be available in response body.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/constraint-violation-400.json
+              schema:
+                $ref: schemas/problem.yaml
+        403:
+          description: |
+            Insufficient permissions to access event or associated objects.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/forbidden-universal-live-stream-403.json
+              schema:
+                $ref: schemas/problem.yaml
+        409:
+          description: |
+            An event with same name, start and end already exists.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/duplicate-409.json
+              schema:
+                $ref: schemas/problem.yaml
+    get:
+      operationId: get-events
+      summary: List events
+      tags:
+      - Events
+      description: |
+        Returns a list of events for the current account and contract type. This call supports paging and sorting of the result data.
+      parameters:
+      - $ref: parameters/minStart-query.yaml
+      - $ref: parameters/maxStart-query.yaml
+      - $ref: parameters/minEnd-query.yaml
+      - $ref: parameters/maxEnd-query.yaml
+      - $ref: parameters/tag-query.yaml
+      - $ref: parameters/customerEventId-query.yaml
+      - $ref: parameters/page-query.yaml
+      - $ref: parameters/pageSize-query.yaml
+      - $ref: parameters/sort-query.yaml
+      responses:
+        200:
+          description: |
+            List events.
+          content:
+            application/json:
+              example:
+                $ref: examples/event-page-200.json
+              schema:
+                $ref: schemas/event-page-200.yaml
+        400:
+          description: |
+            Invalid request. Details may be available in response body.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/bad-request-400.json
+              schema:
+                $ref: schemas/problem.yaml
+  /events/{eventId}:
+    parameters:
+    - $ref: parameters/eventId-path.yaml
+    get:
+      operationId: get-event
+      summary: Get an event
+      tags:
+      - Events
+      description: |
+        Returns details of the specified event.
+      responses:
+        200:
+          description: |
+            Get an event.
+          content:
+            application/json:
+              example:
+                $ref: examples/event-200.json
+              schema:
+                $ref: schemas/event-200.yaml
+        403:
+          description: |
+            Insufficient permissions to access event or associated objects.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/forbidden-universal-live-stream-403.json
+              schema:
+                $ref: schemas/problem.yaml
+        404:
+          description: |
+            Requested event was not found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/not-found-404.json
+              schema:
+                $ref: schemas/problem.yaml
+    put:
+      operationId: put-event
+      summary: Update an event
+      tags:
+      - Events
+      description: |
+        Updates the specified event.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/event-put.json
+            schema:
+              $ref: schemas/event-put.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/event-200.json
+              schema:
+                $ref: schemas/event-200.yaml
+        400:
+          description: |
+            Invalid request. Details may be available in response body.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/constraint-violation-400.json
+              schema:
+                $ref: schemas/problem.yaml
+        403:
+          description: |
+            Insufficient permissions to access event or associated objects.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/forbidden-event-403.json
+              schema:
+                $ref: schemas/problem.yaml
+        404:
+          description: |
+            Requested event was not found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/not-found-404.json
+              schema:
+                $ref: schemas/problem.yaml
+        409:
+          description: |
+            Event was modified after you retrieved it. Please refetch the event, reconcile possible differences and resubmit the request.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/concurrent-modification-409.json
+              schema:
+                $ref: schemas/problem.yaml
+    delete:
+      operationId: delete-event
+      summary: Remove an event
+      tags:
+      - Events
+      description: |
+        Deletes the specified event.
+      responses:
+        204:
+          description: |
+            Event was removed successfully.
+        403:
+          description: |
+            Insufficient permissions to access event or associated objects.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/forbidden-event-403.json
+              schema:
+                $ref: schemas/problem.yaml
+        404:
+          description: |
+            Event wasn't found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/not-found-404.json
+              schema:
+                $ref: schemas/problem.yaml

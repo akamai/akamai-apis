@@ -1,0 +1,75 @@
+openapi: 3.0.0
+info:
+  title: stat
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: http://{apiKey}-nsu.akamaihd.net
+x-akamai:
+  file-path: stat.yaml
+paths:
+  /{cpCode}/{path}/{filename}:
+    parameters:
+    - $ref: parameters/X-Akamai-ACS-Action-stat.yaml
+    - $ref: parameters/X-Akamai-ACS-Auth-Data.yaml
+    - $ref: parameters/X-Akamai-ACS-Auth-Sign.yaml
+    - $ref: parameters/Host.yaml
+    - $ref: parameters/cpCode.yaml
+    - $ref: parameters/path.yaml
+    - $ref: parameters/filename.yaml
+    get:
+      operationId: get-stat
+      summary: stat action
+      tags:
+      - API actions
+      description: |
+        [TBD](https://techdocs.akamai.com/clone-akamai-test-project/reference/post-symlink) stat.
+      responses:
+        200:
+          description: |
+            Response data indicates a successful action.
+          content:
+            application/xml:
+              examples:
+                base64:
+                  summary: Example of name_base64
+                  description: |
+                    Result of action=stat&encoding=utf-8 on an object whose name is not valid UTF-8. The requested object path was `/1234/example/notUTF-8%C0%C0` (which is invalid UTF-8), which gets Base64 encoded as `bm90VVRGLTjAwA==` in the response.
+                  value:
+                    $ref: examples/stat-base64-200.xml
+                both:
+                  summary: Use of slash=both
+                  description: |
+                    Result of action=stat&slash=both on a file and explicit directory object with same name.
+                  value:
+                    $ref: examples/stat-both-200.xml
+                dir:
+                  summary: Directory object
+                  description: |
+                    Result of action=stat on an explicit directory object.
+                  value:
+                    $ref: examples/stat-dir-200.xml
+                file:
+                  summary: File object
+                  description: |
+                    Result of action=stat on a file object.
+                  value:
+                    $ref: examples/stat-file-200.xml
+                symlink:
+                  summary: Symlink object
+                  description: |
+                    Result of action=stat on a symlink object.
+                  value:
+                    $ref: examples/stat-symlink-200.xml
+              schema:
+                $ref: schemas/stat-200.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        500:
+          $ref: errors/500.yaml

@@ -1,0 +1,94 @@
+x-akamai:
+  file-path: paths/include-activation.yaml
+  path-for-file: /includes/{includeId}/activations/{activationId}
+parameters:
+- $ref: ../parameters/activationId-path.yaml
+- $ref: ../parameters/includeId-path.yaml
+get:
+  operationId: get-include-activation
+  summary: Get an include activation
+  tags:
+  - Include activations
+  description: |
+    Gets details about an activation. The response also shows the results of a validation against the rule trees of active parent properties that reference the include. While you can ignore any warnings that indicate non-blocking, logical inconsistencies, you need to resolve all errors to activate an include. You typically get a single activation from an `activationLink` when [launching a new activation](ref:post-include-activation), and you follow up to poll its `status`. For activations whose `status` is `PENDING`, a `Retry-After` header provides an estimate for when it's likely to go live.
+  x-akamai:
+    status: LA
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  responses:
+    200:
+      description: |
+        The response shows details for the include validation and activation.
+      headers:
+        Retry-After:
+          $ref: ../headers/Retry-After.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/include-activation-get-response.json
+          schema:
+            $ref: ../schemas/include-activation-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+delete:
+  operationId: delete-include-activation
+  summary: Cancel an include's pending activation
+  tags:
+  - Include activations
+  description: |
+    If you detect a problem with an include version while its activation is still `PENDING`, use this operation to cancel it. Make a DELETE request on the `activationLink` you get from the [Activate an include](ref:post-include-activation) operation's response. Once you DELETE the activation, it no longer appears in the [list of activations](ref:get-include-activations), but you can still [access it individually](ref:get-include-activation).
+  x-akamai:
+    status: LA
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  responses:
+    200:
+      description: |
+        The response shows details for the cancelled include activation.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/include-activation-delete-response.json
+          schema:
+            $ref: ../schemas/include-activation-delete-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    409:
+      $ref: ../errors/409.yaml
+    422:
+      $ref: ../errors/422.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: includeActivation
+  group: Include activations

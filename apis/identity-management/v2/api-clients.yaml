@@ -1,0 +1,367 @@
+openapi: 3.0.0
+info:
+  title: Credentials
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/identity-management/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: api-clients.yaml
+paths:
+  /api-clients/self:
+    get:
+      operationId: get-api-clients-self
+      summary: Get your client
+      tags:
+      - Self
+      description: |
+        Returns details about your API client.
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/api-client-200.json
+              schema:
+                $ref: schemas/api-client.yaml
+  /api-clients/self/account-switch-keys:
+    get:
+      operationId: get-self-account-switch-keys
+      summary: List your account switch keys
+      tags:
+      - Self
+      description: |
+        The response object contains the `accountSwitchKeys` and account names you can access based on the permissions of your API client. Once you have the `accountSwitchKeys`, [you can make an API call to another account](https://www.learn.akamai.com/en-us/learn_akamai/getting_started_with_akamai_developers/developer_tools/accountSwitch.html#makeapicalls).
+      parameters:
+      - description: Optionally filter results by `accountId` or `accountName`. Enter
+          at least three characters in the string to filter the results.
+        name: search
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: schemas/self-account-switch-keys.yaml
+  /api-clients/self/credentials:
+    post:
+      operationId: post-self-credentials
+      summary: Create your credential
+      tags:
+      - Self
+      description: |
+        Creates a new credential for your API client. Only you may create credentials for this client. Credentials are in `active` status at creation. They expire two years from their creation date. However, when the API client's permissions are based on Control Center permissions, credentials expire differently and follow the same rotation schedule listed for user passwords on those accounts. Run the [Update a credential](ref:put-client-credential) operation to change the expiration date, description, or status. Save the values from the response, such as the `credentialID` for future use. This is the only time you'll see the client secret. Save the credential at this time to avoid the need to create a new one.
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/post-credentials-200.json
+              schema:
+                $ref: schemas/credential.yaml
+    get:
+      operationId: get-self-credentials
+      summary: List your credentials
+      tags:
+      - Self
+      description: |
+        Returns a list of your API client's credentials.
+      parameters:
+      - description: Optionally enable `actions` to include them as part of the response
+          object.
+        name: actions
+        in: query
+        schema:
+          type: boolean
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-credentials-200.json
+              schema:
+                $ref: schemas/credentials.yaml
+  /api-clients/self/credentials/deactivate:
+    post:
+      operationId: post-self-credentials-deactivate
+      summary: Deactivate your credentials
+      tags:
+      - Self
+      description: |
+        Deactivates all credentials for your API client. This doesn't delete the API client or the credentials. To deactivate a single credential, use the [Update your credential](ref:put-self-credential) operation and set the status to `INACTIVE`.
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+  /api-clients/self/credentials/{credentialId}:
+    parameters:
+    - $ref: parameters/credentialId-path.yaml
+    get:
+      operationId: get-self-credential
+      summary: Get your credential
+      tags:
+      - Self
+      description: |
+        Returns details of a specific credential for your API client. To change the credential's expiration date or toggle its activation status, run the [Update a credential](ref:put-client-credential) operation.
+      parameters:
+      - description: Optionally enable `actions` to include them as part of the response
+          object.
+        name: actions
+        in: query
+        schema:
+          type: boolean
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-credential-200.json
+              schema:
+                $ref: schemas/credential-nosecret.yaml
+    put:
+      operationId: put-self-credential
+      summary: Update your credential
+      tags:
+      - Self
+      description: |
+        Updates the details of a specific credential for your API client. You can change the expiration date, description, or toggle the activation status. This isn't the same as rotating a credential. For details, see [Rotate credentials](ref:rotate-credentials).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-credential-200.json
+            schema:
+              $ref: schemas/update-credential.yaml
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-credential-200.json
+              schema:
+                $ref: schemas/credential-nosecret.yaml
+    delete:
+      operationId: delete-self-credential
+      summary: Remove your credential
+      tags:
+      - Self
+      description: |
+        Deletes a specific credential from your API client. You can only delete inactive credentials.
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+  /api-clients/self/credentials/{credentialId}/deactivate:
+    parameters:
+    - $ref: parameters/credentialId-path.yaml
+    post:
+      operationId: post-self-credential-deactivate
+      summary: Deactivate your credential
+      tags:
+      - Self
+      description: |
+        Deactivates a specific credential for your API client. This doesn't delete the client or the credentials. To update a specific credential, run the [Update your credential](ref:put-self-credential) operation.
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+  /api-clients/{clientId}:
+    parameters:
+    - $ref: parameters/clientId-path.yaml
+    get:
+      operationId: get-api-client
+      summary: Get a client
+      tags:
+      - Clients
+      description: |
+        Returns details about a given API client.
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/api-client-200.json
+              schema:
+                $ref: schemas/api-client.yaml
+  /api-clients/{clientId}/account-switch-keys:
+    parameters:
+    - $ref: parameters/clientId-path.yaml
+    get:
+      operationId: get-client-account-switch-keys
+      summary: List account switch keys
+      tags:
+      - Clients
+      description: |
+        The response object contains the `accountSwitchKeys` and `accountNames` you can access based on the permissions of the client. Once you have the `accountSwitchKeys`, [you can make an API call to another account](https://www.learn.akamai.com/en-us/learn_akamai/getting_started_with_akamai_developers/developer_tools/accountSwitch.html#makeapicalls).
+      parameters:
+      - description: Optionally filter results by `accountId` or `accountName`. Enter
+          at least three characters in the string to filter the results.
+        name: search
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: schemas/client-account-switch-keys.yaml
+  /api-clients/{clientId}/credentials:
+    parameters:
+    - $ref: parameters/clientId-path.yaml
+    post:
+      operationId: post-client-credentials
+      summary: Create a credential
+      tags:
+      - Clients
+      description: |
+        Creates a new credential for a given API client. Only the client's owner may create credentials for the client. Credentials are in `active` status at creation. They expire two years from their creation date. However, when the API client's permissions are based on Control Center permissions, credentials expire differently and follow the same rotation schedule listed for user passwords on those accounts. Run the [Update a credential](ref:put-client-credential) operation to change the expiration date, description, or status. Save the values from the response, such as the `credentialID`, for future use. This is the only time you'll see the client secret. Save the credential at this time to avoid the need to create a new one.
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/post-credentials-200.json
+              schema:
+                $ref: schemas/credential.yaml
+    get:
+      operationId: get-client-credentials
+      summary: List credentials
+      tags:
+      - Clients
+      description: |
+        Returns all credentials for a given API client.
+      parameters:
+      - description: Optionally enable `actions` to include them as part of the response
+          object.
+        name: actions
+        in: query
+        schema:
+          type: boolean
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-credentials-200.json
+              schema:
+                $ref: schemas/credentials.yaml
+  /api-clients/{clientId}/credentials/deactivate:
+    parameters:
+    - $ref: parameters/clientId-path.yaml
+    post:
+      operationId: post-client-credentials-deactivate
+      summary: Deactivate credentials
+      tags:
+      - Clients
+      description: |
+        Deactivates all credentials for a given API client. This doesn't delete the API client or the credentials. To deactivate a single credential, run the [Update a credential](ref:put-client-credential) operation and set the status to `INACTIVE`.
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+  /api-clients/{clientId}/credentials/{credentialId}:
+    parameters:
+    - $ref: parameters/credentialId-path.yaml
+    - $ref: parameters/clientId-path.yaml
+    get:
+      operationId: get-client-credential
+      summary: Get a credential
+      tags:
+      - Clients
+      description: |
+        Returns details of a specific credential for a given API client. To change the credential's expiration date or toggle its activation status, run the [Update credential for an API client](ref:put-client-credential) operation.
+      parameters:
+      - description: Optionally enable `actions` to include them as part of the response
+          object.
+        name: actions
+        in: query
+        schema:
+          type: boolean
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-credential-200.json
+              schema:
+                $ref: schemas/credential-nosecret.yaml
+    put:
+      operationId: put-client-credential
+      summary: Update a credential
+      tags:
+      - Clients
+      description: |
+        Updates the details of a specific credential for a given API client. You can change the expiration date, description, or toggle the activation status. This isn't the same as rotating a credential. For details, see [Rotate credentials](ref:rotate-credentials).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-credential-200.json
+            schema:
+              $ref: schemas/update-credential.yaml
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-credential-200.json
+              schema:
+                $ref: schemas/credential-nosecret.yaml
+    delete:
+      operationId: delete-client-credential
+      summary: Remove a credential
+      tags:
+      - Clients
+      description: |
+        Deletes a specific credential from a given API client. You can only delete inactive credentials.
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+  /api-clients/{clientId}/credentials/{credentialId}/deactivate:
+    parameters:
+    - $ref: parameters/credentialId-path.yaml
+    - $ref: parameters/clientId-path.yaml
+    post:
+      operationId: post-client-credential-deactivate
+      summary: Deactivate a credential
+      tags:
+      - Clients
+      description: |
+        Deactivates a specific credential for a given API client. This doesn't delete the API client or the other credentials.
+      responses:
+        200:
+          description: |
+            Operation succeeded.

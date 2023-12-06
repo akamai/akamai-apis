@@ -1,0 +1,55 @@
+id: resource:/descriptors/papi/v1/schemas/GetGroupResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array.
+  
+x-akamai:
+  file-path: schemas/group-get-response.yaml
+additionalProperties: false
+properties:
+  accountId:
+    type: string
+    description: |
+      Identifies the prevailing account under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+  accountName:
+    type: string
+    description: |
+      A descriptive name for the account.
+  groups:
+    type: object
+    description: |
+      The set of requested groups, available within an `items` array.
+    additionalProperties: false
+    properties:
+      items:
+        type: array
+        description: |
+          Encapsulates information about the group that contains a property. Relevant response objects appear within the outer envelope's `groups.items` array.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - contractIds
+          - groupId
+          - groupName
+          properties:
+            contractIds:
+              type: array
+              description: |
+                A set of string identifiers for contracts whose products can be applied to properties within a group.
+              minItems: 1
+              items:
+                type: string
+            groupId:
+              type: string
+              description: |
+                Identifies each group. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+            groupName:
+              type: string
+              description: |
+                A descriptive label for the group.
+            parentGroupId:
+              type: string
+              description: |
+                Identifies another group as a parent, defining the relative location of the group within the group hierarchy. If omitted, it's the root-level group at the top of the hierarchy.
+$schema: http://json-schema.org/draft-04/schema#

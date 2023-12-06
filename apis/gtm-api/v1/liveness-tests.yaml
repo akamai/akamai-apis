@@ -1,0 +1,87 @@
+openapi: 3.0.0
+info:
+  title: Liveness tests
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/gtm-api/v1/reports
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: liveness-tests.yaml
+paths:
+  /liveness-tests/domains/{domain}/properties/{property}:
+    parameters:
+    - $ref: parameters/property-path.yaml
+    - $ref: parameters/domain-path.yaml
+    get:
+      operationId: get-liveness-tests-property
+      summary: Report liveness per property
+      tags:
+      - Liveness
+      description: |
+        This operation returns a collection of reports containing logs of individual liveness tests which have failed. Liveness Tests are run periodically by Web Agents installed in customer data centers. Liveness scores are used by GTM to decide whether a data center is alive or not.
+
+        Liveness tests which fail in succession (tests that run from the same testing agent to the same origin server, which fail with the same error code) are grouped together and represented with a duration. This duration value is in seconds and can sustain for up to 86400 seconds (one day). If it crosses that boundary, GTM logs it as a new failure at the beginning of the next day (00:00 UTC), with the duration reset to that point.
+      parameters:
+      - $ref: parameters/date-query.yaml
+      - $ref: parameters/agentIp-query.yaml
+      - $ref: parameters/targetIp-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-liveness-tests-for-a-property-200.json
+              schema:
+                $ref: schemas/liveness-tests.yaml
+            text/csv:
+              example:
+                $ref: examples/list-liveness-tests-for-a-property-200.csv
+  /liveness-tests/error-code-descriptions:
+    get:
+      operationId: get-liveness-tests-error-codes
+      summary: List liveness test errors
+      tags:
+      - Liveness
+      description: |
+        This operation lists all the possible liveness test error codes (as displayed on the Liveness Test Failures report) and a description of each error.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-error-code-descriptions-200.json
+              schema:
+                $ref: schemas/liveness-test-error-codes.yaml
+            text/csv:
+              example:
+                $ref: examples/get-error-code-descriptions-200.csv
+  /liveness-tests/error-code-descriptions/{errorCode}:
+    parameters:
+    - $ref: parameters/errorCode-path.yaml
+    get:
+      operationId: get-liveness-tests-error-code
+      summary: Get a Liveness Test Error
+      tags:
+      - Liveness
+      description: |
+        This operation returns an Error Description for the given Liveness Test error ID.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-error-code-description-200.json
+              schema:
+                $ref: schemas/liveness-test-error-codes.yaml
+            text/csv:
+              example:
+                $ref: examples/get-error-code-description-200.csv

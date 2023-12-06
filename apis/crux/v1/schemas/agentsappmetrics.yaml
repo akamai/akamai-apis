@@ -1,0 +1,82 @@
+type: object
+description: |-
+  Connector application metrics.
+  
+x-akamai:
+  file-path: schemas/agentsappmetrics.yaml
+additionalProperties: false
+required:
+- connector_uuid_url
+- app_uuid_url
+- app_host
+- start_timestamp
+- end_timestamp
+- results
+properties:
+  app_host:
+    type: string
+    description: |
+      Name of the application host.
+    minLength: 1
+  app_uuid_url:
+    type: string
+    description: |
+      A unique identifier for an application.
+    minLength: 1
+  connector_uuid_url:
+    type: string
+    description: |
+      A unique identifier for a connector.
+    minLength: 1
+  end_timestamp:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating the end time of the report.
+    format: date-time
+  results:
+    type: array
+    description: |
+      Contains connection result details.
+    minItems: 1
+    items:
+      type: object
+      description: |
+        Contains connector application metrics data.
+      additionalProperties: false
+      required:
+      - idle_dialouts
+      - active_connections
+      - total_dialouts
+      - dialin_version
+      - timestamp
+      properties:
+        active_connections:
+          type: integer
+          description: |
+            The active connections count at a given time.
+          minimum: 0
+        dialin_version:
+          type: string
+          description: |
+            The name of dialin version.
+          minLength: 1
+        idle_dialouts:
+          type: integer
+          description: |
+            The idle dialout count at a given time.
+          minimum: 0
+        timestamp:
+          type: string
+          description: |
+            ISO 8601 timestamp marking when logs last processed.
+          format: date-time
+        total_dialouts:
+          type: integer
+          description: |
+            The total number of dialouts at a given time.
+          minimum: 0
+  start_timestamp:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating the start time of the report.
+    format: date-time

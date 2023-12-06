@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  title: Identity
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/config-gtm/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: Identity.yaml
+paths:
+  /identity:
+    get:
+      operationId: get-identity
+      summary: Get identity
+      tags:
+      - Identity
+      description: |
+        This operation returns information about the API client. Run this operation for details on the API client contract such as available load balancing `features` and `permissions` the client has on the domains tied to the contract.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-identity-200.json
+              schema:
+                $ref: schemas/identity-response.yaml
+  /identity/contracts:
+    get:
+      operationId: get-identity-contracts
+      summary: List contracts
+      tags:
+      - Contracts
+      description: |
+        This operation returns a list of API client `contracts`. When you [Create a domain](ref:post-domain), you may need a `contractId` under certain circumstances. Run this operation to view available values.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-identity-contracts-200.json
+              schema:
+                $ref: schemas/identity-contracts-response.yaml
+  /identity/groups:
+    get:
+      operationId: get-identity-groups
+      summary: List groups
+      tags:
+      - Groups
+      description: |
+        This operation returns a list of API client `groups` and their parameters.  When you [Create a domain](ref:post-domain), you may need a `groupId` under certain circumstances. Run this operation to view available values.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-identity-groups-200.json
+              schema:
+                $ref: schemas/identity-groups-response.yaml

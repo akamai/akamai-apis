@@ -1,0 +1,119 @@
+type: object
+description: |-
+  Contains details about a hostname coverage match target.
+  
+x-akamai:
+  file-path: schemas/hostname-coverage-match-target.yaml
+additionalProperties: false
+required:
+- type
+- securityPolicy
+properties:
+  type:
+    type: string
+    description: |
+      The type of match target. Either `website` or `api`.
+    enum:
+    - website
+    - api
+  apis:
+    type: array
+    description: |
+      The list of API endpoint identifiers and names. This applies only for `api` match targets.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          description: |
+            Uniquely identifies the API endpoint.
+        name:
+          type: string
+          description: |
+            The API endpoint name.
+  bypassNetworkLists:
+    type: array
+    description: |
+      The network lists' identifiers and names in the match target.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: |
+            Uniquely identifies the network list.
+        name:
+          type: string
+          description: |
+            The name you assigned to the network list.
+  defaultFile:
+    type: string
+    description: |
+      Describes the rule to match on paths. Either `NO_MATCH` not to match on the default file, `BASE_MATCH` to match only requests for top-level hostnames ending in a trailing slash, or `RECURSIVE_MATCH` to match all requests for paths that end in a trailing slash. The default value is `NO_MATCH`.
+    default: NO_MATCH
+    enum:
+    - NO_MATCH
+    - BASE_MATCH
+    - RECURSIVE_MATCH
+  effectiveSecurityControls:
+    description: |
+      The security controls to apply. For a security control to be effectively turned on, you must enable it in both the match target and the security policy.
+    readOnly: true
+    $ref: security-controls.yaml
+  fileExtensions:
+    type: array
+    description: |
+      The list of file extensions to apply the match target to.
+    items:
+      type: string
+  filePaths:
+    type: array
+    description: |
+      The list of file paths to apply the match target to.
+    items:
+      type: string
+  hostnames:
+    type: array
+    description: |
+      The list of hostnames to protect.
+    items:
+      type: string
+  isNegativeFileExtensionMatch:
+    type: boolean
+    description: |
+      Whether the match target applies when a match is found in the specified `fileExtensions` or when a match isn't found.
+  isNegativePathMatch:
+    type: boolean
+    description: |
+      Whether the match target applies when a match is found in the specified `filePaths` or when a match isn't found.
+  securityPolicy:
+    type: object
+    description: |
+      The security policy associated with the match target.
+    additionalProperties: false
+    required:
+    - policyId
+    properties:
+      policyId:
+        type: string
+        description: |
+          Uniquely identifies the security policy.
+  sequence:
+    type: integer
+    description: |
+      The match target's position in the sequence of match targets.
+  targetId:
+    type: integer
+    description: |
+      Uniquely identifies the match target.
+  validations:
+    description: |
+      Contains details about warnings, errors, or notices determined by a validation of this resource.
+    readOnly: true
+    $ref: validations.yaml

@@ -1,0 +1,346 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Data Loss Prevention Dictionary
+  version: v3
+servers:
+- url: https://{hostname}/etp-config/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: dlp-dictionary.yaml
+paths:
+  /configs/{configId}/dictionaries:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-dictionary
+      summary: Create a DLP dictionary
+      tags:
+      - DLP dictionaries
+      description: |
+        Creates a DLP dictionary.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/dlp-dictionary-200.json
+            schema:
+              $ref: schemas/dlp-dictionary.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    get:
+      operationId: get-dictionaries
+      summary: List DLP dictionaries
+      tags:
+      - DLP dictionaries
+      description: |
+        Returns a list of all DLP dictionaries for the configuration.
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/dictionaries/{dictionaryId}:
+    parameters:
+    - $ref: parameters/dictionaryId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-dictionary
+      summary: Get a DLP dictionary
+      tags:
+      - DLP dictionaries
+      description: |
+        Returns details of a DLP dictionary.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/dlp-dictionary-200.json
+              schema:
+                $ref: schemas/dlp-dictionary.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+    put:
+      operationId: put-dictionary
+      summary: Update a DLP dictionary
+      tags:
+      - DLP dictionaries
+      description: |
+        Updates a DLP dictionary.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/dlp-dictionary-200.json
+            schema:
+              $ref: schemas/dlp-dictionary.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+    delete:
+      operationId: delete-dictionary
+      summary: Remove a DLP dictionary
+      tags:
+      - DLP dictionaries
+      description: |
+        Deletes a specific DLP dictionary.
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+  /configs/{configId}/patterns:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-patterns
+      summary: Create a DLP pattern
+      tags:
+      - DLP dictionary patterns
+      description: |
+        Creates a DLP custom dictionary pattern.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/custom-pattern-create.json
+            schema:
+              $ref: schemas/dlp-pattern-create.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    get:
+      operationId: get-patterns
+      summary: List DLP dictionary patterns
+      tags:
+      - DLP dictionary patterns
+      description: |
+        Returns the DLP dictionary patterns.
+      responses:
+        200:
+          description: |
+            List of DLP patterns with details.
+          content:
+            application/json:
+              example:
+                $ref: examples/dlp-patterns-200.json
+              schema:
+                $ref: schemas/dlp-patterns-list.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/patterns/regexes/:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-dlp-regexes
+      summary: Create DLP regexes
+      tags:
+      - DLP regexes
+      description: |
+        Creates a list of DLP regular expressions.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/regex-create.json
+            schema:
+              $ref: schemas/regexCreate.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    get:
+      operationId: get-dlp-regexes
+      summary: List DLP regular expressions
+      tags:
+      - DLP regexes
+      description: |
+        Returns a list of DLP regular expressions.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/regexes-response-200.json
+              schema:
+                $ref: schemas/regexRetrieveAll.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/patterns/regexes/{regexId}:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    - $ref: parameters/regexId-path.yaml
+    get:
+      operationId: get-dlp-regex
+      summary: Get a DLP regex
+      tags:
+      - DLP regexes
+      description: |
+        Returns the specified DLP regular expression details.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/regex-response-200.json
+              schema:
+                $ref: schemas/regexSpecific.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/patterns/{patternId}:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    - $ref: parameters/patternId-path.yaml
+    get:
+      operationId: get-pattern
+      summary: Get a DLP dictionary pattern
+      tags:
+      - DLP dictionary patterns
+      description: |
+        Returns the specified DLP dictionary pattern.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/custom-pattern-200.json
+              schema:
+                $ref: schemas/dlp-pattern-get.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    delete:
+      operationId: delete-pattern
+      summary: Delete a DLP dictionary pattern
+      tags:
+      - DLP dictionary patterns
+      description: |
+        Removes the specified DLP dictionary pattern.
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml

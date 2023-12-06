@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: ARL translator
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: translated-url.yaml
+paths:
+  /translated-url:
+    post:
+      operationId: post-translated-url
+      summary: Translate an Akamaized URL
+      tags:
+      - ARL translator
+      description: |
+        Provides basic information about a specific hostname or domain name, such as typecode, origin server, CP code, serial number, and TTL. A URL becomes an [Akamaized URL (ARL)](doc:arl-syntax) once it's on an edge server.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/ArlRequest.json
+            schema:
+              $ref: schemas/ArlRequest.yaml
+      responses:
+        200:
+          description: |
+            The response provides details for the ARL.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/ArlContainer.json
+              schema:
+                $ref: schemas/ArlContainer.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

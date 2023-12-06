@@ -1,0 +1,57 @@
+type: object
+description: |-
+  Contains information about the diff found between the source URL and target URL, under a specific IP version, within a specific geolocation and on a specific browser, as configured in the test cases of the test definition that was run.
+  
+x-akamai:
+  file-path: schemas/difference.yaml
+additionalProperties: false
+required:
+- diffId
+- comparisonAttribute
+- sourceValue
+- targetValue
+- totalInstances
+- outstandingInstances
+- instances
+properties:
+  comparisonAttribute:
+    type: string
+    description: |
+      Comparison setting which the diff object addresses. Can be any comparison setting: `cacheKey`, `cachingOption`, `cpcode`, `metadataVariables`, `originServer`, `responseCode`, `responseHeaders`.
+    enum:
+    - responseCode
+    - responseHeaders
+    - cpcode
+    - cachingOption
+    - originServer
+    - metadataVariables
+    - cacheKey
+  diffId:
+    type: string
+    description: |
+      Unique identifier for each diff.
+    minLength: 1
+  instances:
+    type: array
+    description: |
+      List of all the instances
+    items:
+      $ref: instance.yaml
+  outstandingInstances:
+    type: string
+    description: |
+      Total instances which have differences in production and staging environment.
+  sourceValue:
+    type: string
+    description: |
+      Value of the comparison attribute for the `parameterNames` in source environment.
+    minLength: 1
+  targetValue:
+    type: string
+    description: |
+      Value of the comparison attribute for the `parameterNames` in target environment.
+    minLength: 1
+  totalInstances:
+    type: string
+    description: |
+      Total instances included in the particular group of differences.

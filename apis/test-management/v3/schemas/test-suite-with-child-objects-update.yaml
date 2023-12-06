@@ -1,0 +1,50 @@
+type: object
+description: |-
+  Configures a test suite with test cases and variables.
+  
+x-akamai:
+  file-path: schemas/test-suite-with-child-objects-update.yaml
+additionalProperties: false
+required:
+- testSuiteName
+- isLocked
+- isStateful
+properties:
+  configs:
+    $ref: configs-create.yaml
+  isLocked:
+    type: boolean
+    description: |
+      Locks the test suite so that only designated owners or editors can modify it.
+  isStateful:
+    type: boolean
+    description: |
+      Runs the test suite statefully, retaining cookies and session data for subsequent test cases within the test suite.
+  testCases:
+    type: array
+    description: |
+      Lists test cases and included objects: conditions, test requests, and client profiles.
+    minItems: 0
+    items:
+      $ref: functional-test-case-create_update.yaml
+  testSuiteDescription:
+    type: string
+    description: |
+      Description of the test suite. It's `null` for test suites without descriptions. 
+    default: null
+    nullable: true
+    minLength: 1
+    maxLength: 4000
+  testSuiteName:
+    type: string
+    description: |
+      Unique name for each test suite.
+    minLength: 1
+    maxLength: 100
+  variables:
+    type: array
+    description: |
+      Lists variables used in the test suite. To learn more, see [Variables](ref:variables-overview).
+    minItems: 0
+    items:
+      $ref: variables-update.yaml

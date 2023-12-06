@@ -1,0 +1,106 @@
+{
+  "testSuiteName": "www.user8.example.com images test suite",
+  "testSuiteDescription": "This test suite validates caching of images used in www.user8.example.com",
+  "isLocked": false,
+  "isStateful": false,
+  "configs": {
+    "propertyManager": {
+      "propertyId": 1234,
+      "propertyVersion": 4
+    }
+  },
+  "testCases": [
+    {
+      "clientProfile": {
+        "ipVersion": "IPV4",
+        "client": "CHROME"
+      },
+      "testRequest": {
+        "testRequestUrl": "https://{{hostname}}/?abc=1234555",
+        "requestMethod": "GET",
+        "requestHeaders": [
+          {
+            "headerName": "Accept",
+            "headerValue": "v1",
+            "headerAction": "ADD"
+          }
+        ]
+      },
+      "condition": {
+        "conditionExpression": "Response header \"Content-Type\" has a value that ends with \"{{contentTypeVale}}\""
+      }
+    },
+    {
+      "testRequest": {
+        "testRequestUrl": "https://{{sampleVarGroup.urls}}/index",
+        "requestMethod": "GET"
+      },
+      "condition": {
+        "conditionExpression": "Response code is one of \"{{successCodes.responseCodes}}\""
+      },
+      "clientProfile": {
+        "client": "CHROME",
+        "ipVersion": "IPV4"
+      }
+    },
+    {
+      "testRequest": {
+        "testRequestUrl": "https://{{mismatchLengthGroup.urls}}/index",
+        "requestMethod": "GET"
+      },
+      "condition": {
+        "conditionExpression": "Response code is one of \"{{successCodes.responseCodes}}\""
+      },
+      "clientProfile": {
+        "client": "CHROME",
+        "ipVersion": "IPV4"
+      }
+    }
+  ],
+  "variables": [
+    {
+      "variableName": "hostname",
+      "variableValue": "www.user8.example.com"
+    },
+    {
+      "variableName": "contentTypeVale",
+      "variableValue": "json"
+    },
+    {
+      "variableName": "sampleVarGroup",
+      "variableGroupValue": [
+        {
+          "columnHeader": "urls",
+          "columnValues": [
+            "abc.com",
+            "def.org",
+            "abc.com"
+          ]
+        }
+      ]
+    },
+    {
+      "variableName": "successCode",
+      "variableGroupValue": [
+        {
+          "columnHeader": "statusCodes",
+          "columnValues": [
+            "200",
+            "200"
+          ]
+        }
+      ]
+    },
+    {
+      "variableName": "mismatchLengthGroup",
+      "variableGroupValue": [
+        {
+          "columnHeader": "urls",
+          "columnValues": [
+            "example.com"
+          ]
+        }
+      ]
+    }
+  ]
+}

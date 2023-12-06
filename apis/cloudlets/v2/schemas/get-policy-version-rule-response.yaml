@@ -1,0 +1,92 @@
+type: object
+description: |-
+  Returns information about a specific rule within a policy version.
+  
+x-akamai:
+  file-path: schemas/get-policy-version-rule-response.yaml
+additionalProperties: false
+required:
+- akaRuleId
+- version
+- policyId
+properties:
+  id:
+    type: integer
+    description: |
+      __Internal__ Akamai internal use only.
+    x-akamai:
+      status: INTERNAL
+    nullable: true
+  name:
+    type: string
+    description: |
+      The name of the rule.
+  type:
+    type: string
+    description: |
+      The type of Cloudlet the rule is for; Application Load Balancer is `albMatchRule`, API Prioritization is `apMatchRule`, Audience Segmentation is `asMatchRule`, Phased Release is `cdMatchRule`, Edge Redirector is `erMatchRule`, Forward Rewrite is`frMatchRule`, Request Control is `igMatchRule` and Visitor Prioritization is  `vpMatchRule`.
+    enum:
+    - albMatchRule
+    - apMatchRule
+    - asMatchRule
+    - cdMatchRule
+    - erMatchRule
+    - frMatchRule
+    - igMatchRule
+    - vpMatchRule
+  akaRuleId:
+    type: string
+    description: |
+      The rule's unique identifier.
+  disabled:
+    type: boolean
+    description: |
+      If `true`, disables a rule so it's not evaluated against incoming requests. The default setting is `false`.
+    default: false
+  end:
+    type: integer
+    description: |
+      The end time for this match rule in epoch seconds. When the rule is set to `matchAlways`, the `end` time displays as `0`.
+    minimum: 0
+  forwardSettings:
+    type: object
+    description: |
+      Defines data used to construct a new request URL. If all set conditions are true, the edge server returns an HTTP response from the rewritten URL.
+    additionalProperties: false
+    properties:
+      originId:
+        type: string
+        description: |
+          The conditional origin's unique identifier.
+        nullable: true
+        maxLength: 8192
+      pathAndQS:
+        type: string
+        description: |
+          If a value is provided and match conditions are met, this is the URL path to rewrite the incoming request's URL. The URL may include additional query parameters.
+        minLength: 1
+        maxLength: 8192
+      percent:
+        type: number
+        description: |
+          The percent of traffic that is sent to the data center.
+        minimum: 0
+        maximum: 100
+      useIncomingQueryString:
+        type: boolean
+        description: |
+          If set to `true`, the Cloudlet includes the requests' query string in the rewritten or forwarded URL.
+  location:
+    type: string
+    description: |
+      The navigable endpoint used for the object referred to in the operation.
+  matches:
+    description: |
+      The `matchType` and the `matchValue` or `objectMatchValue` for the rule. Plus additional criteria to match on, like case sensitivity (`caseSensitive`).
+    items:
+      $ref: match-rules.yaml
+  start:
+    type: integer
+    description: |
+      The start time for this match rule in epoch seconds. When the rule is set to `matchAlways`, the `start` time displays as `0`.
+    minimum: 0

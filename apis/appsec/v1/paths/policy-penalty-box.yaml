@@ -1,0 +1,63 @@
+x-akamai:
+  file-path: paths/policy-penalty-box.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/penalty-box
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/policyId-path.yaml
+get:
+  operationId: get-policy-penalty-box
+  summary: Get the penalty box
+  tags:
+  - 'WAF rules: Penalty box'
+  description: |
+    Returns the penalty box settings for the security policy you specify. _Products:_ All.
+  responses:
+    200:
+      description: |
+        Successfully retrieved penalty box protection for the security policy.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/penalty-box-protection-200.json
+          schema:
+            $ref: ../schemas/penalty-box.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-policy-penalty-box
+  summary: Modify the penalty box
+  tags:
+  - 'WAF rules: Penalty box'
+  description: |
+    Modifies the penalty box settings for a security policy. When the penalty box is enabled for a policy, clients that trigger a WAF Deny action are placed in the _penalty box_. There, the action you select for penalty box (either `Alert` or `Deny`) continues to apply to any requests from that client for the next 10 minutes.  _Products:_ All.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/penalty-box-protection-200.json
+        schema:
+          $ref: ../schemas/penalty-box.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated penalty box protection for security policy.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/penalty-box-protection-200.json
+          schema:
+            $ref: ../schemas/penalty-box.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

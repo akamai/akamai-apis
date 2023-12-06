@@ -1,0 +1,54 @@
+type: object
+description: |-
+  Provides detailed information about the Splunk connector that you can use in your stream. Note that DataStream 2 supports only endpoint URLs ending with `collector/raw` at this time.
+  
+x-akamai:
+  file-path: schemas/SplunkSavedConnector.yaml
+title: SPLUNK
+additionalProperties: false
+required:
+- connectorId
+- connectorType
+- connectorName
+- url
+- compressLogs
+properties:
+  compressLogs:
+    type: boolean
+    description: |
+      Enables gzip compression for a log file sent to a destination. If not set, this member's value is `true` by default.
+    default: true
+  connectorId:
+    type: integer
+    description: |
+      Identifies the connector associated with the data stream.
+  connectorName:
+    type: string
+    description: |
+      The name of the connector.
+  connectorType:
+    type: string
+    description: |
+      The name of the connector type. Set this value to `SPLUNK` for this connector type.
+    enum:
+    - SPLUNK
+  customHeaderName:
+    type: string
+    description: |
+      A human-readable name for the request's custom header, containing only alphanumeric, dash, and underscore characters.
+  customHeaderValue:
+    type: string
+    description: |
+      The custom header's contents passed with the request that contains information about the client connection.
+  mTLS:
+    type: string
+    description: |
+      Identifies if the stream has the mTLS authentication enabled. The response returns this field only if you pass the `clientCert` and `clientKey` members while creating or editing a stream.
+  tlsHostname:
+    type: string
+    description: |
+      The hostname that verifies the server's certificate and matches the Subject Alternative Names (SANs) in the certificate. If not provided, DataStream fetches the hostname from the endpoint URL.
+  url:
+    type: string
+    description: |
+      The raw event Splunk URL where you want to store your logs. You can use Akamaized property hostnames as endpoint URLs. See [Stream logs to Splunk](doc:stream-splunk#akamaized-hostname-as-endpoint).

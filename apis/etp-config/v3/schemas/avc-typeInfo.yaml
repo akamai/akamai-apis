@@ -1,0 +1,142 @@
+type: object
+description: |-
+  Policy AVC metadata with details.
+  
+x-akamai:
+  file-path: schemas/avc-typeInfo.yaml
+additionalProperties: false
+required:
+- name
+- description
+- id
+- vendorAppId
+- isDomainBasedApp
+- fileTypeCategory
+- fileType
+- isDeprecated
+- responseId
+- categoryId
+- users
+- groups
+- risk
+- categoryInfo
+- response
+- responseOverrides
+- operationSettings
+- applicationCount
+- devicePostureRiskTiers
+properties:
+  id:
+    type: integer
+    description: |
+      Unique identifier for the AVC entity.
+    minimum: 1
+  name:
+    type: string
+    description: |
+      Name of the AVC entity.
+    minLength: 1
+  description:
+    type: string
+    description: |
+      Describes the AVC entity.
+    minLength: 1
+  applicationCount:
+    type: integer
+    description: |
+      The AVC application count.
+    minimum: 0
+  categoryId:
+    type: integer
+    description: |
+      Unique identifier for the AVC category.
+    readOnly: true
+    minimum: 1
+  categoryInfo:
+    description: |
+      AVC category details.
+    $ref: aup-categories.yaml
+  devicePostureRiskTiers:
+    type: array
+    description: |
+      The selected device posture risk tiers.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  fileType:
+    type: string
+    description: |
+      The file type. 
+    minLength: 1
+  fileTypeCategory:
+    type: string
+    description: |
+      The filetype category based on MIME type. Either `message`, `application`, `audio`, `video`, `image`, `text`, `model`, or `x-epoc`. Use `x-epoc` for Symbian Series 3 install packages.
+    enum:
+    - message
+    - application
+    - audio
+    - video
+    - image
+    - text
+    - model
+    - x-epoc
+    minLength: 1
+  groups:
+    type: array
+    description: |
+      List of user groups for the AVC categories.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  isDeprecated:
+    type: boolean
+    description: |
+      Deprecates the AVC entity.
+  isDomainBasedApp:
+    type: boolean
+    description: |
+      Specifies a domain-based AVC entity.
+  operationSettings:
+    type: array
+    description: |
+      List of AVC operation settings with details.
+    minItems: 0
+    items:
+      $ref: avc-typeInfo-nested.yaml
+  response:
+    description: |
+      AVC response details.
+    $ref: response-info.yaml
+  responseId:
+    type: integer
+    description: |
+      Response ID of the AVC entity.
+    readOnly: true
+    minimum: 1
+  responseOverrides:
+    type: array
+    description: |
+      List of AUP response overrides with details.
+    minItems: 0
+    items:
+      $ref: response-override.yaml
+  risk:
+    description: |
+      AVC risk details.
+    $ref: avc-typeInfo-nested.yaml
+  users:
+    type: array
+    description: |
+      List of AVC users for the AVC entity.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  vendorAppId:
+    type: integer
+    description: |
+      Unique identifier for the vendor app.
+    minimum: 1

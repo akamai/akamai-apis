@@ -1,0 +1,58 @@
+type: object
+description: |-
+  Provides detailed information about a CP code.
+  
+x-akamai:
+  file-path: schemas/cpcode-200.yaml
+additionalProperties: false
+required:
+- cpcodeId
+- cpcodeName
+- contracts
+- products
+properties:
+  type:
+    type: string
+    description: |
+      Whether the CP code supports serving traffic from `China`, or `Regular` traffic elsewhere.
+    enum:
+    - Regular
+    - China
+  accessGroup:
+    $ref: access-group.yaml
+  accountId:
+    type: string
+    description: |
+      Identifies an account assigned to the CP code.
+
+      **Note**: See [ID prefixes](https://techdocs.akamai.com/cp-codes/reference/id-prefixes) for guidance on comparing this value with data from PAPI.
+    minLength: 1
+  contracts:
+    $ref: contracts-status-array.yaml
+  cpcodeId:
+    type: integer
+    description: |
+      Identifies the CP code.
+
+      **Note**: See [ID prefixes](https://techdocs.akamai.com/cp-codes/reference/id-prefixes) for guidance on comparing this value with data from PAPI.
+    minimum: 1
+  cpcodeName:
+    type: string
+    description: |
+      The descriptive label for the CP code.
+    minLength: 1
+  defaultTimezone:
+    type: string
+    description: |
+      The default GMT time zone assigned to the CP code.
+    minLength: 1
+  overrideTimezone:
+    $ref: override-timezone.yaml
+  products:
+    description: |
+      A collection of products and services assigned to the CP code.
+    $ref: products-array.yaml
+  purgeable:
+    type: boolean
+    description: |
+      Whether you can purge the content cached by the CP code.

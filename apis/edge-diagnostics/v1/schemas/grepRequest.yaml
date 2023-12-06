@@ -1,0 +1,76 @@
+type: object
+description: |-
+  Collects data to use in the asynchronous `grep` request.
+  
+x-akamai:
+  file-path: schemas/grepRequest.yaml
+additionalProperties: false
+required:
+- edgeIp
+- logType
+- start
+- end
+properties:
+  arls:
+    description: |
+      Collects ARLs to filter the logs by.
+    $ref: arls.yaml
+  clientIps:
+    type: array
+    description: |
+      Lists client IPs to filter the logs by.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  cpCodes:
+    type: array
+    description: |
+      Lists CP codes you want to get the logs for. You need to provide either this value or `hostnames`.
+    minItems: 0
+    items:
+      type: integer
+      minimum: 0
+  edgeIp:
+    type: string
+    description: |
+      Edge IP you want to get the logs for. If you don't know if an IP is the edge IP, run the [Verify an IP](ref:post-verify-edge-ip) operation first. You can use the edge server IP value from the `answerSection` array in the [Get domain details with dig](ref:post-dig) operation response or the `ip` value from the `edgeIps` array in the [collected diagnostic data](ref:get-user-diagnostic-data-group-records).
+    minLength: 1
+  end:
+    type: string
+    description: |
+      ISO 8601 timestamp for a point of time in the past when the log search window ends.
+    format: date-time
+  hostnames:
+    type: array
+    description: |
+      Lists hostnames you want to get the logs for. You need to provide either this value or `cpCodes`.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  httpStatusCodes:
+    description: |
+      Filters the logs by specific HTTP status codes.
+    $ref: httpStatusCodes.yaml
+  logType:
+    type: string
+    description: |
+      Log record type you want to get. Possible values are: `R` for client requests to an edge server, `F` for forward requests from an edge server to the origin, or `BOTH`.
+    enum:
+    - R
+    - F
+    - BOTH
+  start:
+    type: string
+    description: |
+      ISO 8601 timestamp for a point of time in the past when the log search window starts. You can get the logs from either the last 6 or 24 hours depending on the server and traffic conditions. The recommended 10-minute periods ensure that data fetches quickly and you get the most relevant logs.
+    format: date-time
+  userAgents:
+    type: array
+    description: |
+      Lists user agents to filter the logs by.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1

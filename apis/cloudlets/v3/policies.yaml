@@ -1,0 +1,260 @@
+openapi: 3.0.0
+info:
+  title: Policies
+  version: v3
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cloudlets/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: policies.yaml
+paths:
+  /policies:
+    post:
+      operationId: post-policy
+      summary: Create a policy
+      tags:
+      - Policies
+      description: |
+        Creates a shared policy for a specific Cloudlet type. Currently, you can create a shared policy for the API Prioritization, Edge Redirector, Forward Rewrite, Request Control, Phased Release, Virtual Waiting Room, and Audience Segmentation Cloudlets. You can then add match rules by [creating a policy version](ref:post-policy-version). If a policy already exists with the same policy name, you receive a 409 status response that contains data for the existing policy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/policies-post-request.json
+            schema:
+              $ref: schemas/post-policies-request.yaml
+      responses:
+        201:
+          description: |
+            Contains information about a shared policy.
+          content:
+            application/json:
+              example:
+                $ref: examples/policies-post-response.json
+              schema:
+                $ref: schemas/policy.yaml
+        400:
+          description: |
+            [Invalid request parameters, or problems parsing or validating the request object.](ref:400)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-400-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        403:
+          description: |
+            [No permission to access this resource.](ref:403)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-403-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        409:
+          description: |
+            [Conflict with the current state of the resource.](ref:409)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-409-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+    get:
+      operationId: get-policies
+      summary: List shared policies
+      tags:
+      - Policies
+      description: |
+        Returns shared policies that are available within your group.
+      parameters:
+      - $ref: parameters/page-query.yaml
+      - $ref: parameters/size-query.yaml
+      responses:
+        200:
+          description: |
+            Contains information about the shared policies.
+          content:
+            application/json:
+              example:
+                $ref: examples/policies-get-response.json
+              schema:
+                $ref: schemas/get-policies-response.yaml
+  /policies/{policyId}:
+    parameters:
+    - $ref: parameters/policyId-path.yaml
+    get:
+      operationId: get-policy
+      summary: Get a policy
+      tags:
+      - Policies
+      description: |
+        Returns information about a shared policy, including its activation status on the staging and production networks. If you don't already have the `policyId`, run the [List shared policies](ref:get-policies) operation and store the relevant `id` value.
+      responses:
+        200:
+          description: |
+            Contains information about a shared policy.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy.json
+              schema:
+                $ref: schemas/policy.yaml
+        403:
+          description: |
+            [No permission to access this resource.](ref:403)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-403-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        404:
+          description: |
+            [Resource not found.](ref:404)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-404-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+    put:
+      operationId: put-policy
+      summary: Update a policy
+      tags:
+      - Policies
+      description: |
+        Updates an existing policy. If you don't already have the `policyId`, run the [list shared policies](ref:get-policies) operation and store the relevant `id` value.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/update-policy.json
+            schema:
+              $ref: schemas/put-policy-request.yaml
+      responses:
+        200:
+          description: |
+            Contains information about a shared policy.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy.json
+              schema:
+                $ref: schemas/policy.yaml
+        400:
+          description: |
+            [Invalid request parameters, or problems parsing or validating the request object.](ref:400)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-400-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        403:
+          description: |
+            [No permission to access this resource.](ref:403)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-403-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        404:
+          description: |
+            [Resource not found.](ref:404)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-404-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+    delete:
+      operationId: delete-policy
+      summary: Remove a policy
+      tags:
+      - Policies
+      description: |
+        Deletes an existing Cloudlets policy. If you don't already have the `policyId`, run the [List shared policies](ref:get-policies) operation and store the relevant `id` value. You can't delete a policy if any of its versions is active or being activated on the staging or production networks.
+      responses:
+        204:
+          description: |
+            The Cloudlets policy was deleted.
+        403:
+          description: |
+            [User is not authenticated.](ref:403)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-403-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        404:
+          description: |
+            [Resource not found.](ref:404)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-404-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+  /policies/{policyId}/clone:
+    parameters:
+    - $ref: parameters/policyId-path.yaml
+    post:
+      operationId: post-policy-clone
+      summary: Clone a policy as a shared policy
+      tags:
+      - Policies
+      description: |
+        Clones the staging, production, and last modified versions of a non-shared (API v2) or shared policy into a new shared policy. You can also specify any additional versions that you want to clone into the new shared policy. The policy ID is required. If you don't already have the policy ID, use [List shared policies](ref:get-policies) or [List policies](https://techdocs.akamai.com/cloudlets/v2/reference/get-policies) and note the `id` or `policyId` value. When cloning a non-shared policy to a shared policy, a group ID (`groupId`) is required. Policies created using API v2 do not require a `groupId`, so the non-shared policy that you are cloning may or may not have this data member. If the policy you are cloning doesn’t have a `groupId`, assign one while performing this operation. To check if the non-shared policy has a `groupId`, see [List policies](https://techdocs.akamai.com/cloudlets/v2/reference/get-policies).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/policy-clone-request.json
+            schema:
+              $ref: schemas/post-policy-clone-request.yaml
+      responses:
+        200:
+          description: |
+            Contains information about a shared policy.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy.json
+              schema:
+                $ref: schemas/policy.yaml
+        400:
+          description: |
+            [Invalid request parameters, or problems parsing or validating the request object.](ref:400)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-400-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        403:
+          description: |
+            [No permission to access this resource.](ref:403)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-403-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        404:
+          description: |
+            [Resource not found.](ref:404)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-404-problem-response.json
+              schema:
+                $ref: schemas/error.yaml

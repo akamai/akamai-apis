@@ -1,0 +1,192 @@
+type: object
+description: |-
+  Contains information about a test case.
+  
+x-akamai:
+  file-path: schemas/comparative-test-case-create.yaml
+additionalProperties: false
+required:
+- url
+- testCaseName
+- requestHeaders
+- comparisonSettings
+properties:
+  comparisonSettings:
+    type: object
+    description: |
+      Attributes to compare on different environments. By default the test case includes all comparison settings.
+    additionalProperties: false
+    required:
+    - responseCode
+    - responseHeaders
+    - cpcode
+    - cachingOption
+    - cacheKey
+    - metadataVariables
+    - originServer
+    properties:
+      cacheKey:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      cachingOption:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      cpcode:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      metadataVariables:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        - compareOnly
+        - compareAllExcept
+        properties:
+          compareAllExcept:
+            type: array
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          compareOnly:
+            type: array
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      originServer:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      responseCode:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      responseHeaders:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        - compareOnly
+        - compareAllExcept
+        properties:
+          compareAllExcept:
+            type: array
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          compareOnly:
+            type: array
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+  requestHeaders:
+    type: array
+    description: |
+      Request headers for the test case.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - headerName
+      - headerValue
+      - headerAction
+      properties:
+        headerAction:
+          type: string
+          enum:
+          - ADD
+          - MODIFY
+          - FILTER
+        headerName:
+          type: string
+          description: |
+            Name of the request header.
+          minLength: 1
+        headerValue:
+          type: string
+          description: |
+            Value of the request header.
+          minLength: 1
+  testCaseDescription:
+    type: string
+    description: |
+      Description for the test case.
+    minLength: 1
+    maxLength: 4000
+  testCaseName:
+    type: string
+    description: |
+      Unique name for each test case.
+    minLength: 1
+    maxLength: 100
+  url:
+    type: string
+    description: |
+      URL of the page you want to test.
+    format: uri

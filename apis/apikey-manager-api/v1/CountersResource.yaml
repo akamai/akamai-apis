@@ -1,0 +1,248 @@
+openapi: 3.0.0
+info:
+  title: Throttling counters
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/apikey-manager-api/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: CountersResource.yaml
+paths:
+  /counters:
+    post:
+      operationId: post-counter
+      summary: Create a throttling counter
+      tags:
+      - Throttling counters
+      description: |
+        Creates a new throttling counter under the selected contract and group.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/counter-example.json
+            schema:
+              $ref: schemas/counter.yaml
+      responses:
+        201:
+          description: |
+            The counter has been created.
+          headers:
+            Location:
+              description: |
+                A URI that points to the location of the newly created counter.
+              schema:
+                type: string
+          content:
+            application/json:
+              example:
+                $ref: examples/counter-example.json
+              schema:
+                $ref: schemas/counter.yaml
+        400:
+          description: |
+            [Validation error](ref:400). The request contains invalid data.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/400.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to create a counter.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    get:
+      operationId: get-counters
+      summary: List throttling counters
+      tags:
+      - Throttling counters
+      description: |
+        Returns all existing throttling counters available for the current contract and group.
+      responses:
+        200:
+          description: |
+            The counters have been returned.
+          content:
+            application/json:
+              example:
+                $ref: examples/counterList-example.json
+              schema:
+                $ref: schemas/counterList.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to get the counters.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /counters/{counterId}:
+    parameters:
+    - $ref: parameters/counterId-path.yaml
+    get:
+      operationId: get-counter
+      summary: Get a throttling counter
+      tags:
+      - Throttling counters
+      description: |
+        Returns information about a throttling counter.
+      responses:
+        200:
+          description: |
+            The counter has been returned.
+          content:
+            application/json:
+              example:
+                $ref: examples/counter-example.json
+              schema:
+                $ref: schemas/counter.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to get the counter.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The counter could not be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    put:
+      operationId: put-counter
+      summary: Edit a throttling counter
+      tags:
+      - Throttling counters
+      description: |
+        Updates information about a throttling counter.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/counter-example.json
+            schema:
+              $ref: schemas/counter.yaml
+      responses:
+        200:
+          description: |
+            The counter has been updated.
+          content:
+            application/json:
+              example:
+                $ref: examples/counter-example.json
+              schema:
+                $ref: schemas/counter.yaml
+        400:
+          description: |
+            [Validation error](ref:400). The request contains invalid data.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/400.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to update the counter.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The counter could not be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    delete:
+      operationId: delete-counter
+      summary: Delete a throttling counter
+      tags:
+      - Throttling counters
+      description: |
+        Removes a throttling counter.
+      responses:
+        204:
+          description: |
+            The counter has been deleted.
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to update the counter.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The counter could not be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /counters/{counterId}/endpoints:
+    parameters:
+    - $ref: parameters/counterId-path.yaml
+    get:
+      operationId: get-counter-endpoints
+      summary: List counter endpoints
+      tags:
+      - Counter endpoints
+      description: |
+        Returns information about all endpoints assigned to the contract and group under which you created the throttling counter. The format of the response data for this operation is managed by the [API Endpoints API](https://techdocs.akamai.com/api-gateway/reference/api). Search the response data for the relevant `ACL_ENTRY` members (API endpoint IDs, resource IDs, or HTTP methods) to use when running the [Create a throttling counter](ref:post-counter) or [Update a throttling counter](ref:put-counter) operation.
+      responses:
+        200:
+          description: |
+            The endpoints have been returned.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointDto-example.json
+              schema:
+                $ref: schemas/endpoints.yaml
+  /counters/{counterId}/keys:
+    parameters:
+    - $ref: parameters/counterId-path.yaml
+    get:
+      operationId: get-counter-keys
+      summary: List counter keys
+      tags:
+      - Counter keys
+      description: |
+        Returns information about all API keys assigned to  the contract and group under which you created the throttling counter. Search the response data for the relevant `KEY` ID members to use when running the [Create a throttling counter](ref:post-counter) or [Update a throttling counter](ref:put-counter) operation.
+      responses:
+        200:
+          description: |
+            The endpoints have been returned.
+          content:
+            application/json:
+              example:
+                $ref: examples/keyList-example.json
+              schema:
+                $ref: schemas/keyList.yaml

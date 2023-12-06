@@ -1,0 +1,151 @@
+openapi: 3.0.0
+info:
+  title: TSIG Keys
+  version: v2
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/config-dns/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: tsig-keys.yaml
+paths:
+  /keys:
+    get:
+      operationId: get-keys
+      summary: List TSIG keys
+      tags:
+      - TSIG keys
+      description: |
+        Get a list of the TSIG keys used by zones that you are allowed to manage.
+      parameters:
+      - $ref: parameters/contractIds-query-keys.yaml
+      - $ref: parameters/search-query-keys.yaml
+      - $ref: parameters/sortBy-query-keys.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/tsigkey-report.json
+              schema:
+                $ref: schemas/tsigkey-report.yaml
+  /keys/bulk-update:
+    post:
+      operationId: post-keys-bulk-update
+      summary: Update TSIG key for multiple zones
+      tags:
+      - TSIG keys
+      description: |
+        This updates the key data for multiple zones at once. Keep in mind that this operation can only add zones to a TSIG key, not remove them. To safely remove the association between a zone and a TSIG key, update the zone to its new TSIG key or remove the key from the zone if you're sure it's no longer needed.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/tsigkey-bulk-post.json
+            schema:
+              $ref: schemas/tsigkey-bulk-post.yaml
+      responses:
+        204:
+          description: |
+            The operation was successful. No response data is returned.
+  /keys/used-by:
+    post:
+      operationId: post-keys-used-by
+      summary: List zones using TSIG key
+      tags:
+      - TSIG keys
+      description: |
+        Returns a list of zone names that use the given TSIG key and for which the current user has READ access. If the list of zones returned is empty, it is possible that the given key is in use by other zones but the current user does not have permission to view those zones.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/tsigkey-post.json
+            schema:
+              $ref: schemas/tsigkey-post.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/zone-name-list.json
+              schema:
+                $ref: schemas/zone-name-list.yaml
+  /zones/{zone}/key:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-zones-zone-key
+      summary: Get zone's TSIG key
+      tags:
+      - TSIG keys
+      description: |
+        Retrieves the TSIG Key data for this zone. Includes a count of zones that use this key. Returns a 404 error if the zone does not have a TSIG key.
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/tsigkey-get.json
+              schema:
+                $ref: schemas/tsigkey-get.yaml
+    put:
+      operationId: put-zones-zone-key
+      summary: Update zone's TSIG key
+      tags:
+      - TSIG keys
+      description: |
+        Creates or replaces the current TSIG Key for this zone. If other zones use the same key, does not modify those zones.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/tsigkey-post.json
+            schema:
+              $ref: schemas/tsigkey-post.yaml
+      responses:
+        204:
+          description: |
+            The operation was successful. No response data is returned.
+    delete:
+      operationId: delete-zones-zone-key
+      summary: Delete zone's TSIG key
+      tags:
+      - TSIG keys
+      description: |
+        Removes the TSIG Key for this zone. This action does not affect any other zone, even if they share the same TSIG key as this zone. If the zone does not currently have a key, no actions are taken and no error is thrown.
+      responses:
+        204:
+          description: |
+            The operation was successful. No response data is returned.
+  /zones/{zone}/key/used-by:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-zones-zone-key-used-by
+      summary: List users of zone's TSIG key
+      tags:
+      - TSIG keys
+      description: |
+        Lists the Zones that use the same TSIG key as this zone.
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/zone-name-list.json
+              schema:
+                $ref: schemas/zone-name-list.yaml

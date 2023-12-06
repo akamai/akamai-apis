@@ -1,0 +1,206 @@
+openapi: 3.0.0
+info:
+  title: Access tokens
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edgekv/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: tokens.yaml
+paths:
+  /tokens:
+    post:
+      operationId: post-tokens
+      summary: Create an access token
+      tags:
+      - Access tokens
+      description: |
+        Generate an access token that allows an EdgeWorkers code bundle to access the specified namespace. Each token name needs to be unique and have a defined expiration of no longer than six months. You can't renew a token once it expires. To learn more about access tokens, refer to the [EdgeKV guide](doc:generate-and-retrieve-edgekv-access-tokens).
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/post-tokens.json
+            schema:
+              $ref: schemas/token.yaml
+      responses:
+        200:
+          description: |
+            Returns generated token.
+          content:
+            application/json:
+              example:
+                $ref: examples/post-tokens-200.json
+              schema:
+                allOf:
+                - $ref: schemas/tokens-200.yaml#/definitions/baseTokenAttributes
+                - $ref: schemas/tokens-200.yaml#/definitions/dataTokenAttributes
+        409:
+          description: |
+            An existing token using the same name was found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/token-409.json
+              schema:
+                $ref: schemas/error.yaml
+        422:
+          description: |
+            The specified token JSON contained a syntax error or duplicate attributes.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/token-422.json
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml
+    get:
+      operationId: get-tokens
+      summary: List access tokens
+      tags:
+      - Access tokens
+      description: |
+        View a list of EdgeKV access tokens.
+      parameters:
+      - $ref: parameters/includeExpired-query.yaml
+      responses:
+        200:
+          description: |
+            Returns a list of EdgeKV access tokens you have permissions to see.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-tokens-200.json
+              schema:
+                $ref: schemas/list-tokens-200.yaml
+        404:
+          description: |
+            No tokens are found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/list-tokens-404.json
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml
+  /tokens/{tokenName}:
+    parameters:
+    - $ref: parameters/tokenId-path.yaml
+    get:
+      operationId: get-token
+      summary: Download an access token
+      tags:
+      - Access tokens
+      description: |
+        Download a previously created EdgeKV access token. To get a token you need to know the token `name`. To learn more about access tokens, refer to the [EdgeKV guide](doc:generate-and-retrieve-edgekv-access-tokens).
+      responses:
+        200:
+          description: |
+            Returns an EdgeKV access token.
+          content:
+            application/json:
+              example:
+                $ref: examples/post-tokens-200.json
+              schema:
+                allOf:
+                - $ref: schemas/tokens-200.yaml#/definitions/baseTokenAttributes
+                - $ref: schemas/tokens-200.yaml#/definitions/dataTokenAttributes
+        400:
+          description: |
+            Invalid token name.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/token-400.json
+              schema:
+                $ref: schemas/error.yaml
+        404:
+          description: |
+            Token is not found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/token-404.json
+              schema:
+                $ref: schemas/error.yaml
+        410:
+          description: |
+            Token has expired.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/token-410.json
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml
+    delete:
+      operationId: delete-token
+      summary: Revoke an access token
+      tags:
+      - Access tokens
+      description: |
+        Once you revoke an access token, you can't undo it. You also need to update any deployed EdgeWorkers code bundles that use the old token with a new token, or requests to EdgeKV fail. Any requests from an EdgeWorkers code bundle using a revoked token cause a 401 error. To learn more about access tokens, refer to the [EdgeKV guide](doc:generate-and-retrieve-edgekv-access-tokens).
+      responses:
+        200:
+          description: |
+            Token revocation successful.
+          content:
+            application/json:
+              example:
+                $ref: examples/delete-tokens-200.json
+              schema:
+                $ref: schemas/tokens-delete-200.yaml
+        400:
+          description: |
+            Invalid token name.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/token-400.json
+              schema:
+                $ref: schemas/error.yaml
+        404:
+          description: |
+            Token is not found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/token-404.json
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml

@@ -1,0 +1,3528 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Event Center API",
+    "url": "https://techdocs.akamai.com/event-ctr/reference"
+  },
+  "info": {
+    "title": "Akamai: Event Center API",
+    "version": "3.0",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/events": {
+      "post": {
+        "description": "Creates an event with the specified parameters.",
+        "operationId": "post-events",
+        "summary": "Create an event",
+        "tags": [
+          "Events"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Event Center API",
+          "url": "https://techdocs.akamai.com/event-ctr/reference/post-events"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "audienceSize": 5000000,
+                "customerEventId": "mmxxiii-owg",
+                "description": "MMXXIII Olympic Winter Games 2022",
+                "end": "2022-02-08T20:00:00Z",
+                "name": "2022 Winter Olympics",
+                "start": "2022-02-08T08:00:00Z",
+                "audienceLocations": [
+                  "PL",
+                  "DE"
+                ],
+                "coordinators": [
+                  "vsnyder",
+                  "tyamada"
+                ],
+                "tags": [
+                  "winter",
+                  "olympics"
+                ],
+                "recurrence": {
+                  "count": 2,
+                  "frequency": "DAILY"
+                },
+                "objects": [
+                  {
+                    "id": 8765,
+                    "type": "QOS_REPORT_PACK"
+                  },
+                  {
+                    "id": 87654,
+                    "type": "CP_CODE"
+                  },
+                  {
+                    "id": 876,
+                    "type": "SRIP_SLOT"
+                  },
+                  {
+                    "id": 12345,
+                    "type": "UNIVERSAL_LIVE_STREAM",
+                    "bitrates": [
+                      5000,
+                      10000
+                    ]
+                  },
+                  {
+                    "id": 6,
+                    "type": "FLASH_LIVE_STREAM",
+                    "bitrates": [
+                      5000,
+                      10000
+                    ]
+                  }
+                ]
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Contains information about the request body parameters that you can specify when creating an event. It also includes tags and objects that you can associate with a new event and the recurrence context for the event.",
+                "type": "object",
+                "required": [
+                  "name",
+                  "start",
+                  "end"
+                ],
+                "properties": {
+                  "audienceLocations": {
+                    "description": "A list of two-letter ISO 3166 country codes that indicate geographic areas of audiences. This array can be up to 20 unique items.",
+                    "maxItems": 20,
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "maxLength": 2,
+                      "minLength": 2,
+                      "type": "string"
+                    }
+                  },
+                  "audienceSize": {
+                    "description": "The audience's size for the event. The minimum value is 1.",
+                    "example": "{{audienceSize}}",
+                    "type": "integer",
+                    "x-annotation-oas-minimum": 1
+                  },
+                  "coordinators": {
+                    "description": "A list of up to 20 Luna Control Center usernames of those who serve as the event's coordinators.",
+                    "maxItems": 20,
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "customerEventId": {
+                    "description": "The user-specified ID for the event. This ID can be up to 100 characters long. [Customer Event ID](https://techdocs.akamai.com/event-ctr/docs/concepts).",
+                    "example": "{{customerEventId}}",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "The description of the event. This description can be up to 2000 characters long.",
+                    "example": "{{description}}",
+                    "type": "string"
+                  },
+                  "end": {
+                    "description": "An ISO 8601 timestamp indicating the end date of the event.",
+                    "example": "{{end}}",
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "name": {
+                    "description": "The name of the event. This name can be up to 750 characters long.",
+                    "example": "{{name}}",
+                    "maxLength": 750,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "objects": {
+                    "description": "A collection of objects associated with the event. This array can include only unique items.",
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "additionalProperties": false,
+                      "description": "Contains information about the domain object related to an Akamai product that you can associate with the event.",
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "type"
+                      ],
+                      "properties": {
+                        "bitrates": {
+                          "description": "A list of expected bit rates in kbit/s for the stream. Specify for `FLASH_LIVE_STREAM`, `UNIVERSAL_LIVE_STREAM`, and `MSL4_STREAM` objects. This array can be up to 20 unique items.",
+                          "maxItems": 20,
+                          "nullable": true,
+                          "type": "array",
+                          "uniqueItems": true,
+                          "items": {
+                            "type": "integer"
+                          }
+                        },
+                        "id": {
+                          "description": "The identifier of the object.",
+                          "type": "integer"
+                        },
+                        "type": {
+                          "description": "The type of object for the event. Use `QOS_REPORT_PACK` for quality report pack, `CP_CODE` for a Content Provider code, `SRIP_SLOT` for a Sure Route IP slot, `FLASH_LIVE_STREAM` for a Flash Live stream, `UNIVERSAL_LIVE_STREAM` for a Universal Live stream, or `MSL4_STREAM` for Media Services Live v4.1 stream.",
+                          "type": "string",
+                          "enum": [
+                            "QOS_REPORT_PACK",
+                            "CP_CODE",
+                            "SRIP_SLOT",
+                            "FLASH_LIVE_STREAM",
+                            "UNIVERSAL_LIVE_STREAM",
+                            "MSL4_STREAM"
+                          ]
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/event-object-assign.yaml"
+                      }
+                    }
+                  },
+                  "recurrence": {
+                    "additionalProperties": false,
+                    "description": "Contains information about the recurrence parameters that you can specify when creating the event.",
+                    "type": "object",
+                    "required": [
+                      "frequency",
+                      "count"
+                    ],
+                    "properties": {
+                      "count": {
+                        "description": "The number of times to repeat the event. Specify a value between 1 and 366.",
+                        "maximum": 366,
+                        "minimum": 1,
+                        "type": "integer"
+                      },
+                      "frequency": {
+                        "description": "The periodicity of the recurring event. Use `HOURLY` to repeat the event once an hour, `DAILY` to repeat the event once a day, `WEEKLY` to repeat the event once a week, or `MONTHLY` to repeat the event once a month.",
+                        "type": "string",
+                        "enum": [
+                          "HOURLY",
+                          "DAILY",
+                          "WEEKLY",
+                          "MONTHLY"
+                        ]
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/event-recurrence.yaml"
+                    }
+                  },
+                  "start": {
+                    "description": "An ISO 8601 timestamp indicating the start date of the event.",
+                    "example": "{{start}}",
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "tags": {
+                    "description": "A list of tags associated with the event. A tag can be up to 100 characters long. This array can be up to 20 unique items.",
+                    "maxItems": 20,
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "maxLength": 100,
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/event-post.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Contains details of an event.",
+                  "type": "array",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "A collection of details about an event.",
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "end",
+                      "name",
+                      "start",
+                      "version",
+                      "createdDate",
+                      "createdBy",
+                      "modifiedDate",
+                      "modifiedBy"
+                    ],
+                    "properties": {
+                      "audienceLocations": {
+                        "description": "A collection of countries that match the geographic locations of audiences.",
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "description": "Provides information about a country that matches the geographic area of an audience.",
+                          "type": "object",
+                          "required": [
+                            "code",
+                            "name"
+                          ],
+                          "properties": {
+                            "code": {
+                              "description": "A two-letter ISO 3166 country code.",
+                              "type": "string"
+                            },
+                            "name": {
+                              "description": "Name of the country that corresponds to the country code.",
+                              "type": "string"
+                            }
+                          },
+                          "x-akamai": {
+                            "file-path": "schemas/country.yaml"
+                          }
+                        }
+                      },
+                      "audienceSize": {
+                        "description": "The audience's size for the event.",
+                        "type": "integer"
+                      },
+                      "coordinators": {
+                        "description": "A collection of coordinators assigned to the event.",
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "description": "Contains information about the event's coordinator.",
+                          "type": "object",
+                          "required": [
+                            "userName",
+                            "firstName",
+                            "lastName"
+                          ],
+                          "properties": {
+                            "firstName": {
+                              "description": "The coordinator's first name.",
+                              "type": "string"
+                            },
+                            "lastName": {
+                              "description": "The coordinator's last name.",
+                              "type": "string"
+                            },
+                            "userName": {
+                              "description": "The coordinator's username as defined in Control Center.",
+                              "type": "string"
+                            }
+                          },
+                          "x-akamai": {
+                            "file-path": "schemas/user.yaml"
+                          }
+                        }
+                      },
+                      "createdBy": {
+                        "description": "The person who created the event.",
+                        "type": "string"
+                      },
+                      "createdDate": {
+                        "description": "An ISO 8601 timestamp indicating the date and time when the event was created.",
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "customerEventId": {
+                        "description": "The user-specified ID for the event. See [Customer Event ID](https://techdocs.akamai.com/event-ctr/docs/concepts).",
+                        "type": "string"
+                      },
+                      "description": {
+                        "description": "The description of the event.",
+                        "type": "string"
+                      },
+                      "end": {
+                        "description": "An ISO 8601 timestamp indicating the end date of the event.",
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "id": {
+                        "description": "The identifier of the event.",
+                        "type": "integer"
+                      },
+                      "modifiedBy": {
+                        "description": "The person who last modified the event.",
+                        "type": "string"
+                      },
+                      "modifiedDate": {
+                        "description": "An ISO 8601 timestamp indicating the date and time when the event was last modified.",
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "The name of the event.",
+                        "type": "string"
+                      },
+                      "objects": {
+                        "description": "A collection of objects associated with the event.",
+                        "type": "array",
+                        "items": {
+                          "description": "Contains information about objects associated with the event.",
+                          "type": "object",
+                          "x-akamai": {
+                            "file-path": "schemas/event-object.yaml"
+                          },
+                          "oneOf": [
+                            {
+                              "additionalProperties": false,
+                              "description": "Contains information about a Content Provider (CP) code for the event.",
+                              "title": "CP code",
+                              "type": "object",
+                              "required": [
+                                "id",
+                                "name",
+                                "type"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "description": "The identifier of the CP code.",
+                                  "type": "integer"
+                                },
+                                "name": {
+                                  "description": "The name of the CP code.",
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "description": "The type of event object. `CP_CODE` in this case.",
+                                  "type": "string",
+                                  "enum": [
+                                    "CP_CODE"
+                                  ]
+                                }
+                              },
+                              "x-akamai": {
+                                "file-path": "schemas/cp-code.yaml"
+                              }
+                            },
+                            {
+                              "additionalProperties": false,
+                              "description": "Contains information about a Flash Live stream associated with the event.",
+                              "title": "Flash Live stream",
+                              "type": "object",
+                              "required": [
+                                "id",
+                                "type",
+                                "name",
+                                "cpCode"
+                              ],
+                              "properties": {
+                                "bitrates": {
+                                  "description": "A list of expected bit rates in kbit/s for the stream.",
+                                  "type": "array",
+                                  "items": {
+                                    "type": "integer"
+                                  }
+                                },
+                                "cpCode": {
+                                  "description": "The Content Provider code assigned to the stream.",
+                                  "type": "integer"
+                                },
+                                "id": {
+                                  "description": "The identifier of the Flash Live stream.",
+                                  "type": "integer"
+                                },
+                                "name": {
+                                  "description": "The name of the stream.",
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "description": "The type of stream. `FLASH_LIVE_STREAM` in this case.",
+                                  "type": "string",
+                                  "enum": [
+                                    "FLASH_LIVE_STREAM"
+                                  ]
+                                }
+                              },
+                              "x-akamai": {
+                                "file-path": "schemas/flash-live-stream.yaml"
+                              }
+                            },
+                            {
+                              "additionalProperties": false,
+                              "description": "Contains information about a Universal Live stream associated with the event.",
+                              "title": "Universal Live stream",
+                              "type": "object",
+                              "required": [
+                                "id",
+                                "type",
+                                "name",
+                                "cpCode"
+                              ],
+                              "properties": {
+                                "bitrates": {
+                                  "description": "A list of expected bit rates in kbit/s for the stream.",
+                                  "type": "array",
+                                  "items": {
+                                    "type": "integer"
+                                  }
+                                },
+                                "cpCode": {
+                                  "description": "The CP code assigned to the Universal Live stream.",
+                                  "type": "integer"
+                                },
+                                "id": {
+                                  "description": "The identifier of the Universal Live stream.",
+                                  "type": "integer"
+                                },
+                                "name": {
+                                  "description": "The name of the Universal Live stream.",
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "description": "The type of stream. `UNIVERSAL_LIVE_STREAM` in this case.",
+                                  "type": "string",
+                                  "enum": [
+                                    "UNIVERSAL_LIVE_STREAM"
+                                  ]
+                                }
+                              },
+                              "x-akamai": {
+                                "file-path": "schemas/universal-live-stream.yaml"
+                              }
+                            },
+                            {
+                              "additionalProperties": false,
+                              "description": "Contains information about a Sure Route IP (SRIP) slot associated with the event.",
+                              "title": "Sure Route slot",
+                              "type": "object",
+                              "required": [
+                                "id",
+                                "type",
+                                "description",
+                                "cpCode"
+                              ],
+                              "properties": {
+                                "cpCode": {
+                                  "description": "The CP code assigned to the SRIP slot.",
+                                  "type": "integer"
+                                },
+                                "hostname": {
+                                  "description": "The Accelerated hostname associated with the SRIP slot.",
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "description": "The identifier of the SRIP slot.",
+                                  "type": "integer"
+                                },
+                                "type": {
+                                  "description": "The type of object. `SRIP_SLOT` in this case.",
+                                  "type": "string",
+                                  "enum": [
+                                    "SRIP_SLOT"
+                                  ]
+                                }
+                              },
+                              "x-akamai": {
+                                "file-path": "schemas/srip-slot.yaml"
+                              }
+                            },
+                            {
+                              "additionalProperties": false,
+                              "description": "Contains information about a Quality of Service (QoS) report pack associated with the event.",
+                              "title": "QoS report pack",
+                              "type": "object",
+                              "required": [
+                                "id",
+                                "type",
+                                "name"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "description": "The identifier of the QoS report pack.",
+                                  "type": "integer"
+                                },
+                                "name": {
+                                  "description": "The name of the QoS report pack.",
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "description": "The type of object. `QOS_REPORT_PACK` in this case.",
+                                  "type": "string",
+                                  "enum": [
+                                    "QOS_REPORT_PACK"
+                                  ]
+                                }
+                              },
+                              "x-akamai": {
+                                "file-path": "schemas/qos-report-pack.yaml"
+                              }
+                            },
+                            {
+                              "additionalProperties": false,
+                              "description": "Contains information about a Media Service Live 4 (MSL4) stream associated with the event.",
+                              "title": "MSL4 stream",
+                              "type": "object",
+                              "required": [
+                                "id",
+                                "type",
+                                "name",
+                                "cpCode"
+                              ],
+                              "properties": {
+                                "bitrates": {
+                                  "description": "A list of expected bit rates in kbit/s for the stream.",
+                                  "type": "array",
+                                  "items": {
+                                    "type": "integer"
+                                  }
+                                },
+                                "cpCode": {
+                                  "description": "The ingest Content Provider code assigned to the stream.",
+                                  "type": "integer"
+                                },
+                                "id": {
+                                  "description": "The identifier of the MSL4 stream.",
+                                  "type": "integer"
+                                },
+                                "name": {
+                                  "description": "The name of the MSL4 stream.",
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "description": "The type of stream. `MSL4_STREAM` in this case.",
+                                  "type": "string",
+                                  "enum": [
+                                    "MSL4_STREAM"
+                                  ]
+                                }
+                              },
+                              "x-akamai": {
+                                "file-path": "schemas/msl4-stream.yaml"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "start": {
+                        "description": "An ISO 8601 timestamp indicating the start date of the event.",
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "tags": {
+                        "description": "A collection of tags associated with the event.",
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "description": "Contains information about a tag.",
+                          "type": "object",
+                          "required": [
+                            "id",
+                            "name"
+                          ],
+                          "properties": {
+                            "id": {
+                              "description": "The identifier of the tag.",
+                              "type": "integer"
+                            },
+                            "name": {
+                              "description": "The description of the tag.",
+                              "type": "string"
+                            }
+                          },
+                          "x-akamai": {
+                            "file-path": "schemas/tag.yaml"
+                          }
+                        }
+                      },
+                      "version": {
+                        "description": "The version of the event.",
+                        "type": "integer"
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/event-200.yaml"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/event-post-200.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "audienceSize": 5000000,
+                    "createdBy": "jperez",
+                    "createdDate": "2021-11-28T16:41:41Z",
+                    "customerEventId": "mmxxiii-owg",
+                    "description": "MMXXII Olympic Winter Games 2022",
+                    "end": "2022-02-08T20:00:00Z",
+                    "id": 1,
+                    "modifiedBy": "jperez",
+                    "modifiedDate": "2021-12-28T16:41:41Z",
+                    "name": "2022 Winter Olympics",
+                    "start": "2022-02-08T08:00:00Z",
+                    "version": 0,
+                    "audienceLocations": [
+                      {
+                        "code": "PL",
+                        "name": "Poland"
+                      },
+                      {
+                        "code": "DE",
+                        "name": "Germany"
+                      }
+                    ],
+                    "coordinators": [
+                      {
+                        "firstName": "Vigilant",
+                        "lastName": "Snyder",
+                        "userName": "vsnyder"
+                      },
+                      {
+                        "firstName": "Taro",
+                        "lastName": "Yamada",
+                        "userName": "tyamada"
+                      }
+                    ],
+                    "objects": [
+                      {
+                        "id": 8765,
+                        "name": "8765 - WOG_WEB_QOS",
+                        "type": "QOS_REPORT_PACK"
+                      },
+                      {
+                        "id": 87654,
+                        "name": "olympics-open.com/winter",
+                        "type": "CP_CODE"
+                      },
+                      {
+                        "cpCode": 1234567,
+                        "hostname": "open-olympics.com",
+                        "id": 876,
+                        "type": "SRIP_SLOT"
+                      },
+                      {
+                        "cpCode": 1234567,
+                        "id": 12345,
+                        "name": "olympics_open_universal",
+                        "type": "UNIVERSAL_LIVE_STREAM",
+                        "bitrates": [
+                          5000,
+                          10000
+                        ]
+                      },
+                      {
+                        "cpCode": 1234567,
+                        "id": 6,
+                        "name": "olympics_open_flash",
+                        "type": "FLASH_LIVE_STREAM",
+                        "bitrates": [
+                          5000,
+                          10000
+                        ]
+                      }
+                    ],
+                    "tags": [
+                      {
+                        "id": 1,
+                        "name": "winter"
+                      },
+                      {
+                        "id": 2,
+                        "name": "olympics"
+                      }
+                    ]
+                  },
+                  {
+                    "audienceSize": 5000000,
+                    "createdBy": "adevi",
+                    "createdDate": "2021-11-28T16:41:41Z",
+                    "customerEventId": "mmxxiii-owg",
+                    "description": "MMXXII Olympic Winter Games 2022",
+                    "end": "2022-02-09T20:00:00Z",
+                    "id": 2,
+                    "modifiedBy": "szhang",
+                    "modifiedDate": "2021-12-28T16:41:41Z",
+                    "name": "2022 Winter Olympics",
+                    "start": "2022-02-09T08:00:00Z",
+                    "version": 0,
+                    "audienceLocations": [
+                      {
+                        "code": "PL",
+                        "name": "Poland"
+                      },
+                      {
+                        "code": "DE",
+                        "name": "Germany"
+                      }
+                    ],
+                    "coordinators": [
+                      {
+                        "firstName": "Vigilant",
+                        "lastName": "Snyder",
+                        "userName": "vsnyder"
+                      },
+                      {
+                        "firstName": "Taro",
+                        "lastName": "Yamada",
+                        "userName": "tyamada"
+                      }
+                    ],
+                    "objects": [
+                      {
+                        "id": 8765,
+                        "name": "8765 - WOG_WEB_QOS",
+                        "type": "QOS_REPORT_PACK"
+                      },
+                      {
+                        "id": 87654,
+                        "name": "olympics-open.com/winter",
+                        "type": "CP_CODE"
+                      },
+                      {
+                        "cpCode": 1234567,
+                        "hostname": "open-olympics.com",
+                        "id": 876,
+                        "type": "SRIP_SLOT"
+                      },
+                      {
+                        "cpCode": 1234567,
+                        "id": 12345,
+                        "name": "olympics_open_universal",
+                        "type": "UNIVERSAL_LIVE_STREAM",
+                        "bitrates": [
+                          5000,
+                          10000
+                        ]
+                      },
+                      {
+                        "cpCode": 1234567,
+                        "id": 6,
+                        "name": "olympics_open_flash",
+                        "type": "FLASH_LIVE_STREAM",
+                        "bitrates": [
+                          5000,
+                          10000
+                        ]
+                      }
+                    ],
+                    "tags": [
+                      {
+                        "id": 1,
+                        "name": "winter"
+                      },
+                      {
+                        "id": 2,
+                        "name": "olympics"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request. Details may be available in response body.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "status": 400,
+                  "title": "Constraint violation",
+                  "type": "/event-center/error-types/constraint-violation",
+                  "errors": [
+                    {
+                      "detail": "end must not be null",
+                      "path": "end",
+                      "title": "Constraint violation",
+                      "type": "/event-center/error-types/constraint-violation",
+                      "value": null
+                    },
+                    {
+                      "detail": "start must not be null",
+                      "path": "start",
+                      "title": "Constraint violation",
+                      "type": "/event-center/error-types/constraint-violation",
+                      "value": null
+                    },
+                    {
+                      "detail": "name must not be blank",
+                      "path": "name",
+                      "title": "Constraint violation",
+                      "type": "/event-center/error-types/constraint-violation",
+                      "value": null
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Provides information about an error response returned by the Event Center API.",
+                  "type": "object",
+                  "properties": {
+                    "problem": {
+                      "additionalProperties": true,
+                      "type": "object",
+                      "properties": {
+                        "detail": {
+                          "description": "A human-readable explanation specific to the problem.",
+                          "type": "string"
+                        },
+                        "errors": {
+                          "description": "A list of HTTP problem details. This field exists if there are multiple problems with a single request, and you want to call each of them out explicitly.",
+                          "type": "array",
+                          "items": {
+                            "description": "A further-nested problem object.",
+                            "type": "object",
+                            "x-akamai": {
+                              "file-path": "schemas/problem-nested.yaml"
+                            }
+                          }
+                        },
+                        "instance": {
+                          "description": "The URI for this error occurrence.",
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "The HTTP status code generated by the origin server.",
+                          "type": "integer"
+                        },
+                        "title": {
+                          "description": "A short, human-readable summary of the problem type.",
+                          "type": "string"
+                        },
+                        "type": {
+                          "description": "A URI reference that identifies the problem type.",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Insufficient permissions to access event or associated objects.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Insufficient permissions to access UniversalLiveStream entity",
+                  "status": 403,
+                  "title": "Forbidden",
+                  "type": "about:blank"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Provides information about an error response returned by the Event Center API.",
+                  "type": "object",
+                  "properties": {
+                    "problem": {
+                      "additionalProperties": true,
+                      "type": "object",
+                      "properties": {
+                        "detail": {
+                          "description": "A human-readable explanation specific to the problem.",
+                          "type": "string"
+                        },
+                        "errors": {
+                          "description": "A list of HTTP problem details. This field exists if there are multiple problems with a single request, and you want to call each of them out explicitly.",
+                          "type": "array",
+                          "items": {
+                            "description": "A further-nested problem object.",
+                            "type": "object",
+                            "x-akamai": {
+                              "file-path": "schemas/problem-nested.yaml"
+                            }
+                          }
+                        },
+                        "instance": {
+                          "description": "The URI for this error occurrence.",
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "The HTTP status code generated by the origin server.",
+                          "type": "integer"
+                        },
+                        "title": {
+                          "description": "A short, human-readable summary of the problem type.",
+                          "type": "string"
+                        },
+                        "type": {
+                          "description": "A URI reference that identifies the problem type.",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "An event with same name, start and end already exists.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "An Event entity with the same name: 2018 Winter Olympics, start: 2018-04-23T04:00:00Z and end: 2018-04-23T04:30:00Z already exists",
+                  "status": 409,
+                  "title": "Entity already exists",
+                  "type": "/event-center/error-types/duplicate"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Provides information about an error response returned by the Event Center API.",
+                  "type": "object",
+                  "properties": {
+                    "problem": {
+                      "additionalProperties": true,
+                      "type": "object",
+                      "properties": {
+                        "detail": {
+                          "description": "A human-readable explanation specific to the problem.",
+                          "type": "string"
+                        },
+                        "errors": {
+                          "description": "A list of HTTP problem details. This field exists if there are multiple problems with a single request, and you want to call each of them out explicitly.",
+                          "type": "array",
+                          "items": {
+                            "description": "A further-nested problem object.",
+                            "type": "object",
+                            "x-akamai": {
+                              "file-path": "schemas/problem-nested.yaml"
+                            }
+                          }
+                        },
+                        "instance": {
+                          "description": "The URI for this error occurrence.",
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "The HTTP status code generated by the origin server.",
+                          "type": "integer"
+                        },
+                        "title": {
+                          "description": "A short, human-readable summary of the problem type.",
+                          "type": "string"
+                        },
+                        "type": {
+                          "description": "A URI reference that identifies the problem type.",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "get": {
+        "description": "Returns a list of events for the current account and contract type. This call supports paging and sorting of the result data.",
+        "operationId": "get-events",
+        "summary": "List events",
+        "tags": [
+          "Events"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Event Center API",
+          "url": "https://techdocs.akamai.com/event-ctr/reference/get-events"
+        },
+        "responses": {
+          "200": {
+            "description": "List events.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "metadata": {
+                    "page": 1,
+                    "pageSize": 25,
+                    "totalPageCount": 1,
+                    "totalResultsCount": 1,
+                    "sort": [
+                      {
+                        "direction": "asc",
+                        "property": "name"
+                      }
+                    ]
+                  },
+                  "data": [
+                    {
+                      "customerEventId": "mmxxiii-owg",
+                      "end": "2022-02-28T16:41:41Z",
+                      "id": 1,
+                      "name": "2022 Winter Olympics",
+                      "start": "2022-02-08T11:00:00Z",
+                      "version": 1,
+                      "tags": [
+                        {
+                          "id": 1,
+                          "name": "winter"
+                        },
+                        {
+                          "id": 2,
+                          "name": "olympics"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Contains a list of events for the current account and contract type. It also provides context about the requested data based on the request's parameters.",
+                  "type": "object",
+                  "required": [
+                    "metadata",
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "description": "A collection of events.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Contains information about an event including a list of tags associated with this event.",
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "version",
+                          "name",
+                          "start",
+                          "end"
+                        ],
+                        "properties": {
+                          "customerEventId": {
+                            "description": "The user-specified ID for the event.",
+                            "type": "string"
+                          },
+                          "end": {
+                            "description": "The end date of the event.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "id": {
+                            "description": "The identifier of the event.",
+                            "type": "integer"
+                          },
+                          "name": {
+                            "description": "The name of the event.",
+                            "type": "string"
+                          },
+                          "start": {
+                            "description": "The start date of the event.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "tags": {
+                            "description": "A collection of tags associated with the event.",
+                            "type": "array",
+                            "items": {
+                              "additionalProperties": false,
+                              "description": "Contains information about a tag.",
+                              "type": "object",
+                              "required": [
+                                "id",
+                                "name"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "description": "The identifier of the tag.",
+                                  "type": "integer"
+                                },
+                                "name": {
+                                  "description": "The description of the tag.",
+                                  "type": "string"
+                                }
+                              },
+                              "x-akamai": {
+                                "file-path": "schemas/tag.yaml"
+                              }
+                            }
+                          },
+                          "version": {
+                            "description": "The version of the event.",
+                            "type": "integer"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/event.yaml"
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "additionalProperties": true,
+                      "description": "Collects context about the requested data based on the request's parameters.",
+                      "type": "object",
+                      "required": [
+                        "page",
+                        "pageSize",
+                        "sort",
+                        "totalResultsCount",
+                        "totalPageCount"
+                      ],
+                      "properties": {
+                        "page": {
+                          "description": "The number of the page.",
+                          "type": "integer"
+                        },
+                        "pageSize": {
+                          "description": "The number of records per page.",
+                          "type": "integer"
+                        },
+                        "sort": {
+                          "description": "Contains information about the sorting property and the sorting direction for the result data.",
+                          "type": "array",
+                          "items": {
+                            "additionalProperties": false,
+                            "type": "object",
+                            "required": [
+                              "property",
+                              "direction"
+                            ],
+                            "properties": {
+                              "direction": {
+                                "description": "The sorting direction for the result data. Either `asc` for alphabetically ascending order or `desc` for alphabetically descending order.",
+                                "type": "string",
+                                "enum": [
+                                  "asc",
+                                  "desc"
+                                ]
+                              },
+                              "property": {
+                                "description": "The sorting property for the result data.",
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "totalPageCount": {
+                          "description": "The total number of pages.",
+                          "type": "integer"
+                        },
+                        "totalResultsCount": {
+                          "description": "The total number of records.",
+                          "type": "integer"
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/page-metadata.yaml"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/event-page-200.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request. Details may be available in response body.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "status": 400,
+                  "title": "Bad Request",
+                  "type": "about:blank",
+                  "errors": [
+                    {
+                      "detail": "Invalid value: 'someProperty', parameter: sort",
+                      "parameter": "sort",
+                      "title": "Bad Request",
+                      "type": "about:blank",
+                      "value": "someProperty"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Provides information about an error response returned by the Event Center API.",
+                  "type": "object",
+                  "properties": {
+                    "problem": {
+                      "additionalProperties": true,
+                      "type": "object",
+                      "properties": {
+                        "detail": {
+                          "description": "A human-readable explanation specific to the problem.",
+                          "type": "string"
+                        },
+                        "errors": {
+                          "description": "A list of HTTP problem details. This field exists if there are multiple problems with a single request, and you want to call each of them out explicitly.",
+                          "type": "array",
+                          "items": {
+                            "description": "A further-nested problem object.",
+                            "type": "object",
+                            "x-akamai": {
+                              "file-path": "schemas/problem-nested.yaml"
+                            }
+                          }
+                        },
+                        "instance": {
+                          "description": "The URI for this error occurrence.",
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "The HTTP status code generated by the origin server.",
+                          "type": "integer"
+                        },
+                        "title": {
+                          "description": "A short, human-readable summary of the problem type.",
+                          "type": "string"
+                        },
+                        "type": {
+                          "description": "A URI reference that identifies the problem type.",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "The inclusive lower bound of a start date.",
+            "example": "{{minStart}}",
+            "in": "query",
+            "name": "minStart",
+            "schema": {
+              "example": "2021-02-28T16:41:41Z",
+              "format": "date-time",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/minStart-query.yaml"
+            }
+          },
+          {
+            "description": "The exclusive upper bound of a start date.",
+            "example": "{{maxStart}}",
+            "in": "query",
+            "name": "maxStart",
+            "schema": {
+              "example": "2021-02-28T16:41:41Z",
+              "format": "date-time",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/maxStart-query.yaml"
+            }
+          },
+          {
+            "description": "The exclusive lower bound of an end date.",
+            "example": "{{minEnd}}",
+            "in": "query",
+            "name": "minEnd",
+            "schema": {
+              "example": "2021-02-28T16:41:41Z",
+              "format": "date-time",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/minEnd-query.yaml"
+            }
+          },
+          {
+            "description": "The inclusive upper bound of an end date.",
+            "example": "{{maxEnd}}",
+            "in": "query",
+            "name": "maxEnd",
+            "schema": {
+              "example": "2021-02-28T16:41:41Z",
+              "format": "date-time",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/maxEnd-query.yaml"
+            }
+          },
+          {
+            "description": "A list of tags to filter event data by.",
+            "example": "{{tag}}",
+            "explode": true,
+            "in": "query",
+            "name": "tag",
+            "style": "form",
+            "schema": {
+              "example": "Tag 1",
+              "maxLength": 100,
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/tag-query.yaml"
+            }
+          },
+          {
+            "description": "A list of user-defined IDs to filter event data by.",
+            "example": "{{customerEventId}}",
+            "in": "query",
+            "name": "customerEventId",
+            "schema": {
+              "example": "id1",
+              "maxLength": 100,
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/customerEventId-query.yaml"
+            }
+          },
+          {
+            "description": "The number of the page. Page numbers start at 1.",
+            "example": "{{page}}",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/page-query.yaml"
+            }
+          },
+          {
+            "description": "The number of records on a page. By default, a page has 25 records. The maximum value is 1000 records on a page.",
+            "example": "{{pageSize}}",
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "default": 25,
+              "example": 25,
+              "maximum": 1000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/pageSize-query.yaml"
+            }
+          },
+          {
+            "description": "The sorting property and the sorting direction for the result data. Use `name` to sort by name. Use `asc` for alphabetically ascending order or `desc` for  alphabetically descending order.",
+            "example": "{{sort}}",
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "example": "name,asc",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/sort-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/events/{eventId}": {
+      "get": {
+        "description": "Returns details of the specified event.",
+        "operationId": "get-event",
+        "summary": "Get an event",
+        "tags": [
+          "Events"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Event Center API",
+          "url": "https://techdocs.akamai.com/event-ctr/reference/get-event"
+        },
+        "responses": {
+          "200": {
+            "description": "Get an event.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "audienceSize": 5000000,
+                  "createdBy": "jperez",
+                  "createdDate": "2021-11-28T16:41:41Z",
+                  "customerEventId": "mmxxiii-owg",
+                  "description": "MMXXIII Olympic Winter Games 2022",
+                  "end": "2022-02-08T20:00:00Z",
+                  "id": 1,
+                  "modifiedBy": "hgildong",
+                  "modifiedDate": "2021-12-28T16:41:41Z",
+                  "name": "2022 Winter Olympics",
+                  "start": "2022-02-08T08:00:00Z",
+                  "version": 0,
+                  "audienceLocations": [
+                    {
+                      "code": "PL",
+                      "name": "Poland"
+                    },
+                    {
+                      "code": "DE",
+                      "name": "Germany"
+                    }
+                  ],
+                  "coordinators": [
+                    {
+                      "firstName": "Vigilant",
+                      "lastName": "Snyder",
+                      "userName": "vsnyder"
+                    },
+                    {
+                      "firstName": "Taro",
+                      "lastName": "Yamada",
+                      "userName": "tyamada"
+                    }
+                  ],
+                  "objects": [
+                    {
+                      "id": 8765,
+                      "name": "8765 - WOG_WEB_QOS",
+                      "type": "QOS_REPORT_PACK"
+                    },
+                    {
+                      "id": 87654,
+                      "name": "olympics-open.com/winter",
+                      "type": "CP_CODE"
+                    },
+                    {
+                      "cpCode": 1234567,
+                      "hostname": "open-olympics.com",
+                      "id": 876,
+                      "type": "SRIP_SLOT"
+                    },
+                    {
+                      "cpCode": 1234567,
+                      "id": 12345,
+                      "name": "olympics_open_universal",
+                      "type": "UNIVERSAL_LIVE_STREAM",
+                      "bitrates": [
+                        5000,
+                        10000
+                      ]
+                    },
+                    {
+                      "cpCode": 1234567,
+                      "id": 6,
+                      "name": "olympics_open_flash",
+                      "type": "FLASH_LIVE_STREAM",
+                      "bitrates": [
+                        5000,
+                        10000
+                      ]
+                    }
+                  ],
+                  "tags": [
+                    {
+                      "id": 1,
+                      "name": "winter"
+                    },
+                    {
+                      "id": 2,
+                      "name": "olympics"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Contains detailed information about the event, including tags and objects associated with this event.",
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "end",
+                    "name",
+                    "start",
+                    "version",
+                    "createdDate",
+                    "createdBy",
+                    "modifiedDate",
+                    "modifiedBy"
+                  ],
+                  "properties": {
+                    "audienceLocations": {
+                      "description": "A collection of countries that match the geographic locations of audiences.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Provides information about a country that matches the geographic area of an audience.",
+                        "type": "object",
+                        "required": [
+                          "code",
+                          "name"
+                        ],
+                        "properties": {
+                          "code": {
+                            "description": "A two-letter ISO 3166 country code.",
+                            "type": "string"
+                          },
+                          "name": {
+                            "description": "Name of the country that corresponds to the country code.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/country.yaml"
+                        }
+                      }
+                    },
+                    "audienceSize": {
+                      "description": "The audience's size for the event.",
+                      "type": "integer"
+                    },
+                    "coordinators": {
+                      "description": "A collection of coordinators assigned to the event.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Contains information about the event's coordinator.",
+                        "type": "object",
+                        "required": [
+                          "userName",
+                          "firstName",
+                          "lastName"
+                        ],
+                        "properties": {
+                          "firstName": {
+                            "description": "The coordinator's first name.",
+                            "type": "string"
+                          },
+                          "lastName": {
+                            "description": "The coordinator's last name.",
+                            "type": "string"
+                          },
+                          "userName": {
+                            "description": "The coordinator's username as defined in Control Center.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/user.yaml"
+                        }
+                      }
+                    },
+                    "createdBy": {
+                      "description": "The person who created the event.",
+                      "type": "string"
+                    },
+                    "createdDate": {
+                      "description": "An ISO 8601 timestamp indicating the date and time when the event was created.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "customerEventId": {
+                      "description": "The user-specified ID for the event. See [Customer Event ID](https://techdocs.akamai.com/event-ctr/docs/concepts).",
+                      "type": "string"
+                    },
+                    "description": {
+                      "description": "The description of the event.",
+                      "type": "string"
+                    },
+                    "end": {
+                      "description": "An ISO 8601 timestamp indicating the end date of the event.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "id": {
+                      "description": "The identifier of the event.",
+                      "type": "integer"
+                    },
+                    "modifiedBy": {
+                      "description": "The person who last modified the event.",
+                      "type": "string"
+                    },
+                    "modifiedDate": {
+                      "description": "An ISO 8601 timestamp indicating the date and time when the event was last modified.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "name": {
+                      "description": "The name of the event.",
+                      "type": "string"
+                    },
+                    "objects": {
+                      "description": "A collection of objects associated with the event.",
+                      "type": "array",
+                      "items": {
+                        "description": "Contains information about objects associated with the event.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/event-object.yaml"
+                        },
+                        "oneOf": [
+                          {
+                            "additionalProperties": false,
+                            "description": "Contains information about a Content Provider (CP) code for the event.",
+                            "title": "CP code",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "name",
+                              "type"
+                            ],
+                            "properties": {
+                              "id": {
+                                "description": "The identifier of the CP code.",
+                                "type": "integer"
+                              },
+                              "name": {
+                                "description": "The name of the CP code.",
+                                "type": "string"
+                              },
+                              "type": {
+                                "description": "The type of event object. `CP_CODE` in this case.",
+                                "type": "string",
+                                "enum": [
+                                  "CP_CODE"
+                                ]
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/cp-code.yaml"
+                            }
+                          },
+                          {
+                            "additionalProperties": false,
+                            "description": "Contains information about a Flash Live stream associated with the event.",
+                            "title": "Flash Live stream",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "type",
+                              "name",
+                              "cpCode"
+                            ],
+                            "properties": {
+                              "bitrates": {
+                                "description": "A list of expected bit rates in kbit/s for the stream.",
+                                "type": "array",
+                                "items": {
+                                  "type": "integer"
+                                }
+                              },
+                              "cpCode": {
+                                "description": "The Content Provider code assigned to the stream.",
+                                "type": "integer"
+                              },
+                              "id": {
+                                "description": "The identifier of the Flash Live stream.",
+                                "type": "integer"
+                              },
+                              "name": {
+                                "description": "The name of the stream.",
+                                "type": "string"
+                              },
+                              "type": {
+                                "description": "The type of stream. `FLASH_LIVE_STREAM` in this case.",
+                                "type": "string",
+                                "enum": [
+                                  "FLASH_LIVE_STREAM"
+                                ]
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/flash-live-stream.yaml"
+                            }
+                          },
+                          {
+                            "additionalProperties": false,
+                            "description": "Contains information about a Universal Live stream associated with the event.",
+                            "title": "Universal Live stream",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "type",
+                              "name",
+                              "cpCode"
+                            ],
+                            "properties": {
+                              "bitrates": {
+                                "description": "A list of expected bit rates in kbit/s for the stream.",
+                                "type": "array",
+                                "items": {
+                                  "type": "integer"
+                                }
+                              },
+                              "cpCode": {
+                                "description": "The CP code assigned to the Universal Live stream.",
+                                "type": "integer"
+                              },
+                              "id": {
+                                "description": "The identifier of the Universal Live stream.",
+                                "type": "integer"
+                              },
+                              "name": {
+                                "description": "The name of the Universal Live stream.",
+                                "type": "string"
+                              },
+                              "type": {
+                                "description": "The type of stream. `UNIVERSAL_LIVE_STREAM` in this case.",
+                                "type": "string",
+                                "enum": [
+                                  "UNIVERSAL_LIVE_STREAM"
+                                ]
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/universal-live-stream.yaml"
+                            }
+                          },
+                          {
+                            "additionalProperties": false,
+                            "description": "Contains information about a Sure Route IP (SRIP) slot associated with the event.",
+                            "title": "Sure Route slot",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "type",
+                              "description",
+                              "cpCode"
+                            ],
+                            "properties": {
+                              "cpCode": {
+                                "description": "The CP code assigned to the SRIP slot.",
+                                "type": "integer"
+                              },
+                              "hostname": {
+                                "description": "The Accelerated hostname associated with the SRIP slot.",
+                                "type": "string"
+                              },
+                              "id": {
+                                "description": "The identifier of the SRIP slot.",
+                                "type": "integer"
+                              },
+                              "type": {
+                                "description": "The type of object. `SRIP_SLOT` in this case.",
+                                "type": "string",
+                                "enum": [
+                                  "SRIP_SLOT"
+                                ]
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/srip-slot.yaml"
+                            }
+                          },
+                          {
+                            "additionalProperties": false,
+                            "description": "Contains information about a Quality of Service (QoS) report pack associated with the event.",
+                            "title": "QoS report pack",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "type",
+                              "name"
+                            ],
+                            "properties": {
+                              "id": {
+                                "description": "The identifier of the QoS report pack.",
+                                "type": "integer"
+                              },
+                              "name": {
+                                "description": "The name of the QoS report pack.",
+                                "type": "string"
+                              },
+                              "type": {
+                                "description": "The type of object. `QOS_REPORT_PACK` in this case.",
+                                "type": "string",
+                                "enum": [
+                                  "QOS_REPORT_PACK"
+                                ]
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/qos-report-pack.yaml"
+                            }
+                          },
+                          {
+                            "additionalProperties": false,
+                            "description": "Contains information about a Media Service Live 4 (MSL4) stream associated with the event.",
+                            "title": "MSL4 stream",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "type",
+                              "name",
+                              "cpCode"
+                            ],
+                            "properties": {
+                              "bitrates": {
+                                "description": "A list of expected bit rates in kbit/s for the stream.",
+                                "type": "array",
+                                "items": {
+                                  "type": "integer"
+                                }
+                              },
+                              "cpCode": {
+                                "description": "The ingest Content Provider code assigned to the stream.",
+                                "type": "integer"
+                              },
+                              "id": {
+                                "description": "The identifier of the MSL4 stream.",
+                                "type": "integer"
+                              },
+                              "name": {
+                                "description": "The name of the MSL4 stream.",
+                                "type": "string"
+                              },
+                              "type": {
+                                "description": "The type of stream. `MSL4_STREAM` in this case.",
+                                "type": "string",
+                                "enum": [
+                                  "MSL4_STREAM"
+                                ]
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/msl4-stream.yaml"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "start": {
+                      "description": "An ISO 8601 timestamp indicating the start date of the event.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "tags": {
+                      "description": "A collection of tags associated with the event.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Contains information about a tag.",
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "name"
+                        ],
+                        "properties": {
+                          "id": {
+                            "description": "The identifier of the tag.",
+                            "type": "integer"
+                          },
+                          "name": {
+                            "description": "The description of the tag.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/tag.yaml"
+                        }
+                      }
+                    },
+                    "version": {
+                      "description": "The version of the event.",
+                      "type": "integer"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/event-200.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Insufficient permissions to access event or associated objects.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Insufficient permissions to access UniversalLiveStream entity",
+                  "status": 403,
+                  "title": "Forbidden",
+                  "type": "about:blank"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Provides information about an error response returned by the Event Center API.",
+                  "type": "object",
+                  "properties": {
+                    "problem": {
+                      "additionalProperties": true,
+                      "type": "object",
+                      "properties": {
+                        "detail": {
+                          "description": "A human-readable explanation specific to the problem.",
+                          "type": "string"
+                        },
+                        "errors": {
+                          "description": "A list of HTTP problem details. This field exists if there are multiple problems with a single request, and you want to call each of them out explicitly.",
+                          "type": "array",
+                          "items": {
+                            "description": "A further-nested problem object.",
+                            "type": "object",
+                            "x-akamai": {
+                              "file-path": "schemas/problem-nested.yaml"
+                            }
+                          }
+                        },
+                        "instance": {
+                          "description": "The URI for this error occurrence.",
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "The HTTP status code generated by the origin server.",
+                          "type": "integer"
+                        },
+                        "title": {
+                          "description": "A short, human-readable summary of the problem type.",
+                          "type": "string"
+                        },
+                        "type": {
+                          "description": "A URI reference that identifies the problem type.",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Requested event was not found.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Event entity with id 11 not found",
+                  "status": 404,
+                  "title": "Not Found",
+                  "type": "about:blank"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Provides information about an error response returned by the Event Center API.",
+                  "type": "object",
+                  "properties": {
+                    "problem": {
+                      "additionalProperties": true,
+                      "type": "object",
+                      "properties": {
+                        "detail": {
+                          "description": "A human-readable explanation specific to the problem.",
+                          "type": "string"
+                        },
+                        "errors": {
+                          "description": "A list of HTTP problem details. This field exists if there are multiple problems with a single request, and you want to call each of them out explicitly.",
+                          "type": "array",
+                          "items": {
+                            "description": "A further-nested problem object.",
+                            "type": "object",
+                            "x-akamai": {
+                              "file-path": "schemas/problem-nested.yaml"
+                            }
+                          }
+                        },
+                        "instance": {
+                          "description": "The URI for this error occurrence.",
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "The HTTP status code generated by the origin server.",
+                          "type": "integer"
+                        },
+                        "title": {
+                          "description": "A short, human-readable summary of the problem type.",
+                          "type": "string"
+                        },
+                        "type": {
+                          "description": "A URI reference that identifies the problem type.",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "description": "Updates the specified event.",
+        "operationId": "put-event",
+        "summary": "Update an event",
+        "tags": [
+          "Events"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Event Center API",
+          "url": "https://techdocs.akamai.com/event-ctr/reference/put-event"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "audienceSize": 5000000,
+                "customerEventId": "mmxxiii-owg",
+                "description": "MMXXIII Olympic Winter Games 2022",
+                "end": "2022-02-08T20:00:00Z",
+                "name": "2022 Winter Olympics",
+                "start": "2022-02-08T08:00:00Z",
+                "version": 0,
+                "audienceLocations": [
+                  "PL",
+                  "DE"
+                ],
+                "coordinators": [
+                  "vsnyder",
+                  "tyamada"
+                ],
+                "tags": [
+                  "winter",
+                  "olympics"
+                ],
+                "objects": [
+                  {
+                    "id": 8765,
+                    "type": "QOS_REPORT_PACK"
+                  },
+                  {
+                    "id": 87654,
+                    "type": "CP_CODE"
+                  },
+                  {
+                    "id": 876,
+                    "type": "SRIP_SLOT"
+                  },
+                  {
+                    "id": 5,
+                    "type": "FLASH_LIVE_STREAM",
+                    "bitrates": [
+                      5000,
+                      10000
+                    ]
+                  },
+                  {
+                    "id": 12345,
+                    "type": "UNIVERSAL_LIVE_STREAM",
+                    "bitrates": [
+                      5000,
+                      10000
+                    ]
+                  }
+                ]
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Contains information about the request body parameters that you can specify when updating an event. It also includes tags and objects that you can associate with an event.",
+                "type": "object",
+                "required": [
+                  "name",
+                  "start",
+                  "end",
+                  "version"
+                ],
+                "properties": {
+                  "audienceLocations": {
+                    "description": "A list of two-letter ISO 3166 country codes that indicate geographic areas of audiences. This array can be up to 20 unique items.",
+                    "maxItems": 20,
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "maxLength": 2,
+                      "minLength": 2,
+                      "type": "string"
+                    }
+                  },
+                  "audienceSize": {
+                    "description": "The audience's size for the event. The minimum value is 1.",
+                    "example": "{{audienceSize}}",
+                    "type": "integer",
+                    "x-annotation-oas-minimum": 1
+                  },
+                  "coordinators": {
+                    "description": "A list of up to 20 Luna Control Center usernames of those who serve as the event's coordinators.",
+                    "maxItems": 20,
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "customerEventId": {
+                    "description": "The user-specified ID for the event. This ID can be up to 100 characters long. [Customer Event ID](https://techdocs.akamai.com/event-ctr/docs/concepts).",
+                    "example": "{{customerEventId}}",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "The description of the event. This description can be up to 2000 characters long.",
+                    "example": "{{description}}",
+                    "type": "string"
+                  },
+                  "end": {
+                    "description": "An ISO 8601 timestamp indicating the end date of the event.",
+                    "example": "{{end}}",
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "name": {
+                    "description": "The name of the event. This name can be up to 750 characters long.",
+                    "example": "{{name}}",
+                    "maxLength": 750,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "objects": {
+                    "description": "A collection of objects associated with the event. This array can include only unique items.",
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "additionalProperties": false,
+                      "description": "Contains information about the domain object related to an Akamai product that you can associate with the event.",
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "type"
+                      ],
+                      "properties": {
+                        "bitrates": {
+                          "description": "A list of expected bit rates in kbit/s for the stream. Specify for `FLASH_LIVE_STREAM`, `UNIVERSAL_LIVE_STREAM`, and `MSL4_STREAM` objects. This array can be up to 20 unique items.",
+                          "maxItems": 20,
+                          "nullable": true,
+                          "type": "array",
+                          "uniqueItems": true,
+                          "items": {
+                            "type": "integer"
+                          }
+                        },
+                        "id": {
+                          "description": "The identifier of the object.",
+                          "type": "integer"
+                        },
+                        "type": {
+                          "description": "The type of object for the event. Use `QOS_REPORT_PACK` for quality report pack, `CP_CODE` for a Content Provider code, `SRIP_SLOT` for a Sure Route IP slot, `FLASH_LIVE_STREAM` for a Flash Live stream, `UNIVERSAL_LIVE_STREAM` for a Universal Live stream, or `MSL4_STREAM` for Media Services Live v4.1 stream.",
+                          "type": "string",
+                          "enum": [
+                            "QOS_REPORT_PACK",
+                            "CP_CODE",
+                            "SRIP_SLOT",
+                            "FLASH_LIVE_STREAM",
+                            "UNIVERSAL_LIVE_STREAM",
+                            "MSL4_STREAM"
+                          ]
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/event-object-assign.yaml"
+                      }
+                    }
+                  },
+                  "start": {
+                    "description": "An ISO 8601 timestamp indicating the start date of the event.",
+                    "example": "{{start}}",
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "tags": {
+                    "description": "A list of tags associated with the event. A tag can be up to 100 characters long. This array can be up to 20 unique items.",
+                    "maxItems": 20,
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "maxLength": 100,
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "version": {
+                    "description": "The version of the event. Use the `version` of the event sent in the original server's response. See [Event Version](https://techdocs.akamai.com/event-ctr/docs/concepts).",
+                    "example": "{{version}}",
+                    "type": "integer"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/event-put.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "audienceSize": 5000000,
+                  "createdBy": "adevi",
+                  "createdDate": "2021-11-28T16:41:41Z",
+                  "customerEventId": "mmxxiii-owg",
+                  "description": "MMXXIII Olympic Winter Games 2022",
+                  "end": "2022-02-08T20:00:00Z",
+                  "id": 1,
+                  "modifiedBy": "mrossi",
+                  "modifiedDate": "2021-12-28T16:41:41Z",
+                  "name": "2022 Winter Olympics",
+                  "start": "2022-02-08T08:00:00Z",
+                  "version": 0,
+                  "audienceLocations": [
+                    {
+                      "code": "PL",
+                      "name": "Poland"
+                    },
+                    {
+                      "code": "DE",
+                      "name": "Germany"
+                    }
+                  ],
+                  "coordinators": [
+                    {
+                      "firstName": "Vigilant",
+                      "lastName": "Snyder",
+                      "userName": "vsnyder"
+                    },
+                    {
+                      "firstName": "Taro",
+                      "lastName": "Yamada",
+                      "userName": "tyamada"
+                    }
+                  ],
+                  "objects": [
+                    {
+                      "id": 8765,
+                      "name": "8765 - WOG_WEB_QOS",
+                      "type": "QOS_REPORT_PACK"
+                    },
+                    {
+                      "id": 87654,
+                      "name": "olympics-open.com/winter",
+                      "type": "CP_CODE"
+                    },
+                    {
+                      "cpCode": 1234567,
+                      "hostname": "open-olympics.com",
+                      "id": 876,
+                      "type": "SRIP_SLOT"
+                    },
+                    {
+                      "cpCode": 1234567,
+                      "id": 12345,
+                      "name": "olympics_open_universal",
+                      "type": "UNIVERSAL_LIVE_STREAM",
+                      "bitrates": [
+                        5000,
+                        10000
+                      ]
+                    },
+                    {
+                      "cpCode": 1234567,
+                      "id": 6,
+                      "name": "olympics_open_flash",
+                      "type": "FLASH_LIVE_STREAM",
+                      "bitrates": [
+                        5000,
+                        10000
+                      ]
+                    }
+                  ],
+                  "tags": [
+                    {
+                      "id": 1,
+                      "name": "winter"
+                    },
+                    {
+                      "id": 2,
+                      "name": "olympics"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Contains detailed information about the event, including tags and objects associated with this event.",
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "end",
+                    "name",
+                    "start",
+                    "version",
+                    "createdDate",
+                    "createdBy",
+                    "modifiedDate",
+                    "modifiedBy"
+                  ],
+                  "properties": {
+                    "audienceLocations": {
+                      "description": "A collection of countries that match the geographic locations of audiences.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Provides information about a country that matches the geographic area of an audience.",
+                        "type": "object",
+                        "required": [
+                          "code",
+                          "name"
+                        ],
+                        "properties": {
+                          "code": {
+                            "description": "A two-letter ISO 3166 country code.",
+                            "type": "string"
+                          },
+                          "name": {
+                            "description": "Name of the country that corresponds to the country code.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/country.yaml"
+                        }
+                      }
+                    },
+                    "audienceSize": {
+                      "description": "The audience's size for the event.",
+                      "type": "integer"
+                    },
+                    "coordinators": {
+                      "description": "A collection of coordinators assigned to the event.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Contains information about the event's coordinator.",
+                        "type": "object",
+                        "required": [
+                          "userName",
+                          "firstName",
+                          "lastName"
+                        ],
+                        "properties": {
+                          "firstName": {
+                            "description": "The coordinator's first name.",
+                            "type": "string"
+                          },
+                          "lastName": {
+                            "description": "The coordinator's last name.",
+                            "type": "string"
+                          },
+                          "userName": {
+                            "description": "The coordinator's username as defined in Control Center.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/user.yaml"
+                        }
+                      }
+                    },
+                    "createdBy": {
+                      "description": "The person who created the event.",
+                      "type": "string"
+                    },
+                    "createdDate": {
+                      "description": "An ISO 8601 timestamp indicating the date and time when the event was created.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "customerEventId": {
+                      "description": "The user-specified ID for the event. See [Customer Event ID](https://techdocs.akamai.com/event-ctr/docs/concepts).",
+                      "type": "string"
+                    },
+                    "description": {
+                      "description": "The description of the event.",
+                      "type": "string"
+                    },
+                    "end": {
+                      "description": "An ISO 8601 timestamp indicating the end date of the event.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "id": {
+                      "description": "The identifier of the event.",
+                      "type": "integer"
+                    },
+                    "modifiedBy": {
+                      "description": "The person who last modified the event.",
+                      "type": "string"
+                    },
+                    "modifiedDate": {
+                      "description": "An ISO 8601 timestamp indicating the date and time when the event was last modified.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "name": {
+                      "description": "The name of the event.",
+                      "type": "string"
+                    },
+                    "objects": {
+                      "description": "A collection of objects associated with the event.",
+                      "type": "array",
+                      "items": {
+                        "description": "Contains information about objects associated with the event.",
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/event-object.yaml"
+                        },
+                        "oneOf": [
+                          {
+                            "additionalProperties": false,
+                            "description": "Contains information about a Content Provider (CP) code for the event.",
+                            "title": "CP code",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "name",
+                              "type"
+                            ],
+                            "properties": {
+                              "id": {
+                                "description": "The identifier of the CP code.",
+                                "type": "integer"
+                              },
+                              "name": {
+                                "description": "The name of the CP code.",
+                                "type": "string"
+                              },
+                              "type": {
+                                "description": "The type of event object. `CP_CODE` in this case.",
+                                "type": "string",
+                                "enum": [
+                                  "CP_CODE"
+                                ]
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/cp-code.yaml"
+                            }
+                          },
+                          {
+                            "additionalProperties": false,
+                            "description": "Contains information about a Flash Live stream associated with the event.",
+                            "title": "Flash Live stream",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "type",
+                              "name",
+                              "cpCode"
+                            ],
+                            "properties": {
+                              "bitrates": {
+                                "description": "A list of expected bit rates in kbit/s for the stream.",
+                                "type": "array",
+                                "items": {
+                                  "type": "integer"
+                                }
+                              },
+                              "cpCode": {
+                                "description": "The Content Provider code assigned to the stream.",
+                                "type": "integer"
+                              },
+                              "id": {
+                                "description": "The identifier of the Flash Live stream.",
+                                "type": "integer"
+                              },
+                              "name": {
+                                "description": "The name of the stream.",
+                                "type": "string"
+                              },
+                              "type": {
+                                "description": "The type of stream. `FLASH_LIVE_STREAM` in this case.",
+                                "type": "string",
+                                "enum": [
+                                  "FLASH_LIVE_STREAM"
+                                ]
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/flash-live-stream.yaml"
+                            }
+                          },
+                          {
+                            "additionalProperties": false,
+                            "description": "Contains information about a Universal Live stream associated with the event.",
+                            "title": "Universal Live stream",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "type",
+                              "name",
+                              "cpCode"
+                            ],
+                            "properties": {
+                              "bitrates": {
+                                "description": "A list of expected bit rates in kbit/s for the stream.",
+                                "type": "array",
+                                "items": {
+                                  "type": "integer"
+                                }
+                              },
+                              "cpCode": {
+                                "description": "The CP code assigned to the Universal Live stream.",
+                                "type": "integer"
+                              },
+                              "id": {
+                                "description": "The identifier of the Universal Live stream.",
+                                "type": "integer"
+                              },
+                              "name": {
+                                "description": "The name of the Universal Live stream.",
+                                "type": "string"
+                              },
+                              "type": {
+                                "description": "The type of stream. `UNIVERSAL_LIVE_STREAM` in this case.",
+                                "type": "string",
+                                "enum": [
+                                  "UNIVERSAL_LIVE_STREAM"
+                                ]
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/universal-live-stream.yaml"
+                            }
+                          },
+                          {
+                            "additionalProperties": false,
+                            "description": "Contains information about a Sure Route IP (SRIP) slot associated with the event.",
+                            "title": "Sure Route slot",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "type",
+                              "description",
+                              "cpCode"
+                            ],
+                            "properties": {
+                              "cpCode": {
+                                "description": "The CP code assigned to the SRIP slot.",
+                                "type": "integer"
+                              },
+                              "hostname": {
+                                "description": "The Accelerated hostname associated with the SRIP slot.",
+                                "type": "string"
+                              },
+                              "id": {
+                                "description": "The identifier of the SRIP slot.",
+                                "type": "integer"
+                              },
+                              "type": {
+                                "description": "The type of object. `SRIP_SLOT` in this case.",
+                                "type": "string",
+                                "enum": [
+                                  "SRIP_SLOT"
+                                ]
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/srip-slot.yaml"
+                            }
+                          },
+                          {
+                            "additionalProperties": false,
+                            "description": "Contains information about a Quality of Service (QoS) report pack associated with the event.",
+                            "title": "QoS report pack",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "type",
+                              "name"
+                            ],
+                            "properties": {
+                              "id": {
+                                "description": "The identifier of the QoS report pack.",
+                                "type": "integer"
+                              },
+                              "name": {
+                                "description": "The name of the QoS report pack.",
+                                "type": "string"
+                              },
+                              "type": {
+                                "description": "The type of object. `QOS_REPORT_PACK` in this case.",
+                                "type": "string",
+                                "enum": [
+                                  "QOS_REPORT_PACK"
+                                ]
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/qos-report-pack.yaml"
+                            }
+                          },
+                          {
+                            "additionalProperties": false,
+                            "description": "Contains information about a Media Service Live 4 (MSL4) stream associated with the event.",
+                            "title": "MSL4 stream",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "type",
+                              "name",
+                              "cpCode"
+                            ],
+                            "properties": {
+                              "bitrates": {
+                                "description": "A list of expected bit rates in kbit/s for the stream.",
+                                "type": "array",
+                                "items": {
+                                  "type": "integer"
+                                }
+                              },
+                              "cpCode": {
+                                "description": "The ingest Content Provider code assigned to the stream.",
+                                "type": "integer"
+                              },
+                              "id": {
+                                "description": "The identifier of the MSL4 stream.",
+                                "type": "integer"
+                              },
+                              "name": {
+                                "description": "The name of the MSL4 stream.",
+                                "type": "string"
+                              },
+                              "type": {
+                                "description": "The type of stream. `MSL4_STREAM` in this case.",
+                                "type": "string",
+                                "enum": [
+                                  "MSL4_STREAM"
+                                ]
+                              }
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/msl4-stream.yaml"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "start": {
+                      "description": "An ISO 8601 timestamp indicating the start date of the event.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "tags": {
+                      "description": "A collection of tags associated with the event.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Contains information about a tag.",
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "name"
+                        ],
+                        "properties": {
+                          "id": {
+                            "description": "The identifier of the tag.",
+                            "type": "integer"
+                          },
+                          "name": {
+                            "description": "The description of the tag.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/tag.yaml"
+                        }
+                      }
+                    },
+                    "version": {
+                      "description": "The version of the event.",
+                      "type": "integer"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/event-200.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request. Details may be available in response body.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "status": 400,
+                  "title": "Constraint violation",
+                  "type": "/event-center/error-types/constraint-violation",
+                  "errors": [
+                    {
+                      "detail": "end must not be null",
+                      "path": "end",
+                      "title": "Constraint violation",
+                      "type": "/event-center/error-types/constraint-violation",
+                      "value": null
+                    },
+                    {
+                      "detail": "start must not be null",
+                      "path": "start",
+                      "title": "Constraint violation",
+                      "type": "/event-center/error-types/constraint-violation",
+                      "value": null
+                    },
+                    {
+                      "detail": "name must not be blank",
+                      "path": "name",
+                      "title": "Constraint violation",
+                      "type": "/event-center/error-types/constraint-violation",
+                      "value": null
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Provides information about an error response returned by the Event Center API.",
+                  "type": "object",
+                  "properties": {
+                    "problem": {
+                      "additionalProperties": true,
+                      "type": "object",
+                      "properties": {
+                        "detail": {
+                          "description": "A human-readable explanation specific to the problem.",
+                          "type": "string"
+                        },
+                        "errors": {
+                          "description": "A list of HTTP problem details. This field exists if there are multiple problems with a single request, and you want to call each of them out explicitly.",
+                          "type": "array",
+                          "items": {
+                            "description": "A further-nested problem object.",
+                            "type": "object",
+                            "x-akamai": {
+                              "file-path": "schemas/problem-nested.yaml"
+                            }
+                          }
+                        },
+                        "instance": {
+                          "description": "The URI for this error occurrence.",
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "The HTTP status code generated by the origin server.",
+                          "type": "integer"
+                        },
+                        "title": {
+                          "description": "A short, human-readable summary of the problem type.",
+                          "type": "string"
+                        },
+                        "type": {
+                          "description": "A URI reference that identifies the problem type.",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Insufficient permissions to access event or associated objects.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Insufficient permissions to modify Event entity",
+                  "status": 403,
+                  "title": "Forbidden",
+                  "type": "about:blank"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Provides information about an error response returned by the Event Center API.",
+                  "type": "object",
+                  "properties": {
+                    "problem": {
+                      "additionalProperties": true,
+                      "type": "object",
+                      "properties": {
+                        "detail": {
+                          "description": "A human-readable explanation specific to the problem.",
+                          "type": "string"
+                        },
+                        "errors": {
+                          "description": "A list of HTTP problem details. This field exists if there are multiple problems with a single request, and you want to call each of them out explicitly.",
+                          "type": "array",
+                          "items": {
+                            "description": "A further-nested problem object.",
+                            "type": "object",
+                            "x-akamai": {
+                              "file-path": "schemas/problem-nested.yaml"
+                            }
+                          }
+                        },
+                        "instance": {
+                          "description": "The URI for this error occurrence.",
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "The HTTP status code generated by the origin server.",
+                          "type": "integer"
+                        },
+                        "title": {
+                          "description": "A short, human-readable summary of the problem type.",
+                          "type": "string"
+                        },
+                        "type": {
+                          "description": "A URI reference that identifies the problem type.",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Requested event was not found.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Event entity with id 11 not found",
+                  "status": 404,
+                  "title": "Not Found",
+                  "type": "about:blank"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Provides information about an error response returned by the Event Center API.",
+                  "type": "object",
+                  "properties": {
+                    "problem": {
+                      "additionalProperties": true,
+                      "type": "object",
+                      "properties": {
+                        "detail": {
+                          "description": "A human-readable explanation specific to the problem.",
+                          "type": "string"
+                        },
+                        "errors": {
+                          "description": "A list of HTTP problem details. This field exists if there are multiple problems with a single request, and you want to call each of them out explicitly.",
+                          "type": "array",
+                          "items": {
+                            "description": "A further-nested problem object.",
+                            "type": "object",
+                            "x-akamai": {
+                              "file-path": "schemas/problem-nested.yaml"
+                            }
+                          }
+                        },
+                        "instance": {
+                          "description": "The URI for this error occurrence.",
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "The HTTP status code generated by the origin server.",
+                          "type": "integer"
+                        },
+                        "title": {
+                          "description": "A short, human-readable summary of the problem type.",
+                          "type": "string"
+                        },
+                        "type": {
+                          "description": "A URI reference that identifies the problem type.",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Event was modified after you retrieved it. Please refetch the event, reconcile possible differences and resubmit the request.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Version mismatch for Event entity, expected version: 0, but got: 1",
+                  "status": 409,
+                  "title": "Concurrent modification",
+                  "type": "/event-center/error-types/concurrent-modification"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Provides information about an error response returned by the Event Center API.",
+                  "type": "object",
+                  "properties": {
+                    "problem": {
+                      "additionalProperties": true,
+                      "type": "object",
+                      "properties": {
+                        "detail": {
+                          "description": "A human-readable explanation specific to the problem.",
+                          "type": "string"
+                        },
+                        "errors": {
+                          "description": "A list of HTTP problem details. This field exists if there are multiple problems with a single request, and you want to call each of them out explicitly.",
+                          "type": "array",
+                          "items": {
+                            "description": "A further-nested problem object.",
+                            "type": "object",
+                            "x-akamai": {
+                              "file-path": "schemas/problem-nested.yaml"
+                            }
+                          }
+                        },
+                        "instance": {
+                          "description": "The URI for this error occurrence.",
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "The HTTP status code generated by the origin server.",
+                          "type": "integer"
+                        },
+                        "title": {
+                          "description": "A short, human-readable summary of the problem type.",
+                          "type": "string"
+                        },
+                        "type": {
+                          "description": "A URI reference that identifies the problem type.",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "description": "Deletes the specified event.",
+        "operationId": "delete-event",
+        "summary": "Remove an event",
+        "tags": [
+          "Events"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Event Center API",
+          "url": "https://techdocs.akamai.com/event-ctr/reference/delete-event"
+        },
+        "responses": {
+          "204": {
+            "description": "Event was removed successfully.",
+            "content": {
+              "*/*": {}
+            }
+          },
+          "403": {
+            "description": "Insufficient permissions to access event or associated objects.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Insufficient permissions to modify Event entity",
+                  "status": 403,
+                  "title": "Forbidden",
+                  "type": "about:blank"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Provides information about an error response returned by the Event Center API.",
+                  "type": "object",
+                  "properties": {
+                    "problem": {
+                      "additionalProperties": true,
+                      "type": "object",
+                      "properties": {
+                        "detail": {
+                          "description": "A human-readable explanation specific to the problem.",
+                          "type": "string"
+                        },
+                        "errors": {
+                          "description": "A list of HTTP problem details. This field exists if there are multiple problems with a single request, and you want to call each of them out explicitly.",
+                          "type": "array",
+                          "items": {
+                            "description": "A further-nested problem object.",
+                            "type": "object",
+                            "x-akamai": {
+                              "file-path": "schemas/problem-nested.yaml"
+                            }
+                          }
+                        },
+                        "instance": {
+                          "description": "The URI for this error occurrence.",
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "The HTTP status code generated by the origin server.",
+                          "type": "integer"
+                        },
+                        "title": {
+                          "description": "A short, human-readable summary of the problem type.",
+                          "type": "string"
+                        },
+                        "type": {
+                          "description": "A URI reference that identifies the problem type.",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event wasn't found.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Event entity with id 11 not found",
+                  "status": 404,
+                  "title": "Not Found",
+                  "type": "about:blank"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Provides information about an error response returned by the Event Center API.",
+                  "type": "object",
+                  "properties": {
+                    "problem": {
+                      "additionalProperties": true,
+                      "type": "object",
+                      "properties": {
+                        "detail": {
+                          "description": "A human-readable explanation specific to the problem.",
+                          "type": "string"
+                        },
+                        "errors": {
+                          "description": "A list of HTTP problem details. This field exists if there are multiple problems with a single request, and you want to call each of them out explicitly.",
+                          "type": "array",
+                          "items": {
+                            "description": "A further-nested problem object.",
+                            "type": "object",
+                            "x-akamai": {
+                              "file-path": "schemas/problem-nested.yaml"
+                            }
+                          }
+                        },
+                        "instance": {
+                          "description": "The URI for this error occurrence.",
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "The HTTP status code generated by the origin server.",
+                          "type": "integer"
+                        },
+                        "title": {
+                          "description": "A short, human-readable summary of the problem type.",
+                          "type": "string"
+                        },
+                        "type": {
+                          "description": "A URI reference that identifies the problem type.",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The identifier of the event.",
+          "example": "{{eventId}}",
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "schema": {
+            "example": 1,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/eventId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/tags": {
+      "get": {
+        "description": "Returns a list of all event tags for the current account and contract type. This call supports paging and sorting of the result data.",
+        "operationId": "get-tags",
+        "summary": "List tags",
+        "tags": [
+          "Tags"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Event Center API",
+          "url": "https://techdocs.akamai.com/event-ctr/reference/get-tags"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "metadata": {
+                    "page": 1,
+                    "pageSize": 25,
+                    "totalPageCount": 1,
+                    "totalResultsCount": 2,
+                    "sort": [
+                      {
+                        "direction": "asc",
+                        "property": "name"
+                      }
+                    ]
+                  },
+                  "data": [
+                    {
+                      "id": 1,
+                      "name": "Tag 1"
+                    },
+                    {
+                      "id": 2,
+                      "name": "Tag 2"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Contains a list of tags for the current account and contract type. It also provides context about the requested data based on the request's parameters.",
+                  "type": "object",
+                  "required": [
+                    "metadata",
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "description": "A collection of tags associated with the current account and contract type.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Contains information about a tag.",
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "name"
+                        ],
+                        "properties": {
+                          "id": {
+                            "description": "The identifier of the tag.",
+                            "type": "integer"
+                          },
+                          "name": {
+                            "description": "The description of the tag.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/tag.yaml"
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "additionalProperties": true,
+                      "description": "Collects context about the requested data based on the request's parameters.",
+                      "type": "object",
+                      "required": [
+                        "page",
+                        "pageSize",
+                        "sort",
+                        "totalResultsCount",
+                        "totalPageCount"
+                      ],
+                      "properties": {
+                        "page": {
+                          "description": "The number of the page.",
+                          "type": "integer"
+                        },
+                        "pageSize": {
+                          "description": "The number of records per page.",
+                          "type": "integer"
+                        },
+                        "sort": {
+                          "description": "Contains information about the sorting property and the sorting direction for the result data.",
+                          "type": "array",
+                          "items": {
+                            "additionalProperties": false,
+                            "type": "object",
+                            "required": [
+                              "property",
+                              "direction"
+                            ],
+                            "properties": {
+                              "direction": {
+                                "description": "The sorting direction for the result data. Either `asc` for alphabetically ascending order or `desc` for alphabetically descending order.",
+                                "type": "string",
+                                "enum": [
+                                  "asc",
+                                  "desc"
+                                ]
+                              },
+                              "property": {
+                                "description": "The sorting property for the result data.",
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "totalPageCount": {
+                          "description": "The total number of pages.",
+                          "type": "integer"
+                        },
+                        "totalResultsCount": {
+                          "description": "The total number of records.",
+                          "type": "integer"
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/page-metadata.yaml"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/tag-page-200.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request. Details may be available in response body.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "status": 400,
+                  "title": "Bad Request",
+                  "type": "about:blank",
+                  "errors": [
+                    {
+                      "detail": "Invalid value: 'someProperty', parameter: sort",
+                      "parameter": "sort",
+                      "title": "Bad Request",
+                      "type": "about:blank",
+                      "value": "someProperty"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Provides information about an error response returned by the Event Center API.",
+                  "type": "object",
+                  "properties": {
+                    "problem": {
+                      "additionalProperties": true,
+                      "type": "object",
+                      "properties": {
+                        "detail": {
+                          "description": "A human-readable explanation specific to the problem.",
+                          "type": "string"
+                        },
+                        "errors": {
+                          "description": "A list of HTTP problem details. This field exists if there are multiple problems with a single request, and you want to call each of them out explicitly.",
+                          "type": "array",
+                          "items": {
+                            "description": "A further-nested problem object.",
+                            "type": "object",
+                            "x-akamai": {
+                              "file-path": "schemas/problem-nested.yaml"
+                            }
+                          }
+                        },
+                        "instance": {
+                          "description": "The URI for this error occurrence.",
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "The HTTP status code generated by the origin server.",
+                          "type": "integer"
+                        },
+                        "title": {
+                          "description": "A short, human-readable summary of the problem type.",
+                          "type": "string"
+                        },
+                        "type": {
+                          "description": "A URI reference that identifies the problem type.",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "The number of the page. Page numbers start at 1.",
+            "example": "{{page}}",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/page-query.yaml"
+            }
+          },
+          {
+            "description": "The number of records on a page. By default, a page has 25 records. The maximum value is 1000 records on a page.",
+            "example": "{{pageSize}}",
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "default": 25,
+              "example": 25,
+              "maximum": 1000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/pageSize-query.yaml"
+            }
+          },
+          {
+            "description": "The sorting property and the sorting direction for the result data. Use `name` to sort by name. Use `asc` for alphabetically ascending order or `desc` for  alphabetically descending order.",
+            "example": "{{sort}}",
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "example": "name,asc",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/sort-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/events/v3"
+    }
+  ]
+}

@@ -1,0 +1,437 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Event Viewer API",
+    "url": "https://techdocs.akamai.com/event-viewer/reference"
+  },
+  "info": {
+    "title": "Akamai: Event Viewer API",
+    "version": "v1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/event-types": {
+      "get": {
+        "description": "Returns all defined event types with related event definitions.",
+        "operationId": "get-event-types",
+        "summary": "List event types",
+        "tags": [
+          "Event types"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Event Viewer API",
+          "url": "https://techdocs.akamai.com/event-viewer/reference/get-event-types"
+        },
+        "responses": {
+          "200": {
+            "description": "List Event Types.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Provides a collection of event types with possible multiple event definitions.",
+                  "type": "array",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "Provides an event type with possible multiple event definitions.",
+                    "type": "object",
+                    "properties": {
+                      "eventDefinitions": {
+                        "description": "Provides information about an event type definition.",
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "type": "object",
+                          "properties": {
+                            "eventDefinitionId": {
+                              "description": "The ID of an event definition.",
+                              "type": "string"
+                            },
+                            "eventDescription": {
+                              "description": "The description of an event.",
+                              "type": "string"
+                            },
+                            "eventName": {
+                              "description": "The name of an event.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "eventTypeId": {
+                        "description": "The ID of the event type.",
+                        "type": "string"
+                      },
+                      "eventTypeName": {
+                        "description": "The name of the event type.",
+                        "type": "string"
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/event-type.yaml"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/event-types-200.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "eventTypeId": "16",
+                    "eventTypeName": "All Logins",
+                    "eventDefinitions": [
+                      {
+                        "eventDefinitionId": "415195",
+                        "eventDescription": "A user logged in.",
+                        "eventName": "Login"
+                      }
+                    ]
+                  },
+                  {
+                    "eventTypeId": "198",
+                    "eventTypeName": "API Definition",
+                    "eventDefinitions": [
+                      {
+                        "eventDefinitionId": "800313",
+                        "eventDescription": "Update an Endpoint Resources Details.",
+                        "eventName": "Update an Endpoint Resources Details"
+                      },
+                      {
+                        "eventDefinitionId": "892355",
+                        "eventDescription": "Add a new Endpoint",
+                        "eventName": "Create an Endpoint"
+                      },
+                      {
+                        "eventDefinitionId": "913159",
+                        "eventDescription": "Deletes an endpoint resource details.",
+                        "eventName": "Delete Endpoint Resource"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/events": {
+      "get": {
+        "description": "Returns each user account's portal-visible events stored in the Event Logger system. Each page of results lists 50 events. You can move between pages using the `afterEventId` and `beforeEventId` query parameters, or follow the relevant hypermedia link at the bottom of each page.",
+        "operationId": "get-events",
+        "summary": "List events",
+        "tags": [
+          "Events"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Event Viewer API",
+          "url": "https://techdocs.akamai.com/event-viewer/reference/get-events"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "events": [
+                    {
+                      "eventId": "b5ac4d16-8223-4cbd-86f3-f42f52a8f6ff",
+                      "eventTime": "2017-07-27T12:13:37.15Z",
+                      "impersonator": true,
+                      "username": "tyamada",
+                      "eventData": [],
+                      "eventType": {
+                        "eventTypeId": "16",
+                        "eventTypeName": "All Logins",
+                        "eventDefinition": {
+                          "eventDefinitionId": "415195",
+                          "eventDescription": "A user logged in.",
+                          "eventName": "Login"
+                        }
+                      }
+                    },
+                    {
+                      "eventId": "5409ed6f-d532-4832-b2be-961a21380416",
+                      "eventTime": "2017-07-27T12:13:10.426Z",
+                      "impersonator": false,
+                      "username": "szhang",
+                      "eventType": {
+                        "eventTypeId": "50",
+                        "eventTypeName": "Alert Activity",
+                        "eventDefinition": {
+                          "eventDefinitionId": "169758",
+                          "eventDescription": "The condition that this alert was set up to monitor has occurred.",
+                          "eventName": "Alert Fired"
+                        }
+                      },
+                      "eventData": [
+                        {
+                          "key": "Email To",
+                          "value": "aaa@akamai.com"
+                        },
+                        {
+                          "key": "Start Time",
+                          "value": "Thu, Jul 27, 12:13 GMT 2017"
+                        }
+                      ]
+                    }
+                  ],
+                  "links": [
+                    {
+                      "href": "/event-viewer-api/v1/events?beforeEventId=038a9f69-121f-4248-acd2-74103012c680",
+                      "rel": "next"
+                    },
+                    {
+                      "href": "/event-viewer-api/v1/events?afterEventId=68bb2c73-bf1b-4cb0-ae56-b4fcd7210317",
+                      "rel": "prev"
+                    },
+                    {
+                      "href": "/event-viewer-api/v1/events",
+                      "rel": "self"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Provides a collection of events with information about each event.",
+                  "type": "object",
+                  "required": [
+                    "events",
+                    "links"
+                  ],
+                  "properties": {
+                    "events": {
+                      "description": "Provides information about the event.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Provides information about the event.",
+                        "type": "object",
+                        "properties": {
+                          "eventData": {
+                            "description": "The map of user-defined keys and values that describe additional event data.",
+                            "type": "array",
+                            "items": {
+                              "additionalProperties": false,
+                              "type": "object",
+                              "properties": {
+                                "key": {
+                                  "description": "A key that specifies the event data type. Note that it's not necessary to make keys in the array of objects unique. There may be objects in the array with the same key that represent a collection of the same type. For example, a list of CP codes with different values.",
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "description": "The value of a particular key.",
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "eventId": {
+                            "description": "The unique identifier for the event.",
+                            "type": "string"
+                          },
+                          "eventTime": {
+                            "description": "The date and time of the event.",
+                            "type": "string"
+                          },
+                          "eventType": {
+                            "additionalProperties": false,
+                            "description": "Provides information about the event type.",
+                            "type": "object",
+                            "properties": {
+                              "eventDefinition": {
+                                "additionalProperties": false,
+                                "description": "Provides information about the event type definition.",
+                                "type": "object",
+                                "properties": {
+                                  "eventDefinitionId": {
+                                    "description": "The ID of the event definition.",
+                                    "type": "string"
+                                  },
+                                  "eventDescription": {
+                                    "description": "The description of the event.",
+                                    "type": "string"
+                                  },
+                                  "eventName": {
+                                    "description": "The name of the event.",
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "eventTypeId": {
+                                "description": "The ID of the event type.",
+                                "type": "string"
+                              },
+                              "eventTypeName": {
+                                "description": "The name of the event type.",
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "impersonator": {
+                            "description": "Whether an impersonating user created the event.",
+                            "type": "boolean"
+                          },
+                          "username": {
+                            "description": "The username of the user who created the event.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/event.yaml"
+                        }
+                      }
+                    },
+                    "links": {
+                      "description": "Hypermedia links to help navigate through the result set, or to identify   the current item whose `rel` is `self`, `next`, or `prev`.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Hypermedia links to help navigate through the result set, or to identify   the current item whose `rel` is `self`, `next`, or `prev`.",
+                        "type": "object",
+                        "required": [
+                          "href",
+                          "rel"
+                        ],
+                        "properties": {
+                          "href": {
+                            "description": "A relative path to the currently requested object or a specific page of the result set.",
+                            "type": "string"
+                          },
+                          "rel": {
+                            "description": "The relationship between the current and linked result sets. `self` links to the current result set, while `prev` and `next` link to different sets of data.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/links.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/events-200.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "The unique identifier for the event type. Use this parameter to view all events with the specified event type ID.",
+            "example": "{{eventTypeId}}",
+            "in": "query",
+            "name": "eventTypeId",
+            "schema": {
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/eventTypeId-query.yaml"
+            }
+          },
+          {
+            "description": "The start date and time of the event. Use this parameter to view all events that occurred after the specified date and time.",
+            "example": "{{start}}",
+            "in": "query",
+            "name": "start",
+            "schema": {
+              "example": "2021-07-11T04:25:28",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/start-query.yaml"
+            }
+          },
+          {
+            "description": "The end date and time of the event. Use this parameter to view all events that occurred before the specified date and time.",
+            "example": "{{end}}",
+            "in": "query",
+            "name": "end",
+            "schema": {
+              "example": "2021-07-13T06:05:00",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/end-query.yaml"
+            }
+          },
+          {
+            "description": "The unique identifier for the event. Use this parameter to view all events that occurred after the event with the specified event ID.",
+            "example": "{{afterEventId}}",
+            "in": "query",
+            "name": "afterEventId",
+            "schema": {
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/afterEventId-query.yaml"
+            }
+          },
+          {
+            "description": "The unique identifier for the event. Use this parameter to view all events that occurred before the event with the specified event ID.",
+            "example": "{{beforeEventId}}",
+            "in": "query",
+            "name": "beforeEventId",
+            "schema": {
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/beforeEventId-query.yaml"
+            }
+          },
+          {
+            "description": "The name of the user that created the event. Use this parameter to view all events generated by the specified user.",
+            "example": "{{username}}",
+            "in": "query",
+            "name": "username",
+            "schema": {
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/username-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/event-viewer-api/v1"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+openapi: 3.0.0
+info:
+  title: DataStream 2 migration
+  version: v2
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/datastream-config-api/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: datastream-migration.yaml
+paths:
+  /migration/ds1-to-ds2/create:
+    post:
+      operationId: post-migrate-stream
+      summary: Migrate streams
+      tags:
+      - Migrate
+      description: |
+        Creates from one to ten DataStream 2 stream configurations. In a stream configuration, you can choose the properties you want the stream to monitor, data set fields to log, and a destination to send logs. Configure the log push and delivery frequency, and decide whether you want to activate the stream upon making the request or save the configuration for later, using the `activate` parameter. If the request returns a 400 error, solve all validation errors from the response and try again to create a valid stream. Note that only active streams collect and send logs to the destinations. See [Activate a stream](ref:post-stream-activate).
+      parameters:
+      - $ref: parameters/activate-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/MigBulkStreamRequestExample.json
+            schema:
+              $ref: schemas/MigBulkStreamRequest.yaml
+      responses:
+        202:
+          description: |
+            The response confirms the streams have been migrated and lists stream details.
+          content:
+            application/json:
+              example:
+                $ref: examples/MigBulkStreamResponseExample.json
+              schema:
+                $ref: schemas/MigBulkStreamResponse.yaml
+        400:
+          description: |
+            The response lists validation errors.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/MigBulkStreamErrorResponseExample.json
+              schema:
+                $ref: schemas/MigBulkStreamErrorResponse.yaml
+  /migration/ds1-to-ds2/prepare:
+    post:
+      operationId: post-prepare-payload
+      summary: Prepare migration payload
+      tags:
+      - Migrate
+      description: |
+        Returns the payload needed to migrate up to ten DataStream 1 streams to DataStream 2 using the [Migrate streams](ref:migrate-stream) operation. You can use the `useCommonDestination` parameter to configure the same destination for each stream you want to migrate. Solve all validation errors and issues from the response before migrating the streams.
+      parameters:
+      - $ref: parameters/mig-useCommonDestination-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/MigPreparePayloadRequestExample.json
+            schema:
+              $ref: schemas/MigPreparePayloadRequest.yaml
+      responses:
+        207:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              examples:
+                Prepare payload:
+                  value:
+                    $ref: examples/MigPreparePayloadResponseExample.json
+                Prepare payload with common destination:
+                  value:
+                    $ref: examples/MigPreparePayloadCommonDestinationExample.json
+              schema:
+                $ref: schemas/MigBulkStreamRequest.yaml

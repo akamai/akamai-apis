@@ -1,0 +1,133 @@
+type: object
+description: |-
+  Encapsulates information about each network list.
+  
+x-akamai:
+  file-path: schemas/retrieve.yaml
+additionalProperties: false
+required:
+- name
+- syncPoint
+- type
+- uniqueId
+properties:
+  name:
+    $ref: common.yaml#/definitions/name
+  type:
+    $ref: common.yaml#/definitions/type
+  description:
+    $ref: common.yaml#/definitions/description
+  readOnly:
+    type: boolean
+    description: |
+      If `true`, indicates that you don't have permission to modify the network list. This may indicate either a network list that Akamai manages, or insufficient permission for your API client's identity to modify a customer-managed list. The default value is `false`.
+    default: false
+  accessControlGroup:
+    type: string
+    description: |
+      Name of this network list's access control group (ACG).
+  contractId:
+    type: string
+    description: |
+      Identifies the contract where you want to create the list. You need to have write access to the contract you specify. If you include a `contractId`, you need to pair it with a `groupId`.
+    minLength: 5
+    maxLength: 20
+  createDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the network list was first created. Available only when using the `extended` query parameter to retrieve network list data.
+    example: '2017-06-01T15:13:40.36Z'
+    format: date-time
+  createdBy:
+    type: string
+    description: |
+      Username of this list's creator. Available only when using the `extended` query parameter to retrieve network list data.
+  elementCount:
+    type: integer
+    description: |
+      Reflects the number of elements in the `list` array, which may not necessarily appear in the object when retrieving the list with the `includeElements` query parameter set to `false`.
+  expeditedProductionActivationStatus:
+    type: string
+    description: |
+      For clients with access to _expedited_ activations on select servers, provides the most recent activation status in the `PRODUCTION` environment. See [Activation States](ref:activation-states) for details on each activation state. Available only when using the `extended` query parameter to retrieve network list data.
+    example: INACTIVE
+    enum:
+    - INACTIVE
+    - ACTIVE
+    - MODIFIED
+    - PENDING_ACTIVATION
+    - FAILED
+    - PENDING_DEACTIVATION
+  expeditedStagingActivationStatus:
+    type: string
+    description: |
+      For clients with access to _expedited_ activations on select servers, provides the most recent activation status in the `STAGING` environment. See [Activation States](ref:activation-states) for details on each activation state. Available only when using the `extended` query parameter to retrieve network list data.
+    example: INACTIVE
+    enum:
+    - INACTIVE
+    - ACTIVE
+    - MODIFIED
+    - PENDING_ACTIVATION
+    - FAILED
+    - PENDING_DEACTIVATION
+  groupId:
+    type: number
+    description: |
+      Identifies the group where you want to create the list. You need to have write access to the group you specify. If you include a `groupId`, you need to pair it with a `contractId`.
+  links:
+    description: |
+      Encapsulates the set of [API hypermedia](ref:api-hypermedia) to access a set of resources related to this network list. The object is arranged as a hash of keys, each of which represents a link relation.
+    $ref: list-links.yaml#/definitions/links
+  list:
+    $ref: common.yaml#/definitions/list
+  networkListType:
+    type: string
+    description: |
+      If set to `extendedNetworkListResponse`, indicates that the current data features members enabled with the `extended` query parameter. Otherwise a plain `networkListResponse` value indicates this additional data is absent.
+    example: extendedNetworkListResponse
+    enum:
+    - networkListResponse
+    - extendedNetworkListResponse
+  productionActivationStatus:
+    type: string
+    description: |
+      The most recent activation status of the current list in the `PRODUCTION` environment.  See [Activation States](ref:activation-states) for details on each activation state. Available only when using the `extended` query parameter to retrieve network list data.
+    example: INACTIVE
+    enum:
+    - INACTIVE
+    - ACTIVE
+    - MODIFIED
+    - PENDING_ACTIVATION
+    - FAILED
+    - PENDING_DEACTIVATION
+  shared:
+    type: boolean
+    description: |
+      Indicates if this list has been shared with you by Akamai or some other account. Shared lists are always read-only.
+    default: false
+  stagingActivationStatus:
+    type: string
+    description: |
+      The most recent activation status of the current list in the `STAGING` environment. See [Activation States](ref:activation-states) for details on each activation state. Available only when using the `extended` query parameter to retrieve network list data.
+    example: INACTIVE
+    enum:
+    - INACTIVE
+    - ACTIVE
+    - MODIFIED
+    - PENDING_ACTIVATION
+    - FAILED
+    - PENDING_DEACTIVATION
+  syncPoint:
+    $ref: common.yaml#/definitions/syncPoint
+  uniqueId:
+    $ref: common.yaml#/definitions/uniqueId
+  updateDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the network list was last modified. Available only when using the `extended` query parameter to retrieve network list data.
+    example: '2017-06-01T15:13:40.36Z'
+    format: date-time
+  updatedBy:
+    type: string
+    description: |
+      Username of this list's creator. Available only when using the `extended` query parameter to retrieve network list data.

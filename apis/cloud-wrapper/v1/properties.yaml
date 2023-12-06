@@ -1,0 +1,80 @@
+openapi: 3.0.1
+info:
+  title: CloudWrapper Properties
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cloud-wrapper/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: properties.yaml
+paths:
+  /properties:
+    get:
+      operationId: get-properties
+      summary: List properties
+      tags:
+      - Properties
+      description: |
+        View a list of properties for delivery products that are eligible to enable Cloud Wrapper.
+      parameters:
+      - $ref: parameters/unused-query.yaml
+      - $ref: parameters/contractIds-query.yaml
+      responses:
+        200:
+          description: |
+            The response includes a list of eligible properties.
+          content:
+            application/json:
+              example:
+                $ref: examples/PropertiesExample.json
+              schema:
+                $ref: schemas/Properties.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /properties/{propertyId}/origins:
+    get:
+      operationId: get-origins
+      summary: List origins
+      tags:
+      - Properties
+      description: |
+        View a list of [origin](https://techdocs.akamai.com/property-mgr/reference/latest-origin) servers configured in eligible delivery properties. Response data is pulled from the property as its shown in PAPI. At least one origin server entry is shown at the top-level for the `default` rule. If additional origin servers are set in child-level rules in the same property, they're revealed at a lower level.
+      parameters:
+      - $ref: parameters/propertyId-path.yaml
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/groupId-query.yaml
+      responses:
+        200:
+          description: |
+            The response returns a list of origin servers.
+          content:
+            application/json:
+              example:
+                $ref: examples/PropertyBehaviorsOriginsExample.json
+              schema:
+                $ref: schemas/PropertyBehaviorsOrigin.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml

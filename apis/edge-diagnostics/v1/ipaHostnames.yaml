@@ -1,0 +1,42 @@
+openapi: 3.0.0
+info:
+  title: IPA hostnames
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: ipaHostnames.yaml
+paths:
+  /ipa/hostnames:
+    get:
+      operationId: get-ipa-hostnames
+      summary: List IP acceleration hostnames
+      tags:
+      - IPA hostnames
+      description: |
+        Lists IP acceleration (IPA) hostnames you have  access to and can [generate a diagnostic link](ref:post-user-diagnostic-data-groups) to collect  diagnostic data.
+      responses:
+        200:
+          description: |
+            The response lists available IPA hostnames.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/ipaHostnames.json
+              schema:
+                $ref: schemas/ipaHostnames.yaml
+        401:
+          $ref: errors/401.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

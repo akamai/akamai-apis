@@ -1,0 +1,183 @@
+openapi: 3.0.0
+info:
+  title: Policy Versions
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cloudlets/api/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: policy-versions.yaml
+paths:
+  /policies/{policyId}/versions:
+    parameters:
+    - $ref: parameters/policyId-path.yaml
+    post:
+      operationId: post-policy-versions
+      summary: Create a new policy version
+      description: |
+        Create a new policy version, where the version number will be incremented from the highest existing version.  With this operation you can change any modifiable policy or version attributes.
+      parameters:
+      - $ref: parameters/cloneVersion-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/policyversions-post.json
+            schema:
+              $ref: schemas/post-policy-versions-request.yaml
+      responses:
+        201:
+          description: |
+            Returns details of a policy version.
+          content:
+            application/json:
+              example:
+                $ref: examples/policyversions-post-201.json
+              schema:
+                $ref: schemas/post-policy-versions-response.yaml
+    get:
+      operationId: get-policy-versions
+      summary: List policy versions
+      description: |
+        Returns information about all versions of a policy.
+      parameters:
+      - $ref: parameters/includeRules-query.yaml
+      responses:
+        200:
+          description: |
+            Returns all policy versions.
+          content:
+            application/json:
+              example:
+                $ref: examples/policyversions-get-200.json
+              schema:
+                $ref: schemas/get-policy-versions-response.yaml
+  /policies/{policyId}/versions/{version}:
+    parameters:
+    - $ref: parameters/version-path.yaml
+    - $ref: parameters/policyId-path.yaml
+    get:
+      operationId: get-policy-version
+      summary: Get a policy version
+      description: |
+        Returns information about a specific Cloudlet policy version.
+      parameters:
+      - $ref: parameters/omitRules-query.yaml
+      responses:
+        200:
+          description: |
+            Returns details of a policy version.
+          content:
+            application/json:
+              example:
+                $ref: examples/policyversion-get-200.json
+              schema:
+                $ref: schemas/get-policy-version-response.yaml
+    put:
+      operationId: put-policy-version
+      summary: Update a policy version
+      description: |
+        Update attributes of an existing policy version.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/policyversion-put.json
+            schema:
+              $ref: schemas/put-policy-version-request.yaml
+      responses:
+        200:
+          description: |
+            Returns details of a policy version.
+          content:
+            application/json:
+              example:
+                $ref: examples/policyversion-put-200.json
+              schema:
+                $ref: schemas/put-policy-version-response.yaml
+    delete:
+      operationId: delete-policy-version
+      summary: Remove a policy version
+      description: |
+        You have the option of removing policy versions, including those that are currently active on either the staging or production network.
+      responses:
+        204:
+          description: |
+            The policy version is deleted.
+  /policies/{policyId}/versions/{version}/rules:
+    parameters:
+    - $ref: parameters/version-path.yaml
+    - $ref: parameters/policyId-path.yaml
+    post:
+      operationId: post-policy-version-rules
+      summary: Add a version rule
+      description: |
+        Add a new rule to an existing policy version. You can only add one rule at a time.
+      parameters:
+      - $ref: parameters/index-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/matchrules-post.json
+            schema:
+              $ref: schemas/policy-version-match-rule-create-request.yaml
+      responses:
+        200:
+          description: |
+            Returns details of a policy version match rule.
+          content:
+            application/json:
+              example:
+                $ref: examples/matchrules-post-200.json
+              schema:
+                $ref: schemas/post-policy-version-rules-response.yaml
+  /policies/{policyId}/versions/{version}/rules/{akaRuleId}:
+    parameters:
+    - $ref: parameters/akaRuleId-path.yaml
+    - $ref: parameters/version-path.yaml
+    - $ref: parameters/policyId-path.yaml
+    get:
+      operationId: get-policy-version-rule
+      summary: Get a version rule
+      description: |
+        Returns information for a specific rule within a policy version.
+      responses:
+        200:
+          description: |
+            Returns details of a policy version match rule.
+          content:
+            application/json:
+              example:
+                $ref: examples/matchrule-get-200.json
+              schema:
+                $ref: schemas/get-policy-version-rule-response.yaml
+    put:
+      operationId: put-policy-version-rule
+      summary: Update a version rule
+      description: |
+        Updates attributes of an existing rule within a policy version. When updating a rule, set `disabled` to `true` to prevent the rule from being evaluated against incoming requests.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/matchrule-put.json
+            schema:
+              $ref: schemas/policy-version-match-rule-update-request.yaml
+      responses:
+        200:
+          description: |
+            Returns details of a policy version match rule.
+          content:
+            application/json:
+              example:
+                $ref: examples/matchrule-put-200.json
+              schema:
+                $ref: schemas/put-policy-version-rule-response.yaml

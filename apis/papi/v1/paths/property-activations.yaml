@@ -1,0 +1,101 @@
+x-akamai:
+  file-path: paths/property-activations.yaml
+  path-for-file: /properties/{propertyId}/activations
+parameters:
+- $ref: ../parameters/propertyId-path.yaml
+post:
+  operationId: post-property-activations
+  summary: Activate or deactivate a property
+  tags:
+  - Property activations
+  description: |
+    This operation creates a new property activation, which deactivates any currently active version. After a necessary delay, this activates your property version's rule tree and set of hostnames across Akamai's network of edge servers, modifying how your edge content responds to end-user requests. To reduce software vulnerability, avoid calling PAPI with separate clients on the same data and frequent polling of status values, progressively increasing the delay.
+
+    If there's a problem with the property you activated, you may have the option to fall back to the previous version. To build the request object, go to the `activationLink` from the activation's response and note down the `fallbackVersion` value. Within an hour of activating, POST another activation with `propertyVersion` set to the version you noted down and `useFastFallback` set to `true`. This disables the current activation and falls back to the specified version. A fallback takes a few seconds, but the option is available only if there have been no changes to the set of property hostnames, as indicated by `canFastFallback`.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/activation-create-request.json
+        schema:
+          $ref: ../schemas/property-activation-create-request.yaml
+  responses:
+    201:
+      description: |
+        The response provides a URL link to the newly created activation.
+      headers:
+        Location:
+          $ref: ../headers/Location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/activation-create-response.json
+          schema:
+            $ref: ../schemas/property-activation-post-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    409:
+      $ref: ../errors/409.yaml
+    415:
+      $ref: ../errors/415.yaml
+    422:
+      $ref: ../errors/422.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+get:
+  operationId: get-property-activations
+  summary: List property's activations
+  tags:
+  - Property activations
+  description: |
+    This lists all activations for all versions of a property, on both production and staging networks.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  responses:
+    200:
+      description: |
+        The response lists all activations for the requested property.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/activation-get-response.json
+          schema:
+            $ref: ../schemas/property-activation-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: propertyActivations
+  group: Property activations

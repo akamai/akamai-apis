@@ -1,0 +1,138 @@
+id: resource:/descriptors/papi/v1/schemas/property-version-rules-set-request.json#
+javaType: com.fasterxml.jackson.databind.JsonNode
+type: object
+description: |-
+  Specifies the executable logic to apply to cached edge content.
+  
+x-akamai:
+  file-path: schemas/property-version-rules-set-request.yaml
+properties:
+  rules:
+    type: object
+    description: |
+      Specifies the executable logic to apply to cached edge content. A common outer wrapping `rules` object specifies the relevant top-level `default` rule object. See the [Rule Trees](ref:rule-trees) section for guidance on how to structure the data.
+    required:
+    - name
+    - behaviors
+    properties:
+      name:
+        type: string
+        description: |
+          A description of the rule. The top-level rule needs to be named `default`.
+      options:
+        type: object
+        description: |
+          Flags that apply to the top-level rule object.
+        properties:
+          is_secure:
+            type: boolean
+            description: |
+              When enabled, serves the property's content over SSL. Doing so may enable additional rule behaviors.
+      advancedOverride:
+        type: string
+        description: |
+          A block of post-processing XML metadata that your Akamai representative can apply on your behalf. You need to configure this separately for each property. Use the more recent `customOverride` member to apply the same XML metadata to more than one property.
+      behaviors:
+        type: array
+        description: |
+          A series of [behavior](ref:ga-behaviors) objects, which execute after the set of `criteria` evaluates. Behavior and criteria objects are structured identically. Optional on nested rules.
+        items:
+          type: object
+          required:
+          - name
+          - options
+          properties:
+            name:
+              type: string
+              description: |
+                The name of the behavior.
+            options:
+              type: object
+              description: |
+                A variable set of options that configure each behavior. See the [PAPI Feature Catalog Reference](ref:ga-behaviors) for details on each.
+            locked:
+              type: string
+              description: |
+                Indicates a behavior or criteria that you arrange with your Akamai representative to lock. Typically, you prevent further modifications to protect sensitive data from erroneous changes.
+            uuid:
+              type: string
+              description: |
+                A data hash that indicates an _advanced_ behavior. When present, you may not modify the contents of the behavior, and need to provide the same `uuid` value when modifying the rule tree. See [Advanced and locked features](ref:advanced-and-locked-features).
+              readOnly: true
+      children:
+        type: array
+        description: |
+          A series of nested rules that execute after the current rule's `criteria` and `behaviors`.
+        items:
+          type: object
+          description: |
+            A series of nested rules that execute after the current rule's `criteria` and `behaviors`.
+      comment:
+        type: string
+        description: |
+          A descriptive comment to help you track the rule's function.
+      criteria:
+        type: array
+        description: |
+          A series of [criteria](ref:ga-criteria) objects, which form a set of logical tests that may prevent the rule's `behaviors` from executing. Behavior and criteria objects are structured identically.
+        items:
+          type: object
+          description: |
+            A series of [criteria](ref:ga-criteria) objects, which form a set of logical tests that may prevent the rule's `behaviors` from executing. Behavior and criteria objects are structured identically.
+      criteriaLocked:
+        type: boolean
+        description: |
+          Within child rules, this prohibits any modifications to `criteria` objects. Contact your Akamai representative to change the value.
+        readOnly: true
+      customOverride:
+        type: object
+        description: |
+          Specifies post-processing XML metadata that your Akamai representative can create on your behalf. Once available with the [List custom overrides](ref:get-custom-overrides) operation, you can assign an `overrideId` to more than one property's `default` rule. See [Custom behaviors and overrides](ref:custom-behaviors-and-overrides) for guidance.
+        required:
+        - overrideId
+        - name
+        properties:
+          name:
+            type: string
+            description: |
+              The name of the custom override. It may vary from what appears in the [List custom overrides](ref:get-custom-overrides) operation's response object.
+          overrideId:
+            type: string
+            description: |
+              Identifies the predefined custom override metadata you want to append to the current rule. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `cbo_` prefix.
+      uuid:
+        type: string
+        description: |
+          A data hash that indicates the rule contains at least one _advanced_ behavior or criteria, each identified with its own `uuid` member. When this member is present on the rule, you may not remove any advanced features it contains, or change their sequence. You need to provide the same `uuid` value when modifying the rule tree. See [Advanced and locked features](ref:advanced-and-locked-features).
+      variables:
+        type: array
+        description: |
+          Declares a variable. See [Variables](ref:variables) for guidance on how variables may appear within a rule tree.
+        items:
+          type: object
+          required:
+          - name
+          - hidden
+          - sensitive
+          properties:
+            name:
+              type: string
+              description: |
+                The underlying root name of the variable, which needs to be unique within the set of `variables`.
+            description:
+              type: string
+              description: |
+                Text for you to keep track of how you use each variable.
+            value:
+              type: string
+              description: |
+                Initializes a default value. Omitting this member initializes the variable with an empty string.
+            hidden:
+              type: boolean
+              description: |
+                When enabled, the variable is suppressed from session response headers. Useful when testing content as described in the [Debug variables](ref:debug-variables) section.
+            sensitive:
+              type: boolean
+              description: |
+                When enabled, the variable is suppressed from session responses as `hidden` ones, but it also can't be invoked within any behaviors that assign values to cookies or response headers. You also can't assign a `sensitive` variable to another one that isn't `sensitive`, and you can't add it to custom logging fields. Use this more stringent option for any personally identifiable information, typically after initially testing on the staging network.
+$schema: http://json-schema.org/draft-04-schema#

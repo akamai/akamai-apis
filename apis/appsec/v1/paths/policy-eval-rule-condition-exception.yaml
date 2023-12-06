@@ -1,0 +1,64 @@
+x-akamai:
+  file-path: paths/policy-eval-rule-condition-exception.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/eval-rules/{ruleId}/condition-exception
+parameters:
+- $ref: ../parameters/ruleId-path.yaml
+- $ref: ../parameters/policyId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/configId-path.yaml
+get:
+  operationId: get-condition-exception
+  summary: Get the conditions and exceptions for an evaluation rule
+  tags:
+  - 'Security policy: Conditions and exceptions'
+  description: |
+    List the conditions and exceptions for a rule you want to evaluate. This operation returns the same object type as other condition and exception operations. Keep in mind that the response for this operation applies to the rules you're evaluating even though the concept of conditions and exceptions is the same for all condition exception endpoints. _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module.
+  responses:
+    200:
+      description: |
+        Successfully retrieved the rule conditions and exceptions.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-get-condition-exception-200.json
+          schema:
+            $ref: ../schemas/eval-condition-exception-get-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-condition-exception
+  summary: Modify the conditions and exceptions for an evaluation rule
+  tags:
+  - 'Security policy: Conditions and exceptions'
+  description: |
+    Update an evaluation rule's conditions and exceptions. When the conditions are met, the rule's actions are ignored and not applied to that specific traffic. The rule action you update with this operation is for a rule you are evaluating and not a rule currently in use for your site or app. _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/policy-get-condition-exception-200.json
+        schema:
+          $ref: ../schemas/eval-condition-exception-put.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the conditions and exceptions of the rule.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-get-condition-exception-200.json
+          schema:
+            $ref: ../schemas/eval-condition-exception-put-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

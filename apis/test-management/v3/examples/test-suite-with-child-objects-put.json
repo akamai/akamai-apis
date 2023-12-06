@@ -1,0 +1,90 @@
+{
+  "testSuiteName": "www.user8.example.com test suite",
+  "testSuiteDescription": "This test suite performs basic check of www.user8.example.com",
+  "isLocked": true,
+  "isStateful": true,
+  "configs": {
+    "propertyManager": {
+      "propertyId": 1234,
+      "propertyVersion": 4
+    }
+  },
+  "testCases": [
+    {
+      "testCaseId": 301,
+      "testRequest": {
+        "testRequestUrl": "https://{{hostname}}/",
+        "requestMethod": "POST",
+        "requestHeaders": [
+          {
+            "headerName": "Accept",
+            "headerValue": "v1",
+            "headerAction": "ADD"
+          }
+        ]
+      },
+      "condition": {
+        "conditionExpression": "Response header \"Content-Type\" has a value that ends with \"{{contentTypeVale}}\""
+      },
+      "clientProfile": {
+        "client": "CURL",
+        "ipVersion": "IPV4"
+      },
+      "setVariables": [
+        {
+          "variableName": "hostname",
+          "variableValue": "fn_getResponseHeaderValue(\"headerName\", \".*\")"
+        }
+      ]
+    },
+    {
+      "testRequest": {
+        "testRequestUrl": "https://{{sampleVarGroup.urls}}/index",
+        "requestMethod": "GET"
+      },
+      "condition": {
+        "conditionExpression": "Response code is one of \"{{successCode.statusCodes}}\""
+      },
+      "clientProfile": {
+        "client": "CHROME",
+        "ipVersion": "IPV4"
+      }
+    }
+  ],
+  "variables": [
+    {
+      "variableId": 201,
+      "variableName": "hostname",
+      "variableValue": "www.user8.example.com"
+    },
+    {
+      "variableId": 202,
+      "variableName": "contentTypeVale",
+      "variableValue": "json"
+    },
+    {
+      "variableName": "sampleVarGroup",
+      "variableGroupValue": [
+        {
+          "columnHeader": "urls",
+          "columnValues": [
+            "abc.com",
+            "def.org"
+          ]
+        }
+      ]
+    },
+    {
+      "variableName": "successCode",
+      "variableGroupValue": [
+        {
+          "columnHeader": "statusCodes",
+          "columnValues": [
+            "200",
+            "200"
+          ]
+        }
+      ]
+    }
+  ]
+}

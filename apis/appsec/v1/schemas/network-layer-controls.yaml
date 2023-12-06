@@ -1,0 +1,97 @@
+type: object
+description: |-
+  The status of IP and geographic controls defined in the security policy.
+  
+x-akamai:
+  file-path: schemas/network-layer-controls.yaml
+additionalProperties: false
+required:
+- block
+properties:
+  block:
+    type: string
+    description: |
+      The directive for blocking IP addresses. Either `blockSpecificIPGeo` to block specific IPs unless they're in block exceptions, or `blockAllTrafficExceptAllowedIPs` to block all traffic apart from the IPs in block exceptions.
+    enum:
+    - blockSpecificIPGeo
+    - blockAllTrafficExceptAllowedIPs
+  geoControls:
+    type: object
+    description: |
+      Contains details about the geographic regions to block.
+    additionalProperties: false
+    required:
+    - blockedGeoNetworkLists
+    properties:
+      blockedGeoNetworkLists:
+        type: object
+        description: |
+          The geo network lists and specific geographic locations to block.
+        additionalProperties: false
+        required:
+        - networkList
+        - additional
+        properties:
+          additional:
+            type: array
+            description: |
+              The specific geographic locations to block.
+            items:
+              type: string
+          networkList:
+            type: array
+            description: |
+              The geo network lists to block.
+            items:
+              type: string
+  ipControls:
+    type: object
+    description: |
+      Contains details about the allowed and blocked IP network lists.
+    additionalProperties: false
+    required:
+    - blockedIPNetworkLists
+    - allowedIPNetworkLists
+    properties:
+      allowedIPNetworkLists:
+        type: object
+        description: |
+          The collection of IPs and network lists to allow.
+        additionalProperties: false
+        required:
+        - networkList
+        - additional
+        properties:
+          additional:
+            type: array
+            description: |
+              The specific IPs to allow.
+            items:
+              type: string
+          networkList:
+            type: array
+            description: |
+              The IP network lists to allow.
+            items:
+              type: string
+      blockedIPNetworkLists:
+        type: object
+        description: |
+          The collection of IPs and network lists to block.
+        additionalProperties: false
+        required:
+        - networkList
+        - additional
+        properties:
+          additional:
+            type: array
+            description: |
+              The specific IPs to block.
+            items:
+              type: string
+          networkList:
+            type: array
+            description: |
+              The IP network lists to block.
+            items:
+              type: string

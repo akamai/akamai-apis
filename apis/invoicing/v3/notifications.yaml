@@ -1,0 +1,172 @@
+openapi: 3.0.0
+info:
+  title: Notifications
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/invoicing-api/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: notifications.yaml
+paths:
+  /notifications:
+    post:
+      operationId: post-notification
+      summary: Create a notification
+      tags:
+      - Notifications
+      description: |
+        Creates a notification informing a set of users about new invoices or credit memos for a set of contracts. Each notification needs to specify a unique set of contracts. The request yields an error if the set of `contractId` values matches that of another notification.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-update-notification-200.json
+            schema:
+              $ref: schemas/create-update-notification-schema.yaml
+      responses:
+        201:
+          description: |
+            The operation was successful.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/notification-200.json
+              schema:
+                $ref: schemas/notification-schema.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+    get:
+      operationId: get-notifications
+      summary: List notifications for an account
+      tags:
+      - Notifications
+      description: |
+        Returns notifications for the current account. Notifications inform a set of users whenever there are changes to an invoice or credit memo.
+      responses:
+        200:
+          description: |
+            The response lists notifications.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-notifications-200.json
+              schema:
+                $ref: schemas/notifications-list-schema.yaml
+        204:
+          description: |
+            No content. No data to be returned for the requested parameters.
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /notifications/{notificationId}:
+    parameters:
+    - $ref: parameters/notificationId-path.yaml
+    get:
+      operationId: get-notification
+      summary: Get a notification
+      tags:
+      - Notifications
+      description: |
+        Accesses a specific notification, for example when making modifications to a specific notification.
+      responses:
+        200:
+          description: |
+            The response returns a specific notification.
+          content:
+            application/json:
+              example:
+                $ref: examples/notification-200.json
+              schema:
+                $ref: schemas/notification-schema.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+    put:
+      operationId: put-notification
+      summary: Modify a notification
+      tags:
+      - Notifications
+      description: |
+        Updates a notification. Any read-only members retained from a GET operation are ignored on subsequent PUTs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-update-notification-200.json
+            schema:
+              $ref: schemas/create-update-notification-schema.yaml
+      responses:
+        200:
+          description: |
+            The operation was successful.
+          content:
+            application/json:
+              example:
+                $ref: examples/notification-200.json
+              schema:
+                $ref: schemas/notification-schema.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        500:
+          $ref: errors/500.yaml
+    delete:
+      operationId: delete-notification
+      summary: Remove a notification
+      tags:
+      - Notifications
+      description: |
+        Deletes a notification.
+      responses:
+        204:
+          description: |
+            The operation was successful.
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml

@@ -1,0 +1,47 @@
+openapi: 3.0.0
+info:
+  title: Group-Level Cloudlets
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cloudlets/api/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: group-info.yaml
+paths:
+  /group-info:
+    get:
+      operationId: get-group-info
+      summary: List groups
+      description: |
+        Returns information about the Cloudlet types associated with the groups you have edit privileges for.
+      responses:
+        200:
+          description: |
+            Returns information about the Cloudlet types that are associated with the groups that you have edit privileges for.
+          content:
+            application/json:
+              example:
+                $ref: examples/groups-get-200.json
+              schema:
+                $ref: schemas/get-group-info-response.yaml
+  /group-info/{groupId}:
+    parameters:
+    - $ref: parameters/groupId-path.yaml
+    get:
+      operationId: get-groupid-info
+      summary: Get a group
+      description: |
+        Returns information about the Cloudlet types associated with the selected group. For results to display, you must have edit privileges for one or more Cloudlet types within the group.
+      responses:
+        200:
+          description: |
+            Provides information on the cloudlets associated with the selected group.
+          content:
+            application/json:
+              example:
+                $ref: examples/group-get-200.json
+              schema:
+                $ref: schemas/group-info-object.yaml

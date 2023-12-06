@@ -1,0 +1,86 @@
+type: object
+x-akamai:
+  file-path: schemas/ip-status.yaml
+additionalProperties: true
+required:
+- metadata
+- dataRows
+properties:
+  dataRows:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - timestamp
+      - cutOff
+      - datacenters
+      properties:
+        cutOff:
+          type: number
+        datacenters:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - datacenterId
+            - nickname
+            - trafficTargetName
+            - IPs
+            properties:
+              IPs:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: false
+                  required:
+                  - ip
+                  - handedOut
+                  - score
+                  - alive
+                  properties:
+                    alive:
+                      type: boolean
+                    handedOut:
+                      type: boolean
+                    ip:
+                      type: string
+                    score:
+                      type: number
+              datacenterId:
+                type: integer
+              nickname:
+                type: string
+              trafficTargetName:
+                type: string
+        timestamp:
+          type: string
+          format: date-time
+  metadata:
+    type: object
+    additionalProperties: false
+    required:
+    - domain
+    - property
+    - uri
+    properties:
+      datacenterId:
+        type: integer
+      domain:
+        type: string
+      end:
+        type: string
+        format: date-time
+      ip:
+        type: string
+      mostRecent:
+        type: boolean
+      property:
+        type: string
+      start:
+        type: string
+        format: date-time
+      uri:
+        type: string
+        format: uri

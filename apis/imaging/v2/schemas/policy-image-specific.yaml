@@ -1,0 +1,110 @@
+type: object
+x-akamai:
+  file-path: schemas/policy-image-specific.yaml
+additionalProperties: false
+properties:
+  output:
+    type: object
+    description: |
+      Dictates the output quality, either `quality` or `perceptualQuality`, and the formats created for each resized image. If unspecified, you get image formats that support all browsers at the default quality level of `85`, including WEBP, JPEG2000, and JPEG-XR for specific browsers.
+    title: Output
+    additionalProperties: false
+    properties:
+      adaptiveQuality:
+        type: integer
+        description: |
+          Overrides the quality of the image to serve when Image & Video Manager detects a slow connection with a round-trip time (RTT) of less than 300 ms. Specifying lower values lets users with slow connections browse your site with reduced load times without impacting the quality of images for users with standard connections.
+        minimum: 1
+        maximum: 100
+      allowedFormats:
+        type: array
+        description: |
+          The graphics file formats allowed for browser specific results, including `gif`, `jpeg`, `png`, `webp`, `jpegxr`, and `jpeg2000`.
+        default:
+        - gif
+        - jpeg
+        - png
+        - webp
+        - jpegxr
+        - jpeg2000
+        readOnly: true
+        minItems: 1
+        uniqueItems: true
+        items:
+          type: string
+          description: |
+            The values of the allowed graphics file formats, including `gif`, `jpeg`, `png`, `webp`, `jpegxr`, and `jpeg2000`.
+          enum:
+          - gif
+          - jpeg
+          - png
+          - webp
+          - jpegxr
+          - jpeg2000
+      forcedFormats:
+        type: array
+        description: |
+          The forced extra formats for the `imFormat` query parameter, which requests a specific browser type. By default, Image & Video Manager detects the browser and returns the appropriate image.
+        default: []
+        readOnly: true
+        uniqueItems: true
+        items:
+          type: string
+          description: |
+            The values of the forced extra formats, including `gif`, `jpeg`, `png`, `webp`, `jpegxr`, and `jpeg2000`.
+          enum:
+          - gif
+          - jpeg
+          - png
+          - webp
+          - jpegxr
+          - jpeg2000
+      perceptualQuality:
+        description: |
+          Mutually exclusive with `quality`. The perceptual quality to use when comparing resulting images, which overrides the `quality` setting. Perceptual quality tunes each image format's quality dynamically based on the human-perceived quality of the output image. This can result in greater byte savings as compared to using regular `quality` because many images can be encoded at a much lower quality without compromising the perceived quality of the image. In addition, certain images may need to be encoded at a slightly higher quality in order to maintain human-perceived quality. Value tiers are `high`, `mediumHigh`, `medium`, `mediumLow`, and `low`.
+        oneOf:
+        - enum:
+          - high
+          - mediumHigh
+          - medium
+          - mediumLow
+          - low
+          type: string
+          title: String enum
+        - $ref: variable-inline.yaml
+      perceptualQualityFloor:
+        type: integer
+        description: |
+          Applies only when `perceptualQuality` is set. Sets a minimum image quality to respect when using perceptual quality. Perceptual quality won't reduce the quality below this value, even if it determines the compressed image to be acceptably visually similar.
+        minimum: 1
+        maximum: 100
+      quality:
+        description: |
+          Mutually exclusive with `perceptualQuality`, used by default if neither is specified. The chosen quality of output images from 1-100, with 1 being the lowest quality and 100 being the highest.
+        oneOf:
+        - default: 85
+          type: integer
+          title: Integer
+          minimum: 1
+          maximum: 100
+        - $ref: variable-inline.yaml
+  postBreakpointTransformations:
+    type: array
+    description: |
+      Post-processing Transformations are applied to the image after image and quality settings have been applied.
+    items:
+      $ref: transformation-post-breakpoint.yaml
+  transformations:
+    type: array
+    description: |
+      Set of image transformations to apply to the source image. If unspecified, no operations are performed.
+    items:
+      $ref: transformation.yaml
+  video:
+    type: boolean
+    description: |
+      Identifies this as an image policy.
+    default: false
+    readOnly: true
+    enum:
+    - false

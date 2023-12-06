@@ -1,0 +1,90 @@
+type: object
+description: |-
+  Contains information about a shared policy.
+  
+x-akamai:
+  file-path: schemas/policy.yaml
+additionalProperties: false
+required:
+- cloudletType
+- createdBy
+- createdDate
+- currentActivations
+- groupId
+- id
+- modifiedBy
+- modifiedDate
+- name
+- policyType
+properties:
+  id:
+    type: integer
+    description: |
+      Identifies the policy.
+  name:
+    type: string
+    description: |
+      The name of the policy. You use this value to refer to a shared policy in Property Manager.
+  description:
+    type: string
+    description: |
+      A human-readable label for the policy.
+  cloudletType:
+    type: string
+    description: |
+      The two- or three- letter code of the Cloudlet that the shared policy is for. Shared policies are available for API Prioritization (`AP`), Edge Redirector (`ER`), Forward Rewrite (`FR`), Audience Segmentation (`AS`), Request Control (`IG`), Phased Release (`CD`) and Virtual Waiting Room (`VWR`).
+    enum:
+    - AP
+    - ER
+    - FR
+    - AS
+    - IG
+    - CD
+    - VWR
+  createdBy:
+    type: string
+    description: |
+      The username who created the policy.
+  createdDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the policy was created.
+    format: date-time
+  currentActivations:
+    type: object
+    description: |
+      Information about the active policy version that's currently in use and the status of the most recent activation or deactivation operation on the policy's versions for the production and staging networks.
+    additionalProperties: false
+    required:
+    - production
+    - staging
+    properties:
+      production:
+        description: |
+          The policy version number that's currently in use on this network and the status of the most recent activation or deactivation operation for this policy's versions.
+        $ref: network-status.yaml
+      staging:
+        description: |
+          The policy version number that's currently in use on this network and the status of the most recent activation or deactivation operation for this policy's versions.
+        $ref: network-status.yaml
+  groupId:
+    type: integer
+    description: |
+      Identifies the group. See [About group IDs](ref:about-group-ids).
+  links:
+    $ref: links.yaml
+  modifiedBy:
+    type: string
+    description: |
+      The username who last modified the policy.
+  modifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the policy was last modified.
+    format: date-time
+  policyType:
+    type: string
+    description: |
+      The type of policy. This API lets you create only `SHARED` policies.
+    enum:
+    - SHARED

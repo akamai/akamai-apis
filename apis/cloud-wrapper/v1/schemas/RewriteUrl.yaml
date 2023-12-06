@@ -1,0 +1,64 @@
+type: object
+x-akamai:
+  file-path: schemas/RewriteUrl.yaml
+additionalProperties: false
+required:
+- behavior
+nullable: true
+properties:
+  behavior:
+    type: string
+    description: |
+      The action to perform on the path. Either `REPLACE`, `REMOVE`, `PREPEND`, `REWRITE` or `REGEX_REPLACE`.
+    enum:
+    - REPLACE
+    - REMOVE
+    - PREPEND
+    - REWRITE
+    - REGEX_REPLACE
+  keepQueryString:
+    type: boolean
+    description: |
+      Enable this to keep the original path's query parameters. You can't enable this if you've set this behavior to `REWRITE`.
+    nullable: true
+  match:
+    type: string
+    description: |
+      When the behavior is `REMOVE` or `REPLACE`, this specifies the part of the incoming path you'd like to remove or modify.
+    nullable: true
+    pattern: ^/.*/$
+  matchMultiple:
+    type: boolean
+    description: |
+      When enabled, replaces all potential matches rather than only the first. For this behavior it's either: `REMOVE`, `REPLACE`, or `REGEX_REPLACE`.
+    nullable: true
+  matchRegex:
+    type: string
+    description: |
+      When the behavior is set to `REGEX_REPLACE`, this specifies the Perl-compatible regular expression to replace with `targetRegex`.
+    nullable: true
+    pattern: ^/.*/$
+  targetPath:
+    type: string
+    description: |
+      When the behavior is set to `REPLACE`, this path replaces whatever the match field matches in the incoming request's path.
+    nullable: true
+    pattern: ^/.*/$
+  targetPathPrepend:
+    type: string
+    description: |
+      When the behavior is set to `PREPEND`, this specifies a path to prepend to the incoming request's URL.
+    nullable: true
+    pattern: ^/.*/$
+  targetRegex:
+    type: string
+    description: |
+      When the behavior is set to `REGEX_REPLACE`, this replaces whatever the `matchRegex` field matches.
+    nullable: true
+    pattern: ^/.*/$
+  targetUrl:
+    type: string
+    description: |
+      When the behavior is set to `REWRITE`, this specifies the full path to request from the origin.
+    nullable: true
+    pattern: ^/.*/$

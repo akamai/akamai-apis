@@ -1,0 +1,109 @@
+type: object
+description: |-
+  Contains details about a reputation profile.
+  
+x-akamai:
+  file-path: schemas/reputation-profile.yaml
+additionalProperties: false
+required:
+- name
+- context
+- threshold
+- sharedIpHandling
+properties:
+  id:
+    type: integer
+    description: |
+      Uniquely identifies the reputation profile.
+    readOnly: true
+  name:
+    type: string
+    description: |
+      The name you assigned to the reputation profile.
+  description:
+    type: string
+    description: |
+      Describes the reputation profile.
+  condition:
+    type: object
+    description: |
+      Contains information about the criteria that trigger the reputation profile.
+    additionalProperties: false
+    properties:
+      atomicConditions:
+        type: array
+        description: |
+          The conditions that trigger the reputation profile.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            type:
+              type: string
+              description: |
+                The condition type. For available values, see [Condition Values](ref:condition-values).
+              enum:
+              - NetworkListCondition
+              - AsNumberCondition
+              - IpAddressCondition
+              - RequestCookieCondition
+              - RequestHeaderCondition
+              - HostCondition
+              - UrlPatternCondition
+            value:
+              type: array
+              description: |
+                The list of values that trigger the condition.
+              minItems: 1
+              uniqueItems: true
+              items:
+                type: string
+            positiveMatch:
+              type: boolean
+              description: |
+                Whether the condition should trigger on a match (`true`) or a lack of match (`false`).
+            valueCase:
+              type: boolean
+              description: |
+                Whether to consider the character case when comparing the value string with the request value. The default is `false`, meaning that a value such as `url` would match a string `UrL` in the request.
+              default: false
+            valueWildcard:
+              type: boolean
+              description: |
+                Whether to treat the asterisk (`*`) and question mark (`?`) as wildcards when comparing the value string with the request value. Note that setting this to `false` isn't supported by the host condition, and means that the value string must match exactly.
+              default: true
+      positiveMatch:
+        type: boolean
+        description: |
+          Whether the condition should trigger on a match (`true`) or a lack of match (`false`).
+  context:
+    type: string
+    description: |
+      Identifies the reputation category. Web scrapers (`WEBSCRP`) crawl sites and collect data like hotel rates, product prices, store locations, and more. DoS attackers (`DOSATCK`) are web clients or botnets that use automated tools to launch volumetric Denial of Service (DoS) attacks. Web attackers (`WEBATCK`) target websites and web apps with techniques like SQL injection, remote file inclusion, or cross-site scripting. Scanning tools (`SCANTL`) probe web apps for vulnerabilities during an attack's reconnaissance phase.
+    enum:
+    - WEBSCRP
+    - DOSATCK
+    - WEBATCK
+    - SCANTL
+  contextReadable:
+    type: string
+    description: |
+      Describes the reputation category.
+    readOnly: true
+  enabled:
+    type: boolean
+    description: |
+      Whether you enabled the reputation profile.
+    readOnly: true
+  sharedIpHandling:
+    type: string
+    description: |
+      Identifies the IP sharing. Either `NON_SHARED`, `SHARED_ONLY`, `BOTH`.
+    enum:
+    - NON_SHARED
+    - SHARED_ONLY
+    - BOTH
+  threshold:
+    type: number
+    description: |
+      The threshold when the profile to triggers.

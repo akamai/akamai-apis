@@ -1,0 +1,33 @@
+type: object
+description: |-
+  Status information for requests to create a new version of an access key.
+  
+x-akamai:
+  file-path: schemas/access-key-version-create-request-state-get-200.yaml
+additionalProperties: false
+required:
+- accessKeyVersion
+- requestedBy
+- processingStatus
+- requestDate
+properties:
+  accessKeyVersion:
+    nullable: true
+    $ref: access-key-version-link.yaml
+  processingStatus:
+    type: string
+    description: |
+      The current status of a request to create a new version of an access key. `IN_PROGRESS` for requests that are processing and `DONE` for complete. If a result of `FAILED` is shown, retry the [create](ref:post-access-key-version) request and verify you've properly formatted your POST object.
+    enum:
+    - DONE
+    - FAILED
+    - IN_PROGRESS
+  requestDate:
+    type: string
+    description: |
+      The time the create request was submitted, in [ISO 8601](https://www.w3.org/TR/NOTE-datetime) format.
+    format: date-time
+  requestedBy:
+    type: string
+    description: |
+      The username of the person who submitted the request.

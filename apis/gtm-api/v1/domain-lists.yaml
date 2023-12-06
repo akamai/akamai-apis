@@ -1,0 +1,51 @@
+openapi: 3.0.0
+info:
+  title: Domain lists
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/gtm-api/v1/reports
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: domain-lists.yaml
+paths:
+  /domain-list:
+    get:
+      operationId: get-domain-list
+      summary: Get a domain list
+      tags:
+      - Domains
+      description: |
+        This operation retrieves a list of domains, along with a URL templated link to obtain a domain summary of associated properties and  datacenters for each.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-domain-list-200.json
+              schema:
+                $ref: schemas/domain-list.yaml
+  /domain-list/{domain}:
+    parameters:
+    - $ref: parameters/domain-path.yaml
+    get:
+      operationId: get-domain-list-domain
+      summary: Get a domain summary
+      tags:
+      - Domains
+      description: |
+        This operation retrieves a list of property names, as well as Datacenter names and IDs for a given domain.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-domain-summary-200.json
+              schema:
+                $ref: schemas/domain-summary.yaml

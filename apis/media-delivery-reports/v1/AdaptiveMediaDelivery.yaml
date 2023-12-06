@@ -1,0 +1,114 @@
+openapi: 3.0.0
+info:
+  title: Adaptive Media Delivery
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/media-delivery-reports/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: AdaptiveMediaDelivery.yaml
+paths:
+  /adaptive-media-delivery/data:
+    get:
+      operationId: get-adaptive-media-delivery-data
+      summary: Get Adaptive Media Delivery historical data
+      tags:
+      - Adaptive Media Delivery
+      description: |
+        Retrieves past Adaptive Media Delivery activity data using parameters you specify. See [Sample Usage: Steps to get data](ref:sample-usage-steps-to-get-data) for an example of this operation.
+      parameters:
+      - $ref: parameters/dimensions-amd-query.yaml
+      - $ref: parameters/metrics-amd-query.yaml
+      - $ref: parameters/cpcodes-query.yaml
+      - $ref: parameters/endDate-query.yaml
+      - $ref: parameters/startDate-query.yaml
+      - $ref: parameters/limit-query.yaml
+      - $ref: parameters/offset-query.yaml
+      - $ref: parameters/aggWithKeywordParamOp_aggregation.yaml
+      - $ref: parameters/filterParams-query.yaml
+      - $ref: parameters/sortParams-query.yaml
+      - $ref: parameters/deliveryOption-query.yaml
+      - $ref: parameters/deliveryType-query.yaml
+      - $ref: parameters/deliveryFormat-query.yaml
+      - $ref: parameters/mediaEncryption-query.yaml
+      - $ref: parameters/ipVersion-query.yaml
+      - $ref: parameters/enableCPCodeName-query.yaml
+      responses:
+        200:
+          description: |
+            OK. Empty rows are returned in the response body when there's no available data.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-adaptive-media-delivery-data-200.json
+              schema:
+                $ref: schemas/data.yaml
+  /adaptive-media-delivery/data-stores:
+    get:
+      operationId: get-adaptive-media-delivery-data-stores
+      summary: List Adaptive Media Delivery data stores
+      tags:
+      - Adaptive Media Delivery
+      description: |
+        Data stores are collections of reporting dimensions and the individual metrics supported for use with those dimensions. Each data store is unique to its delivery product. For example, you can't combine Adaptive Media Delivery's dimensions and metrics with those from another product in this API. This operation's response can be very long, so the example here is truncated.
+      responses:
+        200:
+          description: |
+            OK. Empty rows are returned in the response body when there's no available data.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-data-stores-adaptive-media-delivery-200-trunc.json
+              schema:
+                $ref: schemas/dataStores.yaml
+  /adaptive-media-delivery/data-stores/{dataStoreId}:
+    parameters:
+    - $ref: parameters/dataStoreId-path.yaml
+    get:
+      operationId: get-adaptive-media-delivery-data-stores-datastoreid
+      summary: Get an Adaptive Media Delivery data store
+      tags:
+      - Adaptive Media Delivery
+      description: |
+        This fetches a list of dimensions and metrics used with AMD, as well as the aggregation interval, purge interval, maximum allowed query interval, and other details for a data store you specify. Responses can be very long, so the example here is truncated.
+      responses:
+        200:
+          description: |
+            OK. Empty rows are returned in the response body when there's no available data.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-data-store-adaptive-media-delivery-200-trunc.json
+              schema:
+                $ref: schemas/dataStores.yaml
+  /adaptive-media-delivery/realtime-data:
+    get:
+      operationId: get-adaptive-media-delivery-realtime-data
+      summary: Get Adaptive Media Delivery real-time data
+      tags:
+      - Adaptive Media Delivery
+      description: |
+        Retrieves near real-time data for Adaptive Media Delivery using parameters you specify. There's a 15 minute latency for data gathering. To get a substantial set of results, set the `startDate` and `endDate` parameters to at least 15 minutes before the current time, using the GMT (UTC) time zone.
+      parameters:
+      - $ref: parameters/dimensions-amd-query.yaml
+      - $ref: parameters/metrics-amd-query.yaml
+      - $ref: parameters/endDate-query.yaml
+      - $ref: parameters/startDate-query.yaml
+      - $ref: parameters/limit-query.yaml
+      - $ref: parameters/offset-query.yaml
+      - $ref: parameters/reduce-query.yaml
+      - $ref: parameters/aggForRealtimeDataParamOp_aggregation.yaml
+      - $ref: parameters/enableCPCodeName-query.yaml
+      responses:
+        200:
+          description: |
+            OK. Empty rows are returned in the response body when there's no available data.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-adaptive-media-delivery-data-200.json
+              schema:
+                $ref: schemas/data.yaml

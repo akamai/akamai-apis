@@ -1,0 +1,116 @@
+x-akamai:
+  file-path: paths/url-protection.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/url-protections/{urlProtectionPolicyId}
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/urlProtectionPolicyId-path.yaml
+get:
+  operationId: get-url-protection-policy
+  summary: Get a URL protection policy
+  tags:
+  - URL protection policies
+  description: |
+    Returns the specified URL protection policy. _Products:_ All.
+  responses:
+    200:
+      description: |
+        Successfully returned the URL protection policy.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/url-protection-policy-get-200.json
+          schema:
+            $ref: ../schemas/url-protection-policy.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to the URL protection policy in this security configuration.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/403.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    404:
+      description: |
+        [Not found](ref:404). Security configuration version or URL protection policy wasn't found.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/404.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+put:
+  operationId: put-url-protection-policy
+  summary: Modify a URL protection policy
+  tags:
+  - URL protection policies
+  description: |
+    Updates the specified URL protection policy. _Products:_ All.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/url-protection-policy-put.json
+        schema:
+          $ref: ../schemas/url-protection-policy.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated URL protection policy.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/url-protection-policy-get-200.json
+          schema:
+            $ref: ../schemas/url-protection-policy.yaml
+    400:
+      $ref: ../errors/400.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to URL protection policy in this security configuration.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/403.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    404:
+      description: |
+        [Not found](ref:404). Security configuration version or URL protection policy wasn't found.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/404.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+delete:
+  operationId: delete-url-protection-policy
+  summary: Remove a URL protection policy
+  tags:
+  - URL protection policies
+  description: |
+    Deletes the specified URL protection policy. You can't delete a URL protection policy that's actively in use. To delete an active URL protection policy, either activate an older configuration version or create a new version without the policy in place. _Products:_ All.
+  responses:
+    204:
+      description: |
+        Successfully deleted the URL protection policy.
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to the URL protection policy in this security configuration.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/403.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    404:
+      description: |
+        [Not found](ref:404). Security configuration version or URL protection policy wasn't found.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/404.json
+          schema:
+            $ref: ../schemas/problem-details.yaml

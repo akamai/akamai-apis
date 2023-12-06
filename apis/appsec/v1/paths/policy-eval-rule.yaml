@@ -1,0 +1,64 @@
+x-akamai:
+  file-path: paths/policy-eval-rule.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/eval-rules/{ruleId}
+parameters:
+- $ref: ../parameters/ruleId-path.yaml
+- $ref: ../parameters/policyId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/configId-path.yaml
+get:
+  operationId: get-policy-eval-rule
+  summary: Get the action of an evaluation rule
+  tags:
+  - 'Security policy: Evaluation rules'
+  description: |
+    Return the action for a specific rule you want to evaluate. This applies to both ASE auto and ASE manual upgrade modes. You may need additional permissions to add or update rule actions in `ASE_AUTO` mode. _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module.
+  responses:
+    200:
+      description: |
+        Successfully retrieved the evaluation rule's action.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-put-eval-rule-action-200.json
+          schema:
+            $ref: ../schemas/eval-rule-action-get-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-policy-eval-rule
+  summary: Modify the action of an evaluation rule
+  tags:
+  - 'Security policy: Evaluation rules'
+  description: |
+    Update the action for a specific rule you want to evaluate. Like your current rules, actions are `alert` to record the trigger of the event, `deny` to block the request, or `none` to take no action. This applies to both ASE auto and ASE manual upgrade modes. You may need additional permissions to add or update rule actions in `ASE_AUTO` mode. _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/policy-put-eval-rule-action-200.json
+        schema:
+          $ref: ../schemas/eval-rule-action-put.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the evaluation action of a rule.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-put-eval-rule-action-200.json
+          schema:
+            $ref: ../schemas/eval-rule-action-put-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

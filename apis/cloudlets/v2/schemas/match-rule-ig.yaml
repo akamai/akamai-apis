@@ -1,0 +1,69 @@
+type: object
+description: |-
+  Contains match rule information for Request Control.
+  
+x-akamai:
+  file-path: schemas/match-rule-ig.yaml
+title: Request Control
+additionalProperties: false
+required:
+- type
+- allowDeny
+properties:
+  id:
+    type: integer
+    description: |
+      __Internal__ Akamai internal use only.
+    x-akamai:
+      status: INTERNAL
+    nullable: true
+  name:
+    type: string
+    description: |
+      The name of the rule.
+    nullable: true
+    maxLength: 8192
+  type:
+    type: string
+    description: |
+      The type of Cloudlet the rule is for. For example, the string for Request Control is `igMatchRule`.
+    enum:
+    - igMatchRule
+  akaRuleId:
+    type: string
+    description: |
+      The rule's unique identifier.
+  allowDeny:
+    type: string
+    description: |
+      If set to `allow`, the request is sent to origin when all conditions are true. If `deny`, the request is denied when all conditions are true. If `denybranded`, the request is denied and rerouted according to the configuration of the [Request Control behavior](https://techdocs.akamai.com/property-mgr/reference/latest-request-control).
+    enum:
+    - allow
+    - deny
+    - denybranded
+  disabled:
+    type: boolean
+    description: |
+      If `true`, disables a rule so it's not evaluated against incoming requests. The default setting is `false`.
+    default: false
+  end:
+    type: integer
+    description: |
+      The end time for this match rule. When `matchesAlways` is `false`, enter the `end` value in epoch seconds.
+    minimum: 0
+  matches:
+    type: array
+    description: |
+      The `matchType` and the `matchValue` or `objectMatchValue` used to conditionally pass through the request. Plus additional criteria to match on, like case sensitivity (`caseSensitive`).
+    nullable: true
+    items:
+      $ref: match-rule-ig-definitions.yaml#/definitions/matchCriteriaType
+  matchesAlways:
+    type: boolean
+    description: |
+      The match rule is always on when `true`. When `false`, the rule is applied according to the `start` and `end` times.
+  start:
+    type: integer
+    description: |
+      The start time for this match rule. When `matchesAlways` is `false`, enter the `start` value in epoch seconds.
+    minimum: 0

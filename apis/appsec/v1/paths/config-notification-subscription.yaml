@@ -1,0 +1,94 @@
+x-akamai:
+  file-path: paths/config-notification-subscription.yaml
+  path-info: /configs/{configId}/notification/subscription/{feature}
+parameters:
+- $ref: ../parameters/feature-path.yaml
+- $ref: ../parameters/configId-path.yaml
+post:
+  operationId: post-subscription-feature
+  summary: Subscribe or unsubscribe to recommendation emails
+  tags:
+  - Subscriptions
+  description: |
+    Set the request object's `action` to `subscribe` to add user emails to the subscription object. Use `unsubscribe` to remove them from the list. The lists are organized by `features`. Currently available `feature` values are `AAG_TUNING_REC` for AAG and ASE rule sets, and `WAF_RULE_UPDATE` for ASE rule sets. _Products:_ Kona Site Defender.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/subscription.json
+        schema:
+          $ref: ../schemas/appsec-config-subscription.yaml
+  responses:
+    204:
+      description: |
+        Subscribed/Unsubscribed successfully.
+    400:
+      description: |
+        [Invalid](ref:400). Incorrect client input. See the `fieldErrors` and other fields provided in the response for more information.
+      content:
+        application/problem+json:
+          examples:
+            emailValidationErrors:
+              summary: Email validation errors
+              value:
+                $ref: ../examples/400-subscription-email-validation-errors.json
+            invalidAction:
+              summary: Invalid action
+              value:
+                $ref: ../examples/400-subscription-invalid-action.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). Access denied. Make sure you have correct permissions.
+      content:
+        application/problem+json:
+          examples:
+            noConfig:
+              summary: No access to the configuration
+              value:
+                $ref: ../examples/403-subscription-no-config-access.json
+            noFeatureScope:
+              summary: No feature scope
+              value:
+                $ref: ../examples/403-subscription-no-feature-scope.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    404:
+      $ref: ../errors/404.yaml
+get:
+  operationId: get-subscription-feature
+  summary: List subscribers
+  tags:
+  - Subscriptions
+  description: |
+    List all subscribers to a security configuration's `feature`. The response array is empty if there are no subscribers. Currently available `feature` values are `AAG_TUNING_REC` for AAG and ASE rule sets, and `WAF_RULE_UPDATE` for ASE rule sets. _Products:_ Kona Site Defender.
+  responses:
+    200:
+      description: |
+        Successfully returns list of subscribers.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/subscription-200.json
+          schema:
+            $ref: ../schemas/appsec-config-subscription-200.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). Access denied. Make sure you have correct permissions.
+      content:
+        application/problem+json:
+          examples:
+            noConfig:
+              summary: No access to the configuration
+              value:
+                $ref: ../examples/403-subscription-no-config-access.json
+            noFeatureScope:
+              summary: No feature scope
+              value:
+                $ref: ../examples/403-subscription-no-feature-scope.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    404:
+      $ref: ../errors/404.yaml

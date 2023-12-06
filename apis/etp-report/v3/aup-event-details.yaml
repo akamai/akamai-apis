@@ -1,0 +1,102 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: AUP event reports
+  version: v3
+servers:
+- url: https://{hostname}/etp-report/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: aup-event-details.yaml
+paths:
+  /configs/{configId}/aup-events/aggregate:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-aup-events
+      summary: Report AUP event totals
+      tags:
+      - AUP events
+      description: |
+        Lists total counts for AUP events, aggregated for the given time period.
+      parameters:
+      - $ref: parameters/dimension-aup-query.yaml
+      - $ref: parameters/cardinality-query.yaml
+      - $ref: parameters/startTimeSec-query.yaml
+      - $ref: parameters/endTimeSec-query.yaml
+      - $ref: parameters/filters-query-aup.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/aup-events-aggregate-category-200.json
+              schema:
+                $ref: schemas/Aggregate.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /configs/{configId}/aup-events/details:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-events-details
+      summary: Report AUP event details
+      tags:
+      - AUP events
+      description: |
+        Lists AUP events for a given time period.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/aup-events-details-postResponse-200.json
+              schema:
+                $ref: schemas/postEventsDetailsResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /configs/{configId}/aup-events/time-series:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-events-time-series
+      summary: Report AUP event time series
+      tags:
+      - AUP events
+      description: |
+        Lists total counts for AUP events, aggregated by hour.
+      parameters:
+      - $ref: parameters/dimension-aup-query.yaml
+      - $ref: parameters/startTimeSec-query.yaml
+      - $ref: parameters/endTimeSec-query.yaml
+      - $ref: parameters/filters-query-aup.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/aup-events-time-series-time-200.json
+              schema:
+                $ref: schemas/CommonTimeSeries.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml

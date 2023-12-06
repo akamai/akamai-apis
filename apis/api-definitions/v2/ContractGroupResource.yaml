@@ -1,0 +1,94 @@
+openapi: 3.0.0
+info:
+  title: Contracts and groups
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/api-definitions/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: ContractGroupResource.yaml
+paths:
+  /contracts/groups:
+    get:
+      operationId: get-contracts-groups
+      summary: List contracts and groups
+      tags:
+      - Contracts and groups
+      description: |
+        You provision each API endpoint within the context of your contract with Akamai and a Control Center portal group. The response objects encapsulate pairings of contract and group identifiers available within the scope of the user who provisioned the API token, as described in [Get started](ref:api-get-started).
+      responses:
+        200:
+          description: |
+            The response lists combined contracts and groups you can use for API definitions.
+          content:
+            application/json:
+              example:
+                $ref: examples/aCGPickerRows-example.json
+              schema:
+                $ref: schemas/aCGPickerRows.yaml
+        403:
+          description: |
+            You don't have permission to edit the API endpoint.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /contracts/{contractId}/groups/{groupId}/hosts:
+    parameters:
+    - $ref: parameters/groupId-path.yaml
+    - $ref: parameters/contractId-path.yaml
+    get:
+      operationId: get-contract-group-hosts
+      summary: List hostnames
+      tags:
+      - Contracts and groups
+      description: |
+        Lists all hostnames through which API consumers can access an endpoint service under a given contract and group pairing. You can use Property Manager (or [PAPI](https://techdocs.akamai.com/property-mgr/reference/api)) to create new hostnames to make available to users.
+      responses:
+        200:
+          description: |
+            The response lists hosts for the contract and group.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointHostsDto-example.json
+              schema:
+                $ref: schemas/hostsSchema.yaml
+        403:
+          description: |
+            You don't have permission to read the API endpoint for the specified contract and group.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /contracts/{contractId}/groups/{groupId}/hostsAcgs:
+    parameters:
+    - $ref: parameters/groupId-path.yaml
+    - $ref: parameters/contractId-path.yaml
+    get:
+      operationId: get-contract-group-hosts-acgs
+      summary: List hostnames with access control groups
+      tags:
+      - Contracts and groups
+      description: |
+        Lists all hostnames through which API consumers can access an endpoint service under a given contract and group pairing. Returns each hostname together with the access control group where the hostname is registered. You can use Property Manager (or [PAPI](https://techdocs.akamai.com/property-mgr/reference/api)) to create new hostnames to make available to users.
+      responses:
+        200:
+          description: |
+            Response data lists hosts for the contract and group.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointHostsAcgsDto-example.json
+              schema:
+                $ref: schemas/acgsHosts.yaml
+        403:
+          description: |
+            You don't have permission to read the API endpoint for the specified contract and group.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml

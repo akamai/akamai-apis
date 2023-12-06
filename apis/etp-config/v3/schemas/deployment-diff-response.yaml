@@ -1,0 +1,75 @@
+type: object
+description: |-
+  Contains deployment change details.
+  
+x-akamai:
+  file-path: schemas/deployment-diff-response.yaml
+additionalProperties: false
+required:
+- changes
+properties:
+  changes:
+    type: array
+    description: |
+      Lists deployment changes.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - changes
+      properties:
+        changeType:
+          type: string
+          description: |
+            The type of change, either `Create`, `Modify`, or `Delete`.
+          enum:
+          - Create
+          - Modify
+          - Delete
+          minLength: 1
+        changes:
+          type: array
+          description: |
+            Nested deployment diff objects.
+          minItems: 0
+          items:
+            $ref: deployment-diff-response-nested.yaml
+        detail:
+          type: object
+          description: |
+            Describes the change details.
+          additionalProperties: false
+          required:
+          - name
+          properties:
+            id:
+              type: integer
+              description: |
+                A unique identifier for the change.
+              minimum: 1
+            name:
+              type: string
+              description: |
+                Name of the change.
+              minLength: 1
+            modifiedBy:
+              type: string
+              description: |
+                User who made the modification.
+              minLength: 1
+            modifiedDate:
+              type: string
+              description: |
+                Date of entity modification.
+              readOnly: true
+              format: date-time
+  deltaType:
+    type: string
+    description: |
+      Name of entity type, such as `Site`, `Policy`, or `List`.
+    enum:
+    - Site
+    - Policy
+    - List
+    minLength: 1

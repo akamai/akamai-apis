@@ -1,0 +1,74 @@
+type: object
+description: |-
+  Provides the deployment change details.
+  
+x-akamai:
+  file-path: schemas/deploymentDiff.yaml
+additionalProperties: false
+required:
+- changes
+properties:
+  changes:
+    type: array
+    description: |
+      Lists the changes made.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - changes
+      properties:
+        changeType:
+          type: string
+          description: |
+            The change type, either `Create`, `Modify`, or `Delete`.
+          enum:
+          - Create
+          - Modify
+          - Delete
+        changes:
+          type: array
+          description: |
+            Contains deployment change details.
+          minItems: 0
+          items:
+            $ref: deployment-diff-response.yaml
+        detail:
+          type: object
+          description: |
+            Lists details about the change.
+          additionalProperties: false
+          required:
+          - name
+          properties:
+            id:
+              type: integer
+              description: |
+                The unique identifier for the change.
+              minimum: 1
+            name:
+              type: string
+              description: |
+                Name of change.
+              minLength: 1
+            modifiedBy:
+              type: string
+              description: |
+                User who made the modification.
+              minLength: 1
+            modifiedDate:
+              type: string
+              description: |
+                Date of entity modification.
+              readOnly: true
+              format: date-time
+  deltaType:
+    type: string
+    description: |
+      Name of entity type, such as `Site`, `Policy`, or `List`.
+    enum:
+    - Site
+    - Policy
+    - List
+    minLength: 1

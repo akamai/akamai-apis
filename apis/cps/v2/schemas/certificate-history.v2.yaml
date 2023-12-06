@@ -1,0 +1,124 @@
+type: object
+description: |-
+  You can view the current and previous certificates as part of the certificate history. You retrieve each iteration in the history of your certificate by certificate type, and also view the status, expiration date, and certificate authority for the certificate. You can take actions on each activity of the certificate, including, view the certificate and view the trust chain for the certificate.
+  
+x-akamai:
+  file-path: schemas/certificate-history.v2.yaml
+additionalProperties: false
+required:
+- certificates
+properties:
+  certificates:
+    type: array
+    description: |
+      The type of certificate. This could be a single certificate, which associates a property hostname with a single name. It could be a wildcard certificate, which secures an entire property hostname. It could be a SAN certificate, which uses Subject Alternative Names and allows you to secure up to 100 property hostnames with one certificate. It could also be a wildcard SAN certificate, which is a SAN certificate that can have up to 100 SANs with 25 wildcard entries in the SAN list. Lastly, you can have a third-party certificate, which is a signed certificate obtained by you from an external certificate authority.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - deploymentStatus
+      - multiStackedCertificates
+      - primaryCertificate
+      - slots
+      - stagingStatus
+      - type
+      properties:
+        type:
+          type: string
+          description: |
+            Either `san`, `single`, `wildcard`, `wildcard-san`, or `third-party`.
+          enum:
+          - san
+          - single
+          - wildcard
+          - wildcard-san
+          - third-party
+        deploymentStatus:
+          type: string
+          description: |
+            The current status of the certificate on the network. This is either `active` or `inactive`.
+          enum:
+          - active
+          - inactive
+        geography:
+          type: string
+          description: |
+            Lists where you can deploy the certificate. If it is `standard-worldwide`, you can deploy everywhere except China. If it is `worldwide`, you can deploy everywhere including China. If it is `worldwide-russia`, you can deploy everywhere including Russia. Geography is dependent on your network type. If your network type is `standard-tls`, then you can deploy in Russia and `worldwide-russia` is the same as `standard-worldwide`.
+          enum:
+          - standard-worldwide
+          - worldwide
+          - worldwide-russia
+        multiStackedCertificates:
+          type: array
+          description: |
+            Enables an ECDSA certificate in addition to an RSA certificate. CPS automatically performs all certificate operations on both certificates, and will use the best certificate for each client connection to your secure properties. Customers who are pinning certificates will need to pin both the RSA and the ECDSA certificate. We recommend all customers enable this feature. If its Third Party Dual Stack Certificate, fallback RSA certificate information will be present in this.
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              certificate:
+                type: string
+                description: |
+                  The certificate text for the multi-stacked certificate.
+                nullable: true
+              expiry:
+                type: string
+                description: |
+                  The expiration date for the multi-stacked certificate.
+              keyAlgorithm:
+                type: string
+                description: |
+                  The key algorithm for the multi-stacked certificate, either `ECDSA` or `RSA`.
+                enum:
+                - ECDSA
+                - RSA
+              trustChain:
+                type: string
+                description: |
+                  The trust chain for the multi-stacked certificate.
+                nullable: true
+        primaryCertificate:
+          type: object
+          description: |
+            Primary certificate for Enrollment.
+          additionalProperties: false
+          nullable: true
+          properties:
+            certificate:
+              type: string
+              description: |
+                The primary certificate in the multi-stacked certificate.
+              nullable: true
+            expiry:
+              type: string
+              description: |
+                The expiration date for the primary certificate.
+            keyAlgorithm:
+              type: string
+              description: |
+                The key algorithm for the primary certificate.
+              enum:
+              - ECDSA
+              - RSA
+            trustChain:
+              type: string
+              description: |
+                The trust chain for the primary certificate.
+              nullable: true
+        ra:
+          type: string
+          description: |
+            The certificate registration authority of the primary certificate.
+        slots:
+          type: array
+          description: |
+            The slot numbers of the primary certificate.
+          items:
+            type: integer
+        stagingStatus:
+          type: string
+          description: |
+            The staging status of the primary certificate, either `active` or `inactive`.
+          enum:
+          - active
+          - inactive

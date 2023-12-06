@@ -1,0 +1,132 @@
+type: object
+description: |-
+  Describes reputaion profile objects when returned in the configuration export API's response.
+  
+x-akamai:
+  file-path: schemas/export-reputation-profiles.yaml
+additionalProperties: false
+required:
+- id
+- name
+- context
+- threshold
+properties:
+  id:
+    type: integer
+    description: |
+      Uniquely identifies the reputation profile.
+    readOnly: true
+  name:
+    type: string
+    description: |
+      The name you assigned to the reputation profile.
+  description:
+    type: string
+    description: |
+      Describes the reputation profile.
+  condition:
+    type: object
+    description: |
+      Contains information about the criteria that trigger the reputation profile.
+    additionalProperties: false
+    required:
+    - id
+    - version
+    properties:
+      id:
+        type: integer
+        description: |
+          Uniquely identifies the reputation profile condition.
+      name:
+        type: string
+        description: |
+          The name you assigned to the reputation profile condition.
+      description:
+        type: string
+        description: |
+          Describes the reputation profile condition.
+      version:
+        type: integer
+        description: |
+          The version of the reputation profile condition.
+      atomicConditions:
+        type: array
+        description: |
+          The conditions that trigger the reputation profile.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - type
+          - positiveMatch
+          - valueWildcard
+          - valueCase
+          - value
+          properties:
+            type:
+              type: string
+              description: |
+                The condition type. Either `NetworkListCondition`, `AsNumberCondition`, `IpAddressCondition`, `RequestCookieCondition`, `RequestHeaderCondition`, `HostCondition`, or `UrlPatternCondition`.
+              enum:
+              - NetworkListCondition
+              - AsNumberCondition
+              - IpAddressCondition
+              - RequestCookieCondition
+              - RequestHeaderCondition
+              - HostCondition
+              - UrlPatternCondition
+            value:
+              type: array
+              description: |
+                The list of values that trigger the condition.
+              minItems: 1
+              uniqueItems: true
+              items:
+                type: string
+            positiveMatch:
+              type: boolean
+              description: |
+                Whether the condition should trigger on a match (`true`) or a lack of match (`false`).
+            valueCase:
+              type: boolean
+              description: |
+                Whether to consider the character case when comparing the value string with the request value. The default is `false`, meaning that a value such as `url` would match a string `UrL` in the request.
+              default: false
+            valueWildcard:
+              type: boolean
+              description: |
+                Whether to treat the asterisk (`*`) and question mark (`?`) as wildcards when comparing the value string with the request value. Note that setting this to `false` isn't supported by the host condition, and means that the value string must match exactly.
+              default: true
+      positiveMatch:
+        type: boolean
+        description: |
+          Whether the condition should trigger on a match (`true`) or a lack of match (`false`).
+  context:
+    type: string
+    description: |
+      Identifies the reputation category. Either `WEBSCRP`, `DOSATCK`, `WEBATCK`, `ACCATCK`, `SCANTL`, `2_WEBSCRP`, `2_DOSATCK`, `2_WEBATCK`, `2_ACCATCK`, or `2_SCANTL`.
+    enum:
+    - WEBSCRP
+    - DOSATCK
+    - WEBATCK
+    - ACCATCK
+    - SCANTL
+    - 2_WEBSCRP
+    - 2_DOSATCK
+    - 2_WEBATCK
+    - 2_ACCATCK
+    - 2_SCANTL
+  contextReadable:
+    type: string
+    description: |
+      Describes the reputation category.
+    readOnly: true
+  enabled:
+    type: boolean
+    description: |
+      Whether you enabled the reputation profile.
+    readOnly: true
+  threshold:
+    type: number
+    description: |
+      The threshold when the profile to triggers.

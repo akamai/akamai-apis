@@ -1,0 +1,200 @@
+type: object
+description: |-
+  Describes the range of query options available for each report.
+  
+x-akamai:
+  file-path: schemas/report-list-row-schema.yaml
+additionalProperties: false
+required:
+- name
+- version
+- deprecated
+- status
+- available
+- dataRetentionDays
+- intervals
+- requiredRoles
+properties:
+  name:
+    type: string
+    description: |
+      Specifies the name of the report.
+  version:
+    type: integer
+    description: |
+      The version of this report.
+  available:
+    type: boolean
+    description: |
+      When enabled, indicates the report can be executed by the current user.
+  dataRetentionDays:
+    type: integer
+    description: |
+      The number of days for which this report's data is available.
+  deprecated:
+    type: boolean
+    description: |
+      When enabled, indicates that this is an older version of the report.
+  filters:
+    type: array
+    description: |
+      The set of available filters available for this report.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: |
+            The name of the available filter.
+        type:
+          type: string
+          description: |
+            The type of data this filter expects, either arbitrary `int` or `string`, or a fixed `enum` specified by `values`.
+          enum:
+          - string
+          - int
+          - enum
+        required:
+          type: boolean
+          description: |
+            When enabled, you need to specify this filter when executing the report.
+        fullDescription:
+          type: string
+          description: |
+            Provides documentation describing the available filter.
+        values:
+          type: array
+          description: |
+            When the `type` of filter is `enum`, this lists available values.
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - value
+            properties:
+              value:
+                type: string
+                description: |
+                  Specifies each enumerated string value.
+              fullDescription:
+                type: string
+                description: |
+                  Where necessary, provides documentation describing the enumerated value.
+  fullDescription:
+    type: string
+    description: |
+      Documentation that describes this report.
+  groupBy:
+    type: array
+    description: |
+      This indicates names of columns by which reported data is grouped. It's reflected in the generated report's metadata.
+    items:
+      type: string
+  groupOutlyingValues:
+    type: object
+    description: |
+      Specifies this report's support for grouping outlying values under a single category.
+    additionalProperties: false
+    required:
+    - enabled
+    properties:
+      enabled:
+        type: boolean
+        description: |
+          Indicates whether this report allows you to group outlying values.
+      groupName:
+        type: string
+        description: |
+          Indicates the default category name under which outlying values group within a single category. You can provide your own name to override this default.
+        default: Other
+      groupThreshold:
+        type: integer
+        description: |
+          Indicates the default number of categories to report on separately before grouping under a single category. You can provide your own threshold value to override this default.
+        default: 9
+  intervals:
+    type: array
+    description: |
+      Specifies the set of available spans of time to aggregate data by. Use one of these values as the `interval` query parameter when executing the report.
+    items:
+      type: string
+  limit:
+    type: integer
+    description: |
+      The default number of data rows included for this report.
+  links:
+    type: array
+    description: |
+      Specifies dynamic hypermedia links to report-generating operations.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - rel
+      - href
+      properties:
+        href:
+          type: string
+          description: |
+            The hypermedia URL linking the API resource.
+        method:
+          type: string
+          description: |
+            The HTTP method to call the `href` link with. If unspecified, uses the GET method.
+          default: GET
+        rel:
+          type: string
+          description: |
+            Identifies the type of resource.
+  maxLimit:
+    type: integer
+    description: |
+      The maximum number of data rows permitted for this report.
+  metrics:
+    type: array
+    description: |
+      The set of available metrics available for this report.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - description
+      properties:
+        name:
+          type: string
+          description: |
+            The name of the available metric.
+        fullDescription:
+          type: string
+          description: |
+            Provides documentation describing the available metric.
+  outputType:
+    type: string
+    description: |
+      The report type. Either `HIERARCHICAL` with two columns you can group data by, with the first being Time, or `FLAT`.
+    enum:
+    - FLAT
+    - HIERARCHICAL
+  requiredProducts:
+    type: array
+    description: |
+      If specified, this lists any product you need to execute the report.
+    items:
+      type: string
+  requiredRoles:
+    type: array
+    description: |
+      Information about required role to run this report.
+    items:
+      type: string
+      description: |
+        A set of permissions, any of which you need to execute the report. Some permissions may correspond to specific `requiredProducts`.
+  status:
+    type: string
+    description: |
+      Whether this version of the report is `PUBLISHED` or `DEPRECATED`. Selecting `DEPRECATED` enables the `deprecated` JSON member.
+    enum:
+    - PUBLISHED
+    - DEPRECATED

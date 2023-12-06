@@ -1,0 +1,55 @@
+type: object
+description: |-
+  Describes list of changes in detail.
+  
+x-akamai:
+  file-path: schemas/changes.yaml
+additionalProperties: false
+required:
+- changes
+properties:
+  changeType:
+    type: string
+    description: |
+      Specifies the type of change, either `Modified`, `Added`, or `Deleted`.
+    enum:
+    - Modified
+    - Added
+    - Deleted
+  changes:
+    type: array
+    description: |
+      List of changes.
+    minItems: 0
+    items:
+      $ref: changeDetail.yaml
+  details:
+    type: object
+    description: |
+      Detail of the change.
+    additionalProperties: false
+    required:
+    - name
+    - id
+    properties:
+      id:
+        type: integer
+        description: |
+          Unique identifier for the change.
+        minimum: 1
+      name:
+        type: string
+        description: |
+          Name of the modified entity.
+        minLength: 1
+      modifiedBy:
+        type: string
+        description: |
+          User who caused the change.
+        minLength: 1
+      modifiedDate:
+        type: string
+        description: |
+          When the change was made.
+        readOnly: true
+        format: date-time

@@ -1,0 +1,63 @@
+x-akamai:
+  file-path: paths/policy-rules.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/rules
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/policyId-path.yaml
+get:
+  operationId: get-policy-rules
+  summary: List rules
+  tags:
+  - 'WAF rules: General settings'
+  description: |
+    Returns the action taken for each rule in a policy. The action occurs when the rules are triggered by a request. These are not the same rules as Custom Rules that you configure yourself. These rules are maintained by Akamai. _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module.
+  responses:
+    200:
+      description: |
+        Successfully retrieved the rule actions.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-get-rule-actions-200.json
+          schema:
+            $ref: ../schemas/rule-actions-get-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-policy-rules
+  summary: Upgrade KRS ruleset
+  tags:
+  - 'WAF rules: General settings'
+  description: |
+    Upgrade to the most recent version of the KRS rule set. Akamai periodically updates these rules to keep protections current. However, the rules you use in your security policies do not automatically upgrade to the latest version when setting `mode` to `KRS`. These rules do update automatically when you have `mode` set to `AAG`. Before you upgrade, run [Get upgrade details](ref:get-rules-upgrade-details) to see which rules have changed. If you want to test how these rules would operate with live traffic before committing to the upgrade, run them in evaluation mode. This applies to KRS rules only and does not allow you to make any changes to the rules themselves. The response is the same as the `mode` response. _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module, Adaptive Security Engine.  If you're already using or want to switch from KRS to Adaptive Security Engine (ASE), pass `"upgrade": true,` and `"mode": "ASE_AUTO"` or `ASE_MANUAL` in your request. If you're using Kona Rule Sets, continue to pass only the upgrade value. Note that this operation does not grant access to Adaptive Security Engine. It updates the ASE protections if you already have ASE on your contract. Once you switch to ASE protections, you can't go back to KRS rules. Contact your account team if you want to add ASE to your contract.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/policy-rules-upgrade-put.json
+        schema:
+          $ref: ../schemas/rules-put.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated to latest KRS rule set version.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-get-mode-200.json
+          schema:
+            $ref: ../schemas/mode-get-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

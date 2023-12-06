@@ -1,0 +1,147 @@
+type: object
+description: |-
+  Contains information about the basic building block of a traffic management configuration. Each domain object is a representation of a complete GTM domain such as `example.akadns.net`.
+  
+x-akamai:
+  file-path: schemas/domain-vnd-config-gtm.v1.4.yaml
+additionalProperties: false
+required:
+- asMaps
+- cidrMaps
+- cnameCoalescingEnabled
+- datacenters
+- defaultErrorPenalty
+- defaultSslClientCertificate
+- defaultSslClientPrivateKey
+- defaultTimeoutPenalty
+- emailNotificationList
+- geographicMaps
+- lastModified
+- lastModifiedBy
+- loadFeedback
+- loadImbalancePercentage
+- modificationComments
+- name
+- properties
+- resources
+- type
+properties:
+  name:
+    type: string
+    description: |
+      The full GTM domain name that needs to end in `.akadns.net`, up to 100 characters.
+    minLength: 1
+    maxLength: 100
+  type:
+    type: string
+    description: |
+      Indicates the type of domain available based on your contract. Either `failover-only`, `static`, `weighted`, `basic`, or `full`.
+    enum:
+    - failover-only
+    - static
+    - weighted
+    - basic
+    - full
+  properties:
+    type: array
+    description: |
+      Contains information about the properties in the GTM domain.
+    items:
+      $ref: property-vnd-config-gtm.v1.4.yaml
+  asMaps:
+    type: array
+    description: |
+      __v1.1__. Contains information about the set of AS maps assigned to this domain.
+    items:
+      $ref: as-map.yaml
+  cidrMaps:
+    type: array
+    description: |
+      Contains information about the set of CIDR maps assigned to this domain.
+    items:
+      $ref: cidr-dto.yaml
+  cnameCoalescingEnabled:
+    type: boolean
+    description: |
+      __v1.1__. If enabled, GTM collapses CNAME redirections in DNS answers when it knows the target of the CNAME. The default value is `false`.
+  datacenters:
+    type: array
+    description: |
+      Contains information about the set of data centers assigned to this domain.
+    items:
+      $ref: datacenter-vnd-config-gtm.v1.4.yaml
+  defaultErrorPenalty:
+    type: integer
+    description: |
+      Specifies the download penalty score. If the download encounters an error, the web agent computes a score that is either the download time in seconds or a penalty score. The default penalty is `75`.
+  defaultSslClientCertificate:
+    type: string
+    description: |
+      Specifies an optional Base64-encoded certificate that corresponds with the private key for TLS-based liveness tests (HTTPS, SMTPS, POPS, and TCPS). When the liveness test does not contain `sslClientCertificate` and `sslClientPrivateKey` values, use this and the `defaultSslClientPrivateKey` object members to generate a certificate. In this case, use a separate, throwaway private key when generating a certificate or certificate signing request (CSR). You shouldn't use this key for any other purpose. See also `defaultSslClientPrivateKey` within this object.
+    nullable: true
+  defaultSslClientPrivateKey:
+    type: string
+    description: |
+      Specifies an optional Base64-encoded private key that corresponds with the TLS certificate for TLS-based liveness tests (HTTPS, SMTPS, POPS, and TCPS). See also `defaultSslClientCertificate` within this object.
+    nullable: true
+  defaultTimeoutPenalty:
+    type: integer
+    description: |
+      Specifies the timeout penalty score. The web agent then computes a score that is either the download time in seconds or a penalty score if the download request times out. The default penalty for a time out is `25`.
+  emailNotificationList:
+    type: array
+    description: |
+      A list of email addresses to notify when a change is made to the domain.
+    items:
+      type: string
+      format: email
+  geographicMaps:
+    type: array
+    description: |
+      Contains information about the set of geographic maps assigned to this domain.
+    items:
+      $ref: geographic-map.yaml
+  lastModified:
+    type: string
+    description: |
+      An ISO 8601 timestamp that indicates the time of the last domain change.
+    format: date-time
+  lastModifiedBy:
+    type: string
+    description: |
+      The email address of the administrator who made the last change to the domain.
+    nullable: true
+    maxLength: 256
+  links:
+    type: array
+    description: |
+      __v1.1__. Provides a URL path that allows direct navigation to the domain.
+    items:
+      $ref: link.yaml
+  loadFeedback:
+    type: boolean
+    description: |
+      Indicates whether you're using `resources` to control load balancing.  Resources represent a constraint on how much load a data center can absorb. The value is `true` if you're using load feedback.
+  loadImbalancePercentage:
+    type: number
+    description: |
+      Indicates the percent of load imbalance factor (LIF) for the domain. It lets GTM exceed the value configured for traffic distribution. For example, if the data center's traffic allocation is 25 percent and the LIF is 1.5, the demand can grow to 37.5 percent (25% &times; 1.5) before the load balancer starts shifting load away from it. If the LIF is `0`, no load imbalance is allowed. However, internally, GTM adds one to the LIF to allow its use as a multiplier. The default LIF is 1.1, which is displayed as `10.0` percent. The value ranges from `0` to `1000000` percent.
+    nullable: true
+    minimum: 0
+    maximum: 1000000
+  modificationComments:
+    type: string
+    description: |
+      A descriptive note about changes to the domain. The maximum is 4000 characters.
+    nullable: true
+    maxLength: 4000
+  resources:
+    type: array
+    description: |
+      Contains information about the resources in the GTM domain.
+    items:
+      $ref: resource.yaml
+  status:
+    description: |
+      Specifies the condition of the change in the domain's activation.
+    $ref: status.yaml

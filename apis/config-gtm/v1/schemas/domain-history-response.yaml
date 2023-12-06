@@ -1,0 +1,107 @@
+type: object
+x-akamai:
+  file-path: schemas/domain-history-response.yaml
+title: Domain history list
+additionalProperties: false
+required:
+- metadata
+- changes
+- links
+properties:
+  changes:
+    type: array
+    description: |
+      The list of changes for a domain.
+    items:
+      type: object
+      description: |
+        This data object provides a summary of a change to the domain.
+      additionalProperties: false
+      required:
+      - domain
+      - modificationDate
+      - modifiedBy
+      - modifiedByClientId
+      - modifiedByClientName
+      - comments
+      - changes
+      - domainVersionId
+      properties:
+        changes:
+          type: string
+          description: |
+            A textual representation of the changes that were made to the domain.
+          nullable: true
+        comments:
+          type: string
+          description: |
+            The modification comments that were given as reason for the change.
+          nullable: true
+        domain:
+          type: string
+          description: |
+            The name of the domain.
+        domainVersionId:
+          type: string
+          description: |
+            The domainVersionId that was associated with this change.
+          nullable: true
+        modificationDate:
+          type: string
+          description: |
+            An ISO 8601 timestamp of the change.
+          format: date-time
+        modifiedBy:
+          type: string
+          description: |
+            The name of the user who made the change.
+        modifiedByClientId:
+          type: string
+          description: |
+            The ID of the Akamai API client that made the change, if applicable.
+          nullable: true
+        modifiedByClientName:
+          type: string
+          description: |
+            The name of the Akamai API client that made the change, if applicable.
+          nullable: true
+  links:
+    type: array
+    description: |
+      Provides a URL path that allows direct navigation to the domain.
+    items:
+      $ref: link.yaml#
+  metadata:
+    type: object
+    description: |
+      Provides information about the page of data that this response contains.
+    additionalProperties: false
+    required:
+    - lastPage
+    - pageSize
+    - page
+    - uri
+    - totalElements
+    properties:
+      lastPage:
+        type: integer
+        description: |
+          The number of the last page which can be fetched.
+      page:
+        type: integer
+        description: |
+          The number of the current page.
+        default: 1
+      pageSize:
+        type: integer
+        description: |
+          The number of items per page.
+        default: 25
+      totalElements:
+        type: integer
+        description: |
+          The total number of history items available for the domain.
+      uri:
+        type: string
+        description: |
+          The uri of this response.

@@ -1,0 +1,46 @@
+openapi: 3.0.0
+info:
+  title: Latency
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/gtm-api/v1/reports
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: latency.yaml
+paths:
+  /latency/domains/{domain}/datacenters/{datacenterId}:
+    parameters:
+    - $ref: parameters/datacenterId-path.yaml
+    - $ref: parameters/domain-path.yaml
+    get:
+      operationId: get-latency-datacenter
+      summary: Report latency per data center
+      tags:
+      - Latency
+      description: |
+        This operation returns a collection of reports representing latency and loss of ping data as reported by network agents in each Data Center for a property. Latency and Loss parameters follow bucket ranges schema (bucket ranges, delimited by a pipe: `|`).
+
+        Ping Loss ranges from `0%` to `100%`. So a schema of `5|10|15|20` would represent grouping of data from `0%` to `5%`, `5%` to `10%`, `10%` to `15%`, `15%` to `20%`, and `20%` to `100%` bucket ranges. The end of one bucket would be the beginning of the next bucket. Similarly `0|5|80` would represent `0%`, `0%` to `5%`, `5%` to `100%`, and `80%` to `100%` bucket ranges. A trailing pipe at the end of a bucket indicates that there is no _greater than the max_ bucket, i.e. in the above example if loss schema was `0|5|80|` then it would mean `0%`, `0%` to `5%`, and `5%` to `80%`.
+
+        Latency is measured in milliseconds. Each bucket ranges from 0 ms to 1000 ms.  So, a schema of `5|10|300|1000` would mean `0ms` to `5ms`, `5ms` to `10ms`, `10ms` to `300ms`, `300ms` to `1000ms`, and `> 1000ms`.
+      parameters:
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      - $ref: parameters/latency-query.yaml
+      - $ref: parameters/loss-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-latency-for-a-datacenter-200.json
+              schema:
+                $ref: schemas/latency.yaml
+            text/csv:
+              example:
+                $ref: examples/list-latency-for-a-datacenter-200.csv

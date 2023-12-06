@@ -1,0 +1,80 @@
+type: object
+description: |-
+  Contains information about the request body parameters that you can specify when creating an event. It also includes tags and objects that you can associate with a new event and the recurrence context for the event.
+  
+x-akamai:
+  file-path: schemas/event-post.yaml
+additionalProperties: false
+required:
+- name
+- start
+- end
+properties:
+  tags:
+    type: array
+    description: |
+      A list of tags associated with the event. A tag can be up to 100 characters long. This array can be up to 20 unique items.
+    maxItems: 20
+    uniqueItems: true
+    items:
+      type: string
+      minLength: 1
+      maxLength: 100
+  name:
+    type: string
+    description: |
+      The name of the event. This name can be up to 750 characters long.
+    minLength: 1
+    maxLength: 750
+  description:
+    type: string
+    description: |
+      The description of the event. This description can be up to 2000 characters long.
+  audienceLocations:
+    type: array
+    description: |
+      A list of two-letter ISO 3166 country codes that indicate geographic areas of audiences. This array can be up to 20 unique items.
+    maxItems: 20
+    uniqueItems: true
+    items:
+      type: string
+      minLength: 2
+      maxLength: 2
+  audienceSize:
+    type: integer
+    description: |
+      The audience's size for the event. The minimum value is 1.
+    x-annotation-oas-minimum: 1
+  coordinators:
+    type: array
+    description: |
+      A list of up to 20 Luna Control Center usernames of those who serve as the event's coordinators.
+    maxItems: 20
+    uniqueItems: true
+    items:
+      type: string
+      minLength: 1
+      maxLength: 256
+  customerEventId:
+    type: string
+    description: |
+      The user-specified ID for the event. This ID can be up to 100 characters long. [Customer Event ID](doc:concepts).
+  end:
+    type: string
+    description: |
+      An ISO 8601 timestamp indicating the end date of the event.
+    format: date-time
+  objects:
+    type: array
+    description: |
+      A collection of objects associated with the event. This array can include only unique items.
+    uniqueItems: true
+    items:
+      $ref: event-object-assign.yaml
+  recurrence:
+    $ref: event-recurrence.yaml
+  start:
+    type: string
+    description: |
+      An ISO 8601 timestamp indicating the start date of the event.
+    format: date-time

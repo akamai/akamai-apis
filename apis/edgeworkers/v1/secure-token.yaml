@@ -1,0 +1,75 @@
+openapi: 3.0.0
+info:
+  title: Secure Token
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edgeworkers/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: secure-token.yaml
+paths:
+  /secure-token:
+    post:
+      operationId: post-secure-token
+      summary: Create a secure token
+      tags:
+      - Secure tokens
+      description: |
+        Generate a JWT authentication token to [enable enhanced debug headers](doc:enable-enhanced-debug-headers) for EdgeWorkers.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/secure-token-post.json
+            schema:
+              $ref: schemas/secure-token-post.yaml
+      responses:
+        201:
+          description: |
+            A generated JWT authentication token, for use with enhanced debug headers for EdgeWorkers. See [Enhanced debug headers](doc:enhanced-debug-header-details).
+          content:
+            application/json:
+              example:
+                $ref: examples/secure-token-200.json
+              schema:
+                $ref: schemas/secure-token-200.yaml
+        400:
+          description: |
+            A specified hostname does not exist in the property.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/host-400.json
+              schema:
+                $ref: schemas/error.yaml
+  /secure-token/{propertyId}:
+    parameters:
+    - $ref: parameters/propertyId-path.yaml
+    get:
+      operationId: get-secure-token
+      summary: Get a secure token
+      tags:
+      - Secure tokens
+      description: |
+        Use the [Create a secure token](ref:post-secure-token) operation instead. This returns a generated authentication token, for use with enhanced debug headers for EdgeWorkers.
+      x-akamai:
+        status: DEPRECATED
+      parameters:
+      - $ref: parameters/acl-query.yaml
+      - $ref: parameters/url-query.yaml
+      - $ref: parameters/expiry-query.yaml
+      - $ref: parameters/network-query.yaml
+      responses:
+        200:
+          description: |
+            A generated authentication token, for use with enhanced debug headers for EdgeWorkers. See [Enhanced debug headers](doc:enhanced-debug-header-details).
+          content:
+            application/json:
+              example:
+                $ref: examples/secure-token-200.json
+              schema:
+                $ref: schemas/secure-token-200.yaml

@@ -1,0 +1,79 @@
+type: object
+description: |-
+  Contains an access list. Access lists provide details about Test Center users who have the edit access to a locked test suite, range of allowed actions, and test suite's owner who granted the access.
+  
+x-akamai:
+  file-path: schemas/get-access-control-response.yaml
+additionalProperties: false
+required:
+- accessControlId
+- accessorId
+- type
+- role
+- status
+- createdBy
+- createdDate
+- modifiedBy
+- modifiedDate
+properties:
+  type:
+    type: string
+    description: |
+      Whether the access list refers to a single `user` or a `group` of users.
+    enum:
+    - group
+    - user
+  accessControlId:
+    type: integer
+    description: |
+      Unique identifier for each access list.
+    minimum: 1
+  accessorId:
+    type: string
+    description: |
+      Depending on the `type` value, the `accessorId` value can be either a unique identifier for a user or a group of users. The two groups available are: `users_in_this_account` and `internal_users` for all Akamai users who have access to the account.
+    minLength: 1
+  createdBy:
+    type: string
+    description: |
+      Username who created the access control.
+    minLength: 1
+  createdDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the access list was created.
+    format: date-time
+  deletedBy:
+    type: string
+    description: |
+      Username who last deleted the access control.
+    minLength: 1
+  deletedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the access control was last deleted.
+    format: date-time
+  modifiedBy:
+    type: string
+    description: |
+      Username who last modified the access list.
+    minLength: 1
+  modifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the access list was last modified.
+    format: date-time
+  role:
+    type: string
+    description: |
+      User's or group's test suite role, either `owner` or `editor`. The `editor` can only include new functional test cases and remove those already included. The `owner` can also edit the test cases and remove them.
+    enum:
+    - owner
+    - editor
+  status:
+    type: string
+    description: |
+      Access list's status, either `pending` or `active`. The `pending` status means the user's edit access request waits for the owners' decision. The `active` status means the user can work on the test suite.
+    enum:
+    - pending
+    - active

@@ -1,0 +1,104 @@
+type: object
+description: |-
+  Specifies execution and initialization times with percentiles, grouped by event handler for each EdgeWorker ID.
+  
+x-akamai:
+  file-path: schemas/report-5.yaml
+title: Report 5
+additionalProperties: false
+required:
+- edgeWorkerId
+- data
+- summaryStatistics
+properties:
+  data:
+    type: object
+    description: |
+      Data points grouped by event handler and initialization mapping keys.
+    additionalProperties:
+      type: array
+      description: |
+        Up to four event handler arrays and an init array for initialization data points.
+      items:
+        type: object
+        description: |
+          Aggregated execution or initialization durations.
+        additionalProperties: false
+        required:
+        - startDateTime
+        - edgeWorkerVersion
+        - invocations
+        properties:
+          edgeWorkerVersion:
+            type: string
+            description: |
+              The EdgeWorker version active when the event handler executed.
+          execDuration:
+            description: |
+              Execution duration.
+            $ref: report-exec-duration.yaml
+          initDuration:
+            description: |
+              Initialization duration.
+            $ref: report-init-duration.yaml
+          invocations:
+            type: integer
+            description: |
+              Number of aggregated executions or initializations.
+          startDateTime:
+            type: string
+            description: |
+              Start date of the time period (ISO 8601).
+  edgeWorkerId:
+    type: integer
+    description: |
+      Unique identifier for an EdgeWorker.
+  summaryStatistics:
+    type: object
+    description: |
+      Execution and initialization time summary in percentiles.
+    additionalProperties: false
+    required:
+    - init
+    - onClientRequest
+    - onClientResponse
+    - onOriginRequest
+    - onOriginResponse
+    - responseProvider
+    - totalExecTime
+    properties:
+      init:
+        type: object
+        description: |
+          Initialization time summary in percentiles.
+        $ref: report-exec-and-init-summary.yaml
+      onClientRequest:
+        type: object
+        description: |
+          Execution time summary in percentiles for all invocations of `onClientRequest`.
+        $ref: report-exec-and-init-summary.yaml
+      onClientResponse:
+        type: object
+        description: |
+          Execution time summary in percentiles for all invocations of `onClientResponse`.
+        $ref: report-exec-and-init-summary.yaml
+      onOriginRequest:
+        type: object
+        description: |
+          Execution time summary in percentiles for all invocations of `onOriginRequest`.
+        $ref: report-exec-and-init-summary.yaml
+      onOriginResponse:
+        type: object
+        description: |
+          Execution time summary in percentiles for all invocations of `onOriginResponse`.
+        $ref: report-exec-and-init-summary.yaml
+      responseProvider:
+        type: object
+        description: |
+          Execution time summary in percentiles for all invocations of `responseProvider`.
+        $ref: report-exec-and-init-summary.yaml
+      totalExecTime:
+        type: object
+        description: |
+          Execution time summary in percentiles for all five event handlers.
+        $ref: report-exec-and-init-summary.yaml

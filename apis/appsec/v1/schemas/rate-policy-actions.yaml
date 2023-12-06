@@ -1,0 +1,61 @@
+type: object
+description: |-
+  Contains details about rate policy actions.
+  
+x-akamai:
+  file-path: schemas/rate-policy-actions.yaml
+additionalProperties: false
+required:
+- ratePolicies
+properties:
+  ratePolicies:
+    type: array
+    description: |
+      Contains settings for rate policy actions.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - ipv4Action
+      - ipv6Action
+      properties:
+        id:
+          type: string
+          description: |
+            Uniquely identifies each rate policy.
+          readOnly: true
+        ipv4Action:
+          type: string
+          description: |
+            The IPv4 action to assign to this rate policy. For `BOTMAN` policies, choose `monitor`, `delay`, `slow`, `deny`,` tarpit`, `none`, or a custom action. For `WAF` policies, choose `alert`, `deny`, or `none`. Or use `deny_custom_{custom_deny_id}` to apply a custom action to your WAF rate policy. Run [Modify a custom deny action](ref:put-custom-deny) to manage your custom deny actions. If the action is `none`, the rate policy is inactive in the policy.
+          minLength: 1
+          oneOf:
+          - enum:
+            - alert
+            - deny
+            - none
+            - monitor
+            - tarpit
+            - delay
+            - slow
+            title: Predefined actions
+          - pattern: ^(cond_action|deny_custom|serve_alt)_[0-9]+$
+            title: Custom actions
+        ipv6Action:
+          type: string
+          description: |
+            The IPv6 action to assign to this rate policy. For `BOTMAN` policies, specify the same action you chose for `ipv4Action`. For `WAF` policies, choose `alert`, `deny`, or `none`. Or use `deny_custom_{custom_deny_id}` to apply a custom action to your WAF rate policy. Run [Modify a custom deny action](ref:put-custom-deny) to manage your custom deny actions. If the action is `none`, the rate policy is inactive in the policy.
+          minLength: 1
+          oneOf:
+          - enum:
+            - alert
+            - deny
+            - none
+            - monitor
+            - tarpit
+            - delay
+            - slow
+            title: Predefined actions
+          - pattern: ^(cond_action|deny_custom|serve_alt)_[0-9]+$
+            title: Custom actions

@@ -1,0 +1,110 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: DNS activity reports
+  version: v3
+servers:
+- url: https://{hostname}/etp-report/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: dns-activity-report.yaml
+paths:
+  /configs/{configId}/dns-activities/aggregate:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-dns-activities
+      summary: Report DNS activity totals
+      tags:
+      - DNS activity reports
+      description: |
+        Lists the count of DNS activities aggregated for the given time period.
+      parameters:
+      - $ref: parameters/dimension-dns-query.yaml
+      - $ref: parameters/cardinality-query.yaml
+      - $ref: parameters/startTimeSec-query.yaml
+      - $ref: parameters/endTimeSec-query.yaml
+      - $ref: parameters/filters-dns-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/dns-activities-aggregate-geo-200.json
+              schema:
+                $ref: schemas/dnsActivitiesAggregateGeo.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /configs/{configId}/dns-activities/details:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-dns-activities-details
+      summary: Report DNS activity event details
+      tags:
+      - DNS activity reports
+      description: |
+        Lists raw DNS events for a given time period. This operation Lists the first 500 configurable results.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/events-details-postRequest.json
+            schema:
+              $ref: schemas/dnsEventsDetailsRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/dns-activities-details-postResponse-200.json
+              schema:
+                $ref: schemas/dnsEventsDetailsResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /configs/{configId}/dns-activities/time-series:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-dns-activities-time-series
+      summary: Report DNS activity time series
+      tags:
+      - DNS activity reports
+      description: |
+        Lists the count of DNS activities, aggregated by hour.
+      parameters:
+      - $ref: parameters/dimension-dns-query.yaml
+      - $ref: parameters/startTimeSec-query.yaml
+      - $ref: parameters/endTimeSec-query.yaml
+      - $ref: parameters/filters-dns-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/dns-activities-time-series-geo-200.json
+              schema:
+                $ref: schemas/CommonTimeSeries.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml

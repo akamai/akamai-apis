@@ -1,0 +1,146 @@
+openapi: 3.0.0
+info:
+  title: Properties
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/identity-management/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: properties-api.yaml
+paths:
+  /user-admin/properties:
+    get:
+      operationId: get-properties
+      summary: List properties
+      tags:
+      - Properties
+      description: |
+        Return a list of properties for an account. Include the `groupId` parameter in your request to filter the results by group.
+      parameters:
+      - $ref: parameters/groupIdopt_groupId.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-properties.json
+              schema:
+                $ref: schemas/ListOfPropertyListItem.yaml
+  /user-admin/properties/{propertyId}:
+    parameters:
+    - $ref: parameters/propertyId-path.yaml
+    get:
+      operationId: get-property
+      summary: Get a property
+      tags:
+      - Properties
+      description: |
+        Get information about a property.
+      parameters:
+      - $ref: parameters/groupIdreqQP_groupId.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-property-details.json
+              schema:
+                $ref: schemas/PropertyResponse.yaml
+    put:
+      operationId: put-property
+      summary: Move a property
+      tags:
+      - Properties
+      description: |
+        Move a property from one group to another group. You can only move a property into another group within the same group hierarchy. Depending on your role in the destination group, you may lose access to resources the property uses.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-request-property-move.json
+            schema:
+              $ref: schemas/MovePropertyRequest.yaml
+      responses:
+        204:
+          description: |
+            Successful response.
+  /user-admin/properties/{propertyId}/resources:
+    parameters:
+    - $ref: parameters/propertyId-path.yaml
+    get:
+      operationId: get-property-resources
+      summary: Get a property's resources
+      tags:
+      - Resources
+      description: |
+        List of resources the property uses.
+      parameters:
+      - $ref: parameters/groupIdreqQP_groupId.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-property-resources.json
+              schema:
+                $ref: schemas/ListOfResourceItem.yaml
+  /user-admin/properties/{propertyId}/users:
+    parameters:
+    - $ref: parameters/propertyId-path.yaml
+    get:
+      operationId: get-property-users
+      summary: List users for property
+      tags:
+      - Users
+      description: |
+        List users who can access this property.
+      parameters:
+      - $ref: parameters/userType-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-response-block-uiidentities.json
+              schema:
+                $ref: schemas/UsersOfPropertyResponse.yaml
+  /user-admin/properties/{propertyId}/users/block:
+    parameters:
+    - $ref: parameters/propertyId-path.yaml
+    put:
+      operationId: put-property-users-block
+      summary: Block users
+      tags:
+      - Users
+      description: |
+        Block the list of users on a property.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-request-block-uiidentities.json
+            schema:
+              $ref: schemas/UsersBlockUIIdentities.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-response-block-uiidentities.json
+              schema:
+                $ref: schemas/UsersOfPropertyResponse.yaml

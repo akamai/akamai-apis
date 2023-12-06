@@ -1,0 +1,52 @@
+type: object
+description: |-
+  The version of an access key.
+  
+x-akamai:
+  file-path: schemas/access-key-version-get-200.yaml
+additionalProperties: false
+required:
+- accessKeyUid
+- cloudAccessKeyId
+- createdBy
+- createdTime
+- versionGuid
+- deploymentStatus
+- version
+properties:
+  version:
+    type: integer
+    description: |
+      A positive integer identifying the incremental version.
+  accessKeyUid:
+    type: integer
+    description: |
+      Uniquely identifies the access key for use in keying resources within this API.
+  cloudAccessKeyId:
+    type: string
+    description: |
+      The unique identifier assigned to the access key ID (AWS) or access ID (GCS). The value is null for legacy access keys.
+    nullable: true
+    minLength: 1
+    maxLength: 128
+  createdBy:
+    type: string
+    description: |
+      The username of the person who created this version of the access key.
+  createdTime:
+    type: string
+    description: |
+      The time the access key version was created, in [ISO 8601](https://www.w3.org/TR/NOTE-datetime) format.
+    format: date-time
+  deploymentStatus:
+    type: string
+    description: |
+      Status indicating whether the version has been activated to the Akamai networks. `PENDING_ACTIVATION` indicates that Akamai has received the request and a new version is in process. If `ACTIVE`, you can enable the version in the [Origin Characteristics](doc:usage-examples#create-and-apply-an-access-key) behavior when configuring your property to support CAM. Once an access key has been created, it's available on both the staging and production Akamai networks. When an access key is activated, it is activated on both the staging and production Akamai networks. `PENDING_DELETION` indicates Akamai has received a request to [delete](ref:delete-access-key-version) the version and the system is processing it.
+    enum:
+    - PENDING_ACTIVATION
+    - ACTIVE
+    - PENDING_DELETION
+  versionGuid:
+    type: string
+    description: |
+      The access key version's universally unique identifier. Use this to identify the version within the [Origin Characteristics](doc:usage-examples#create-and-apply-an-access-key) behavior when configuring your property to support CAM.

@@ -1,0 +1,88 @@
+openapi: 3.0.0
+info:
+  title: Test runs
+  version: v3
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/test-management/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: test-runs.yaml
+paths:
+  /test-runs:
+    post:
+      operationId: post-test-runs
+      summary: Submit a test run
+      tags:
+      - Test runs
+      description: |
+        Submits a test run for functional testing. With one request you can run the test for a property version, test suite, and functional test case.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/test-run-post.json
+            schema:
+              $ref: schemas/test-run-create.yaml
+      responses:
+        202:
+          description: |
+            Process successfully launched.
+          content:
+            application/json:
+              example:
+                $ref: examples/test-run-create-200.json
+              schema:
+                $ref: schemas/test-run-get-individual.yaml
+    get:
+      operationId: get-test-runs
+      summary: List test runs
+      tags:
+      - Test runs
+      description: |
+        Lists test runs submitted in your organization. The response is an array of objects, each keyed by `testRunId` with details and status of each test run.
+      responses:
+        200:
+          description: |
+            The response lists test runs.
+          content:
+            application/json:
+              example:
+                $ref: examples/test-runs-get-200.json
+              schema:
+                $ref: schemas/test-runs.yaml
+  /test-runs/{testRunId}:
+    parameters:
+    - $ref: parameters/testRunId-path.yaml
+    get:
+      operationId: get-test-run
+      summary: Get a test run
+      tags:
+      - Test runs
+      description: |
+        Returns details of a test run. Check [Functional testing results](doc:test-run-results#functional-testing-results) to learn how to analyze the results.
+      parameters:
+      - $ref: parameters/includeContext-query.yaml
+      - $ref: parameters/includeSkipped-query.yaml
+      - $ref: parameters/includeAuditInfo-query.yaml
+      - $ref: parameters/includeDiffInstances-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides the test run results.
+          content:
+            application/json:
+              examples:
+                testRunWithDynamicVariable:
+                  summary: Test run with dynamically assigned variables
+                  value:
+                    $ref: examples/test-run-get-200_testRunWithDynamicVariable.json
+                testRunWithVariableGroup:
+                  summary: Test run with variable groups
+                  value:
+                    $ref: examples/test-run-get-200_testRunWithVariableGroup.json
+              schema:
+                $ref: schemas/test-run-get-individual.yaml

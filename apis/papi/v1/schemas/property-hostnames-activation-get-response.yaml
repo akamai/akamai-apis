@@ -1,0 +1,204 @@
+id: resource:/descriptors/papi/v1/schemas/GetHostnamesBucketActivationResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array.
+  
+x-akamai:
+  file-path: schemas/property-hostnames-activation-get-response.yaml
+additionalProperties: false
+properties:
+  accountId:
+    type: string
+    description: |
+      Identifies the prevailing account under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+    minLength: 1
+  activations:
+    type: object
+    description: |
+      The set of activated hostnames.
+  contractId:
+    type: string
+    description: |
+      Identifies the prevailing contract under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ctr_` prefix.
+    minLength: 1
+  groupId:
+    type: string
+    description: |
+      Identifies the prevailing group under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+    minLength: 1
+  hostnameActivations:
+    type: object
+    description: |
+      The set of requested property hostname activations, available within an `items` array.
+    additionalProperties: false
+    properties:
+      items:
+        type: array
+        description: |
+          Activated property hostnames on a specific network. Relevant response objects appear within the outer envelope's `activations.items` array.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - activationType
+          - network
+          - note
+          - notifyEmails
+          - propertyId
+          - propertyName
+          - status
+          - submitDate
+          - updateDate
+          properties:
+            accountId:
+              type: string
+              description: |
+                Identifies the prevailing account under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+            activationId:
+              type: string
+              description: |
+                The property hostname activation's unique identifier. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `atv_` prefix.
+            activationType:
+              type: string
+              description: |
+                Either `ACTIVATE` or `DEACTIVATE`. The default is `ACTIVATE`. Any new activation automatically deactivates the current activation. Note that if you were to POST a `DEACTIVATE` type on an active property hostname, it would no longer serve any traffic. You'd need to modify your DNS configuration and specify a different way to field the traffic.
+              default: ACTIVATE
+              enum:
+              - ACTIVATE
+              - DEACTIVATE
+            fallbackInfo:
+              type: object
+              description: |
+                Encapsulates information about fast fallback. You can use it to fall back to a previous activation when POSTing an activation with `useFastFallback` enabled.
+              additionalProperties: false
+              required:
+              - canFastFallback
+              - fallbackVersion
+              - fastFallbackAttempted
+              - fastFallbackExpirationTime
+              - fastFallbackRecoveryState
+              - steadyStateTime
+              properties:
+                canFastFallback:
+                  type: boolean
+                  description: |
+                    Whether the current activation can fallback to a previous version. This is typically `false` for new properties, or for property versions whose set of hostnames has changed.
+                fallbackVersion:
+                  type: integer
+                  description: |
+                    Indicates the property version that activates when a fast fallback succeeds.
+                  minimum: 1
+                fastFallbackAttempted:
+                  type: boolean
+                  description: |
+                    Whether a fast fallback has already been attempted on this activation.
+                fastFallbackExpirationTime:
+                  type: integer
+                  description: |
+                    Epoch second timestamp marking when fast fallback is no longer possible for this activation.
+                fastFallbackRecoveryState:
+                  type:
+                  - string
+                  - 'null'
+                  description: |
+                    Represents additional information available for any attempted fallback.
+                  nullable: true
+                propertyVersion:
+                  type: integer
+                  description: |
+                    The version for which fast fallback may be available.
+                  minimum: 1
+                steadyStateTime:
+                  type: integer
+                  description: |
+                    Epoch second timestamp marking when the activation completed, signaled by an `fmaActivationState` of `steady`.
+            fmaActivationState:
+              type: string
+              description: |
+                Indicates fast metadata activation state. A value of `steady` indicates the property is currently active or has been cancelled. Values of `received`, `lived`, and `deployed` represent progressive stages of activation, while `cancelling` happens either after failing a network safety check or in response to a [DELETE operation](ref:delete-property-activation). Note that the `status` member indicates whether the activation is live.
+              enum:
+              - steady
+              - received
+              - lived
+              - deployed
+              - cancelling
+            groupId:
+              type: string
+              description: |
+                Identifies the prevailing group under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+            hostnameActivationId:
+              type: string
+              description: |
+                The property hostname activation's unique identifier. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `atv_` prefix.
+            network:
+              type: string
+              description: |
+                The network to activate on, either `STAGING` or `PRODUCTION`.
+              enum:
+              - STAGING
+              - PRODUCTION
+            note:
+              type: string
+              description: |
+                Assigns a log message to the activation request.
+            notifyEmails:
+              type: array
+              description: |
+                Email addresses to notify when the activation status changes.
+              minItems: 0
+              items:
+                type: string
+            propertyId:
+              type: string
+              description: |
+                Unique identifier for the property with the hostname bucket the activated property hostnames belong to. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+            propertyName:
+              type: string
+              description: |
+                A descriptive name for the property with the hostname bucket the activated property hostnames belong to.
+            propertyVersion:
+              type: integer
+              description: |
+                The property version targeted with activation. Once activated, you can no longer modify that version of the property.
+              minimum: 1
+            status:
+              type: string
+              description: |
+                The activation's status. `ACTIVE` if currently serving traffic. `INACTIVE` if another activation has superseded this one. `PENDING` if not yet active. `ABORTED` if the client followed up with a [DELETE request](ref:delete-property-hostname-activations) in time. `FAILED` if the activation causes a range of edge network errors that [may cause a fallback to the previous activation](ref:property-activation-error-handling). `PENDING_DEACTIVATION` or `DEACTIVATED` when the `activationType` is `DEACTIVATE` to no longer serve traffic.
+              enum:
+              - ACTIVE
+              - INACTIVE
+              - PENDING
+              - ABORTED
+              - FAILED
+              - DEACTIVATED
+              - PENDING_DEACTIVATION
+            submitDate:
+              type: string
+              description: |
+                A date stamp marking when the activation initiated.
+              readOnly: true
+            updateDate:
+              type: string
+              description: |
+                A date stamp marking when the `status` last changed.
+              readOnly: true
+      currentItemCount:
+        type: integer
+        description: |
+          The number of items present in the current response body view.
+        minimum: 0
+      nextLink:
+        type: string
+        description: |
+          For paginated responses, this links to the next set of response items.
+      previousLink:
+        type: string
+        description: |
+          For paginated responses, this links to the next set of response items.
+      totalItems:
+        type: integer
+        description: |
+          The total count of items returned for the requested criteria.
+        minimum: 0
+$schema: http://json-schema.org/draft-04/schema#

@@ -1,0 +1,173 @@
+id: resource:/descriptors/papi/v1/schemas/GetIncludeValidationResultsResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` narray.
+  
+x-akamai:
+  file-path: schemas/include-validation-results-response.yaml
+additionalProperties: false
+required:
+- result
+properties:
+  messages:
+    type: array
+    description: |
+      Lists errors and warnings that are a result of an include validation against the parent properties' rule trees.
+    items:
+      type: object
+      description: |
+        Each object specifies details of a validation error or warning. While warnings note less severe, non-blocking issues, errors indicate blocking problems that would prevent activation. You need to fix these to complete an include activation.
+      additionalProperties: false
+      required:
+      - autoIgnored
+      - id
+      - messageId
+      - messageParams
+      - severity
+      - source
+      - userHidden
+      - userSignedOff
+      properties:
+        id:
+          type: string
+          description: |
+            A unique identifier for the validation issue.
+        autoIgnored:
+          type: boolean
+          description: |
+            Whether you can ignore the validation issue, either `true` for warnings or `false` for errors that prevent activation.
+        messageId:
+          type: string
+          description: |
+            Indicates the cause of a validation issue.
+        messageParams:
+          type: array
+          description: |
+            Specifies the type of an issue and its location in the parent property's rule tree.
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - nodeLocation
+            - severity
+            - messageType
+            - node
+            - nodeType
+            - parentRule
+            properties:
+              messageType:
+                type: string
+                description: |
+                  Indicates the cause of a validation issue.
+              node:
+                type: object
+                description: |
+                  Specifies the location of the issue in the parent property's rule tree.
+                additionalProperties: false
+                required:
+                - name
+                - uuid
+                properties:
+                  name:
+                    type: string
+                    description: |
+                      The name of the behavior or criteria that triggered the validation issue.
+                  uuid:
+                    type: string
+                    description: |
+                      Identifies the behavior or the criteria that triggered the validation issue.
+              nodeLocation:
+                type: string
+                description: |
+                  Specifies the path to the behavior or criteria that triggered the validation issue.
+              nodeType:
+                type: string
+                description: |
+                  Indicates the configuration element that triggered the issue, either `feature` for a behavior, `condition` for criteria, or `rule`.
+                enum:
+                - feature
+                - condition
+                - rule
+              parentRule:
+                type: object
+                description: |
+                  Specifies details of the parent rule where the validation issue is located.
+                additionalProperties: false
+                required:
+                - uuid
+                properties:
+                  uuid:
+                    type: string
+                    description: |
+                      Unique identifier for the parent rule where the validation issue is located.
+              severity:
+                type: string
+                description: |
+                  The severity of an issue, either a blocking error or non-blocking warning.
+        severity:
+          type: string
+          description: |
+            The severity of an issue, either `INFO`, `WARNING`, `ERROR`, `FATAL`, `OK`, or `UNKNOWN`.
+          enum:
+          - FATAL
+          - ERROR
+          - WARNING
+          - INFO
+          - OK
+          - UNKNOWN
+        source:
+          type: string
+          description: |
+            The system that exposed the issue, either `MUI`, `VALIDATION_ENGINE`, `TOOLKIT`, `LOCK_CONSTRAINTS`, `HOSTNAME_CHECK`, `ORIGIN_ACL`, or `API`. Might be helpful for investigation by Akamai professional services.
+          enum:
+          - MUI
+          - VALIDATION_ENGINE
+          - TOOLKIT
+          - LOCK_CONSTRAINTS
+          - HOSTNAME_CHECK
+          - ORIGIN_ACL
+          - API
+        userHidden:
+          type: boolean
+          description: |
+            Whether you chose to hide the validation messages in Control Center.
+        userSignedOff:
+          type: boolean
+          description: |
+            Whether you set to acknowledge all warnings in the validation.
+  result:
+    type: string
+    description: |
+      Specifies the validation results.
+  stats:
+    type: object
+    description: |
+      Provides statistics on the rule tree.
+    additionalProperties: false
+    required:
+    - numTopLevelChildren
+    - numBehaviors
+    - numConditions
+    - elementsPerInclude
+    properties:
+      elementsPerInclude:
+        type: integer
+        description: |
+          The total number of `numBehaviors` and `numConditions` used in an include.
+      numBehaviors:
+        type: integer
+        description: |
+          The number of behaviors used in the rule tree.
+      numConditions:
+        type: integer
+        description: |
+          The number of criteria used in the rule tree.
+      numTopLevelChildren:
+        type: integer
+        description: |
+          The number of rules in the rule tree's top children array. Ignores the children nested on deeper levels.
+  validationTag:
+    type: string
+    description: |
+      Identifies the validation instance. If the rule tree changes, the tag ID also changes.
+$schema: http://json-schema.org/draft-04/schema#

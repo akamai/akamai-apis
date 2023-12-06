@@ -1,0 +1,91 @@
+type: object
+description: |-
+  Encapsulates stream configuration and version information. You can list, create, edit, delete, and get details of streams.
+  
+x-akamai:
+  file-path: schemas/StreamDTO.yaml
+additionalProperties: false
+required:
+- id
+- originHostname
+- cpcode
+- encoderZone
+- name
+- format
+- modifiedDate
+- provisionDetail
+- primaryStorageCpcode
+- createdBy
+- modifiedBy
+properties:
+  id:
+    type: integer
+    description: |
+      The unique identifier for the stream. The stream ID must be identical between your primary and backup streams.
+  name:
+    type: string
+    description: |
+      The stream name can be up to 90 characters long and can include alphanumeric, underscore, and dash characters.
+  format:
+    type: string
+    description: |
+      The ingest format for Apple HTTP Live Streaming (`HLS`), Adobe HTTP Dynamic Streaming (`HDS`), Dynamic Adaptive Streaming over HTTP (`DASH`), or Common Media Application Format (`CMAF`).
+    enum:
+    - HLS
+    - HDS
+    - DASH
+    - CMAF
+  backupDirectConnectSettings:
+    description: |
+      Details about Direct Connect settings for the backup stream.
+    $ref: DirectConnectSettingsGetDTO.yaml
+  backupStorageCpcode:
+    type: integer
+    description: |
+      The CP code for the backup storage.
+    nullable: true
+  cpcode:
+    type: integer
+    description: |
+      The Content Provider code (CP code) associated with the stream. A CP code is a unique identifier for reporting, billing, and monitoring traffic served over the Akamai network.
+  createdBy:
+    type: string
+    description: |
+      The Control Center username who created the stream.
+  dvrWindowInMin:
+    type: integer
+    description: |
+      The length of time that content is available as DVR content. You can specify an archive window value from 5 to 30 minutes. A 30-minute scrub back window is enabled for all streams.
+  encoderZone:
+    type: string
+    description: |
+      The encoder's geographical location. Choose an encoder that is close to your location.
+  modifiedBy:
+    type: string
+    description: |
+      The Control Center username who edited the stream.
+  modifiedDate:
+    type: string
+    description: |
+      The date on which the stream was modified.
+    format: date-time
+  originHostName:
+    type: string
+    description: |
+      The hostname as defined in your origin DNS. This depends on the CDN that you use. For an AMD property on the Akamai CDN, the hostname is `origin.akamaized.net`.
+  primaryDirectConnectSettings:
+    description: |
+      Details about the primary stream Direct Connect settings.
+    $ref: DirectConnectSettingsGetDTO.yaml
+  primaryStorageCpcode:
+    type: integer
+    description: |
+      Specify the Media Services Live CP code for the primary storage.
+  provisionDetail:
+    description: |
+      Details about the stream provisioning status.
+    $ref: ProvisionDetailsDTO.yaml
+  streamAuth:
+    type: boolean
+    description: |
+      Indicates whether stream authentication is enabled for the stream.

@@ -1,0 +1,268 @@
+openapi: 3.0.0
+info:
+  title: Users
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/amfa/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: users.yaml
+paths:
+  /users:
+    get:
+      operationId: get-users
+      summary: List users
+      tags:
+      - Users
+      description: |
+        List user accounts configured in Akamai MFA, optionally filtered and paginated.
+      parameters:
+      - $ref: parameters/page-query.yaml
+      - $ref: parameters/pageSize-query.yaml
+      - $ref: parameters/userStatus-query-optional.yaml
+      - $ref: parameters/include-devices-optional.yaml
+      - $ref: parameters/policyId-query-optional.yaml
+      - $ref: parameters/policyName-query-optional.yaml
+      responses:
+        200:
+          description: |
+            The response provides a list of users.
+          content:
+            application/json:
+              example:
+                $ref: examples/users-get-200.json
+              schema:
+                $ref: schemas/users-get-200.yaml
+  /users/{userId}:
+    get:
+      operationId: get-user
+      summary: Get a user
+      tags:
+      - Users
+      description: |
+        Get details about a specific user account, including the `userId`, `status`, and `username`. It also lists the `alias` information and `groups` that the user belongs to.
+      parameters:
+      - $ref: parameters/userId-path.yaml
+      responses:
+        200:
+          description: |
+            The response provides data for a single user.
+          content:
+            application/json:
+              example:
+                $ref: examples/user-get-200.json
+              schema:
+                $ref: schemas/userDetail.yaml
+    delete:
+      operationId: delete-user
+      summary: Delete a user
+      tags:
+      - Users
+      description: |
+        Permanently delete a specific user account. You can delete any active user account from your Akamai MFA service. For manually added users, deleting means permanently removing the user accounts together with any enrolled authentication device. User accounts that still exist in the external source directory reappear after the next synchronization.
+      parameters:
+      - $ref: parameters/userId-path.yaml
+      responses:
+        204:
+          description: |
+            The user was successfully deleted.
+  /users/{userId}/assign-groups:
+    parameters:
+    - $ref: parameters/userId-path.yaml
+    post:
+      operationId: post-assign-groups-to-user
+      summary: Assign groups
+      tags:
+      - Groups
+      description: |
+        Assign a set of groups to a user account. With this operation you can modify the users' group assignment when their role in the organization changes. After you modify the users' group membership, you can manage their access to different integrations at group level.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/assignGroupsById-example.json
+            schema:
+              $ref: schemas/assignGroups.yaml
+      responses:
+        204:
+          description: |
+            The groups were successfully assigned to the user account.
+  /users/{userId}/assign-policies:
+    parameters:
+    - $ref: parameters/userId-path.yaml
+    post:
+      operationId: post-assign-policies-to-user
+      summary: Assign policies
+      tags:
+      - Policies
+      description: |
+        Assign a set of policies to a user account. With this operation you can modify the users' access privileges when their role in the organization changes. After you modify the users' policy assignation, the users need to meet the requirements of a specific authentication policy before they can access a protected application.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/assignPoliciesById-example.json
+            schema:
+              $ref: schemas/assignPolicies.yaml
+      responses:
+        202:
+          description: |
+            The policies were successfully assigned to the user account.
+  /users/{userId}/bypass-codes:
+    parameters:
+    - $ref: parameters/userId-path.yaml
+    post:
+      operationId: post-bypass-code
+      summary: Create a bypass code
+      tags:
+      - Bypass codes
+      description: |
+        Generate a new bypass code for a specific user account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/bypassCode-post-201.json
+            schema:
+              $ref: schemas/bypassCode-create.yaml
+      responses:
+        201:
+          description: |
+            The operation provides data for a newly created bypass code.
+          headers:
+            Location:
+              $ref: headers/location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/bypassCode-get-200.json
+              schema:
+                $ref: schemas/bypassCode-get-200.yaml
+    get:
+      operationId: get-bypass-codes
+      summary: List bypass codes
+      tags:
+      - Bypass codes
+      description: |
+        List all the bypass codes generated for a specific user account.
+      responses:
+        200:
+          description: |
+            The response provides a list of bypass codes.
+          content:
+            application/json:
+              example:
+                $ref: examples/bypassCodes-get-200.json
+              schema:
+                $ref: schemas/bypassCodes.yaml
+  /users/{userId}/bypass-codes/{bypassCodeId}:
+    parameters:
+    - $ref: parameters/userId-path.yaml
+    - $ref: parameters/bypassCodeId-path.yaml
+    get:
+      operationId: get-bypass-code
+      summary: Get a bypass code
+      tags:
+      - Bypass codes
+      description: |
+        Get a specific bypass code.
+      responses:
+        200:
+          description: |
+            The operation provides data for a specific bypass code.
+          content:
+            application/json:
+              example:
+                $ref: examples/bypassCode-get-200.json
+              schema:
+                $ref: schemas/bypassCode-get-200.yaml
+  /users/{userId}/devices:
+    parameters:
+    - $ref: parameters/userId-path.yaml
+    get:
+      operationId: get-user-devices
+      summary: List the user's devices
+      tags:
+      - Devices
+      description: |
+        List all the user's authentication devices.
+      responses:
+        200:
+          description: |
+            The response provides a list of the user's devices.
+          content:
+            application/json:
+              example:
+                $ref: examples/devices-get-200.json
+              schema:
+                $ref: schemas/devices.yaml
+  /users/{userId}/devices/assign-hardware-token:
+    parameters:
+    - $ref: parameters/userId-path.yaml
+    post:
+      operationId: post-assign-hardware-token
+      summary: Assign a hardware token
+      tags:
+      - Devices
+      description: |
+        Assign a hardware token to a specific user account. To assign a hardware token, you need the token's serial number. You can also unassign and reassign a hardware token from one active user account to another. A hardware token assigned to a user account gets automatically unassigned when the account is deleted, and returns to the pool of available tokens that you can assign to another user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/assignHardwareToken-example.json
+            schema:
+              $ref: schemas/assignHardwareToken.yaml
+      responses:
+        202:
+          description: |
+            The hardware token was successfully assigned to the user account.
+  /users/{userId}/devices/{deviceId}/disable:
+    parameters:
+    - $ref: parameters/userId-path.yaml
+    - $ref: parameters/deviceId-path.yaml
+    post:
+      operationId: post-disable-user-device
+      summary: Disable a device
+      tags:
+      - Devices
+      description: |
+        Deactivate the user's authentication device.
+      responses:
+        200:
+          description: |
+            The user's authentication device was successfully disabled.
+          content:
+            application/json:
+              example:
+                $ref: examples/device-get-200.json
+              schema:
+                $ref: schemas/device.yaml
+  /users/{userId}/devices/{deviceId}/enable:
+    parameters:
+    - $ref: parameters/userId-path.yaml
+    - $ref: parameters/deviceId-path.yaml
+    post:
+      operationId: post-enable-user-device
+      summary: Enable a device
+      tags:
+      - Devices
+      description: |
+        Activate the user's authentication device.
+      responses:
+        200:
+          description: |
+            The user's authentication device was successfully enabled.
+          content:
+            application/json:
+              example:
+                $ref: examples/device-get-200.json
+              schema:
+                $ref: schemas/device.yaml

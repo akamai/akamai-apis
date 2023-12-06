@@ -1,0 +1,91 @@
+openapi: 3.0.0
+info:
+  title: URL Health Check
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: urlHealthCheck.yaml
+paths:
+  /url-health-check:
+    post:
+      operationId: post-url-health-check
+      summary: Run the URL health check
+      tags:
+      - URL Health Check
+      description: |
+        Launches an [asynchronous](ref:asynchronous-processes) request to simultaneously run [Launch a GREP request](ref:post-grep), [Get domain details with dig](ref:post-dig), [Request content with cURL](ref:post-curl), [Test network connectivity with MTR](ref:post-mtr) and [Translate an Akamaized URL](ref:post-translated-url) operations for a URL. Successful operations return fetched GREP, dig, cURL, and MTR data and [Akamaized URL (ARL)](doc:arl-syntax) details.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/urlHealthCheckRequest.json
+            schema:
+              $ref: schemas/urlHealthCheckRequest.yaml
+      responses:
+        202:
+          description: |
+            Process successfully launched.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/urlHealthCheckResponse.json
+              schema:
+                $ref: schemas/urlHealthCheckResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml
+  /url-health-check/requests/{requestId}:
+    parameters:
+    - $ref: parameters/requestId-path.yaml
+    get:
+      operationId: get-url-health-check-requests
+      summary: Get a URL health check response
+      tags:
+      - URL Health Check
+      description: |
+        Returns the status of the [asynchronous](ref:asynchronous-processes) [Run the URL health check](ref:post-url-health-check) request. Operations with the `SUCCESS` status include also fetched GREP, dig, cURL, and MTR data.
+      parameters:
+      - $ref: parameters/includeContentResponseBody-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides the status of the request and its details.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/urlHealthCheckResponse.json
+              schema:
+                $ref: schemas/urlHealthCheckResponse.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

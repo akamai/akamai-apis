@@ -1,0 +1,42 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: DeepScan event reports
+  version: v3
+servers:
+- url: https://{hostname}/etp-report/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: deepscan-report.yaml
+paths:
+  /configs/{configId}/deep-scan-reports:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-scan-reports
+      summary: Get deepscan details report
+      tags:
+      - Deepscan reports
+      description: |
+        Deepscan results for a configuration's offline network for a given time period. Use the path obtained from `/threat-events`.
+      parameters:
+      - $ref: parameters/startTimeSec-query.yaml
+      - $ref: parameters/endTimeSec-query.yaml
+      - $ref: parameters/filters-query.yaml
+      responses:
+        200:
+          description: |
+            A binary PDF file.
+          content:
+            application/pdf:
+              example: Binary PDF file
+              schema:
+                $ref: schemas/deepscan-report-response.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml

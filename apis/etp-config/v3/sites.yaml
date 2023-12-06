@@ -1,0 +1,455 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Sites
+  version: v3
+servers:
+- url: https://{hostname}/etp-config/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: sites.yaml
+paths:
+  /configs/{configId}/dns-vips:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-dns-vips
+      summary: List DNS-VIPs
+      tags:
+      - DNS VIPs
+      description: |
+        Provides DNS-VIPs details.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/dns-vips-200.json
+              schema:
+                $ref: schemas/dnsVips.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/global-settings:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    - $ref: parameters/include-sourceipbind.yaml
+    - $ref: parameters/contract-id.yaml
+    get:
+      operationId: get-global-settings
+      summary: List global settings
+      tags:
+      - Global settings
+      description: |
+        Provides global settings details.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/global-settings-200.json
+              schema:
+                $ref: schemas/globalSettingsResponse.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    put:
+      operationId: put-global-settings
+      summary: Update global settings
+      tags:
+      - Global settings
+      description: |
+        Updates the global settings.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/global-setting-request-200.json
+            schema:
+              $ref: schemas/global-settings-update-request.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/sites:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-sites
+      summary: Create a site
+      tags:
+      - Sites
+      description: |
+        Creates a new site.
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/create-site-body.json
+            schema:
+              $ref: schemas/site-create.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        409:
+          $ref: errors/conflict-409.yaml
+    get:
+      operationId: get-sites
+      summary: List sites
+      tags:
+      - Sites
+      description: |
+        Returns a list of all Sites for a configuration.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/site-retrieve-all-200.json
+              schema:
+                $ref: schemas/siteRetrieveAll.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/sites-meta-info:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-sites-meta-info
+      summary: Get site meta info
+      tags:
+      - Sites
+      description: |
+        Provides site meta info details.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/sites-meta-info-all-200.json
+              schema:
+                $ref: schemas/sitesMetaInfoAll.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/sites/{siteId}:
+    parameters:
+    - $ref: parameters/siteId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-site
+      summary: Get a site
+      tags:
+      - Sites
+      description: |
+        Returns the details of a specific Site.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/site-retrieve-specific-200.json
+              schema:
+                $ref: schemas/siteRetrieveSpecific.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    put:
+      operationId: put-site
+      summary: Update a site
+      tags:
+      - Sites
+      description: |
+        Modifies site details.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/update-site-body.json
+            schema:
+              $ref: schemas/siteRetrieveSpecific.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        409:
+          $ref: errors/conflict-409.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+    delete:
+      operationId: delete-site
+      summary: Remove a site
+      tags:
+      - Sites
+      description: |
+        Deletes a specific site.
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+  /configs/{configId}/sites/{siteId}/sub-locations:
+    parameters:
+    - $ref: parameters/siteId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-site-sublocation
+      summary: Create a sublocation
+      tags:
+      - Sublocations
+      description: |
+        Creates a sublocation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-site-body.json
+            schema:
+              $ref: schemas/siteRetrieveSpecific.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    get:
+      operationId: get-site-sublocations
+      summary: List sublocations
+      tags:
+      - Sublocations
+      description: |
+        Returns the list of sublocations for the site.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/sub-locations-all-200.json
+              schema:
+                $ref: schemas/siteRetrieveAll.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/sites/{siteId}/sub-locations/{subLocationId}:
+    parameters:
+    - $ref: parameters/subLocationId-path.yaml
+    - $ref: parameters/siteId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-site-sublocation
+      summary: Get a sublocation
+      tags:
+      - Sublocations
+      description: |
+        Returns a sublocation detail.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/site-retrieve-specific-200.json
+              schema:
+                $ref: schemas/siteRetrieveSpecific.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    put:
+      operationId: put-site-sublocation
+      summary: Update a sublocation
+      tags:
+      - Sublocations
+      description: |
+        Updates the sublocation.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/update-site-body.json
+            schema:
+              $ref: schemas/siteRetrieveSpecific.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+    delete:
+      operationId: delete-site-sublocation
+      summary: Remove a sublocation
+      tags:
+      - Sublocations
+      description: |
+        Deletes a specific sublocation.
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+  /configs/{configId}/sites/{siteId}/sub-locations/{subLocationId}/op/assign-policy:
+    parameters:
+    - $ref: parameters/subLocationId-path.yaml
+    - $ref: parameters/siteId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-sublocation-policy
+      summary: Assign a policy to a sublocation
+      tags:
+      - Sublocations
+      description: |
+        Assigns a policy to the sublocation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-site-body.json
+            schema:
+              $ref: schemas/siteRetrieveSpecific.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml

@@ -1,0 +1,172 @@
+type: object
+description: |-
+  Encapsulates the configuration of an account.  You can list, create and get details of an account.
+  
+x-akamai:
+  file-path: schemas/upload-account-post.yaml
+additionalProperties: false
+required:
+- uploadAccountId
+- storageGroupId
+- email
+properties:
+  accessConfig:
+    type: object
+    additionalProperties: false
+    properties:
+      chrootDirectory:
+        type: string
+      cpcodes:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            cpcodeId:
+              type: integer
+            subDirectoryRestrictions:
+              type: array
+              items:
+                type: string
+      hasReadOnlyAccess:
+        type: boolean
+      loginDirectory:
+        type: string
+  bruteForceAttackConfig:
+    type: object
+    additionalProperties: false
+    properties:
+      failedLoginThreshold:
+        type: integer
+      lockDownDurationSeconds:
+        type: integer
+  email:
+    type: string
+  enableAspera:
+    type: boolean
+    description: |
+      Configure Aspera access for this account.
+  enableFileManagerAccess:
+    type: boolean
+    description: |
+      Configure File Manager access for this account.
+  enableHttpApiAccess:
+    type: boolean
+    description: |
+      Configure HTTP API access for this account.
+  isEditable:
+    type: boolean
+  isVisible:
+    type: boolean
+    description: |
+      Configure if this account is visible.
+  keys:
+    type: object
+    additionalProperties: false
+    properties:
+      ftp:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            comments:
+              type: string
+            key:
+              type: string
+              description: |
+                Configure the password for FTP access. There are requirements that apply to [non-secure FTP passwords](doc:file-transfer-protocol#non-secure-password-requirements).
+      g2o:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            key:
+              type: string
+              description: |
+                Token used for G2O authentication. Learn more about [G2O security settings](doc:create-a-storage-group#security-settings).
+      rsync:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            comments:
+              type: string
+            key:
+              type: string
+              description: |
+                Configure the password for rsync access. This field is for [non-secure rsync passwords](doc:rsync#netstorage-supports-two-authentication-methods-for-rsync). Use SSH for secure-rsync.
+      ssh:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            comments:
+              type: string
+            key:
+              type: string
+              description: |
+                Configure the key for SSH access. Various requirements apply when you [generate and apply an SSH key](https://techdocs.akamai.com/netstorage/docs/configure-secure-ssh-access-methods) for NetStorage.
+  ruleSetId:
+    type: integer
+  storageGroupId:
+    type: integer
+  technicalContactInfo:
+    type: object
+    additionalProperties: false
+    properties:
+      existingNetStorageTechnicalContact:
+        type: object
+        additionalProperties: false
+        properties:
+          primarySfPin:
+            type: string
+          secondarySfPin:
+            type: string
+      existingTechnicalContact:
+        type: object
+        additionalProperties: false
+        properties:
+          primarySfPin:
+            type: string
+          secondarySfPin:
+            type: string
+      newTechnicalContact:
+        type: object
+        additionalProperties: false
+        properties:
+          email:
+            type: string
+          firstName:
+            type: string
+          lastName:
+            type: string
+          phone:
+            type: object
+            additionalProperties: false
+            properties:
+              areaCode:
+                type: string
+              countryCode:
+                type: string
+              number:
+                type: string
+  uploadAccountId:
+    type: string
+  uploadAccountStatus:
+    type: string
+    description: |
+      Set the upload account status. Valid options are `ACTIVE` and `INACTIVE`.
+    enum:
+    - ACTIVE
+    - INACTIVE
+  uploadAccountType:
+    type: string
+    description: |
+      Configure the account type. Valid options are `NORMAL` and `AGEDELETION`.
+    enum:
+    - NORMAL
+    - AGEDELETION

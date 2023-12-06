@@ -1,0 +1,167 @@
+openapi: 3.0.0
+info:
+  title: Authorization
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edgekv/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: authorization.yaml
+paths:
+  /auth/database:
+    put:
+      operationId: put-auth-database
+      summary: Modify the default Data Access Policy
+      tags:
+      - Namespaces
+      description: |
+        Modify the default Data Access Policy setting that's applied for newly created namespaces. You need an additional Standard TLS Support contract entitlement to call this operation. By default for existing customers, `restrictDataAccess` is `true`, and `allowNamespacePolicyOverride` is `false`.
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/initialize-put.json
+            schema:
+              $ref: schemas/initialize-put.yaml
+      responses:
+        200:
+          description: |
+            Returns current initialization status.
+          content:
+            application/json:
+              example:
+                $ref: examples/initialize-200.json
+              schema:
+                $ref: schemas/initialize-200.yaml
+        403:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/auth-database-403.json
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml
+  /auth/groups:
+    get:
+      operationId: get-groups
+      summary: List permission groups
+      tags:
+      - Permission groups
+      description: |
+        View a list of access groups and your associated permission capabilities, such as create a namespace or read data from a namespace.
+      responses:
+        200:
+          description: |
+            Describes a list of Akamai access groups with EdgeKV capabilities.
+          content:
+            application/json:
+              example:
+                $ref: examples/auth-groups-200.json
+              schema:
+                $ref: schemas/auth-groups-200.yaml
+        500:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml
+  /auth/groups/{groupId}:
+    parameters:
+    - $ref: parameters/auth-groupId-path.yaml
+    get:
+      operationId: get-group
+      summary: Get a permission group
+      tags:
+      - Permission groups
+      description: |
+        View details permissions available within the specified access group, such as create a namespace or read data from a namespace.
+      responses:
+        200:
+          description: |
+            The response shows the EdgeKV permissions available to you within the Akamai access group.
+          content:
+            application/json:
+              example:
+                $ref: examples/auth-group-200.json
+              schema:
+                $ref: schemas/auth-group-200.yaml
+        403:
+          description: |
+            The user does not have capabilities for the Akamai group.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/auth-group-403.json
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml
+  /auth/namespaces/{namespaceId}:
+    parameters:
+    - $ref: parameters/namespaceId-path.yaml
+    put:
+      operationId: put-reauthorize-namespace
+      summary: Reauthorize a namespace
+      tags:
+      - Namespaces
+      description: |
+        Assign an existing namespace to a different Akamai access group.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/reauthorize-namespace-200.json
+            schema:
+              $ref: schemas/reauthorize-namespace-200.yaml
+      responses:
+        200:
+          description: |
+            This section confirms the updated groupId for the namespace.
+          content:
+            application/json:
+              example:
+                $ref: examples/reauthorize-namespace-200.json
+              schema:
+                $ref: schemas/reauthorize-namespace-200.yaml
+        400:
+          description: |
+            Namespace could not be reauthorized.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/reauthorize-namespace-400.json
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml

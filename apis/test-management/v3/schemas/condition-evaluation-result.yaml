@@ -1,0 +1,42 @@
+type: object
+description: |-
+  Specifies evaluation of conditions. It appears only for executions of functional test cases with the `COMPLETED` status.
+  
+x-akamai:
+  file-path: schemas/condition-evaluation-result.yaml
+additionalProperties: false
+required:
+- result
+- actualConditionData
+properties:
+  actualConditionData:
+    type: array
+    description: |
+      Lists condition data collected when the functional test case URL executed.
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - value
+      properties:
+        name:
+          type: string
+          description: |
+            Name of the condition data.
+          minLength: 1
+        value:
+          type: string
+          description: |
+            Value of the condition data.
+          minLength: 1
+  result:
+    type: string
+    description: |
+      Result after evaluating the conditions. Possible values are `PASSED` for conditions detected during the test run, `FAILED` for those undetected, `ERROR_OCCURRED` if the API couldn't execute the test run due to a system error, or `INCONCLUSIVE` for the conditions not able to evaluate.
+    enum:
+    - PASSED
+    - FAILED
+    - ERROR_OCCURRED
+    - INCONCLUSIVE

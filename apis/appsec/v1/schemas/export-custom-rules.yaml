@@ -1,0 +1,126 @@
+type: object
+description: |-
+  Contains custom rule settings of the exported security configuration.
+  
+x-akamai:
+  file-path: schemas/export-custom-rules.yaml
+additionalProperties: false
+required:
+- name
+properties:
+  id:
+    type: integer
+    description: |
+      Uniquely identifies the rule.
+    readOnly: true
+  name:
+    type: string
+    description: |
+      The custom rule name.
+  description:
+    type: string
+    description: |
+      The custom rule description.
+  version:
+    type: integer
+    description: |
+      The custom rule version.
+  conditions:
+    type: array
+    description: |
+      Contains the details about the condition that triggers the custom rule.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      - positiveMatch
+      - value
+      properties:
+        type:
+          type: string
+          description: |
+            The type of condition. See [CustomRule condition type values](https://techdocs.akamai.com/application-security/reference/condition-type-values).
+          enum:
+          - cookieMatch
+          - extensionMatch
+          - filenameMatch
+          - ipMatch
+          - pathMatch
+          - requestHeaderMatch
+          - requestMethodMatch
+          - requestProtocolVersionMatch
+          - uriQueryMatch
+          - headerOrderMatch
+          - argsPostMatch
+          - argsPostJSONMatch
+          - argsPostJSONNamesMatch
+          - argsPostXMLMatch
+          - argsPostNamesMatch
+          - clientCertPresentMatch
+          - clientCertValidMatch
+          - clientTlsFingerprintMatch
+          - hostMatch
+          - ipAddressMatch
+          - geoMatch
+          - asNumberMatch
+          - clientListMatch
+        value:
+          description: |
+            The value that triggers the condition when matched or not matched. The `value` can either be a string or an array.
+          oneOf:
+          - description: |
+              The value that triggers the condition when matched or not matched. The `value` can either be a string or an array.
+            type: array
+            title: Array
+            items:
+              type: string
+          - description: |
+              The value that triggers the condition when matched or not matched. The `value` can either be a string or an array.
+            type: string
+            title: String
+        positiveMatch:
+          type: boolean
+          description: |
+            Whether the condition should trigger on a match (`true`) or a lack of match (`false`).
+        useXForwardForHeaders:
+          type: boolean
+          description: |
+            Whether the condition includes `X-Forwarded-For` (XFF) header. This only applies when the `type` is `ipAddressMatch`, `geoMatch`, or `asNumberMatch`.
+  inspectRequest:
+    type: boolean
+    description: |
+      Whether to inspect the HTTP request for unstructured custom rules.
+    readOnly: true
+  inspectResponse:
+    type: boolean
+    description: |
+      Whether to inspect the HTTP response for unstructured custom rules.
+    readOnly: true
+  loggingOptions:
+    type: array
+    description: |
+      The specific conditions to be logged.
+    items:
+      $ref: logging-option.yaml
+  metadata:
+    type: string
+    description: |
+      The metadata you provided for unstructured custom rules.
+    readOnly: true
+  ruleActivated:
+    type: boolean
+    description: |
+      Whether the rule is active in the configuration.
+    readOnly: true
+  structured:
+    type: boolean
+    description: |
+      Whether you created the rule with the structured custom rule builder or free-form XML.
+    readOnly: true
+  tag:
+    type: array
+    description: |
+      The list of the labels you assigned to the custom rule.
+    items:
+      type: string

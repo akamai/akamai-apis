@@ -1,0 +1,99 @@
+x-akamai:
+  file-path: paths/cpcodes.yaml
+  path-for-file: /cpcodes
+post:
+  operationId: post-cpcodes
+  summary: Create a new CP code
+  tags:
+  - CP codes
+  description: |
+    To create a new CP code, you need to associate it with a product. You can assign any CP code within a property's rule tree as detailed in the [Rule Trees](ref:rule-trees) section. You should match the same `productId` that's assigned to properties that invoke the CP code to the one assigned to the CP code, otherwise you may get a warning.
+
+    To view or update certain CP code data, such as name, time zone, and purgeability, use the [CP Codes and Reporting Groups API](https://techdocs.akamai.com/cp-codes/reference/api).
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-required.yaml
+  - $ref: ../parameters/groupId-required.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/cpcode-create-request.json
+        schema:
+          $ref: ../schemas/cpcode-create-request.yaml
+  responses:
+    201:
+      description: |
+        The response provides a URL link to the newly created CP code.
+      headers:
+        Location:
+          $ref: ../headers/Location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/cpcode-create-response.json
+          schema:
+            $ref: ../schemas/cpcode-post-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    415:
+      $ref: ../errors/415.yaml
+    422:
+      $ref: ../errors/422.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+get:
+  operationId: get-cpcodes
+  summary: List CP codes
+  tags:
+  - CP codes
+  description: |
+    This operation lists CP codes available within your contract and group pairing. You assign CP codes to a property within its rule tree. To list all CP codes in your account at once, without having to filter the request by contracts and groups, use the [CP Codes and Reporting Groups API](https://techdocs.akamai.com/cp-codes/reference/get-cpcodes). CP codes include information about their product assignment. When [creating a new property](ref:post-properties), you need to apply the same product you specified for the assigned CP code.
+
+    To view or update certain CP code data, such as name, time zone, and purgeability, use the [CP Codes and Reporting Groups API](https://techdocs.akamai.com/cp-codes/reference/api).
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-required.yaml
+  - $ref: ../parameters/groupId-required.yaml
+  responses:
+    200:
+      description: |
+        The response lists CP codes.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/cpcode-list-response.json
+          schema:
+            $ref: ../schemas/cpcode-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: cpCodes
+  group: CpCodes

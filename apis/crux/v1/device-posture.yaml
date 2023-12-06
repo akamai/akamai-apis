@@ -1,0 +1,1287 @@
+openapi: 3.0.0
+info:
+  title: Device posture
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/crux/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: device-posture.yaml
+paths:
+  /device-posture/inventory/device-history/{deviceId}:
+    parameters:
+    - $ref: parameters/deviceId-path.yaml
+    get:
+      operationId: get-device-history
+      summary: Get device history
+      tags:
+      - Device history
+      description: |
+        Lists device history for a particular device.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-device-history-reports-200.json
+              schema:
+                $ref: schemas/deviceHistory.yaml
+  /device-posture/inventory/device/{deviceId}/op/clear:
+    parameters:
+    - $ref: parameters/deviceId-path.yaml
+    put:
+      operationId: put-device-clear
+      summary: Update device status to clear
+      tags:
+      - Device
+      description: |
+        Marks a device as safe and clear from ETP threats.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /device-posture/inventory/list:
+    get:
+      operationId: get-device-posture-inventory
+      summary: List device inventory
+      tags:
+      - Device inventory
+      description: |
+        Lists device inventories.
+      parameters:
+      - $ref: parameters/deviceId-query.yaml
+      - $ref: parameters/os-query.yaml
+      - $ref: parameters/browser-query.yaml
+      - $ref: parameters/riskRule-query.yaml
+      - $ref: parameters/firewall-query.yaml
+      - $ref: parameters/antiMalware-query.yaml
+      - $ref: parameters/clientVersion-query.yaml
+      - $ref: parameters/mobile-query.yaml
+      - $ref: parameters/screenlock-query.yaml
+      - $ref: parameters/biometric-query.yaml
+      - $ref: parameters/jailbroken-query.yaml
+      - $ref: parameters/diskEncryption-query.yaml
+      - $ref: parameters/etpThreatDetected-query.yaml
+      - $ref: parameters/cbHealthy-query.yaml
+      - $ref: parameters/cbPolicy-query.yaml
+      - $ref: parameters/crowdstrikeHealthy-query.yaml
+      - $ref: parameters/etpClientStatus-query.yaml
+      - $ref: parameters/certprofile-query.yaml
+      - $ref: parameters/antiMalwareProfile-query.yaml
+      - $ref: parameters/search-query.yaml
+      - $ref: parameters/sortBy-query.yaml
+      - $ref: parameters/sortOrder-query.yaml
+      - $ref: parameters/optionalContractId-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/pageable_offset.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-device-summary-reports-200.json
+              schema:
+                $ref: schemas/deviceInventory.yaml
+  /device-posture/inventory/summary/anti-malware-status:
+    get:
+      operationId: get-anti-malware-status
+      summary: List anti-malware status
+      tags:
+      - Device inventory
+      description: |
+        Lists anti-malware status signals metrics acquired from device application access. The response groups statuses by `value` and sums by `count`.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          $ref: errors/signalSummaryRequest_200.yaml
+  /device-posture/inventory/summary/browsers:
+    get:
+      operationId: get-summary-browsers
+      summary: List browser activity
+      tags:
+      - Device inventory
+      description: |
+        Lists installed browser activity metrics for devices connecting to your applications.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-device-summary-browsers-200.json
+              schema:
+                $ref: schemas/browsers.yaml
+  /device-posture/inventory/summary/device-biometric:
+    get:
+      operationId: get-device-biometric
+      summary: List devices with biometrics
+      tags:
+      - Device inventory
+      description: |
+        Lists activity metrics for biometrics signals acquired from devices accessing your applications. The response groups statuses by `value` and sums by `count`.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          $ref: errors/signalSummaryRequest_200.yaml
+  /device-posture/inventory/summary/device-jailbroken:
+    get:
+      operationId: get-device-jailbroken
+      summary: List jailbroken devices
+      tags:
+      - Device inventory
+      description: |
+        Lists jailbroken device signal metrics acquired from device application access. The response groups statuses by `value` and sums by `count`.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          $ref: errors/signalSummaryRequest_200.yaml
+  /device-posture/inventory/summary/device-roll-ups:
+    get:
+      operationId: get-device-roll-ups
+      summary: List device activity
+      tags:
+      - Device inventory
+      description: |
+        Lists activity metrics of devices connecting  to your applications.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-device-summary-roll-ups-200.json
+              schema:
+                $ref: schemas/rollUps.yaml
+  /device-posture/inventory/summary/device-screen-lock:
+    get:
+      operationId: get-device-screen-lock
+      summary: List device screen lock
+      tags:
+      - Device inventory
+      description: |
+        Lists device screen lock signal metrics acquired from device application access. The response groups statuses by `value` and sums by `count`.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          $ref: errors/signalSummaryRequest_200.yaml
+  /device-posture/inventory/summary/firewall-status:
+    get:
+      operationId: get-firewall-status
+      summary: List firewall status
+      tags:
+      - Device inventory
+      description: |
+        Lists activity metrics for firewall status signals acquired from devices accessing your applications. The response groups statuses by `value` and sums by `count`.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          $ref: errors/signalSummaryRequest_200.yaml
+  /device-posture/inventory/summary/os:
+    get:
+      operationId: get-summary-os
+      summary: List operating system activity
+      tags:
+      - Device inventory
+      description: |
+        Lists activity metrics for installed operating  systems of devices connecting to your applications.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-device-summary-os-200.json
+              schema:
+                $ref: schemas/operatingSystems.yaml
+  /device-posture/inventory/summary/risk-assessment:
+    get:
+      operationId: get-risk-assessment
+      summary: List device risk assessment
+      tags:
+      - Device inventory
+      description: |
+        Lists activity metrics for risk assessment rules of devices connected to your applications.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-device-summary-risk-assessment-200.json
+              schema:
+                $ref: schemas/riskAssessment.yaml
+  /device-posture/inventory/summary/system-disk-encryption:
+    get:
+      operationId: get-disk-encryption
+      summary: List system disk encryption
+      tags:
+      - Device inventory
+      description: |
+        Lists activity metrics for disk encryption signals acquired from devices accessing your applications. The response groups statuses by `value` and sums by `count`.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          $ref: errors/signalSummaryRequest_200.yaml
+  /device-posture/risk-assessment/available-browsers:
+    get:
+      operationId: get-available-browsers
+      summary: List available browser versions
+      tags:
+      - Risk assessment
+      description: |
+        Lists supported browser versions for risk assessment. Unlisted browsers aren't supported for risk assessment.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-available-browsers-200.json
+              schema:
+                $ref: schemas/availableBrowserVer.yaml
+  /device-posture/risk-assessment/available-client-ver:
+    get:
+      operationId: get-client-versions
+      summary: List available client versions
+      tags:
+      - Risk assessment
+      description: |
+        Lists supported client versions for risk assessment. Unlisted client versions aren't supported for risk assessment.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-available-client-ver-200.json
+              schema:
+                $ref: schemas/availableClientVer.yaml
+  /device-posture/risk-assessment/available-os-ver:
+    get:
+      operationId: get-os-versions
+      summary: List available operating system versions
+      tags:
+      - Risk assessment
+      description: |
+        Lists supported operating system versions  for risk assessment. Unlisted versions aren't supported for risk assessment.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-available-os-ver-200.json
+              schema:
+                $ref: schemas/availableOsVer.yaml
+  /device-posture/risk-assessment/ca-ocsp:
+    get:
+      operationId: get-ca-ocsp
+      summary: Get CA and OCSP information
+      tags:
+      - Risk assessment
+      description: |
+        Get CA and OCSP information for use in certificate profiles.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-ca-ocsp-200.json
+              schema:
+                $ref: schemas/allCaOcsp.yaml
+  /device-posture/risk-assessment/certificate-profiles:
+    post:
+      operationId: post-certificate-profile
+      summary: Create certificate profile
+      tags:
+      - Risk assessment
+      description: |
+        Creates a new Certificate profile.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/risk-assessment-certificate-profile-post-put-200.json
+            schema:
+              $ref: schemas/certificateProfile.yaml
+      responses:
+        201:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/risk-assesment-certificate-profile-created-post-200.json
+              schema:
+                $ref: schemas/certificateProfileId.yaml
+    get:
+      operationId: get-certificate-profiles
+      summary: List certificate profiles
+      tags:
+      - Risk assessment
+      description: |
+        Lists the existing certificate profiles.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-certificate-profiles-200.json
+              schema:
+                $ref: schemas/certificateProfileList.yaml
+  /device-posture/risk-assessment/certificate-profiles/{certificateProfileId}:
+    parameters:
+    - $ref: parameters/certificateProfileId-path.yaml
+    get:
+      operationId: get-certificate-profile
+      summary: Get certificate profile
+      tags:
+      - Risk assessment
+      description: |
+        Get a certificate profile by its id.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-certificate-profile-by-id-200.json
+              schema:
+                $ref: schemas/certificateProfileWithId.yaml
+    put:
+      operationId: put-certificate-profile
+      summary: Update certificate profile
+      tags:
+      - Risk assessment
+      description: |
+        Update a certificate profile.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/risk-assessment-certificate-profile-post-put-200.json
+            schema:
+              $ref: schemas/certificateProfile.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+    delete:
+      operationId: delete-certificate-profile
+      summary: Delete certificate profile
+      tags:
+      - Risk assessment
+      description: |
+        Delete a certificate profile.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /device-posture/risk-assessment/certificate-usage/anti-malware-profiles:
+    post:
+      operationId: post-anti-malware-profile
+      summary: Create an anti-malware profile
+      tags:
+      - Risk assessment
+      description: |
+        Creates a new anti-malware profile.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/risk-assessment-anti-malware-profile-post-put-200.json
+            schema:
+              $ref: schemas/antiMalwareProfile.yaml
+      responses:
+        201:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/risk-assesment-anti-malware-profile-created-post-200.json
+              schema:
+                $ref: schemas/antiMalwareProfileId.yaml
+    get:
+      operationId: get-anti-malware-profiles
+      summary: List anti-malware profiles
+      tags:
+      - Risk assessment
+      description: |
+        Lists the existing anti-malware profiles.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-anti-malware-profiles-200.json
+              schema:
+                $ref: schemas/antiMalwareProfileList.yaml
+  /device-posture/risk-assessment/certificate-usage/anti-malware-profiles/{antiMalwareProfileId}:
+    parameters:
+    - $ref: parameters/antiMalwareProfileId-path.yaml
+    get:
+      operationId: get-anti-malware-profile
+      summary: Get an anti-malware profile
+      tags:
+      - Risk assessment
+      description: |
+        Get an anti-malware profile.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-anti-malware-profile-by-id-200.json
+              schema:
+                $ref: schemas/antiMalwareProfileWithId.yaml
+    put:
+      operationId: put-anti-malware-profile
+      summary: Update an anti-malware profile
+      tags:
+      - Risk assessment
+      description: |
+        Update an Anti-Malware profile.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/risk-assessment-anti-malware-profile-post-put-200.json
+            schema:
+              $ref: schemas/antiMalwareProfile.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+    delete:
+      operationId: delete-anti-malware-profile
+      summary: Delete an anti-malware profile
+      tags:
+      - Risk assessment
+      description: |
+        Delete an anti-malware profile.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /device-posture/risk-assessment/certificate-usage/ca:
+    get:
+      operationId: get-certificate-usage-ca
+      summary: Get CA information
+      tags:
+      - Risk assessment
+      description: |
+        Lists CA usage information.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-ca-usage-200.json
+              schema:
+                $ref: schemas/caUsage.yaml
+  /device-posture/risk-assessment/certificate-usage/ocsp:
+    get:
+      operationId: get-certificate-usage-ocsp
+      summary: Get OCSP information
+      tags:
+      - Risk assessment
+      description: |
+        Lists OCSP usage information.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-ocsp-usage-200.json
+              schema:
+                $ref: schemas/ocspUsage.yaml
+  /device-posture/risk-assessment/chosen-versions:
+    get:
+      operationId: get-chosen-versions
+      summary: List chosen versions
+      tags:
+      - Risk assessment
+      description: |
+        Lists the chosen versions of different risk assessment dimensions.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-chosen-versions-200.json
+              schema:
+                $ref: schemas/chosenVersions.yaml
+    put:
+      operationId: put-chosen-versions
+      summary: Modify chosen versions
+      tags:
+      - Risk assessment
+      description: |
+        Updates the chosen versions selection of different risk assessment dimensions.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/list-risk-assessment-chosen-versions-200.json
+            schema:
+              $ref: schemas/chosenVersions.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /device-posture/risk-assessment/chosen-versions/test:
+    post:
+      operationId: post-chosen-versions-test
+      summary: Test chosen versions
+      tags:
+      - Risk assessment
+      description: |
+        Tests the selected versions against the existing risk assessment rules.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/list-risk-assessment-chosen-versions-200.json
+            schema:
+              $ref: schemas/chosenVersions.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-device-summary-risk-assessment-200.json
+              schema:
+                $ref: schemas/riskAssessment.yaml
+  /device-posture/risk-assessment/os-names:
+    get:
+      operationId: get-os-names
+      summary: List available operating systems
+      tags:
+      - Risk assessment
+      description: |
+        Lists supported operating systems for risk assessment. Unlisted operating systems aren't supported for risk assessment.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-available-os-200.json
+              schema:
+                $ref: schemas/availableOs.yaml
+  /device-posture/risk-assessment/partner/carbon-black:
+    post:
+      operationId: post-partner-carbon-black
+      summary: Create a new Carbon Black integration
+      tags:
+      - Risk assessment
+      description: |
+        Adds a new Carbon Black integration.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-risk-assessment-partner-carbon-black-200.json
+            schema:
+              $ref: schemas/carbonBlackIntegration.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+    get:
+      operationId: get-partner-carbon-black
+      summary: List Carbon Black integrations
+      tags:
+      - Risk assessment
+      description: |
+        Lists the details of existing Carbon Black integration entries.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-risk-assessment-partner-carbon-black-200.json
+              schema:
+                $ref: schemas/carbonBlackGetIntegrations.yaml
+  /device-posture/risk-assessment/partner/carbon-black/status:
+    get:
+      operationId: get-partner-carbon-black-status
+      summary: Get Carbon Black integration status
+      tags:
+      - Risk assessment
+      description: |
+        Get current status of Carbon Black integration.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-risk-assessment-partner-crowdstrike-carbon-black-status-200.json
+              schema:
+                $ref: schemas/partnerIntegrationStatus.yaml
+    put:
+      operationId: put-partner-carbon-black-status
+      summary: Update Carbon Black integration status
+      tags:
+      - Risk assessment
+      description: |
+        Update current status of Carbon Black integration to either enabled or disabled.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-risk-assessment-partner-crowdstrike-carbon-black-status-200.json
+            schema:
+              $ref: schemas/partnerIntegrationStatus.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /device-posture/risk-assessment/partner/carbon-black/test:
+    post:
+      operationId: post-partner-carbon-black-test
+      summary: Create a Carbon Black integration
+      tags:
+      - Risk assessment
+      description: |
+        Creates a Carbon Black integration to test against your Device Posture configuration.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-risk-assessment-partner-carbon-black-200.json
+            schema:
+              $ref: schemas/carbonBlackIntegration.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /device-posture/risk-assessment/partner/carbon-black/test/{integration_id}:
+    parameters:
+    - $ref: parameters/integrationId-path.yaml
+    put:
+      operationId: put-partner-carbon-black-test
+      summary: Creates a Carbon Black integration for testing
+      tags:
+      - Risk assessment
+      description: |
+        Tests an existing Carbon Black integration against your device posture configuration.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-risk-assessment-partner-carbon-black-200.json
+            schema:
+              $ref: schemas/carbonBlackIntegration.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /device-posture/risk-assessment/partner/carbon-black/{integration_id}:
+    parameters:
+    - $ref: parameters/integrationId-path.yaml
+    get:
+      operationId: get-partner-carbon-black-integration
+      summary: Get a Carbon Black integration
+      tags:
+      - Risk assessment
+      description: |
+        Lists the details a specific Carbon Black integration.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-risk-assessment-partner-carbon-black-specific-integration-200.json
+              schema:
+                $ref: schemas/carbonBlackIntegration.yaml
+    put:
+      operationId: put-partner-carbon-black-integration
+      summary: Modify a Carbon Black integration
+      tags:
+      - Risk assessment
+      description: |
+        Updates details for a specific Carbon Black integration.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-risk-assessment-partner-carbon-black-200.json
+            schema:
+              $ref: schemas/carbonBlackIntegration.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+    delete:
+      operationId: delete-partner-carbon-black-integration
+      summary: Delete a Carbon Black integration
+      tags:
+      - Risk assessment
+      description: |
+        Deletes a specific Carbon Black integration.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /device-posture/risk-assessment/partner/crowdstrike:
+    post:
+      operationId: post-partner-crowdstrike
+      summary: Create a new CrowdStrike integration
+      tags:
+      - Risk assessment
+      description: |
+        Adds a new CrowdStrike integration entry.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-risk-assessment-partner-crowdstrike-200.json
+            schema:
+              $ref: schemas/crowdstrikeIntegration.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+    get:
+      operationId: get-partner-crowdstrike
+      summary: List CrowdStrike integrations
+      tags:
+      - Risk assessment
+      description: |
+        Lists details of existing CrowdStrike integrations.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-risk-assessment-partner-crowdstrike-200.json
+              schema:
+                $ref: schemas/crowdstrikeGetIntegrations.yaml
+  /device-posture/risk-assessment/partner/crowdstrike/status:
+    get:
+      operationId: get-partner-crowdstrike-status
+      summary: Get CrowdStrike integration status
+      tags:
+      - Risk assessment
+      description: |
+        Get current status of CrowdStrike integration.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-risk-assessment-partner-crowdstrike-carbon-black-status-200.json
+              schema:
+                $ref: schemas/partnerIntegrationStatus.yaml
+    put:
+      operationId: put-partner-crowdstrike-status
+      summary: Update CrowdStrike integration status
+      tags:
+      - Risk assessment
+      description: |
+        Updates current status of CrowdStrike integration to either enabled or disabled.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-risk-assessment-partner-crowdstrike-carbon-black-status-200.json
+            schema:
+              $ref: schemas/partnerIntegrationStatus.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /device-posture/risk-assessment/partner/crowdstrike/test:
+    post:
+      operationId: post-partner-crowdstrike-test
+      summary: Create a CrowdStrike integration
+      tags:
+      - Risk assessment
+      description: |
+        Create a CrowdStrike integration to test against your device posture configuration.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-risk-assessment-partner-crowdstrike-200.json
+            schema:
+              $ref: schemas/crowdstrikeIntegration.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /device-posture/risk-assessment/partner/crowdstrike/test/{integration_id}:
+    parameters:
+    - $ref: parameters/integrationId-path.yaml
+    put:
+      operationId: put-partner-crowdstrike-test
+      summary: Creates a CrowdStrike integration for testing
+      tags:
+      - Risk assessment
+      description: |
+        Test an existing CrowdStrike integration against your device posture configuration.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-risk-assessment-partner-crowdstrike-200.json
+            schema:
+              $ref: schemas/crowdstrikeIntegration.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /device-posture/risk-assessment/partner/crowdstrike/{integration_id}:
+    parameters:
+    - $ref: parameters/integrationId-path.yaml
+    get:
+      operationId: get-partner-crowdstrike-integration
+      summary: Get a CrowdStrike integration
+      tags:
+      - Risk assessment
+      description: |
+        Lists details a specific CrowdStrike integration.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-risk-assessment-partner-crowdstrike-specific-integration-200.json
+              schema:
+                $ref: schemas/crowdstrikeIntegration.yaml
+    put:
+      operationId: put-partner-crowdstrike-integration
+      summary: Modify a CrowdStrike integration
+      tags:
+      - Risk assessment
+      description: |
+        Updates details for a specific integration entry.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-risk-assessment-partner-crowdstrike-200.json
+            schema:
+              $ref: schemas/crowdstrikeIntegration.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+    delete:
+      operationId: delete-partner-crowdstrike-integration
+      summary: Delete a CrowdStrike integration
+      tags:
+      - Risk assessment
+      description: |
+        Deletes a specific CrowdStrike integration.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /device-posture/risk-assessment/signal-names:
+    get:
+      operationId: get-signal-names
+      summary: List signal names
+      tags:
+      - Risk assessment
+      description: |
+        Lists supported signal names for risk assessment. Unlisted signals aren't supported for risk assessment.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-signal-names-200.json
+              schema:
+                $ref: schemas/signalNames.yaml
+  /device-posture/risk-assessment/tags:
+    post:
+      operationId: post-tag
+      summary: Create risk tag
+      tags:
+      - Risk assessment
+      description: |
+        Creates a new risk tag.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/get-risk-assessment-tag-200.json
+            schema:
+              $ref: schemas/riskRule.yaml
+      responses:
+        201:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+    get:
+      operationId: get-tags
+      summary: List risk tags
+      tags:
+      - Risk assessment
+      description: |
+        Lists supported risk tags for risk assessment.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-tags-200.json
+              schema:
+                $ref: schemas/riskRules.yaml
+  /device-posture/risk-assessment/tags/{ruleId}:
+    parameters:
+    - $ref: parameters/ruleId-path.yaml
+    get:
+      operationId: get-tag
+      summary: Get a risk tag
+      tags:
+      - Risk assessment
+      description: |
+        Lists details for a specific risk tag.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-risk-assessment-tag-200.json
+              schema:
+                $ref: schemas/riskRule.yaml
+    put:
+      operationId: put-tag
+      summary: Modify a risk tag
+      tags:
+      - Risk assessment
+      description: |
+        Updates the details for a specific risk tag.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/get-risk-assessment-tag-200.json
+            schema:
+              $ref: schemas/riskRule.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+    delete:
+      operationId: delete-tag
+      summary: Delete a tag
+      tags:
+      - Risk assessment
+      description: |
+        Removes a risk tag from your device posture configuration.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /device-posture/risk-assessment/test/{ruleId}:
+    parameters:
+    - $ref: parameters/ruleId-path.yaml
+    put:
+      operationId: put-test-ruleid
+      summary: Test risk rule
+      tags:
+      - Risk assessment
+      description: |
+        Tests the specified risk rule against existing devices.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/get-risk-assessment-tag-200.json
+            schema:
+              $ref: schemas/riskRule.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-device-summary-risk-assessment-200.json
+              schema:
+                $ref: schemas/riskAssessment.yaml
+  /device-posture/risk-assessment/tiers:
+    get:
+      operationId: get-tiers
+      summary: List risk tiers
+      tags:
+      - Risk assessment
+      description: |
+        Lists supported risk tiers for risk assessment.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-tiers-200.json
+              schema:
+                $ref: schemas/riskRules.yaml
+  /device-posture/risk-assessment/tiers/{ruleId}:
+    parameters:
+    - $ref: parameters/ruleId-path.yaml
+    get:
+      operationId: get-tier
+      summary: Get a risk tier
+      tags:
+      - Risk assessment
+      description: |
+        Lists details for a specific risk tier.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-risk-assessment-tier-200.json
+              schema:
+                $ref: schemas/riskRule.yaml
+    put:
+      operationId: put-tier
+      summary: Modify risk tier
+      tags:
+      - Risk assessment
+      description: |
+        Updates details for a specific risk tier.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/get-risk-assessment-tier-200.json
+            schema:
+              $ref: schemas/riskRule.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /device-posture/risk-assessment/versions/client_version:
+    get:
+      operationId: get-client-version
+      summary: List client versions
+      tags:
+      - Risk assessment
+      description: |
+        Lists supported client versions for risk assessment. Risk assessment doesn't support unlisted client versions.
+      parameters:
+      - $ref: parameters/optionalContractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-risk-assessment-available-browsers-200.json
+              schema:
+                $ref: schemas/clientVersions.yaml

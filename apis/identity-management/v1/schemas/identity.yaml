@@ -1,0 +1,177 @@
+type: object
+description: |-
+  This object encapsulates the response schema for creating API client.
+  
+x-akamai:
+  file-path: schemas/identity.yaml
+additionalProperties: false
+properties:
+  authorization:
+    type: object
+    description: |
+      An API client's combination of services and grant scopes that allow you to make calls with that client.
+    properties:
+      name:
+        type: string
+        description: |
+          Name of the authorization.
+      description:
+        type: string
+        description: |
+          Description of the API client's authorization.
+      accessToken:
+        type: string
+        description: |
+          Part of the client secret that identifies your API client and lets you access applications and resources. Tokens are unique per client.
+      authorizationId:
+        type: integer
+        description: |
+          Unique identifier of the authorization.
+      baseURL:
+        type: string
+        description: |
+          The base URL for the service.
+      ccuParams:
+        type: object
+        description: |
+          `ccuParams` are only applicable for CCU OPEN clients.
+        properties:
+          purgeByCacheTag:
+            type: boolean
+            description: |
+              If `purgeByCacheTag` is `true` you can purge by cache tag with your API client.
+          purgeByCpcode:
+            type: boolean
+            description: |
+              If `purgeByCpCode` is `true` you can purge that CP code with your API client.
+          purgeCpcodes:
+            type: array
+            items:
+              type: integer
+              description: |
+                Lists all CP codes that your API client is allowed to purge.
+      openIdentityId:
+        type: string
+        description: |
+          The unique identifier of the API client.
+      serviceProviderId:
+        type: integer
+        description: |
+          A unique identifier for a service provider.
+      serviceProviderName:
+        type: string
+        description: |
+          The name of the service provider, like DNS or CCU.
+      services:
+        type: array
+        items:
+          type: object
+          description: |
+            Lists APIs you'd like to use, like Diagnostic Tools or Sandbox.
+          properties:
+            description:
+              type: string
+              description: |
+                The description of a service.
+            endPoint:
+              type: string
+              description: |
+                The endpoint to access a service.
+            grantScopes:
+              type: array
+              items:
+                type: object
+                description: |
+                  The amount of access you give to an API client on a per-service basis.
+                properties:
+                  name:
+                    type: string
+                    description: |
+                      The name of a grant scope.
+                  description:
+                    type: string
+                    description: |
+                      The description of a grant scope.
+            serviceId:
+              type: integer
+              description: |
+                A unique identifier for a service.
+            serviceName:
+              type: string
+              description: |
+                The name of a service, like Diagnostic Tools, or Identity Management: API.
+  groupAccess:
+    type: array
+    items:
+      $ref: groupAccess.yaml#/definitions/groupAccess
+  identity:
+    type: object
+    description: |
+      The API client. API clients contain a set of permissions and tokens, providing a user with access to specific APIs.
+    properties:
+      actions:
+        type: object
+        description: |
+          Encapsulates the different ways you can edit an API client, such as changing its owner, changing its access rights to Control Center services or resources, or by deleting it.
+        properties:
+          delete:
+            type: boolean
+            description: |
+              If the client's `delete` is `true`, you can delete the API client. If `delete` is `false`, contact an admin on your account to have them delete the client.
+          deactivateAll:
+            type: boolean
+            description: |
+              If the client's `deactivateAll` is `true`, you can deactivate all credentials for the API client at once. Otherwise, you need to deactivate the credentials individually.
+          editAuth:
+            type: boolean
+            description: |
+              If the client's `editAuth` is `true`,  you can change the client's group and role assignments, and which API services it can access.
+          lock:
+            type: boolean
+            description: |
+              If the client's `lock` is `true`, you can lock the client to prevent anyone from using it to access services on Control Center.
+          transfer:
+            type: boolean
+            description: |
+              If the client's `transfer` is `true`, you can give this API client to a different user.
+      activeCredentialCount:
+        type: integer
+        description: |
+          Number of credentials active for the API client.
+      allowAccountSwitch:
+        type: boolean
+        description: |
+          If you can use the API client to manage more than one account.
+      clientDescription:
+        type: string
+        description: |
+          Description of the API client.
+      clientName:
+        type: string
+        description: |
+          The API client's human-readable name.
+      createdBy:
+        type: string
+        description: |
+          The user who created the API client.
+      createdDate:
+        type: string
+        description: |
+          The date the API client was made.
+        format: date-time
+      openIdentityId:
+        type: string
+        description: |
+          Unique identifier for an API client.
+      uiIdentityId:
+        type: string
+        description: |
+          The unique identifier of the user the API client is being created for.
+      uiUserName:
+        type: string
+        description: |
+          The human-readable username of the person who owns the API client.
+      useLunaUserAccess:
+        type: boolean
+        description: |
+          If the API client's permissions are tied to a Control Center user's permissions.

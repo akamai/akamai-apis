@@ -1,0 +1,54 @@
+x-akamai:
+  file-path: paths/include-version.yaml
+  path-for-file: /includes/{includeId}/versions/{includeVersion}
+parameters:
+- $ref: ../parameters/includeId-path.yaml
+- $ref: ../parameters/includeVersion-path.yaml
+get:
+  operationId: get-include-version
+  summary: Get an include version
+  tags:
+  - Include versions
+  description: |
+    This polls the state of a specific include version, for example to check its activation status. When specifying `Accept: text/xml`, this operation provides the Akamai _metadata_ configuration data that's distributed to edge servers when you activate an include version. This XML data encapsulates the include version's component rules and is available on a read-only basis. Contact your Akamai representative if you need help interpreting it.
+  x-akamai:
+    status: LA
+  parameters:
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  responses:
+    200:
+      description: |
+        The response shows details of the requested include version.
+      headers:
+        ETag:
+          $ref: ../headers/Etag.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/include-version-get-response.json
+          schema:
+            $ref: ../schemas/include-version-get-response.yaml
+        text/xml:
+          example:
+            $ref: ../examples/property-version-get-response.xml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: includeVersion
+  group: Include versions

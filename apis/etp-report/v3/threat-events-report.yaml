@@ -1,0 +1,110 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Threat event reports
+  version: v3
+servers:
+- url: https://{hostname}/etp-report/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: threat-events-report.yaml
+paths:
+  /configs/{configId}/threat-events/aggregate:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-threat-events
+      summary: Report threat event totals
+      tags:
+      - Threat events
+      description: |
+        Lists the count of threat events, grouped by the chosen query aggregation.
+      parameters:
+      - $ref: parameters/dimension-threat-query.yaml
+      - $ref: parameters/cardinality-query.yaml
+      - $ref: parameters/startTimeSec-query.yaml
+      - $ref: parameters/endTimeSec-query.yaml
+      - $ref: parameters/filters-query-threat.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/threat-events-aggregate-site-200.json
+              schema:
+                $ref: schemas/threatEventsAggregateSite.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /configs/{configId}/threat-events/details:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-threat-event-details
+      summary: Report threat event details
+      tags:
+      - Threat events
+      description: |
+        Provides all threat events records with detailed information.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/events-details-postRequest.json
+            schema:
+              $ref: schemas/threatEventsDetailsRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/threat-events-details-postResponse-200.json
+              schema:
+                $ref: schemas/threatEventsDetailsResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /configs/{configId}/threat-events/time-series:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-threat-event-time-series
+      summary: Report threat event time series
+      tags:
+      - Threat events
+      description: |
+        Lists threat event totals, aggregated by hour.
+      parameters:
+      - $ref: parameters/dimension-threat-query.yaml
+      - $ref: parameters/startTimeSec-query.yaml
+      - $ref: parameters/endTimeSec-query.yaml
+      - $ref: parameters/filters-query-threat.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/threat-events-time-series-list-200.json
+              schema:
+                $ref: schemas/CommonTimeSeries.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml

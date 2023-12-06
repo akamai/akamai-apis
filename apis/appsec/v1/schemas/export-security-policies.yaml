@@ -1,0 +1,300 @@
+type: object
+description: |-
+  Contains settings for custom rule actions.
+  
+x-akamai:
+  file-path: schemas/export-security-policies.yaml
+additionalProperties: false
+required:
+- id
+- name
+- securityControls
+- hasRatePolicyWithApiKey
+properties:
+  id:
+    type: string
+    description: |
+      Uniquely identifies the security policy.
+  name:
+    type: string
+    description: |
+      The name of the security policy.
+  requestBody:
+    description: |
+      Contains policy level settings for request body inspection limit.
+    $ref: request-body.yaml
+  apiRequestConstraints:
+    type: object
+    description: |
+      The API request constraint action set in this policy. The action applies to the APIs associated with this policy via the API match targets.
+    additionalProperties: false
+    required:
+    - action
+    - apiEndpoints
+    properties:
+      action:
+        type: string
+        description: |
+          The action will be returned in the apiEndpoints array per API basis, this is retained for backward compatibility.
+      apiEndpoints:
+        type: array
+        description: |
+          The list of APIs covered by match target set in the security policy.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - action
+          - id
+          properties:
+            id:
+              type: integer
+              description: |
+                Uniquely identifies the API match target.
+            action:
+              type: string
+              description: |
+                The action to take for the requests that violate the constraints.
+  clientReputation:
+    type: object
+    description: |
+      Contains details about the reputation profile actions.
+    additionalProperties: false
+    required:
+    - reputationProfileActions
+    properties:
+      reputationProfileActions:
+        type: array
+        description: |
+          The list of reputation profile actions set in the security policy.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - action
+          - id
+          properties:
+            id:
+              type: integer
+              description: |
+                Uniquely identifies the reputation profile.
+            action:
+              type: string
+              description: |
+                The action to take when the request exceeds the threshold set in the reputation profile.
+  customRuleActions:
+    type: array
+    description: |
+      The list of custom rule actions set in the security policy.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - action
+      - id
+      properties:
+        id:
+          type: integer
+          description: |
+            Uniquely identifies the custom rule.
+        action:
+          type: string
+          description: |
+            The action to take when a request meets the custom rule conditions.
+  evaluationPenaltyBox:
+    $ref: penalty-box.yaml
+  hasRatePolicyWithApiKey:
+    type: boolean
+    description: |
+      Whether the security policy has a rate policy with an `API_KEY` client identifier. You can manage APIs using the [API Endpoint Definition API](https://techdocs.akamai.com/api-gateway/reference/api).
+  ipGeoFirewall:
+    description: |
+      The status of IP and geographic controls defined in the security policy.
+    $ref: network-layer-controls.yaml
+  loggingOverrides:
+    description: |
+      The header logging settings that override the config version level settings.
+    $ref: header-logging.yaml
+  malwarePolicyActions:
+    type: array
+    description: |
+      The list of malware policy actions set in the security policy.
+    items:
+      type: object
+      description: |
+        The actions for a malware policy. Only files up to 5MB are scanned. When files are larger than 5MB, you can set an `unscannedAction`, which is the action you want the network to take for files outside the scan limit.
+      additionalProperties: false
+      required:
+      - action
+      - unscannedAction
+      - id
+      properties:
+        id:
+          type: integer
+          description: |
+            Uniquely identifies the malware policy.
+        action:
+          type: string
+          description: |
+            The action to take when malware is detected.
+        unscannedAction:
+          type: string
+          description: |
+            The action to take when a file is outside the 5MB scan limit and isn't scanned.
+  penaltyBox:
+    $ref: penalty-box.yaml
+  pragmaHeader:
+    description: |
+      Contains policy level settings for the `Pragma` header.
+    $ref: pragma-header.yaml
+  ratePolicyActions:
+    type: array
+    description: |
+      The list of rate policy actions set in the security policy.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - ipv4Action
+      - ipv6Action
+      - id
+      properties:
+        id:
+          type: integer
+          description: |
+            Uniquely identifies the rate policy.
+        ipv4Action:
+          type: string
+          description: |
+            The action to take for the IPv4 traffic when the limits set in the rate policy are exceeded.
+        ipv6Action:
+          type: string
+          description: |
+            The action to take for the IPv6 traffic when the limits set in the rate policy are exceeded.
+  securityControls:
+    type: object
+    description: |
+      Contains details about the security controls defined in the security policy.
+    additionalProperties: false
+    required:
+    - applyRateControls
+    - applyNetworkLayerControls
+    - applyReputationControls
+    - applyApplicationLayerControls
+    - applyMalwareControls
+    properties:
+      applyApplicationLayerControls:
+        type: boolean
+        description: |
+          Whether you enabled the application layer controls.
+      applyMalwareControls:
+        type: boolean
+        description: |
+          Whether you enabled the malware protection.
+      applyNetworkLayerControls:
+        type: boolean
+        description: |
+          Whether you enabled the network layer controls.
+      applyRateControls:
+        type: boolean
+        description: |
+          Whether you enabled the rate controls.
+      applyReputationControls:
+        type: boolean
+        description: |
+          Whether you enabled the reputation controls.
+  slowPost:
+    type: object
+    description: |
+      Contains details about the slow POST protection. Lets you set thresholds to control slow traffic. The duration threshold takes precedence over the slow rate threshold.
+    additionalProperties: false
+    required:
+    - action
+    - durationThreshold
+    - slowRateThreshold
+    properties:
+      action:
+        type: string
+        description: |
+          The action to take for a request that exceeds the threshold. Either `alert` to send an alert notification, or `abort` to deny the request.
+        enum:
+        - alert
+        - abort
+      durationThreshold:
+        type: object
+        description: |
+          The settings based on the first 8 kilobytes of the POST body transfer.
+        additionalProperties: false
+        required:
+        - timeout
+        properties:
+          timeout:
+            type: integer
+            description: |
+              The time (in seconds) when the first 8 kilobytes of the POST body should be processed to avoid flagging the request.
+      slowRateThreshold:
+        type: object
+        description: |
+          The settings based on the request body transfer speed.
+        additionalProperties: false
+        required:
+        - rate
+        - period
+        properties:
+          period:
+            type: integer
+            description: |
+              The period (in seconds) when the rate applies.
+          rate:
+            type: integer
+            description: |
+              The maximum rate of bandwidth in bytes per second, averaged every 2 minutes.
+  webApplicationFirewall:
+    type: object
+    description: |
+      Contains information about the rule and attack group actions.
+    additionalProperties: false
+    required:
+    - attackGroupActions
+    - evaluation
+    - ruleActions
+    properties:
+      attackGroupActions:
+        $ref: export-definitions.yaml#/definitions/attackGroupActions
+      evaluation:
+        type: object
+        description: |
+          Specifies the ruleset version evaluated as part of the policy.
+        additionalProperties: false
+        required:
+        - rulesetVersion
+        - evaluationId
+        - evaluationVersion
+        - ruleActions
+        - attackGroupActions
+        properties:
+          attackGroupActions:
+            $ref: export-definitions.yaml#/definitions/attackGroupActions
+          evaluationId:
+            type: integer
+            description: |
+              Uniquely identifies the rule evaluation configuration.
+          evaluationVersion:
+            type: integer
+            description: |
+              The evaluation version. The version numbers start at `1` and increase on the first change to an evaluation configuration after its activation.
+          ruleActions:
+            $ref: export-definitions.yaml#/definitions/ruleActions
+          rulesetVersion:
+            type: integer
+            description: |
+              Uniquely identifies the evaluated ruleset version.
+      ruleActions:
+        $ref: export-definitions.yaml#/definitions/ruleActions
+      threatIntel:
+        type: string
+        description: |
+          Set to `on` so our network analyzes a request and dynamically modifies protection methods to fit the detected threat level. Set to `off` to manually fine-tune your rule sets.
+        enum:
+        - on
+        - off

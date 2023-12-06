@@ -1,0 +1,57 @@
+type: object
+description: |-
+  Collects all of the data that you need to make an ECCU request for.
+  
+x-akamai:
+  file-path: schemas/request-post.yaml
+additionalProperties: false
+required:
+- propertyName
+- propertyType
+- propertyNameExactMatch
+- metadata
+properties:
+  version:
+    type: string
+    description: |
+      Use this to mark differences in your refresh requests.
+    minLength: 1
+  metadata:
+    type: string
+    description: |
+      Contains tags that define a refresh request based on request parameters such as directory path and file extension. Use only ASCII characters. For more information on the format of an ECCU request file and metadata tag usage, see [Enhanced CCU Request Format](https://techdocs.akamai.com/purge-cache/docs/create-eccu-req-file).
+    minLength: 1
+  notes:
+    type: string
+    description: |
+      In addition to the `requestName`, this provides information to help you track the refresh request.
+    minLength: 1
+  propertyName:
+    type: string
+    description: |
+      Identifies the digital property whose content you want to refresh.
+    minLength: 1
+  propertyNameExactMatch:
+    type: boolean
+    description: |
+      Specifies whether to exactly match the full string of the `propertyName`, or to perform an inexact right hand side (RHS) substring match. For example, with `propertyNameExactMatch` enabled, `example.com` doesn't match `www.example.com`.
+  propertyType:
+    type: string
+    description: |
+      Specifies the type of digital property. Either `ARL_TOKEN` or `HOST_HEADER`. This tells the edge network whether the purge information is contained in the ARL, or in a configuration file. The ARL is similar to the URL, but the ARL is specifically defined for objects to be served by the edge network. There are two types of ARLs, v1 and v2. For details, see the [Purge Cache documentation](https://techdocs.akamai.com/purge-cache/docs/digital-props).
+    enum:
+    - ARL_TOKEN
+    - HOST_HEADER
+  requestName:
+    type: string
+    description: |
+      The name that you give to the refresh request.
+    minLength: 1
+  statusUpdateEmails:
+    type: array
+    description: |
+      A list of email addresses to notify when the `status` of the refresh request changes.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1

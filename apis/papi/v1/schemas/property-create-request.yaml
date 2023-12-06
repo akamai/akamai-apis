@@ -1,0 +1,56 @@
+id: resource:/descriptors/papi/v1/schemas/CreateOrClonePropertyRequestV0.json#
+javaType: com.akamai.luna.papi.model.PropertyCreateRequest
+type: object
+description: |-
+  Contains configuration data to apply to edge content. Relevant response objects appear within the outer envelope's `properties.items` array.
+  
+x-akamai:
+  file-path: schemas/property-create-request.yaml
+required:
+- productId
+- propertyName
+properties:
+  cloneFrom:
+    type: object
+    description: |
+      Optionally identifies another property instance to clone when making a POST request to create a new property. You need to assign the same contract and group to the cloned property.
+    required:
+    - propertyId
+    - version
+    properties:
+      version:
+        type: integer
+        description: |
+          Specifies the version of the property to clone.
+        minimum: 1
+      cloneFromVersionEtag:
+        type: string
+        description: |
+          Performs an ETag data integrity check on the original property. See [Concurrency control](ref:concurrency-control) for guidance.
+      copyHostnames:
+        type: boolean
+        description: |
+          Assigns the same set of hostnames to the new property, `false` by default.
+        default: false
+      propertyId:
+        type: string
+        description: |
+          Specifies the property to clone. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+  productId:
+    type: string
+    description: |
+      Unique identifier for the product. See [ID prefixes](ref:id-prefixes) for details on omitting the value's `prd_` prefix.
+  propertyName:
+    type: string
+    description: |
+      A descriptive name for the property.
+  ruleFormat:
+    type: string
+    description: |
+      On GET, reflects the property's current format. Otherwise on POST, assigns a specific rule format to the property. Ignored on PUT, since you need to modify the `Content-Type` to change rule formats. For details, see [Update rules to a newer set of features](ref:manage-rules).
+  useHostnameBucket:
+    type: boolean
+    description: |
+      Available if you have the `Hostname Bucket` module added to your contract, `false` by default. When enabled, this creates a special type of property where you can add or remove property hostnames without incrementing property versions.
+    default: false
+$schema: http://json-schema.org/draft-04-schema#

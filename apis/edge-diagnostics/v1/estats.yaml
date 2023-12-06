@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: Error statistics
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: estats.yaml
+paths:
+  /estats:
+    post:
+      operationId: post-estats
+      summary: Get error statistics
+      tags:
+      - Error statistics
+      description: |
+        Returns HTTP status codes distribution statistics from delivering a URL or CP code based on the nine-second traffic sample from the last two minutes. You can filter the results by `delivery` and `errorType`. The `delivery` is the delivery type of your resource, either `ENHANCED_TLS` or `STANDARD_TLS`. The `STANDARD_TLS` value returns data for the HTTP traffic with Standard TLS hostname,  whereas `ENHANCED_TLS` for the HTTPS traffic with Enhanced TLS hostname.  Without this filter, Edge Diagnostics checks on its own the type of delivery used by your resource and returns data for it. If your resource uses both delivery types, then Edge Diagnostics returns data for the type which got all data collected faster. If you choose the delivery type not used by your resource, then the results are empty. If you want to add this filter, you can run the [Get an edge hostname](https://techdocs.akamai.com/edge-hostnames/reference/get-edgehostnameid)  operation in [Edge Hostnames API](https://techdocs.akamai.com/edge-hostnames/reference/api) to confirm the delivery type of your resource. It's the `securityType` value.  The `errorType` filter is for the traffic's direction. The `EDGE_ERRORS` value returns data for the traffic between a customer and an edge server and `ORIGIN_ERRORS` between the edge server and the origin. Without this filter, Edge Diagnostics returns data for both directions.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/estatsRequest.json
+            schema:
+              $ref: schemas/estatsPostRequest.yaml
+      responses:
+        200:
+          description: |
+            The response provides statistics for the requested data.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/estats.json
+              schema:
+                $ref: schemas/estats.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

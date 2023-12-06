@@ -1,0 +1,113 @@
+type: object
+description: |-
+  Represents the progress of a test run and its results. Data lists all objects that execute during the test run. Data may show more details based on your request's query parameters.
+  
+x-akamai:
+  file-path: schemas/test-run.yaml
+additionalProperties: false
+required:
+- targetEnvironment
+- functional
+- submittedBy
+- submittedDate
+- status
+properties:
+  completedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the test run was complete.
+    format: date-time
+  functional:
+    type: object
+    description: |
+      Represents functional testing executed during the test run. Depending on what was the test run for, it may include `PropertyMangerExecution`, `testCaseExecution`, or `testSuiteExecutions`.
+    additionalProperties: false
+    required:
+    - status
+    properties:
+      status:
+        type: string
+        description: |
+          Functional objects' execution status. Possible values are: `IN_PROGRESS`, `COMPLETED`, `COMPLETED_WITH_UNEXPECTED_RESULTS`, or `FAILED`.
+        enum:
+        - IN_PROGRESS
+        - COMPLETED
+        - FAILED
+        - COMPLETED_WITH_UNEXPECTED_RESULTS
+  note:
+    type: string
+    description: |
+      Notes about the test run.
+    minLength: 1
+    maxLength: 200
+  purgeInfo:
+    type: object
+    description: |
+      Contains details on purge. 
+    additionalProperties: false
+    required:
+    - status
+    properties:
+      errors:
+        type: array
+        description: |
+          Lists details about an error.
+        minItems: 0
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - type
+          - title
+          properties:
+            type:
+              type: string
+              description: |
+                Dot-notated identifier for each type of error.
+              minLength: 1
+            title:
+              type: string
+              description: |
+                Summary of the error.
+              minLength: 1
+      status:
+        type: string
+        description: |
+          Purge execution status. Possible values are: `IN_PROGRESS`, `COMPLETED`, `NOT_APPLICABLE`, or `FAILED`.
+        enum:
+        - NOT_APPLICABLE
+        - IN_PROGRESS
+        - COMPLETED
+        - FAILED
+  status:
+    type: string
+    description: |
+      Test run's status. Possible values are: `IN_PROGRESS`, `COMPLETED`, `FAILED`, or `COMPLETED_WITH_UNEXPECTED_RESULTS`.
+    enum:
+    - IN_PROGRESS
+    - COMPLETED
+    - FAILED
+    - COMPLETED_WITH_UNEXPECTED_RESULTS
+  submittedBy:
+    type: string
+    description: |
+      Username who submitted the test run.
+    minLength: 1
+  submittedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the test run was submitted.
+    format: date-time
+  targetEnvironment:
+    type: string
+    description: |
+      Environment against which the test run was executed, either `PRODUCTION` or `STAGING`.
+    enum:
+    - PRODUCTION
+    - STAGING
+  testRunId:
+    type: integer
+    description: |
+      Unique identifier for each test run.
+    readOnly: true
+    minimum: 1

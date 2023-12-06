@@ -1,0 +1,53 @@
+type: object
+description: |-
+  Contains detailed information about an activation of a key collection version, including the environment where you're activating this version and the status of the activation.
+  
+x-akamai:
+  file-path: schemas/activationResponse.yaml
+additionalProperties: false
+required:
+- id
+- environment
+- state
+- activatedBy
+- startTime
+- keyCollectionVersionNo
+- keyCollectionVersionId
+properties:
+  id:
+    type: integer
+    description: |
+      The identifier of the activation.
+  activatedBy:
+    type: string
+    description: |
+      The username who sent the activation request.
+  environment:
+    type: string
+    description: |
+      The environment where you're activating the key collection version, either `STAGING` or `PRODUCTION`.
+    enum:
+    - STAGING
+    - PRODUCTION
+  keyCollectionVersionId:
+    type: integer
+    description: |
+      The identifier of the key collection version that you're activating.
+  keyCollectionVersionNo:
+    type: integer
+    description: |
+      The number of the version within the key collection. With each new version of this key collection, this number increments by 1.
+  startTime:
+    type: integer
+    description: |
+      An epoch timestamp marking when the activation was created.
+  state:
+    type: string
+    description: |
+      The status of the activation across the platform. These values are available: `PREPARED` when the system is ready to propagate the activation, `IN_PROGRESS` when the system is already propagating the activation, `DONE` when the system has successfully propagated the activation, `NOT_AVAILABLE` when the system has been unable to access data for the activation, or `ERROR` when the system has failed to propagate the activation. To fix the `ERROR` and `NOT_AVAILABLE` states, send another activation request. If it fails, contact support.
+    enum:
+    - PREPARED
+    - IN_PROGRESS
+    - DONE
+    - NOT_AVAILABLE
+    - ERROR

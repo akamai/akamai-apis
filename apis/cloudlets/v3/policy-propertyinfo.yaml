@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: Active properties
+  version: v3
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cloudlets/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: policy-propertyinfo.yaml
+paths:
+  /policies/{policyId}/properties:
+    parameters:
+    - $ref: parameters/policyId-path.yaml
+    get:
+      operationId: get-policy-properties
+      summary: Get active properties
+      tags:
+      - Properties
+      description: |
+        Returns all active properties that are assigned to the policy.
+      parameters:
+      - $ref: parameters/page-query.yaml
+      - $ref: parameters/size-query.yaml
+      responses:
+        200:
+          description: |
+            Contains detailed information about all active properties that are assigned to the policy.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-active-properties-get-response.json
+              schema:
+                $ref: schemas/get-policy-properties-response.yaml
+        403:
+          description: |
+            [No permission to access this resource.](ref:403)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-403-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        404:
+          description: |
+            [Resource not found.](ref:404)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-404-problem-response.json
+              schema:
+                $ref: schemas/error.yaml

@@ -1,0 +1,470 @@
+type: object
+description: |-
+  Contains information about an endpoint and its associated resources.
+  
+x-akamai:
+  file-path: schemas/apiEndpointWithResourceDto-recurse.yaml
+additionalProperties: false
+required:
+- apiEndPointName
+- apiEndPointHosts
+- groupId
+- contractId
+- lockVersion
+properties:
+  description:
+    type: string
+    description: |
+      The description of the endpoint. If you specify `null` in the request or omit this member from the object, the JSON response reflects it as an empty string.
+    nullable: true
+  akamaiSecurityRestrictions:
+    type: object
+    description: |
+      Contains information about the Kona Site Defender security restrictions that you apply to an API. Note that you should only include these details in your requests if you're a Kona Site Defender customer.
+    additionalProperties: false
+    nullable: true
+    properties:
+      ALLOW_ONLY_SPEC_UNDEFINED_METHODS:
+        type: integer
+        description: |
+          Whether the API allows requests on undefined resources, but only for specific methods. Either `1` or `0` for yes or no.
+        enum:
+        - 0
+        - 1
+      ALLOW_UNDEFINED_BODY_PARAMS:
+        type: integer
+        description: |
+          Whether the API allows for requests with undefined parameters in body. Either `1` or `0` for yes or no.
+        enum:
+        - 0
+        - 1
+      ALLOW_UNDEFINED_COOKIE_PARAMS:
+        type: integer
+        description: |
+          Whether the API allows for requests with undefined parameters in cookies. These booleans override members in the Method object. Either `1` or `0` for yes or no.
+        enum:
+        - 0
+        - 1
+      ALLOW_UNDEFINED_HEADER_PARAMS:
+        type: integer
+        description: |
+          Whether the API allows for requests with undefined parameters in header. Either `1` or `0` for yes or no.
+        enum:
+        - 0
+        - 1
+      ALLOW_UNDEFINED_METHOD_DELETE:
+        type: integer
+        description: |
+          Whether the API allows requests on undefined resources using the DELETE method. Either `1` or `0` for yes or no.
+        enum:
+        - 0
+        - 1
+      ALLOW_UNDEFINED_METHOD_GET:
+        type: integer
+        description: |
+          Whether the API allows requests on undefined resources using the GET method. Either `1` or `0` for yes or no.
+        enum:
+        - 0
+        - 1
+      ALLOW_UNDEFINED_METHOD_HEAD:
+        type: integer
+        description: |
+          Whether the API allows requesting undefined resources using HEAD method. Either `1` or `0` for yes or no.
+        enum:
+        - 0
+        - 1
+      ALLOW_UNDEFINED_METHOD_OPTIONS:
+        type: integer
+        description: |
+          Whether the API allows requesting undefined resources using OPTIONS method. Either `1` or `0` for yes or no.
+        enum:
+        - 0
+        - 1
+      ALLOW_UNDEFINED_METHOD_PATCH:
+        type: integer
+        description: |
+          Whether the API allows requesting undefined resources using PATCH method. Either `1` or `0` for yes or no.
+        enum:
+        - 0
+        - 1
+      ALLOW_UNDEFINED_METHOD_POST:
+        type: integer
+        description: |
+          Whether the API allows requests on undefined resources using the POST method. Either `1` or `0` for yes or no.
+        enum:
+        - 0
+        - 1
+      ALLOW_UNDEFINED_METHOD_PUT:
+        type: integer
+        description: |
+          Whether the API allows requests on undefined resources using the PUT method. Either `1` or `0` for yes or no.
+        enum:
+        - 0
+        - 1
+      ALLOW_UNDEFINED_PARAMS:
+        type: integer
+        description: |
+          Whether the API allows requesting with undefined parameters. Either `1` or `0` for yes or no.
+        enum:
+        - 0
+        - 1
+      ALLOW_UNDEFINED_QUERY_PARAMS:
+        type: integer
+        description: |
+          Whether the API allows for requests with undefined parameters in query string. Either `1` or `0` for yes or no.
+        enum:
+        - 0
+        - 1
+      ALLOW_UNDEFINED_RESOURCES:
+        type: integer
+        description: |
+          Whether the API allows requests on undefined resources. Either `1` or `0` for yes or no.
+        enum:
+        - 0
+        - 1
+      ALLOW_UNDEFINED_SPEC_PARAMS:
+        type: integer
+        description: |
+          Whether the API allows requesting undefined resources, but only for specific locations. Either `1` or `0` for yes or no.
+        enum:
+        - 0
+        - 1
+      MAX_BODY_SIZE:
+        type: integer
+        description: |
+          The maximum allowed size of a request body.
+        nullable: true
+      MAX_DOC_DEPTH:
+        type: integer
+        description: |
+          The maximum depth of nested data elements allowed in a request body.
+        nullable: true
+      MAX_ELEMENT_NAME_LENGTH:
+        type: integer
+        description: |
+          The maximum length of an XML element name or JSON object key name allowed in a request body.
+        nullable: true
+      MAX_INTEGER_VALUE:
+        type: integer
+        description: |
+          The maximum integer value allowed in a request body.
+        nullable: true
+      MAX_JSONXML_ELEMENT:
+        type: integer
+        description: |
+          The maximum number of XML elements, JSON object keys, or array items allowed in a request body.
+        nullable: true
+      MAX_STRING_LENGTH:
+        type: integer
+        description: |
+          The maximum length of any string value in a request body.
+        nullable: true
+      POSITIVE_SECURITY_ENABLED:
+        type: integer
+        description: |
+          Whether to enforce the API request body and resource constraints as allowlists in your KSD security policies. Either `1` for enabled security constraints, or `0` for disabled.
+        enum:
+        - 0
+        - 1
+      POSITIVE_SECURITY_VERSION:
+        type: integer
+        description: |
+          Whether to create the API with API Protection 2 or above. Either `1`, `2` for enabled API Protection 2, or `null` for the legacy API.
+        nullable: true
+        enum:
+        - 1
+        - 2
+      RESPONSE_RESTRICTIONS_ENABLED:
+        type: integer
+        description: |
+          When set to `1`, the API allows for responses with undefined parameters in the response body. Otherwise the value is `0`.
+        enum:
+        - 0
+        - 1
+  apiCategoryIds:
+    type: array
+    description: |
+      The category identifiers that apply to the endpoint. The value is `null` for uncategorized endpoints.
+    nullable: true
+    items:
+      type: integer
+  apiEndPointHosts:
+    type: array
+    description: |
+      The hostnames that may receive traffic for the endpoint. You need at least one hostname before activating the endpoint.
+    minItems: 1
+    items:
+      type: string
+  apiEndPointId:
+    type: integer
+    description: |
+      The unique identifier for the endpoint.
+    nullable: true
+    readOnly: true
+  apiEndPointLocked:
+    type: boolean
+    description: |
+      Whether the endpoint version is read-only.
+    nullable: true
+    readOnly: true
+  apiEndPointName:
+    type: string
+    description: |
+      The name of the endpoint, unique within the account.
+  apiEndPointScheme:
+    type: string
+    description: |
+      The URL scheme to which the endpoint may respond, either `http`, `https`, or `http/https` for both.
+    nullable: true
+    enum:
+    - http
+    - https
+    - http/https
+  apiEndPointVersion:
+    type: integer
+    description: |
+      The unique identifier for the endpoint version.
+    nullable: true
+    readOnly: true
+  apiGatewayEnabled:
+    type: boolean
+    description: |
+      Whether the API Gateway product should be enabled for the endpoint. If `null`, the member is set to `true`.
+    default: true
+    nullable: true
+  apiResources:
+    type: array
+    description: |
+      The list of resources assigned to the endpoint.
+    nullable: true
+    items:
+      $ref: apiResourceMethParamsDto.yaml
+  apiSource:
+    type: string
+    description: |
+      Specifies if the API's data comes from `API_DISCOVERY` or was provided by the `USER`.
+    nullable: true
+    enum:
+    - USER
+    - API_DISCOVERY
+  apiVersionInfo:
+    description: |
+      Contains information about a major API version. This refers to REST API versioning and is a different concept than the endpoint configuration versions you create at Akamai.
+    $ref: apiVersionInfo.yaml
+  availableActions:
+    type: array
+    description: |
+      The collection of available actions that you can perform on the endpoint depending on its versions' activation status. For possible values, see [Endpoint.availableActions values](#enumvalues2).
+    nullable: true
+    readOnly: true
+    minItems: 0
+    items:
+      type: string
+      enum:
+      - DELETE
+      - CLONE_ENDPOINT
+      - COMPARE_ENDPOINT
+      - COMPARE_AAG_SETTINGS
+      - COMPARE_RAPID_SETTINGS
+      - EDIT_ENDPOINT_DEFINITION
+      - ACTIVATE_ON_STAGING
+      - ACTIVATE_ON_PRODUCTION
+      - DEACTIVATE_ON_STAGING
+      - DEACTIVATE_ON_PRODUCTION
+      - HIDE_ENDPOINT
+      - SHOW_ENDPOINT
+  basePath:
+    type: string
+    description: |
+      The URL path that serves as a root prefix for all resources' `resourcePath` values. This is `/` if empty. Don't append a `/` character to the path. If you specify `null` in the request or omit this member from the object, the JSON response reflects it as an empty string.
+    nullable: true
+    minLength: 0
+  caseSensitive:
+    type: boolean
+    description: |
+      Whether the URLs and parameters within the endpoint are case sensitive.
+    nullable: true
+  clonedFromVersion:
+    type: integer
+    description: |
+      For cloned endpoints, the unique identifier for the source endpoint version.
+    nullable: true
+    readOnly: true
+  consumeType:
+    type: string
+    description: |
+      The content type the endpoint exchanges, either `json`, `xml`, `urlencoded`, `json/xml/urlencoded`, `json/urlencoded`, `json/xml`, or `xml/urlencoded` for multi-format APIs, `any`, or `none`. A `null` value is the same as a `none` string.
+    nullable: true
+    enum:
+    - none
+    - json
+    - xml
+    - json/xml
+    - any
+    - urlencoded
+    - json/urlencoded
+    - xml/urlencoded
+    - json/xml/urlencoded
+  contractId:
+    type: string
+    description: |
+      The unique identifier for the contract with Akamai under which you provisioned security and delivery settings for this API.
+    nullable: true
+    readOnly: true
+  createDate:
+    type: string
+    description: |
+      The ISO 6801 timestamp indicating when you created the endpoint.
+    nullable: true
+    readOnly: true
+    format: date-time
+  createdBy:
+    type: string
+    description: |
+      The identifier for the user who created the endpoint.
+    nullable: true
+    readOnly: true
+  discoveredPiiIds:
+    type: array
+    description: |
+      The collection of personally identifiable information (PII) in your API parameters discovered by the network.
+    nullable: true
+    items:
+      type: integer
+  endpointHidden:
+    type: boolean
+    description: |
+      Specifies whether the endpoint is hidden. You cannot activate or delete versions of a hidden endpoint. If you want to do so, you first need to reveal the endpoint by running the [Show an endpoint](ref:post-endpoint-show) operation.
+    nullable: true
+    readOnly: true
+  groupId:
+    type: integer
+    description: |
+      The unique identifier for the group in Control Center under which you provisioned security and delivery settings for this API.
+    nullable: true
+    readOnly: true
+  isGraphQL:
+    type: boolean
+    description: |
+      Whether the endpoint uses GraphQL to deliver structured content to clients.
+  lockVersion:
+    type: integer
+    description: |
+      The identifier for the last modification of an endpoint version, used for optimistic locking. See [Concurrency control](ref:concurrency-control) for details.
+    readOnly: true
+  matchPathSegmentParam:
+    type: boolean
+    description: |
+      Whether or not to include path segment parameters in match criteria, like the `jsessionid` portion of `/ssocookie;jsessionid=434343`.
+    default: true
+    nullable: true
+  positiveConstrainsEnabled:
+    type: boolean
+    description: |
+      Specifies whether the KSD firewall policies are enabled for the endpoint.
+    nullable: true
+  productionStatus:
+    type: string
+    description: |
+      The version activation status on the production network, either `PENDING` if the version contains changes that are being propagated to the network, `ACTIVE` if the version is active, `DEACTIVATED` if the version was once active but is now inactive, or `FAILED` if an activation or deactivation attempt for this version has failed. The value is `null` for versions that have never been activated on this network.
+    nullable: true
+    readOnly: true
+    enum:
+    - PENDING
+    - ACTIVE
+    - DEACTIVATED
+    - FAILED
+  productionVersion:
+    description: |
+      Contains information about an endpoint version's activation status on the production network.
+    readOnly: true
+    $ref: apiEndpointVersionStatusDto.yaml
+  protectedByApiKey:
+    type: boolean
+    description: |
+      Whether you enabled API key protection for the endpoint version by making the version private.
+    readOnly: true
+  responseConstraintsEnabled:
+    type: boolean
+    description: |
+      Specifies whether response constraints are enforced for the endpoint. Note that if you enable response constraints but don't define the constraints, it behaves as if disabled.
+    nullable: true
+    readOnly: true
+  securityScheme:
+    type: object
+    description: |
+      Contains information about the key with which users may access the endpoint.
+    additionalProperties: false
+    nullable: true
+    properties:
+      securitySchemeDetail:
+        type: object
+        description: |
+          Contains information about the location of the API key.
+        additionalProperties: false
+        properties:
+          apiKeyLocation:
+            type: string
+            description: |
+              The location of the API key in incoming requests, either `cookie`, `header`, or `query` parameter.
+            enum:
+            - cookie
+            - header
+            - query
+          apiKeyName:
+            type: string
+            description: |
+              The name of the header, query parameter, or cookie where you located the API key.
+      securitySchemeType:
+        type: string
+        description: |
+          The type of security scheme implemented for the endpoint. The only valid value is `apikey`.
+        enum:
+        - apikey
+  source:
+    type: object
+    description: |
+      Contains information about the import file used to create the endpoint.
+    additionalProperties: false
+    readOnly: true
+    $ref: apiEndpointSourceDto.yaml
+  stagingStatus:
+    type: string
+    description: |
+      The version activation status on the staging network, either `PENDING` if the version contains changes that are being propagated to the network, `ACTIVE` if the version is active, `DEACTIVATED` if the version was once active but is now inactive, or `FAILED` if an activation or deactivation attempt for this version has failed. The value is `null` for versions that have never been activated on this network.
+    nullable: true
+    readOnly: true
+    enum:
+    - PENDING
+    - ACTIVE
+    - DEACTIVATED
+    - FAILED
+  stagingVersion:
+    description: |
+      Contains information about an endpoint version's activation status on the staging network.
+    readOnly: true
+    $ref: apiEndpointVersionStatusDto.yaml
+  updateDate:
+    type: string
+    description: |
+      The ISO 6801 timestamp indicating when you last modified the endpoint.
+    nullable: true
+    readOnly: true
+    format: date-time
+  updatedBy:
+    type: string
+    description: |
+      The identifier for the user who last modified the endpoint.
+    nullable: true
+    readOnly: true
+  versionHidden:
+    type: boolean
+    description: |
+      Specifies whether the endpoint version is hidden. You cannot activate or delete hidden versions. If you want to do so, you first need to reveal the version by running the [Show a version](ref:post-version-show) operation.
+    nullable: true
+    readOnly: true
+  versionNumber:
+    type: integer
+    description: |
+      The endpoint version number.
+    nullable: true

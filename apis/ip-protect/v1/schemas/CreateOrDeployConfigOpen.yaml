@@ -1,0 +1,68 @@
+type: object
+description: |-
+  Policy domain configuration.
+  
+x-akamai:
+  file-path: schemas/CreateOrDeployConfigOpen.yaml
+additionalProperties: false
+required:
+- pdSubnets
+properties:
+  pdSubnets:
+    type: array
+    description: |
+      Virtual subnets.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - pdSubnet
+      properties:
+        legacyPdSubnet:
+          type: boolean
+          description: |
+            Indicates whether IP Protect's predecessor, Prolexic Proxy, was responsible for creating the subnet.
+        pdSubnet:
+          type: string
+          description: |
+            Virtual IP address of the subnet.
+        vips:
+          type: array
+          description: |
+            Virtual IP addresses.
+          items:
+            type: object
+            description: |
+              Virtual IP address.
+            additionalProperties: false
+            required:
+            - ports
+            - akamaiFrontend
+            - configVersionId
+            - customerBackend
+            - type
+            - sourceIpProtocol
+            properties:
+              akamaiFrontend:
+                type: string
+                description: |
+                  Akamai virtualmIP address that's mapped to the back-end IP address.
+              customerBackend:
+                type: string
+                description: |
+                  IP address of a customer's server or subnet that's been mapped to the virtual IP address.
+              ports:
+                type: string
+                description: |
+                  Comma-delimited string of virtual IP address ports open to Internet traffic.
+              sourceIpProtocol:
+                type: string
+                description: |
+                  Specifies the source IP for network packets received at a customer's back-end server or subnet. By default, packets are set to `NA`, identifying Akamai as the source IP. Other source IP options are `NAT46`, `CIP`, `PROXY_PROTOCOL_V1`, `PROXY_PROTOCOL_V2`, and `OPTION_28`. `NAT46` is only available if the VIP has an IPv4 address and the back-end IP server or subnet has an IPv6 address. The remaining options require the VIP to be running on a TCP network.
+                enum:
+                - CIP
+                - PROXY_PROTOCOL_V1
+                - PROXY_PROTOCOL_V2
+                - OPTION_28
+                - NAT46
+                - NA

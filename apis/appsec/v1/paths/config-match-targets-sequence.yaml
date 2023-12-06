@@ -1,0 +1,51 @@
+x-akamai:
+  file-path: paths/config-match-targets-sequence.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/match-targets/sequence
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+put:
+  operationId: put-match-targets-sequence
+  summary: Modify match target order
+  tags:
+  - Match targets
+  description: |
+    Updates the sequence of Match Targets in a configuration version. The `website` and `api` match targets' sequence requires updates from separate requests by passing the `type` attribute in the JSON request. _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/match-targets-sequence-200.json
+        schema:
+          $ref: ../schemas/match-targets-sequence.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated match target sequence.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/match-targets-sequence-200.json
+          schema:
+            $ref: ../schemas/match-targets-sequence.yaml
+    400:
+      $ref: ../errors/400.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to match targets in this security configuration.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/403.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    404:
+      description: |
+        [Not found](ref:404). Security configuration version wasn't found.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/404.json
+          schema:
+            $ref: ../schemas/problem-details.yaml

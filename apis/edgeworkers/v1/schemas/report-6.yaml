@@ -1,0 +1,95 @@
+type: object
+description: |-
+  Specifies memory usages with percentiles, grouped by event handler for each EdgeWorker ID.
+  
+x-akamai:
+  file-path: schemas/report-6.yaml
+title: Report 6
+additionalProperties: false
+required:
+- edgeWorkerId
+- data
+- summaryStatistics
+properties:
+  data:
+    type: object
+    description: |
+      Data points grouped by event handler mapping keys.
+    additionalProperties:
+      type: array
+      description: |
+        Up to four event handler arrays.
+      items:
+        type: object
+        description: |
+          Aggregated memory usage.
+        additionalProperties: false
+        required:
+        - startDateTime
+        - edgeWorkerVersion
+        - memory
+        - invocations
+        properties:
+          edgeWorkerVersion:
+            type: string
+            description: |
+              The EdgeWorker version that was active during the execution of event handlers.
+          invocations:
+            type: integer
+            description: |
+              Number of aggregated executions.
+          memory:
+            description: |
+              Memory usage (bytes).
+            $ref: report-memory-usage.yaml
+          startDateTime:
+            type: string
+            description: |
+              Start date of the time period (ISO 8601).
+  edgeWorkerId:
+    type: integer
+    description: |
+      Unique identifier for an EdgeWorker.
+  summaryStatistics:
+    type: object
+    description: |
+      Memory usage summary in percentiles by event handler.
+    additionalProperties: false
+    required:
+    - onClientRequest
+    - onClientResponse
+    - onOriginRequest
+    - onOriginResponse
+    - responseProvider
+    - totalMemoryUsage
+    properties:
+      onClientRequest:
+        type: object
+        description: |
+          Memory usage summary in percentiles for all invocations of `onClientRequest`.
+        $ref: report-memory-usage-summary.yaml
+      onClientResponse:
+        type: object
+        description: |
+          Memory usage summary in percentiles for all invocations of `onClientResponse`.
+        $ref: report-memory-usage-summary.yaml
+      onOriginRequest:
+        type: object
+        description: |
+          Memory usage summary in percentiles for all invocations of `onOriginRequest`.
+        $ref: report-memory-usage-summary.yaml
+      onOriginResponse:
+        type: object
+        description: |
+          Memory usage summary in percentiles for all invocations of `onOriginResponse`.
+        $ref: report-memory-usage-summary.yaml
+      responseProvider:
+        type: object
+        description: |
+          Memory usage summary in percentiles for all invocations of `responseProvider`.
+        $ref: report-memory-usage-summary.yaml
+      totalMemoryUsage:
+        type: object
+        description: |
+          Memory usage summary in percentiles for all five event handlers.
+        $ref: report-memory-usage-summary.yaml

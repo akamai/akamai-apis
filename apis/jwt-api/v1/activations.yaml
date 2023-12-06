@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: Activations
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/jwt-api/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: activations.yaml
+paths:
+  /activations:
+    post:
+      operationId: post-activation
+      summary: Activate a key collection version
+      tags:
+      - Activations
+      description: |
+        Deploys the version of a key collection in the staging or production environment. Note that a key collection uses the public keys from its active version to validate JWTs in client requests. See [API concepts](ref:api-concepts).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/exampleActivationRQ.json
+            schema:
+              $ref: schemas/activationRequest.yaml
+      responses:
+        201:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleActivationRS.json
+              schema:
+                $ref: schemas/activationResponse.yaml
+        404:
+          description: |
+            Key collection version couldn't be found.
+    get:
+      operationId: get-activations
+      summary: List activations
+      tags:
+      - Activations
+      description: |
+        Returns a list of activations for the key collection. If you don't already have the `collectionId`, run the [Get key collections](ref:get-key-collections) operation and use the appropriate `id` from the returned array.
+      parameters:
+      - $ref: parameters/collectionId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/exampleActivationsListRS.json
+              schema:
+                $ref: schemas/activationsListResponse.yaml

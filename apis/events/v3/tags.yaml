@@ -1,0 +1,44 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Tags
+  version: '3.0'
+servers:
+- url: https://{hostname}/events/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: tags.yaml
+paths:
+  /tags:
+    get:
+      operationId: get-tags
+      summary: List tags
+      tags:
+      - Tags
+      description: |
+        Returns a list of all event tags for the current account and contract type. This call supports paging and sorting of the result data.
+      parameters:
+      - $ref: parameters/page-query.yaml
+      - $ref: parameters/pageSize-query.yaml
+      - $ref: parameters/sort-query.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/tag-page-200.json
+              schema:
+                $ref: schemas/tag-page-200.yaml
+        400:
+          description: |
+            Invalid request. Details may be available in response body.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/bad-request-400.json
+              schema:
+                $ref: schemas/problem.yaml

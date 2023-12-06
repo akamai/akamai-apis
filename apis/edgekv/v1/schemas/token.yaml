@@ -1,0 +1,44 @@
+type: object
+description: |-
+  Lists properties related to EdgeKV access token.
+  
+x-akamai:
+  file-path: schemas/token.yaml
+additionalProperties: false
+required:
+- allowOnProduction
+- allowOnStaging
+- expiry
+- name
+- namespacePermissions
+properties:
+  name:
+    type: string
+    description: |
+      Friendly name of the token.  Used when retrieving tokens by name.
+  allowOnProduction:
+    type: boolean
+    description: |
+      Whether to allow this token access to the Akamai production network.
+  allowOnStaging:
+    type: boolean
+    description: |
+      Whether to allow this token access to the Akamai staging network.
+  expiry:
+    type: string
+    description: |
+      Desired token expiration date in ISO 8601 format, `YYYY-MM-DD`, such as `2022-01-31`. Expiry can be up to six months from creation.
+  namespacePermissions:
+    type: object
+    description: |
+      Namespace identifiers the token should have access to, plus the associated read, write, and delete permissions. All specified namespaces need the same database Data Access Policy. A namespace's Data Access Policy comes from the value of the `restrictDataAccess`, set when creating a namespace.
+    additionalProperties:
+      $ref: token-namespace.yaml
+    minProperties: 1
+    maxProperties: 20
+  restrictToEdgeWorkerIds:
+    type: array
+    description: |
+      A set of EdgeWorker IDs authorized to access EdgeKV via the token. By default if you omit this array, the token authorizes access for all IDs.
+    items:
+      type: string

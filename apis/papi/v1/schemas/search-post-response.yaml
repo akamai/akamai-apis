@@ -1,0 +1,209 @@
+id: resource:/descriptors/papi/v1/schemas/PostSearchResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array.
+  
+x-akamai:
+  file-path: schemas/search-post-response.yaml
+additionalProperties: false
+required:
+- versions
+properties:
+  versions:
+    type: object
+    description: |
+      The full set of property or include versions.
+    additionalProperties: false
+    required:
+    - items
+    properties:
+      items:
+        type: array
+        description: |
+          Each property or include version.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            accountId:
+              type: string
+              description: |
+                Identifies the prevailing account under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+            assetId:
+              type: string
+              description: |
+                An alternative identifier for the property. Use this value to key the property in the Identity and Access Management API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+            contractId:
+              type: string
+              description: |
+                Identifies the prevailing contract under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ctr_` prefix.
+            groupId:
+              type: string
+              description: |
+                Identifies the prevailing group under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+            includeId:
+              type: string
+              description: |
+                Identifies the include for the version yielded in search results. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `inc_` prefix.
+            includeName:
+              type: string
+              description: |
+                A descriptive name for the include whose version appears in search results.
+            productionStatus:
+              type: string
+              description: |
+                Whether the version has been activated to the production network. If `ACTIVE`, the version is read-only and currently serving traffic. It's `INACTIVE` if another version has superseded this one. It's `PENDING` if the [activation request](ref:post-property-activations) is in progress. It's `PENDING_CANCELLATION` or `ABORTED` if the client [cancelled a pending activation](ref:delete-property-activation) in time. It's `PENDING_DEACTIVATION` or `DEACTIVATED` when set to no longer serve traffic.
+              enum:
+              - ACTIVE
+              - INACTIVE
+              - PENDING
+              - ABORTED
+              - DEACTIVATED
+              - PENDING_DEACTIVATION
+              - PENDING_CANCELLATION
+            propertyId:
+              type: string
+              description: |
+                Identifies the property for the version yielded in search results, or its component rules or hostnames. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+            propertyName:
+              type: string
+              description: |
+                A descriptive name for the property whose version appears in search results.
+            propertyVersion:
+              type: integer
+              description: |
+                When searching for properties, this provides a positive integer identifying the incremental version.
+              minimum: 1
+            stagingStatus:
+              type: string
+              description: |
+                Whether the version has been activated to the test network. If `ACTIVE`, the version is read-only and currently serving traffic. It's `INACTIVE` if another version has superseded this one. It's `PENDING` if the [activation request](ref:post-property-activations) is in progress. It's `PENDING_CANCELLATION` or `ABORTED` if the client [cancelled a pending activation](ref:delete-property-activation) in time. It's `PENDING_DEACTIVATION` or `DEACTIVATED` when set to no longer serve traffic.
+              enum:
+              - ACTIVE
+              - INACTIVE
+              - PENDING
+              - ABORTED
+              - DEACTIVATED
+              - PENDING_DEACTIVATION
+              - PENDING_CANCELLATION
+            updatedByUser:
+              type: string
+              description: |
+                The username who last updated the new version.
+            updatedDate:
+              type: string
+              description: |
+                The date stamp of the version's latest update.
+            versions:
+              type: object
+              description: |
+                The set of requested property or include versions, available within an `items` array.
+              additionalProperties: false
+              properties:
+                items:
+                  type: array
+                  description: |
+                    Specifies the version of an include or property. Relevant response objects appear within the outer envelope's `versions.items` array. Additional contextual members appear in POST response listings when [searching include or property versions](ref:post-search-find-by-value).
+                  items:
+                    type: object
+                    additionalProperties: false
+                    required:
+                    - accountId
+                    - assetId
+                    - contractId
+                    - groupId
+                    - productionStatus
+                    - stagingStatus
+                    - updatedByUser
+                    - updatedDate
+                    properties:
+                      accountId:
+                        type: string
+                        description: |
+                          Identifies the account under which the property version is active. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+                      assetId:
+                        type: string
+                        description: |
+                          An alternative identifier for the property. Use this value to key the property in the Identity and Access Management API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+                      contractId:
+                        type: string
+                        description: |
+                          Identifies the contract under which the property version is active. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ctr_` prefix.
+                      edgeHostname:
+                        type: string
+                        description: |
+                          When searching for `hostname` or `edgeHostname`, this shows the relevant edge hostname to which the active version currently applies.
+                      groupId:
+                        type: string
+                        description: |
+                          Identifies the group under which the property version is active. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+                      hostname:
+                        type: string
+                        description: |
+                          When searching for `hostname` or `edgeHostname`, this shows the relevant property hostname to which the active version currently applies.
+                      includeId:
+                        type: string
+                        description: |
+                          When searching for includes, this identifies the include to which the listed version belongs. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `inc_` prefix.
+                      includeName:
+                        type: string
+                        description: |
+                          When searching for includes, this provides the name of the include to which the listed version belongs.
+                      includeType:
+                        type: string
+                        description: |
+                          When searching for includes, provides the type of the include for the listed version. `MICROSERVICES` specifies includes with a separate access control and activation flow, which allows different teams to work independently on different parts of a single site. In a parent property's rule tree, you add the `MICROSERVICE` includes to rules with mutually exclusive path matches. `COMMON_SETTINGS` specifies includes used across different properties that share a significant number of settings. In a parent property's rule tree, you add the `COMMON_SETTINGS` includes to the default rule or rules without any matches. By updating or activating a single `COMMON_SETTINGS` include, the changes take effect immediately across all sites that use this include. You can use this member for filtering and grouping similar includes together.
+                        enum:
+                        - MICROSERVICES
+                        - COMMON_SETTINGS
+                      includeVersion:
+                        type: integer
+                        description: |
+                          When searching for includes, this provides a positive integer identifying the incremental version.
+                        minimum: 1
+                      productionStatus:
+                        type: string
+                        description: |
+                          Whether the version has been activated to the production network. If `ACTIVE`, the version is read-only and currently serving traffic. It's `INACTIVE` if another version has superseded this one. It's `PENDING` if the [property activation request](ref:post-property-activations) or [include activation request](ref:post-include-activation) is in progress. It's `PENDING_CANCELLATION` or `ABORTED` if the client cancelled a pending [property activation](ref:delete-property-activation) or [include activation](ref:delete-include-activation) in time. It's `PENDING_DEACTIVATION` or `DEACTIVATED` when set to no longer serve traffic.
+                        enum:
+                        - ACTIVE
+                        - INACTIVE
+                        - PENDING
+                        - ABORTED
+                        - DEACTIVATED
+                        - PENDING_DEACTIVATION
+                        - PENDING_CANCELLATION
+                      propertyId:
+                        type: string
+                        description: |
+                          When searching for properties, this identifies the property to which the listed version belongs. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+                      propertyName:
+                        type: string
+                        description: |
+                          When searching for properties, this provides the name of the property to which the listed version belongs.
+                      propertyVersion:
+                        type: integer
+                        description: |
+                          When searching for properties, this provides a positive integer identifying the incremental version.
+                        minimum: 1
+                      stagingStatus:
+                        type: string
+                        description: |
+                          Whether the version has been activated to the test network. If `ACTIVE`, the version is read-only and currently serving traffic. It's `INACTIVE` if another version has superseded this one. It's `PENDING` if the [property activation request](ref:post-property-activations) or [include activation request](ref:post-include-activation) is in progress. It's `PENDING_CANCELLATION` or `ABORTED` if the client cancelled a pending [property activation](ref:delete-property-activation) or [include activation](ref:delete-include-activation) in time. It's `PENDING_DEACTIVATION` or `DEACTIVATED` when set to no longer serve traffic.
+                        enum:
+                        - ACTIVE
+                        - INACTIVE
+                        - PENDING
+                        - ABORTED
+                        - DEACTIVATED
+                        - PENDING_DEACTIVATION
+                        - PENDING_CANCELLATION
+                      updatedByUser:
+                        type: string
+                        description: |
+                          The username who last updated the new version.
+                      updatedDate:
+                        type: string
+                        description: |
+                          The date stamp of the version's latest update.
+$schema: http://json-schema.org/draft-04/schema#

@@ -1,0 +1,45 @@
+type: object
+description: |-
+  Contains information about an API definition file to import.
+  
+x-akamai:
+  file-path: schemas/importFileDto.yaml
+additionalProperties: false
+required:
+- importFileFormat
+- importFileSource
+properties:
+  contractId:
+    type: string
+    description: |
+      The unique identifier for the contract under which to provision the endpoint.
+  groupId:
+    type: number
+    description: |
+      The unique identifier for the group under which to provision the endpoint.
+  importFileContent:
+    type: string
+    description: |
+      The content of the API definition file encoded in Base64 (see [RFC 4648](https://tools.ietf.org/html/rfc4648) for details). Specify this only if you set the corresponding `importFileSource` to `BODY_BASE64`.
+  importFileFormat:
+    type: string
+    description: |
+      The format of the API definition file, either `raml` or `swagger`. You cam import RAML 0.8 files and Swagger 2.0 or 3.0 files.
+    enum:
+    - swagger
+    - raml
+  importFileSource:
+    type: string
+    description: |
+      The location of the API definition file, either `URL` if you store the file on the web, or `BODY_BASE64` if you encode the file contents in the request body.
+    enum:
+    - URL
+    - BODY_BASE64
+  importUrl:
+    type: string
+    description: |
+      The URL from which to get the API definition file. Specify this only if you set the corresponding `importFileSource` to `URL`.
+  root:
+    type: string
+    description: |
+      If the import file located at the `importUrl` is a ZIP archive, this identifies the API definition's filename within the archive.

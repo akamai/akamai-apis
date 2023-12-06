@@ -1,0 +1,36 @@
+type: object
+description: |-
+  The status of the DNSSEC configuration for an Edge DNS zone.
+  
+x-akamai:
+  file-path: schemas/dns-sec-status.yaml
+additionalProperties: false
+required:
+- zone
+- alerts
+- currentRecords
+properties:
+  alerts:
+    type: array
+    description: |
+      A list of zero or more existing problems with the current DNSSEC configuration.
+    items:
+      type: string
+      enum:
+      - INCOMPATIBLE_AUTHORITIES
+      - NON_AKAMAI_AUTHORITIES
+      - PARENT_DS_MISSING
+      - OLD_DNSKEY
+      - WRONG_DNSKEY
+  currentRecords:
+    description: |
+      The currently active set of generated DNSSEC records.
+    $ref: dns-sec-records.yaml
+  newRecords:
+    description: |
+      The newly generated set of DNSSEC records, if one exists.
+    $ref: dns-sec-records.yaml
+  zone:
+    type: string
+    description: |
+      The name of the zone.

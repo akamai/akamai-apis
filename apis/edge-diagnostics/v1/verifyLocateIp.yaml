@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: IP verification and location
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: verifyLocateIp.yaml
+paths:
+  /verify-locate-ip:
+    post:
+      operationId: post-verify-locate-ip
+      summary: Verify and locate an IP
+      tags:
+      - IP verification and location
+      description: |
+        Verifies if an IP belongs to an edge server and gets the geolocation data of its network. For IPs verified positively, you can continue gathering diagnostic data with [Request content with cURL](ref:post-curl), [Get domain details with dig](ref:post-dig), or [Test network connectivity with MTR](ref:post-mtr) operations.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/verifyLocateIpRequest.json
+            schema:
+              $ref: schemas/verifyLocateIpRequest.yaml
+      responses:
+        200:
+          description: |
+            The response provides the verification results, network location data, and details about the request.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/verifyLocateIp.json
+              schema:
+                $ref: schemas/verifyLocateIp.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

@@ -1,0 +1,155 @@
+type: object
+description: |-
+  Encapsulates stream configuration and version information. You can list, create, edit, delete, and get details of streams.
+  
+x-akamai:
+  file-path: schemas/StreamDetailsPostDTO.yaml
+additionalProperties: false
+properties:
+  name:
+    type: string
+    description: |
+      The name of the stream. The name can be up to 90 characters long and can include alphanumeric, underscore, and dash characters.
+  format:
+    type: string
+    description: |
+      The ingest format for Apple HTTP Live Streaming (`HLS`), Adobe HTTP Dynamic Streaming (`HDS`), Dynamic Adaptive Streaming over HTTP (`DASH`), or Common Media Application Format (`CMAF`).
+    enum:
+    - HLS
+    - HDS
+    - DASH
+    - CMAF
+  activeArchiveDurationInDays:
+    type: integer
+    description: |
+      Specify from `1` to `31` to archive your active content. This option is available only for HLS and DASH streams. It appears if you have `MediaServicesLive4::LiveToVOD` in your contract. There is no default value.
+  additionalEmailIds:
+    type: array
+    description: |
+      Email addresses for people to receive the stream configuration details and status notifications.
+    items:
+      type: string
+      description: |
+        Email address to receive the stream configuration details and status notifications.
+  allowedIps:
+    type: array
+    description: |
+      The IP addresses for your encoder. You can enter up to 50 IP addresses.
+    items:
+      type: string
+      description: |
+        The IP address for your encoder. You can enter up to 50 IP addresses.
+  backupDirectConnectSettings:
+    description: |
+      Specify details about the backup stream direct connect settings.
+    $ref: DirectConnectSettingsDTO.yaml
+  backupEncoderZone:
+    type: string
+    description: |
+      The geographical location of your backup encoder.
+  backupIngestLocations:
+    description: |
+      Specifies the ingest locations such as countries, states, and cities associated with the backup encoder zone.
+    $ref: GeoCountryDTO.yaml
+  backupStorageGroup:
+    description: |
+      Specifies the details about the secondary storage group override.
+    $ref: StorageGroupPostDTO.yaml
+  contractId:
+    type: string
+    description: |
+      The unique identifier for the contract associated with the stream. The system filters the ingest CP code based on the contract ID that you specify. If you create a NetStorage CP code, it is associated with the same contract as the ingest CP code. If you do not specify a contract ID, the system uses the first valid contract.
+  cpcode:
+    type: integer
+    description: |
+      The Content Provider code (CP code) assigned to the stream. A CP code is a unique identifier for reporting, billing, and monitoring traffic served over the Akamai network. It is supplied to you when you purchase a product, and you need it to activate any associated properties. You can generate additional CP codes, typically to implement more detailed billing and reporting functions and assign to custom properties.
+  dvrWindow:
+    type: integer
+    description: |
+      The length of time the streaming content is available in archive, from 5 to 30 minutes. All streams use a 30-minute scrub back window.
+  encoderZone:
+    type: string
+    description: |
+      The primary encoder's geographical location. Choose an encoder that is close to your location.
+  events:
+    type: array
+    description: |
+      The name of the event you want to purge.
+    items:
+      type: object
+      description: |
+        Specify the name of the event and the number of days of data pertaining to the event that you want to purge.
+      additionalProperties: false
+      properties:
+        age:
+          type: integer
+          description: |
+            The number of days of data for the event that you want to delete from storage.
+        event:
+          type: string
+          description: |
+            The name of the event you want to purge.
+  groupId:
+    type: integer
+    description: |
+      Specify the group ID to assign to the origin.
+  ingestAccelerated:
+    type: boolean
+    description: |
+      Indicates whether to use the Media Services Live Ingest Acceleration feature. The Ingest Acceleration feature improves encoder to Akamai ingest performance and provides more stability and reliability over the first mile. If you select `true`, enter a password in the `Password` field. The username is the Media Services Live CP code.
+  isDedicatedOrigin:
+    type: boolean
+    description: |
+      If you use a dedicated origin, the origin shield network uses resource group to identify your company. You can't edit an existing stream to make it dedicated, you can use this option only when you create a new stream.
+  origin:
+    type: object
+    description: |
+      The primary Media Services Live origin for the stream.
+    additionalProperties: false
+    properties:
+      cpcode:
+        type: integer
+        description: |
+          The origin CP code.
+      hostName:
+        type: string
+        description: |
+          Specify the origin hostname.
+  password:
+    type: string
+    description: |
+      Specifies the password for authentication.
+  primaryDirectConnectSettings:
+    description: |
+      Specify details about the primary stream direct connect settings.
+    $ref: DirectConnectSettingsDTO.yaml
+  primaryIngestLocations:
+    description: |
+      Specifies the ingest locations such as countries, states, and cities associated with the primary encoder zone.
+    $ref: GeoCountryDTO.yaml
+  storageGroup:
+    description: |
+      Specifies the details about the primary storage group override.
+    $ref: StorageGroupPostDTO.yaml
+  streamAuth:
+    description: |
+      Specifies details about the stream authentication settings.
+    $ref: StreamAuthDTOPost.yaml
+  streamLevelPurgeDays:
+    type: integer
+    description: |
+      Specify the archive duration value to purge the content for all the events. You need this value only when specifying the `dvrWindow`. You don't need it when specifying `activeArchiveDurationInDays`.
+  vodOrigin:
+    type: object
+    description: |
+      Enables you to record the video on demand. This option is available only for HLS and DASH streams and applies only when you include the `activeArchiveDurationInDays` member. You can include it if you have `MediaServicesLive4::LiveToVOD` or `MediaServicesLive4::LiveToVodBeta2` in your contract.
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        description: |
+          Name of your new VOD origin.
+      cpcode:
+        type: integer
+        description: |
+          The CP code of an existing VOD origin. This is the NetStorage CP code that is used to archive the live recordings. The CP code name is mandatory when you create a new VOD origin, but its value is optional.

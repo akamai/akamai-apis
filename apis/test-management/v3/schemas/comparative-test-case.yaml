@@ -1,0 +1,300 @@
+type: object
+description: |-
+  Contains information about the comparative test case, including response headers and comparisons you want test. The embedded objects refer to the entities that get loaded after the initial HTML request is made.
+  
+x-akamai:
+  file-path: schemas/comparative-test-case.yaml
+additionalProperties: false
+required:
+- testCaseId
+- url
+- testCaseName
+- order
+- requestHeaders
+- comparisonSettings
+- createdBy
+- createdDate
+properties:
+  comparisonSettings:
+    type: object
+    description: |
+      Attributes compared between different environments.
+    additionalProperties: false
+    required:
+    - responseCode
+    - responseHeaders
+    - cpcode
+    - cachingOption
+    - cacheKey
+    - metadataVariables
+    - originServer
+    properties:
+      cacheKey:
+        type: object
+        description: |
+          String used by the Akamai Edge Server to identify the requested object in the cache.
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            description: |
+              Whether the test run comparison includes embedded objects for the cache key.
+            default: true
+          isEnabled:
+            type: boolean
+            description: |
+              Whether the test run compares the cache key.
+            default: true
+      cachingOption:
+        type: object
+        description: |
+          Specifies how long you want to cache content in your configuration.
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            description: |
+              Whether the test run comparison includes the embedded objects for the caching option.
+            default: true
+          isEnabled:
+            type: boolean
+            description: |
+              Whether the test run compares the caching option.
+            default: true
+      cpcode:
+        type: object
+        description: |
+          CP code used to deliver the content from the Akamai Edge Server.
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            description: |
+              Whether the test run comparison includes embedded objects for the CP code.
+            default: true
+          isEnabled:
+            type: boolean
+            description: |
+              Whether the test run compares the CP code.
+            default: true
+      metadataVariables:
+        type: object
+        description: |
+          Metadata variables used in the processing of the request.
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        - compareOnly
+        - compareAllExcept
+        properties:
+          compareAllExcept:
+            type: array
+            description: |
+              List of all metadata variables the test run ignores or doesn't compare.
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          compareOnly:
+            type: array
+            description: |
+              List of metadata variables the test run includes or compares.
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          includeEmbeddedObjects:
+            type: boolean
+            description: |
+              Whether the test run comparison includes embedded objects for the metadata variables.
+            default: true
+          isEnabled:
+            type: boolean
+            description: |
+              Whether the test run compares the metadata variables.
+            default: true
+      originServer:
+        type: object
+        description: |
+          Hostname of the origin server.
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            description: |
+              Whether the test run comparison included the embedded objects for the origin server.
+            default: true
+          isEnabled:
+            type: boolean
+            description: |
+              Whether the test run compares the origin server.
+            default: true
+      responseCode:
+        type: object
+        description: |
+          Numerical part of the HTTP Status Code.
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            description: |
+              Whether the test run comparison includes embedded objects for the response code.
+            default: true
+          isEnabled:
+            type: boolean
+            description: |
+              Whether the test run compares the response code.
+            default: true
+      responseHeaders:
+        type: object
+        description: |
+          Response headers of the corresponding HTTP responses.
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        - compareOnly
+        - compareAllExcept
+        properties:
+          compareAllExcept:
+            type: array
+            description: |
+              List of all response headers the test run ignores or doesn't compare.
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          compareOnly:
+            type: array
+            description: |
+              List of response headers the test run includes or doesn't compares.
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          includeEmbeddedObjects:
+            type: boolean
+            description: |
+              Whether the test run comparison includes embedded objects of the response headers.
+            default: true
+          isEnabled:
+            type: boolean
+            description: |
+              Whether the test run compares the response headers.
+            default: true
+  createdBy:
+    type: string
+    description: |
+      Username who created the comparative test case.
+    readOnly: true
+    minLength: 1
+  createdDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the test definition was created.
+    readOnly: true
+    format: date-time
+  deletedBy:
+    type: string
+    description: |
+      Username who last deleted the test case.
+    minLength: 0
+  deletedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the test case was last deleted.
+    format: date-time
+  modifiedBy:
+    type: string
+    description: |
+      Username who last modified the comparative test case.
+    readOnly: true
+    minLength: 0
+  modifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the test definition was last modified.
+    readOnly: true
+    format: date-time
+  order:
+    type: integer
+    description: |
+      Integer representing the order in which the test run executes the test case as part of its parent test definition.
+    minimum: 1
+  requestHeaders:
+    type: array
+    description: |
+      Contains request headers in the comparative test case.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - headerName
+      - headerValue
+      - headerAction
+      properties:
+        headerAction:
+          type: string
+          description: |
+            Request header settings. Possible values are: `add` to the list of request headers, `modify` existing request headers, or `filter` request headers belonging to this comparative test case.
+          enum:
+          - ADD
+          - MODIFY
+          - FILTER
+        headerName:
+          type: string
+          description: |
+            Name of the request header.
+          minLength: 1
+        headerValue:
+          type: string
+          description: |
+            Value of the request header.
+          minLength: 1
+  status:
+    type: string
+    description: |
+      Comparative test case's status. Possible values are: `active` or `inactive`. The `inactive` status means the test case was removed and you can't use it.
+    readOnly: true
+    enum:
+    - inactive
+    - active
+  testCaseDescription:
+    type: string
+    description: |
+      Description of the comparative test case.
+    minLength: 0
+    maxLength: 4000
+  testCaseId:
+    type: integer
+    description: |
+      Unique identifier for each comparative test case resource.
+    minimum: 1
+  testCaseName:
+    type: string
+    description: |
+      Unique name for each comparative test case.
+    minLength: 1
+    maxLength: 100
+  url:
+    type: string
+    description: |
+      URL of the tested page.
+    minLength: 1

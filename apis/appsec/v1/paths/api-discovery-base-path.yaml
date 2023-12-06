@@ -1,0 +1,65 @@
+x-akamai:
+  file-path: paths/api-discovery-base-path.yaml
+  path-info: /api-discovery/host/{hostname}/basepath/{basePath}
+parameters:
+- $ref: ../parameters/hostname-path.yaml
+- $ref: ../parameters/basepath-path.yaml
+get:
+  operationId: get-api-details
+  summary: Get a discovered API
+  tags:
+  - Discovered APIs
+  description: |
+    Returns details about an API discovered in account traffic. It is identified based on hostname and basepath. _Products:_ All.
+  parameters:
+  - $ref: ../parameters/hidden-query.yaml
+  - $ref: ../parameters/search-query.yaml
+  responses:
+    200:
+      description: |
+        Successfully retrieved the details.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/api-discovery-details-200.json
+          schema:
+            $ref: ../schemas/api-discovery-details-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-api-visibility
+  summary: Modify an API's visibility
+  tags:
+  - Endpoints
+  description: |
+    Hide or show an API. You can choose to include or exclude APIs from the [Get discovered APIs](ref:get-api-list) response. This operation is per-user. If you hide an API from the response, another of your colleagues will still see that API in the response when they run this operation with their own credentials.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/api-visibility.json
+        schema:
+          $ref: ../schemas/api-visibility.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the API's action.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/api-visibility.json
+          schema:
+            $ref: ../schemas/api-visibility.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

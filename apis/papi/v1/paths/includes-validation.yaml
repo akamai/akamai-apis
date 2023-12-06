@@ -1,0 +1,51 @@
+x-akamai:
+  file-path: paths/includes-validation.yaml
+  path-for-file: /includes/validation-results/{activationId}/properties/{propertyId}/versions/{propertyVersion}
+parameters:
+- $ref: ../parameters/activationId-path.yaml
+- $ref: ../parameters/propertyVersion-path.yaml
+- $ref: ../parameters/propertyId-path.yaml
+get:
+  operationId: get-include-validation
+  summary: Validate an include
+  tags:
+  - Includes
+  description: |
+    Gets the results of an include validation against the specified parent property version that references the include.
+  x-akamai:
+    status: LA
+  parameters:
+  - $ref: ../parameters/offset-query.yaml
+  - $ref: ../parameters/limit-optional.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  responses:
+    200:
+      description: |
+        If the validation detected any issues between the specified include and its parent properties, the response shows details of errors and warnings.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/include-validation-results-response.json
+          schema:
+            $ref: ../schemas/include-validation-results-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: validationResults
+  group: Includes

@@ -1,0 +1,366 @@
+openapi: 3.0.0
+info:
+  title: Alerts
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/alerts/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: Alerts.yaml
+paths:
+  /alert-definitions:
+    post:
+      operationId: post-definition
+      summary: Create a new alert
+      tags:
+      - Alert definitions
+      description: |
+        Creates a new alert definition based on a template. The template's required `fields` represent criteria you may use to trigger an alert, but the new definition's `fields` specify the set of values that actually trigger the alert. After you create a new alert, it may take a couple of minutes before it has enough information before it can fire.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/alerts-post.json
+            schema:
+              $ref: schemas/post-definition.yaml
+      responses:
+        201:
+          description: |
+            The response provides the newly created alert.
+          content:
+            application/json:
+              example:
+                $ref: examples/alerts-post-201.json
+              schema:
+                $ref: schemas/definition.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        415:
+          $ref: errors/415.yaml
+        500:
+          $ref: errors/500.yaml
+    get:
+      operationId: get-definitions
+      summary: List alerts
+      tags:
+      - Alert definitions
+      description: |
+        Lists alert instances that are configured to fire under certain conditions. Optionally filter alerts by relevant fields or their values.
+      parameters:
+      - $ref: parameters/fieldName-query.yaml
+      - $ref: parameters/fieldValue-query.yaml
+      - $ref: parameters/ids-query.yaml
+      - $ref: parameters/includeGroupInformation-query.yaml
+      responses:
+        200:
+          description: |
+            The response lists alerts.
+          content:
+            application/json:
+              example:
+                $ref: examples/alerts-get-200.json
+              schema:
+                $ref: schemas/definitions.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /alert-definitions/{definitionId}:
+    parameters:
+    - $ref: parameters/definitionId-path.yaml
+    get:
+      operationId: get-definition
+      summary: Get an alert
+      tags:
+      - Alert definitions
+      description: |
+        Get a single alert instance that is configured to fire under certain conditions.
+      responses:
+        200:
+          description: |
+            The response provides the alert.
+          content:
+            application/json:
+              example:
+                $ref: examples/alert-get-200.json
+              schema:
+                $ref: schemas/definition.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+    put:
+      operationId: put-definition
+      summary: Update an alert
+      tags:
+      - Alert definitions
+      description: |
+        Modifies the criteria that determine when an alert fires.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/alert-put.json
+            schema:
+              $ref: schemas/definition.yaml
+      responses:
+        204:
+          description: |
+            Alert successfully updated.
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        415:
+          $ref: errors/415.yaml
+        500:
+          $ref: errors/500.yaml
+    delete:
+      operationId: delete-definition
+      summary: Remove an alert
+      tags:
+      - Alert definitions
+      description: |
+        Deletes an alert and stops it from firing. It can take a few minutes to propagate alert deactivation.
+      responses:
+        204:
+          description: |
+            Alert successfully deleted.
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /alert-definitions/{definitionId}/activities:
+    parameters:
+    - $ref: parameters/definitionId-path.yaml
+    get:
+      operationId: get-definition-alert-activities
+      summary: List adaptive alert activity log
+      tags:
+      - Alert definitions
+      description: |
+        Lists a history of an alert definition's _modifications_. This operation only applies to adaptive alerts, and responds with an error if applied to a static alert.
+      responses:
+        200:
+          description: |
+            The response lists activity logs.
+          content:
+            application/json:
+              example:
+                $ref: examples/alert-activities-get-200.json
+              schema:
+                $ref: schemas/definition-activities.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /alert-definitions/{definitionId}/alert-firings:
+    parameters:
+    - $ref: parameters/definitionId-path.yaml
+    get:
+      operationId: get-definition-alert-firings
+      summary: List fired alerts
+      tags:
+      - Alert firings
+      description: |
+        Lists a history of an alert definition's _firings_. Firings for the last 30 days are arranged chronologically in the `data` array, with the most recent at the end.  This lists alerts that have a defined `endTime` to indicate they are no longer in progress. For others, run the [List active firings](ref:get-active-alert-firings) operation.
+      responses:
+        200:
+          description: |
+            The response lists firings.
+          content:
+            application/json:
+              example:
+                $ref: examples/firings-200.json
+              schema:
+                $ref: schemas/firings.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /alert-definitions/{definitionId}/suppressions:
+    parameters:
+    - $ref: parameters/definitionId-path.yaml
+    post:
+      operationId: post-definition-suppression
+      summary: Create a new modeling suppressions
+      tags:
+      - Alert suppressions
+      description: |
+        Creates a new time range for an adaptive alert definition that gets ignored when dynamically modeling its expected range of traffic. This operation only applies to adaptive alerts, and responds with an error if applied to a static alert.
+      parameters:
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      responses:
+        201:
+          description: |
+            The response provides the newly created suppression.
+          content:
+            application/json:
+              example:
+                $ref: examples/suppressions-post-201.json
+              schema:
+                $ref: schemas/suppression.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+    get:
+      operationId: get-definition-suppressions
+      summary: List modeling suppressions
+      tags:
+      - Alert suppressions
+      description: |
+        Lists all time ranges for an adaptive alert definition that are ignored when dynamically modeling its expected range of traffic. This operation only applies to adaptive alerts, and responds with an error if applied to a static alert.
+      responses:
+        200:
+          description: |
+            The response lists suppressions.
+          content:
+            application/json:
+              example:
+                $ref: examples/suppressions-get-200.json
+              schema:
+                $ref: schemas/suppressions.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /alert-definitions/{definitionId}/suppressions/{suppressionId}:
+    parameters:
+    - $ref: parameters/definitionId-path.yaml
+    - $ref: parameters/suppressionId-path.yaml
+    delete:
+      operationId: delete-definition-suppression
+      summary: Unsuppress alert modeling
+      tags:
+      - Alert suppressions
+      description: |
+        Removes a suppression, and makes an adaptive alert definition reconsider a previously suppressed period of time when modeling your site's expected range of behavior. This operation only applies to adaptive alerts, and responds with an error if applied to a static alert. Suppressions that are too old to affect alert firings are automatically removed, so there is no need to run this operation simply to trim them from the [list of modeling suppressions](ref:get-definition-suppressions).
+      responses:
+        200:
+          description: |
+            Resource successfully deleted.
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /alert-firings/active:
+    get:
+      operationId: get-active-alert-firings
+      summary: List active alerts
+      tags:
+      - Alert firings
+      description: |
+        Lists currently fired alerts.
+      responses:
+        200:
+          description: |
+            The response lists active alerts.
+          content:
+            application/json:
+              example:
+                $ref: examples/firings-200.json
+              schema:
+                $ref: schemas/firings.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /alert-firings/alertcount:
+    get:
+      operationId: get-active-alert-count
+      summary: Count active alerts
+      tags:
+      - Alert firings
+      description: |
+        Get the number of active, currently fired alerts.
+      responses:
+        200:
+          description: |
+            The response provides the count of active alerts.
+          content:
+            application/json:
+              example:
+                $ref: examples/firings-count-200.json
+              schema:
+                $ref: schemas/firings-count.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml

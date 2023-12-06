@@ -1,0 +1,104 @@
+type: object
+description: |-
+  Contains information about the data centers in the GTM domain.
+  
+x-akamai:
+  file-path: schemas/datacenter-vnd-config-gtm.v1.0.yaml
+additionalProperties: false
+required:
+- datacenterId
+properties:
+  city:
+    type: string
+    description: |
+      The name of the city where the data center is located.
+    nullable: true
+  cloneOf:
+    type: integer
+    description: |
+      Identifies the data center's `datacenterId` of which this data center is a clone. A data center clone is just like any other data center except that it inherits its geographic attributes `continent`, `country`, `stateOrProvince`, `city`, `latitude`, and `longitude` from the data center of which it is a clone.
+    nullable: true
+  cloudServerTargeting:
+    type: boolean
+    description: |
+      Balances load between two or more servers in a cloud environment. Either `true` if cloud server targeting is enabled or `false` if not.
+  continent:
+    type: string
+    description: |
+      A two-letter code that specifies the continent where the data center maps to. If omitted, GTM populates this member. Either `AF`, `AS`, `EU`, `NA`, `OC`, `OT`, or `SA`.
+    nullable: true
+    enum:
+    - AF
+    - AS
+    - EU
+    - NA
+    - OC
+    - OT
+    - SA
+    maxLength: 2
+  country:
+    type: string
+    description: |
+      A two-letter [ISO 3166](https://www.iso.org/iso-3166-country-codes.html) country code that specifies the country where the data center maps to.
+    nullable: true
+    maxLength: 2
+  datacenterId:
+    type: integer
+    description: |
+      A unique identifier for an existing data center in the domain.
+  defaultLoadObject:
+    type: object
+    description: |
+      Specifies the load reporting interface between you and the GTM system. A load object is a file that provides real-time information about the current load, maximum allowable load, and target load on each resource. This default load object is intended to be shared. Individual Resources can specify `useDefaultLoadObject` to use it instead of specifying their own.
+    additionalProperties: false
+    properties:
+      loadObject:
+        type: string
+        description: |
+          Specifies the load object that GTM requests. A load object is a file that provides real-time information about the current load, maximum allowable load, and target load on each resource. The value cannot begin with a `:` character, and is limited to a maximum of 256 characters.
+        nullable: true
+        maxLength: 256
+        pattern: ^(?!:).*$
+      loadObjectPort:
+        type: integer
+        description: |
+          Specifies the TCP port to connect to when requesting the load object. A value of `0` means to use the default port, equivalent to either `80` or `443`.
+        minimum: 0
+        maximum: 65535
+      loadServers:
+        type: array
+        description: |
+          Specifies a list of servers to request the load object from. The value needs to contain IPv4 or IPv6 addresses, or DNS names that contain A or AAAA records. If a DNS name has both A and AAAA records, then GTM picks one randomly. For IP addresses, don't use non-routable [RFC 1918](https://tools.ietf.org/html/rfc1918) addresses.
+        nullable: true
+        items:
+          type: string
+          maxLength: 256
+  latitude:
+    type: number
+    description: |
+      Specifies the geographical latitude of the data center's position. See also `longitude` within this object.
+  links:
+    type: array
+    description: |
+      Provides a URL path that allows direct navigation to a data center.
+    items:
+      $ref: link.yaml
+  longitude:
+    type: number
+    description: |
+      Specifies the geographic longitude of the data center's position. See also `latitude` within this object.
+  nickname:
+    type: string
+    description: |
+      A descriptive label for the data center.
+    maxLength: 256
+  stateOrProvince:
+    type: string
+    description: |
+      Specifies a two-letter [ISO 3166](https://www.iso.org/iso-3166-country-codes.html) country code for the state or province where the data center is located.
+    nullable: true
+  virtual:
+    type: boolean
+    description: |
+      Indicates whether or not the data center is `virtual` or physical, the latter meaning the data center has an Akamai Network Agent installed, and its physical location in latitude and longitude is fixed. Either `true` if `virtual` or `false` if physical.
+    readOnly: true

@@ -1,0 +1,42 @@
+openapi: 3.0.0
+info:
+  title: Functions
+  version: v3
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/test-management/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: functional-functions.yaml
+paths:
+  /functional/functions/try-it:
+    post:
+      operationId: post-try-it
+      summary: Check how functions work
+      tags:
+      - Functions
+      description: |
+        Runs a created function on sample data to check whether it returns the expected value. A function is valid for use in a test case if the response's `results` value returns only one value. To learn more about functions and variables, see [Variables](ref:variables-overview).
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/test-center-functions-try-it.json
+            schema:
+              $ref: schemas/test-center-functions-try-it.yaml
+      responses:
+        200:
+          description: |
+            The response is the matching result for the input function expression.
+          content:
+            application/json:
+              example:
+                $ref: examples/test-center-functions-try-it-post-207.json
+              schema:
+                $ref: schemas/test-center-functions-try-it-response.yaml
+        400:
+          $ref: errors/400.yaml
+        404:
+          $ref: errors/404.yaml

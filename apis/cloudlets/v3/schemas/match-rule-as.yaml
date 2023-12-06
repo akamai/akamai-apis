@@ -1,0 +1,92 @@
+type: object
+description: |-
+  Contains match rule information for Audience Segmentation.
+  
+x-akamai:
+  file-path: schemas/match-rule-as.yaml
+title: Audience Segmentation
+additionalProperties: false
+required:
+- type
+properties:
+  id:
+    type: integer
+    description: |
+      __Internal__ Akamai internal use only.
+    x-akamai:
+      status: INTERNAL
+    nullable: true
+  name:
+    type: string
+    description: |
+      The name of the rule.
+    nullable: true
+  type:
+    type: string
+    description: |
+      The type of Cloudlet the rule is for. For example, the string for Audience Segmentation is `asMatchRule`.
+    enum:
+    - asMatchRule
+  akaRuleId:
+    type: string
+    description: |
+      The rule's unique identifier.
+  disabled:
+    type: boolean
+    description: |
+      If `true`, disables a rule so it's not evaluated against incoming requests. The default setting is `false`.
+    default: false
+  end:
+    type: integer
+    description: |
+      The end time for this match rule. When `matchesAlways` is `false`, enter the `end` value in epoch seconds.
+    minimum: 0
+  forwardSettings:
+    type: object
+    description: |
+      Defines data used to construct a new request URL. If all set conditions are true, the edge server returns an HTTP response from the rewritten URL. You can specify any of the following with this object: `originId`, `pathAndQS`, and `useIncomingQueryString`.
+    additionalProperties: false
+    properties:
+      originId:
+        type: string
+        description: |
+          The conditional origin's unique identifier.
+        nullable: true
+        maxLength: 8192
+      pathAndQS:
+        type: string
+        description: |
+          If a value is provided and match conditions are met, this is the URL path to rewrite the incoming request's URL. The URL may include additional query parameters.
+        minLength: 1
+        maxLength: 8192
+      useIncomingQueryString:
+        type: boolean
+        description: |
+          If set to `true`, the Cloudlet includes the requests' query string in the rewritten or forwarded URL.
+  matches:
+    type: array
+    description: |
+      The `matchType` and the `matchValue` or `objectMatchValue` used to conditionally pass through the request. Plus additional criteria to match on, like case sensitivity (`caseSensitive`).
+    nullable: true
+    items:
+      type: object
+      additionalProperties: false
+      oneOf:
+      - required:
+        - matchType
+        - matchValue
+        title: matchType and matchValue required
+      - required:
+        - matchType
+        - objectMatchValue
+        title: matchType and objectMatchValue required
+      $ref: match-rule-as-definitions.yaml#/definitions/matchCriteriaType
+  matchesAlways:
+    type: boolean
+    description: |
+      The match rule is always on when `true`. When `false`, the rule is applied according to the `start` and `end` times.
+  start:
+    type: integer
+    description: |
+      The start time for this match rule. When `matchesAlways` is `false`, enter the `start` value in epoch seconds.
+    minimum: 0

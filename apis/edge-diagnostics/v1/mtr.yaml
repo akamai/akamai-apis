@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: MTR
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: mtr.yaml
+paths:
+  /mtr:
+    post:
+      operationId: post-mtr
+      summary: Test network connectivity with MTR
+      tags:
+      - MTR
+      description: |
+        Uses MTR to provide information about packet loss and latency between an edge server IP, location, or Site Shield map and a remote destination. To run this operation for an IP, you may need to [verify an IP](ref:post-verify-edge-ip) if it belongs to an edge server. To run this operation for a GTM hostname, run [List GTM properties](ref:get-gtm-properties) and [List test and target IPs for a GTM hostname](ref:get-gtm-property-domain-gtm-property-ips) operations first to get the test and target IPs for the hostname.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/mtrRequest.json
+            schema:
+              $ref: schemas/mtrRequest.yaml
+      responses:
+        200:
+          description: |
+            The response provides the MTR results.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/mtrResponse.json
+              schema:
+                $ref: schemas/mtrResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

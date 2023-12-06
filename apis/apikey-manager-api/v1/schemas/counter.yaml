@@ -1,0 +1,86 @@
+type: object
+description: |-
+  Contains information about a throttling counter.
+  
+x-akamai:
+  file-path: schemas/counter.yaml
+additionalProperties: false
+required:
+- enabled
+- name
+- contractId
+- groupId
+- throttling
+- onOverLimit
+properties:
+  id:
+    type: integer
+    description: |
+      The unique identifier for the throttling counter.
+    readOnly: true
+    minimum: 0
+  name:
+    type: string
+    description: |
+      The name that you provide for the throttling counter.
+    minLength: 1
+    maxLength: 200
+  description:
+    type: string
+    description: |
+      The description that you provide for the throttling counter. If you specify an empty string in the request or omit this member from the object, the JSON response reflects it as `null`.
+    nullable: true
+    minLength: 0
+    maxLength: 4000
+  headers:
+    $ref: counterHeaders-schema.yaml
+  contractId:
+    type: string
+    description: |
+      The unique identifier for the contract with Akamai under which you created the throttling counter.
+    minLength: 0
+  enabled:
+    type: boolean
+    description: |
+      Whether you enabled the throttling counter.
+  errorResponse:
+    $ref: errorResponseDto-schema.yaml
+  groupId:
+    type: integer
+    description: |
+      The unique identifier for the group in Control Center under which you created the throttling counter.
+    minimum: 0
+  onOverLimit:
+    type: string
+    description: |
+      The instruction for edge servers on how to handle excessive requests when a throttling limit is reached. Either `DENY` to reject excessive requests, or `WARN` to send an alert when excessive requests reach edge servers.
+    enum:
+    - DENY
+    - WARN
+  ownerInfo:
+    description: |
+      Contains information about the owner of the counter.
+    readOnly: true
+    $ref: ownerInfo.yaml
+  rules:
+    type: array
+    description: |
+      The throttling conditions that cause the counter to increment.
+    minItems: 0
+    items:
+      $ref: counterRule-schema.yaml
+  status:
+    type: string
+    description: |
+      Specifies the status of throttling counter changes propagated on the Akamai network. `PENDING` means that changes are waiting to be propagated, `DIRTY` means that propagation of changes is in progress but has not yet finished, `ACTIVE` means that all changes have been propagated and counter settings are active throughout the Akamai network.
+    readOnly: true
+    enum:
+    - PENDING
+    - DIRTY
+    - ACTIVE
+  throttling:
+    type: integer
+    description: |
+      The value of the request-per-second limit associated with the throttling counter. If the request count reaches the defined limit, API Gateway rejects any excessive requests with a 429 response until the moving average for this throttling counter diminishes to the set threshold. This usually takes up to ten seconds.
+    minimum: 10
+    maximum: 1000000

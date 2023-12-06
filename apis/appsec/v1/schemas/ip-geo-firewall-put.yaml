@@ -1,0 +1,43 @@
+type: object
+description: |-
+  Describes the mode of the IP Geo Firewall and the allowed and blocked IP lists.
+  
+x-akamai:
+  file-path: schemas/ip-geo-firewall-put.yaml
+additionalProperties: false
+required:
+- block
+properties:
+  block:
+    type: string
+    description: |
+      The method by which you block or allow requests by IP or geographic location. In Control Center, this is called `mode`. Use `blockSpecificIPGeo` to block any IPs, subnets, geographies, or network lists you specify. Use `blockAllTrafficExceptAllowedIPs` to allow requests from IPs, subnets, geographies or networks lists in your `blockExceptions` maintained in [Network Lists API](https://techdocs.akamai.com/network-lists/reference/api).
+    enum:
+    - blockSpecificIPGeo
+    - blockAllTrafficExceptAllowedIPs
+  geoControls:
+    type: object
+    description: |
+      The network lists you block geographically.
+    additionalProperties: false
+    properties:
+      blockedIPNetworkLists:
+        $ref: network-lists.yaml
+  ipControls:
+    type: object
+    description: |
+      The network lists you block or allow by IP.
+    additionalProperties: false
+    properties:
+      allowedIPNetworkLists:
+        $ref: network-lists.yaml
+      blockedIPNetworkLists:
+        $ref: network-lists.yaml
+  ukraineGeoControl:
+    type: object
+    description: |
+      The settings for requests to and from Ukraine.
+    additionalProperties: false
+    properties:
+      ukraineGeoControl:
+        $ref: ukraine-geo-control.yaml

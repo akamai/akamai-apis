@@ -1,0 +1,44 @@
+type: object
+description: |-
+  Lists properties related to EdgeKV initialization.
+  
+x-akamai:
+  file-path: schemas/initialize-200.yaml
+additionalProperties: false
+allOf:
+- $ref: initialize-put.yaml
+- properties:
+    accountStatus:
+      type: string
+      description: |
+        The `INITIALIZED` status indicates that the EdgeKV and the CP code have been provisioned in production and staging networks. If EdgeKV has not been initialized in both networks, the value of `UNINITIALIZED` will be shown. A value of `PENDING` will be shown if a previous initialization request is currently processing for the account.
+      enum:
+      - INITIALIZED
+      - UNINITIALIZED
+      - PENDING
+    cpcode:
+      type: string
+      description: |
+        CP code created to track the EdgeKV traffic. Make sure you don't purge content associated with this CP code to avoid degradation in your EdgeKV performance. A value of `null` shows that the account has not been initialized.
+      nullable: true
+    productionStatus:
+      type: string
+      description: |
+        The `INITIALIZED` status indicates that the EdgeKV has been provisioned on the production network. A value of `UNINITIALIZED` will be shown if initialization has not been attempted or the attempt has failed. A value of `PENDING` will be shown if a previous initialization request is currently processing for the account.
+      enum:
+      - INITIALIZED
+      - UNINITIALIZED
+      - PENDING
+    stagingStatus:
+      type: string
+      description: |
+        The `INITIALIZED` status indicates that the EdgeKV has been provisioned on staging network. A value of `UNINITIALIZED` will be shown if initialization has not been attempted or the attempt has failed. A value of `PENDING` will be shown if a previous initialization request is currently processing for the account.
+      enum:
+      - INITIALIZED
+      - UNINITIALIZED
+      - PENDING
+  required:
+  - accountStatus
+  - cpcode
+  - productionStatus
+  - stagingStatus

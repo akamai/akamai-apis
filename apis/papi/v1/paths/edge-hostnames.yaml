@@ -1,0 +1,104 @@
+x-akamai:
+  file-path: paths/edge-hostnames.yaml
+  path-for-file: /edgehostnames
+post:
+  operationId: post-edgehostnames
+  summary: Create a new edge hostname
+  tags:
+  - Edge hostnames
+  description: |
+    **Note:** You can skip this operation if you're using Secure by Default that automatically creates an edge hostname upon activation. \n\nThis POST operation creates a new edge hostname. As detailed in the sections below, you can use three approaches to secure new edge hostnames: Standard TLS, Enhanced TLS, or a Shared Certificate. You can [assign a use case](ref:modify-property-hostnames) mapping profile to optimize the hostname to serve specific types of traffic. Once the edge hostname is active, you can [Update a property's hostnames](ref:put-property-version-hostnames) to assign it to a hostname on a property. After you [activate a property](ref:post-property-activations), modifying your DNS to map the property hostname to the edge hostname ultimately enables traffic on the property. For details, see [Enable traffic for a new hostname](ref:modify-property-hostnames). Use the [Edge Hostname API](https://techdocs.akamai.com/edge-hostnames/reference/get-edge-hostname-certificate) (HAPI) to modify edge hostnames, or delete any that aren't currently assigned to an active property configuration.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-required.yaml
+  - $ref: ../parameters/groupId-required.yaml
+  - $ref: ../parameters/options-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/edgehostname-create-request.json
+        schema:
+          $ref: ../schemas/edgehostname-create-request.yaml
+  responses:
+    201:
+      description: |
+        The response provides a URL link to the newly created edge hostname.
+      headers:
+        Location:
+          $ref: ../headers/Location.yaml
+        X-Limit-Edgehostnames-Per-Contract-Limit:
+          $ref: ../headers/X-Limit-Edgehostnames-Per-Contract-Limit.yaml
+        X-Limit-Edgehostnames-Per-Contract-Remaining:
+          $ref: ../headers/X-Limit-Edgehostnames-Per-Contract-Remaining.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/edgehostname-create-response.json
+          schema:
+            $ref: ../schemas/edgehostname-post-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+get:
+  operationId: get-edgehostnames
+  summary: List edge hostnames
+  tags:
+  - Edge hostnames
+  description: |
+    This lists all edge hostnames available under a contract. To assign any of these hostnames to a property, run [Update a property's hostnames](ref:put-property-version-hostnames). Use the [Edge Hostname API](https://techdocs.akamai.com/edge-hostnames/reference/get-edge-hostname-certificate) (HAPI) to modify edge hostnames, or delete any that aren't currently assigned to an active property configuration.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-required.yaml
+  - $ref: ../parameters/groupId-required.yaml
+  - $ref: ../parameters/options-query.yaml
+  responses:
+    200:
+      description: |
+        The response lists edge hostnames available under a contract.
+      headers:
+        X-Limit-Edgehostnames-Per-Contract-Limit:
+          $ref: ../headers/X-Limit-Edgehostnames-Per-Contract-Limit.yaml
+        X-Limit-Edgehostnames-Per-Contract-Remaining:
+          $ref: ../headers/X-Limit-Edgehostnames-Per-Contract-Remaining.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/edgehostname-list-response.json
+          schema:
+            $ref: ../schemas/edgehostname-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: edgeHostnames
+  group: EdgeHostnames

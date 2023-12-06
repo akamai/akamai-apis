@@ -1,0 +1,109 @@
+type: object
+description: |-
+  Policy domain configurations.
+  
+x-akamai:
+  file-path: schemas/UpdatePdSubnetOpenResponse.yaml
+additionalProperties: false
+properties:
+  configVersionId:
+    type: number
+    description: |
+      Unique identifier for the configuration version.
+  createdBy:
+    type: string
+    description: |
+      Username of the person responsible for creating the configuration version.
+  createdTimestamp:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating the creation time of the configuration.
+    format: date
+  deployState:
+    type: string
+    description: |
+      Current deployment state of the configuration version. The value `EDITING` indicates that changes have been made to policy domain, but that those changes have not been deployed yet. `DEPLOYING` indicates that the configuration is in the midst of the deployment process, while `DEPLOYED` indicates that there are no outstanding changes that need deploying.
+    enum:
+    - DEPLOYED
+    - DEPLOYING
+    - EDITING
+  ipsAllocated:
+    type: number
+    description: |
+      Number of virtual IP addresses assigned to the policy domain.
+  ipsConfigured:
+    type: number
+    description: |
+      Number of virtual IP addresses configured for the policy domain.
+  pdName:
+    type: number
+    description: |
+      Unique name of the policy domain.
+  pdSubnets:
+    type: array
+    description: |
+      Subnets.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        legacyPdSubnet:
+          type: boolean
+          description: |
+            Indicates whether IP Protect's predecessor, Prolexic Proxy, was responsible for creating the subnet.
+        pdSubnet:
+          type: string
+          description: |
+            IP address of the subnet.
+        pdSubnetId:
+          type: number
+          description: |
+            Unique identifier of the subnet.
+        vips:
+          type: array
+          description: |
+            Virtual IP addresses.
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              akamaiFrontend:
+                type: string
+                description: |
+                  IP address of a Akamai virtual IP address that's been mapped to a customer's server or subnet.
+              customerBackend:
+                type: string
+                description: |
+                  IP address of a customer's server or subnet that's been mapped to a virtual IP address.
+              legacyVip:
+                type: boolean
+                description: |
+                  Indicates whether IP Protect's predecessor, Prolexic Proxy, was responsible for creating the virtual IP address.
+              ports:
+                type: string
+                description: |
+                  Virtual IP address ports open to traffic directed to a customer's website.
+              sourceIpProtocol:
+                type: string
+                description: |
+                  Specifies the source IP for network packets received at a customer's back-end server or subnet. By default, packets are set to `NA`, identifying Akamai as the source IP. Other source IP options are `NAT46`, `CIP`, `PROXY_PROTOCOL_V1`, `PROXY_PROTOCOL_V2`, and `OPTION_28`. `NAT46` is only available if the virtual IP address has an IPv4 address and the back-end IP has an IPv6 address. The remaining options require the virtual IP address to be running on a TCP network.
+                enum:
+                - CIP
+                - PROXY_PROTOCOL_V1
+                - PROXY_PROTOCOL_V2
+                - OPTION_28
+                - NAT46
+                - NA
+              vipId:
+                type: number
+                description: |
+                  Unique identifier of the virtual IP address.
+  updatedBy:
+    type: string
+    description: |
+      Username of the person responsible for the most recent update of the configuration version.
+  updatedTimestamp:
+    type: string
+    description: |
+      ISO 8061 timestamp indicating the time of the most recent update of the configuration version.
+    format: date

@@ -1,0 +1,86 @@
+type: object
+description: |-
+  Contains information about the data centers where the origins are located.
+  
+x-akamai:
+  file-path: schemas/dataCenter.yaml
+additionalProperties: false
+required:
+- cloudService
+- continent
+- country
+- latitude
+- longitude
+- originId
+- percent
+properties:
+  city:
+    type: string
+    description: |
+      The city in which the data center is located.
+  cloudServerHostHeaderOverride:
+    type: boolean
+    description: |
+      When set to `true`, overides the host header for load balancing in a cloud environment.
+  cloudService:
+    type: boolean
+    description: |
+      If `true` caching for the data center is updated at a certain interval, like it would for a cloud-based service.
+  continent:
+    type: string
+    description: |
+      The continent on which the data center is located. See [Continent Codes](https://control.akamai.com/dl/edgescape/continentCodes.csv) for a list of valid codes.
+    enum:
+    - AF
+    - AS
+    - EU
+    - NA
+    - OC
+    - OT
+    - SA
+  country:
+    type: string
+    description: |
+      The country in which the data center is located. See [Country Codes](https://control.akamai.com/dl/edgescape/cc2continent.csv) for a list of valid codes.
+    minLength: 2
+    maxLength: 2
+  hostname:
+    type: string
+    description: |
+      The name of the host that can be used as a conditional origin.
+    maxLength: 256
+  latitude:
+    type: number
+    description: |
+      The latitude value for the data center. This member supports six decimal places of precision.
+    minimum: -180
+    maximum: 180
+  livenessHosts:
+    type: array
+    description: |
+      An array of strings that represent the origin servers used to poll the data centers in an Application Load Balancer configuration. These servers support basic HTTP polling.
+    minItems: 1
+    uniqueItems: true
+    items:
+      type: string
+  longitude:
+    type: number
+    description: |
+      The longitude value for the data center. This member supports six decimal places of precision.
+    minimum: -180
+    maximum: 180
+  originId:
+    type: string
+    description: |
+      The conditional origin's unique identifier.
+    maxLength: 128
+  percent:
+    type: number
+    description: |
+      The percent of traffic that is sent to the data center. The total for all `dataCenters` objects within the array must equal 100%.
+    minimum: 0
+    maximum: 100
+  stateOrProvince:
+    type: string
+    description: |
+      The state, province, or region where the data center is located. See [region codes](https://control.akamai.com/dl/edgescape/region_codes.txt).

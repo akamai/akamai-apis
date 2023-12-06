@@ -1,0 +1,52 @@
+type: object
+description: |
+  TBD.
+x-akamai:
+  file-path: schemas/post-origin-activations-response.yaml
+additionalProperties: false
+required:
+- network
+- version
+properties:
+  version:
+    type: integer
+    description: |
+      The version number of the activated load balancing configuration.
+    minimum: 0
+  activatedBy:
+    type: string
+    description: |
+      The name of the user who activated the load balancing configuration.
+  activatedDate:
+    type: string
+    description: |
+      The date and time, in ISO 8601 format, on which the load balancing configuration was activated.
+    format: date-time
+  dryrun:
+    type: boolean
+    description: |
+      If `true`, the operation validates the configuration, but does not activate the load balancing version. The default setting is `false`.
+  network:
+    type: string
+    description: |
+      The network, either `STAGING`, `PRODUCTION`, or `prod` as shorthand, on which a load balancing configuration for Application Load Balancer has been activated. Values are case-insensitive in requests.
+    enum:
+    - PRODUCTION
+    - STAGING
+    - prod
+    - production
+    - staging
+  originId:
+    type: string
+    description: |
+      The conditional origin's unique identifier.
+  status:
+    type: string
+    description: |
+      The activation status for the load balancing version. Values include the following: `inactive` where the load balancing version has not been activated. No active property versions reference this policy. `active` where the load balancing version is currently active (published) and its associated property version is also active. `deactivated` where the load balancing version was previously activated but it has been superseded by a more recent activation of another load balancing version. `pending` where the load balancing version is proceeding through the activation workflow. `failed` where the activation workflow for the load balancing version has failed.
+    enum:
+    - active
+    - deactivated
+    - inactive
+    - pending
+    - failed

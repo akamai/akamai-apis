@@ -1,0 +1,73 @@
+type: object
+x-akamai:
+  file-path: schemas/connectivity.yaml
+additionalProperties: false
+required:
+- executionStatus
+- sourceIpLocation
+- destinationIpLocation
+- sourceContext
+- destinationContext
+- executionContext
+properties:
+  info:
+    description: |
+      Specifies the reason for `NOT_EXECUTED` status.
+    $ref: info.yaml
+  additionalRequestParameters:
+    description: |
+      Specifies the MTR request.
+    $ref: additionalMtrRequestParameters.yaml
+  destinationContext:
+    type: string
+    description: |
+      Whether the destination IP is a `CLIENT_IP` or `ORIGIN_IP`.
+    enum:
+    - ORIGIN_IP
+    - CLIENT_IP
+  destinationIpLocation:
+    description: |
+      Specifies the geolocation of the origin server IP.
+    $ref: edgeIpLocation.yaml
+  errorResponse:
+    description: |
+      Specifies the reason for `FAILURE` status.
+    $ref: errorResponse.yaml
+  executionContext:
+    type: string
+    description: |
+      Execution context for MTR. Edge Diagnostics executes MTR between an edge server and the origin server (`EDGE_IP_TO_ORIGIN_IP`) or, if a client IP is present in the request, between an edge server and the client machine (`EDGE_IP_TO_CLIENT_IP`).
+    enum:
+    - EDGE_IP_TO_ORIGIN_IP
+    - EDGE_IP_TO_CLIENT_IP
+  executionStatus:
+    type: string
+    description: |
+      Status of the MTR request's execution. Possible values are `SUCCESS`, `FAILURE`, or `NOT_EXECUTED`. The `info` member and `FAILURE` in `errorResponse` provide details for `NOT_EXECUTED`.
+    enum:
+    - SUCCESS
+    - FAILURE
+    - NOT_EXECUTED
+  result:
+    description: |
+      Standard MTR results.
+    $ref: mtrData.yaml
+  sourceContext:
+    type: string
+    description: |
+      Context for MTR source. The source can be either an edge server forwarding the request to the origin server (`EDGE_IP_CONNECTED_TO_ORIGIN`) or an edge server in the location (`EDGE_IP_BASED_ON_LOCATION`), either selected randomly or provided in the request.
+    enum:
+    - EDGE_IP_CONNECTED_TO_ORIGIN
+    - EDGE_IP_BASED_ON_LOCATION
+  sourceIpLocation:
+    description: |
+      Specifies the geolocation of the source IP.
+    $ref: edgeIpLocation.yaml
+  suggestedActions:
+    type: array
+    description: |
+      Suggestions on what to do next with the results.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1

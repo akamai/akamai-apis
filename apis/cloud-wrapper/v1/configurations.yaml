@@ -1,0 +1,221 @@
+openapi: 3.0.1
+info:
+  title: CloudWrapper Configurations
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cloud-wrapper/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: configurations.yaml
+paths:
+  /configurations:
+    post:
+      operationId: post-configuration
+      summary: Create a configuration
+      tags:
+      - Configurations
+      description: |
+        Create a Cloud Wrapper configuration. You first need to work with your account team to include Cloud Wrapper locations and capacity on your contract. Verify your capacity by viewing your [capacity inventory](ref:get-capacity-inventory).
+      parameters:
+      - $ref: parameters/activate-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/CwConfigCreateExample.json
+            schema:
+              $ref: schemas/CreateConfiguration.yaml
+      responses:
+        201:
+          description: |
+            The response provides the new configuration.
+          headers:
+            Location:
+              schema:
+                type: string
+          content:
+            application/json:
+              example:
+                $ref: examples/CwConfigCreateResponseExample.json
+              schema:
+                $ref: schemas/Configuration.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        415:
+          $ref: errors/415.yaml
+        500:
+          $ref: errors/500.yaml
+    get:
+      operationId: get-configurations
+      summary: List configurations
+      tags:
+      - Configurations
+      description: |
+        List all of the Cloud Wrapper configurations on your contract.
+      responses:
+        200:
+          description: |
+            The response lists your configurations.
+          content:
+            application/json:
+              example:
+                $ref: examples/CwConfigListExample.json
+              schema:
+                $ref: schemas/Configurations.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /configurations/activate:
+    post:
+      operationId: post-configuration-activations
+      summary: Activate a configuration
+      tags:
+      - Configurations
+      description: |
+        Activate a Cloud Wrapper configuration. It takes 3-4 hours for the configuration to complete. You can use the configuration's `configId` to run the [Get a configuration](ref:get-configuration) operation and review its `status`. Once it's `ACTIVE`, [enable the Cloud Wrapper behavior](https://techdocs.akamai.com/cloud-wrapper/docs/add-a-cloud-wrapper-behavior#enable-the-cloud-wrapper-behavior) in your property. \n\nTo deactivate a configuration, [update it](ref:put-configuration) and set the `activate` query string to `false`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/CwConfigBatchActivationExample.json
+            schema:
+              $ref: schemas/ActivateConfigurationsCommand.yaml
+      responses:
+        204:
+          description: |
+            Activation launched.
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        415:
+          $ref: errors/415.yaml
+        500:
+          $ref: errors/500.yaml
+  /configurations/{configId}:
+    get:
+      operationId: get-configuration
+      summary: Get a configuration
+      tags:
+      - Configurations
+      description: |
+        View a specific Cloud Wrapper configuration.
+      parameters:
+      - $ref: parameters/configId-path.yaml
+      responses:
+        200:
+          description: |
+            The response returns the configuration.
+          content:
+            application/json:
+              example:
+                $ref: examples/CwConfigWithMultiCdnExample.json
+              schema:
+                $ref: schemas/Configuration.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+    put:
+      operationId: put-configuration
+      summary: Update a configuration
+      tags:
+      - Configurations
+      description: |
+        Update a saved or inactive configuration.
+      parameters:
+      - $ref: parameters/configId-path.yaml
+      - $ref: parameters/activate-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/CwConfigUpdateExample.json
+            schema:
+              $ref: schemas/UpdateConfiguration.yaml
+      responses:
+        200:
+          description: |
+            The response returns the updated configuration.
+          content:
+            application/json:
+              example:
+                $ref: examples/CwConfigUpdateResponseExample.json
+              schema:
+                $ref: schemas/Configuration.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        415:
+          $ref: errors/415.yaml
+        500:
+          $ref: errors/500.yaml
+    delete:
+      operationId: delete-configuration
+      summary: Delete a configuration
+      tags:
+      - Configurations
+      description: |
+        Delete a specific Cloud Wrapper configuration. The delete can take up to three hours to complete. You can use the configuration's `configId` to run the [Get a configuration](ref:get-configuration) operation to check the status. `DELETE_IN_PROGRESS` indicates the request has been accepted. A 404 response indicates the configuration has been deleted. Before you delete a configuration:\n>\n> Ensure that all the properties that use it have the [`cloudWrapper`](https://techdocs.akamai.com/property-mgr/reference/latest-cloud-wrapper) behavior disabled. Then [update](ref:put-configuration) the configuration to deactivate it by setting the `activate` query string to `false`.
+      parameters:
+      - $ref: parameters/configId-path.yaml
+      responses:
+        202:
+          description: |
+            Delete request accepted.
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml

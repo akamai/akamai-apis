@@ -1,0 +1,63 @@
+x-akamai:
+  file-path: paths/policy-reputation-analysis.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/reputation-analysis
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/policyId-path.yaml
+get:
+  operationId: get-reputation-analysis
+  summary: Get the reputation analysis settings
+  tags:
+  - Reputation analysis
+  description: |
+    Return the current reputation analysis settings. _Products:_ Kona Site Defender.
+  responses:
+    200:
+      description: |
+        Successfully retrieved the reputation analysis settings.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/reputation-analysis-settings-put-200.json
+          schema:
+            $ref: ../schemas/reputation-analysis-settings-get-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-reputation-analysis
+  summary: Update the reputation analysis settings
+  tags:
+  - Reputation analysis
+  description: |
+    Toggle the options `forwardToHTTPHeader` and `forwardSharedIPToHTTPHeaderAndSIEM` on and off. `forwardToHTTPHeader` is the option to add client reputation details to requests forwarded to origin in an HTTP header. `forwardSharedIPToHTTPHeaderAndSIEM` is the option to add value indicating that shared IPs are included in HTTP header and SIEM integration when used. _Products:_ Kona Site Defender.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/reputation-analysis-settings-put-200.json
+        schema:
+          $ref: ../schemas/reputation-analysis-settings-put.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the reputation analysis settings.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/reputation-analysis-settings-put-200.json
+          schema:
+            $ref: ../schemas/reputation-analysis-settings-put-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

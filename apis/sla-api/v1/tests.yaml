@@ -1,0 +1,156 @@
+openapi: 3.0.0
+info:
+  title: Tests
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/sla-api/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: tests.yaml
+paths:
+  /tests:
+    post:
+      operationId: post-test-config
+      summary: Create a new test configuration
+      tags:
+      - Create Test
+      description: |
+        Create either a new availability test configuration or a new performance test configuration, if there is an available corresponding slot in the contract's quotas.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-test-config.json
+            schema:
+              $ref: schemas/schema-post-test-config.yaml
+      responses:
+        201:
+          description: |
+            Successfully created.
+          content:
+            application/json:
+              example:
+                $ref: examples/post-test-config-201.json
+              schema:
+                $ref: schemas/schema-post-test-config-201.yaml
+    get:
+      operationId: get-test-configs
+      summary: List test configurations
+      tags:
+      - Tests
+      description: |
+        Returns all test configurations, or a filtered set you use the `slaTestIds` parameter to control.
+      parameters:
+      - $ref: parameters/slaTestIds-query.yaml
+      responses:
+        200:
+          description: |
+            OK.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-test-configs-200.json
+              schema:
+                $ref: schemas/schema-get-test-configs-200.yaml
+  /tests/{slaTestId}:
+    get:
+      operationId: get-test-config
+      summary: Get a test configuration
+      tags:
+      - Tests
+      description: |
+        Return the contents of one test configuration. Set the `slaTestId` parameter to indicate which test configuration to retrieve.
+      parameters:
+      - $ref: parameters/slaTestId-path.yaml
+      responses:
+        200:
+          description: |
+            OK.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-test-config-200.json
+              schema:
+                $ref: schemas/schema-get-test-config-200.yaml
+    put:
+      operationId: put-test-config
+      summary: Update a test configuration
+      tags:
+      - Tests
+      description: |
+        Use this operation change an existing test configuration, such as changing the agent group or adding a performance target. Set the `slaTestId` parameter to indicate which test configuration to update.
+      parameters:
+      - $ref: parameters/slaTestId-path.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-test-config.json
+            schema:
+              $ref: schemas/schema-put-test-config.yaml
+      responses:
+        200:
+          description: |
+            OK.
+    delete:
+      operationId: delete-test-config
+      summary: Delete a test configuration
+      tags:
+      - Tests
+      description: |
+        Deletion cannot be undone. Once you delete a test configuration, you can't retrieve it or any data that it has collected. Set the `slaTestId` parameter to indicate which test configuration to delete.
+      parameters:
+      - $ref: parameters/slaTestId-path.yaml
+      responses:
+        200:
+          description: |
+            OK.
+  /tests/{slaTestId}/reports/availability:
+    get:
+      operationId: get-availability-reports
+      summary: List availability reports
+      tags:
+      - Reports
+      description: |
+        Returns an array of the results of availability tests run in the specified time period.
+      parameters:
+      - $ref: parameters/slaTestId-path.yaml
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      responses:
+        200:
+          description: |
+            OK.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-availability-reports-200.json
+              schema:
+                $ref: schemas/schema-get-availability-reports-200.yaml
+  /tests/{slaTestId}/reports/performance:
+    get:
+      operationId: get-performance-reports
+      summary: List performance reports
+      tags:
+      - Reports
+      description: |
+        Returns an array of the results of performance tests run in the specified time period.
+      parameters:
+      - $ref: parameters/slaTestId-path.yaml
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      responses:
+        200:
+          description: |
+            OK.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-performance-reports-200.json
+              schema:
+                $ref: schemas/schema-get-performance-reports-200.yaml

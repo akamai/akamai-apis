@@ -1,0 +1,62 @@
+type: object
+description: |-
+  Contains information about the CIDR map configured for the property.
+  
+x-akamai:
+  file-path: schemas/cidr-dto.yaml
+additionalProperties: false
+properties:
+  name:
+    type: string
+    description: |
+      A descriptive label for the CIDR map, up to 255 characters.
+    minLength: 1
+    maxLength: 255
+  assignments:
+    type: array
+    description: |
+      Contains information about the CIDR zone groupings of CIDR blocks.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        blocks:
+          type: array
+          description: |
+            Specifies an array of CIDR blocks.
+          items:
+            type: string
+            minLength: 1
+            maxLength: 256
+        datacenterId:
+          type: integer
+          description: |
+            A unique identifier for an existing data center in the domain.
+        nickname:
+          type: string
+          description: |
+            A descriptive label for the CIDR zone group, up to 256 characters.
+          minLength: 1
+          maxLength: 256
+  defaultDatacenter:
+    type: object
+    description: |
+      A placeholder for all other CIDR zones, CIDR blocks not found in these CIDR zones. Note that a CIDR map can't have the same CIDR block in multiple CIDR zones.
+    additionalProperties: false
+    properties:
+      datacenterId:
+        type: integer
+        description: |
+          For each property, an identifier for all other CIDR zones' CNAME. For example, 5400.
+      nickname:
+        type: string
+        description: |
+          A descriptive label for the all other CIDR blocks. If omitted, the default is `All Other CIDR Blocks`.
+        minLength: 1
+        maxLength: 128
+  links:
+    type: array
+    description: |
+      Specifies the URL path that allows direct navigation to the CIDR map.
+    items:
+      $ref: link.yaml

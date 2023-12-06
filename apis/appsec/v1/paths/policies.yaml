@@ -1,0 +1,65 @@
+x-akamai:
+  file-path: paths/policies.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+post:
+  operationId: post-policy
+  summary: Clone or create a security policy
+  tags:
+  - General policy settings
+  description: |
+    Creates a new copy of an existing security policy or creates a new security policy from scratch when you don't specify a policy to clone in the request. To create a new security policy, leave `createFromSecurityPolicy` empty in your request. _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/policy-clone.json
+        schema:
+          $ref: ../schemas/policy-clone.yaml
+  responses:
+    201:
+      description: |
+        Successfully created security policy.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-201.json
+          schema:
+            $ref: ../schemas/policy-2.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+get:
+  operationId: get-policies
+  summary: List security policies
+  tags:
+  - General policy settings
+  description: |
+    Returns a list of security policies available for the specified security configuration. _Products:_ All.
+  parameters:
+  - $ref: ../parameters/notMatched-query.yaml
+  - $ref: ../parameters/detail-query.yaml
+  responses:
+    200:
+      description: |
+        Successfully returned resource.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policies-200.json
+          schema:
+            $ref: ../schemas/security-policies.yaml
+    400:
+      $ref: ../errors/400.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml

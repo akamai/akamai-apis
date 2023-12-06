@@ -1,0 +1,63 @@
+x-akamai:
+  file-path: paths/policy-logging-attack-payload.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/advanced-settings/logging/attack-payload
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/policyId-path.yaml
+get:
+  operationId: get-policies-attack-payload-logging
+  summary: Get attack payload logging settings for a policy
+  tags:
+  - Attack payload logs
+  description: |
+    List a security policy's settings for attack payload logging. Attack payload logging is on by default, and in most cases you should leave it enabled. When set to `NONE`, the request body and response body appear as `redacted` in the log. For example, `JSON_PAIRS:redacted`. This operation applies at the security policy level, and overrides the attack payload logging settings at the configuration level on a per-policy basis. _Products:_ All.
+  responses:
+    200:
+      description: |
+        Successfully retrieved the policy Attack Payload Logging settings.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-attack-payload-logging-get-200.json
+          schema:
+            $ref: ../schemas/policy-attack-payload-logging-get-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-policies-attack-payload-logging
+  summary: Modify Attack Payload Logging settings for a policy
+  tags:
+  - Attack payload logs
+  description: |
+    Update Attack Payload Logging settings for a specific policy. This operation applies at the security policy level, and overrides the attack payload logging settings at the configuration level on a per-policy basis. When set to `NONE`, the request body and response body appear as `redacted` in the log. For example, `JSON_PAIRS:redacted`. _Products:_ All.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/policy-attack-payload-logging-get-200.json
+        schema:
+          $ref: ../schemas/policy-attack-payload-logging-put.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the policy Attack Payload Logging settings:.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-attack-payload-logging-get-200.json
+          schema:
+            $ref: ../schemas/policy-attack-payload-logging-put-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

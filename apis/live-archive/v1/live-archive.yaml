@@ -1,0 +1,144 @@
+openapi: 3.0.0
+info:
+  title: Live Archive Management
+  version: '1.0'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/live-archive/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: live-archive.yaml
+paths:
+  /streams/{streamId}/archives:
+    parameters:
+    - $ref: parameters/streamId-path.yaml
+    get:
+      operationId: get-stream-archives
+      summary: List archives
+      tags:
+      - Archives
+      description: |
+        Lists all archives, or optionally those created within a specified time range.
+      parameters:
+      - $ref: parameters/startTime-query.yaml
+      - $ref: parameters/endTime-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/archives-200.json
+              schema:
+                $ref: schemas/archives-200.yaml
+  /streams/{streamId}/endpoints:
+    parameters:
+    - $ref: parameters/streamId-path.yaml
+    get:
+      operationId: get-stream-endpoints
+      summary: List endpoints
+      tags:
+      - Endpoints
+      description: |
+        Lists all the endpoints per stream.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/endpoints-200.json
+              schema:
+                $ref: schemas/endpoints-200.yaml
+  /streams/{streamId}/endpoints/{endpoint}:
+    parameters:
+    - $ref: parameters/endpoint-path.yaml
+    - $ref: parameters/streamId-path.yaml
+    delete:
+      operationId: delete-stream-endpoint
+      summary: Remove objects
+      tags:
+      - Endpoints
+      description: |
+        Delete all objects under this endpoint.
+      responses:
+        200:
+          description: |
+            All objects were successfully deleted.
+        404:
+          description: |
+            The endpoint was not found.
+  /vod:
+    post:
+      operationId: post-vod
+      summary: Create a VOD asset
+      tags:
+      - VOD assets
+      description: |
+        **For beta customers only.** _Akamai is no longer accepting new members for this beta program._ When you enable archiving for an MSL live stream, you can retain it for a maximum of 31 days. To retain archived content beyond 31 days, use this operation to create a separate VOD asset that MSL stores in Akamai NetStorage. You need to set up the desired NetStorage storage group using the [Live-to-VOD Export](https://learn.akamai.com/en-us/webhelp/media-services-live/media-services-live-4-user-guide/GUID-039CB50F-CB56-49D8-BBDF-E6675E159023.html) option in Akamai Control Center.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-vod.json
+            schema:
+              $ref: schemas/post-vod.yaml
+      responses:
+        202:
+          description: |
+            The VOD job is successfully created. Returns an export ID (EID).
+          content:
+            application/json:
+              example:
+                $ref: examples/post-vod-202.json
+              schema:
+                $ref: schemas/post-vod-202.yaml
+        400:
+          description: |
+            The URL is not formed correctly. The POST body is not valid.
+        403:
+          description: |
+            The VOD Management API is not enabled for this stream. The VOD Management API is not enabled globally.
+        405:
+          description: |
+            HTTP method error.
+        500:
+          description: |
+            The CP code or originshield hostname is not available for the stream ID. There is an error initiating the VOD job.
+  /vod/{EID}:
+    parameters:
+    - $ref: parameters/EID-path.yaml
+    get:
+      operationId: get-vod-eid
+      summary: Get VOD status
+      tags:
+      - VOD assets
+      description: |
+        **For beta customers only.** _Akamai is no longer accepting new members for this beta program._ Use this to query the status of a VOD asset creation operation, using its export ID (`EID`).
+      responses:
+        200:
+          description: |
+            The status of a VOD job is returned.
+          content:
+            application/json:
+              example:
+                $ref: examples/status-vod-200.json
+              schema:
+                $ref: schemas/vod-status-200.yaml
+        400:
+          description: |
+            The URL isn't formed correctly.
+        403:
+          description: |
+            The VOD Management API isn't enabled for this stream. The VOD Management API is not enabled globally.
+        405:
+          description: |
+            HTTP method error.
+        500:
+          description: |
+            The export ID does not exist or isn't valid. JSON status error.

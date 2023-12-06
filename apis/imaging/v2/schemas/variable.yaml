@@ -1,0 +1,71 @@
+type: object
+x-akamai:
+  file-path: schemas/variable.yaml
+title: Variable
+additionalProperties: false
+required:
+- name
+- type
+- defaultValue
+properties:
+  name:
+    type: string
+    description: |
+      The name of the variable, also available as the query parameter name to set the variable's value dynamically. Use up to 50 alphanumeric characters.
+    minLength: 1
+    maxLength: 50
+    pattern: ^[A-Za-z0-9]+$
+  type:
+    type: string
+    description: |
+      The type of value for the variable, either `bool`, `number`, `url`, `color`, `gravity`, `placement`, `scaleDimension`, `grayscaleType`, `aspect`, `resizeType`, `dimension`, `perceptualQuality`, `string`, or `focus`.
+    enum:
+    - bool
+    - number
+    - url
+    - color
+    - gravity
+    - placement
+    - scaleDimension
+    - grayscaleType
+    - aspect
+    - resizeType
+    - dimension
+    - perceptualQuality
+    - string
+    - focus
+  defaultValue:
+    type: string
+    description: |
+      The default value of the variable if no query parameter is provided. It needs to be one of the `enumOptions` if any are provided.
+  enumOptions:
+    type: array
+    description: |
+      Optionally limits the set of possible values for a variable. References to an enum `id` insert a corresponding `value`.
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - value
+      properties:
+        id:
+          type: string
+          description: |
+            The unique identifier for each enum value, up to 50 alphanumeric characters.
+          minLength: 1
+          maxLength: 50
+          pattern: ^[A-Za-z0-9]+$
+        value:
+          type: string
+          description: |
+            The value of the variable when the `id` is provided.
+  postfix:
+    type: string
+    description: |
+      A postfix added to the value provided for the variable, or to the default value.
+  prefix:
+    type: string
+    description: |
+      A prefix added to the value provided for the variable, or to the default value.

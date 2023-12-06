@@ -1,0 +1,132 @@
+type: object
+description: |-
+  You can view all the changes associated with a certificate as part of the change history. This is the equivalent of viewing the certificate activity in the CPS UI. You can view each change to your certificate, the status of your change, the last updated date, the date the change was created, and who created the change. You can also take actions on each change of the certificate, including viewing the CSR for the certificate, viewing the certificate, and viewing the trust chain for the certificate.
+  
+x-akamai:
+  file-path: schemas/change-history.v3.yaml
+additionalProperties: false
+required:
+- changes
+properties:
+  changes:
+    type: array
+    description: |
+      Change history items.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - action
+      - actionDescription
+      - createdBy
+      - createdOn
+      - multiStackedCertificates
+      - ra
+      - status
+      properties:
+        action:
+          type: string
+          description: |
+            Show every change on the certificate. The possible changes are `import-certificate`, `renew`, `new-certificate`, `modify-san`, `update-network-configuration`.
+          enum:
+          - import-certificate
+          - renew
+          - new-certificate
+          - modify-san
+          - update-network-configuration
+        actionDescription:
+          type: string
+          description: |
+            A description of each change.
+        businessCaseId:
+          type: string
+          description: |
+            SalesForce ID associated with this change.
+          nullable: true
+        createdBy:
+          type: string
+          description: |
+            The username of the user who initiated the change.
+        createdOn:
+          type: string
+          description: |
+            A date and timestamp when the change started.
+        lastUpdated:
+          type: string
+          description: |
+            A date and timestamp when the change was last updated.
+          nullable: true
+        multiStackedCertificates:
+          type: array
+          description: |
+            Dual-stacked certificates.
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              certificate:
+                type: string
+                description: |
+                  Certificate text.
+                nullable: true
+              csr:
+                type: string
+                description: |
+                  Certificate CSR.
+              trustChain:
+                type: string
+                description: |
+                  Certificate trust chain.
+                nullable: true
+        primaryCertificate:
+          type: object
+          description: |
+            Primary Certificate.
+          additionalProperties: false
+          nullable: true
+          properties:
+            certificate:
+              type: string
+              description: |
+                Certificate text.
+              nullable: true
+            csr:
+              type: string
+              description: |
+                Certificate CSR.
+            trustChain:
+              type: string
+              description: |
+                Certificate trust chain.
+              nullable: true
+        primaryCertificateOrderDetails:
+          type: object
+          description: |
+            CA order details for this Change.
+          additionalProperties: false
+          nullable: true
+          properties:
+            geotrustOrderId:
+              type: number
+              description: |
+                Geotrust order ID.
+            originalPartnerOrderId:
+              type: string
+              description: |
+                Original partner order ID.
+            partnerOrderId:
+              type: string
+              description: |
+                Partner order ID.
+        ra:
+          type: string
+          description: |
+            The certificate authority that issued the certificate.
+        status:
+          type: string
+          description: |
+            The status of the change. The possible changes are `incomplete`, `cancelled`, `completed`.
+          enum:
+          - incomplete
+          - cancelled
+          - completed

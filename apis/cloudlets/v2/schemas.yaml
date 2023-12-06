@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: Schemas
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cloudlets/api/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: schemas.yaml
+paths:
+  /schemas:
+    get:
+      operationId: get-schemas
+      summary: List schemas per Cloudlet
+      description: |
+        Get links to all the JSON schemas by Cloudlet type (`cloudletCode`) to validate different requests used with this API. See [List Cloudlets](ref:get-cloudlets) for information on how to obtain the `cloudletCode`.
+      parameters:
+      - $ref: parameters/cloudletType-query.yaml
+      responses:
+        200:
+          description: |
+            Returns the list of schemas.
+          content:
+            application/json:
+              example:
+                $ref: examples/schemasforcloudlet-get-200.json
+              schema:
+                $ref: schemas/get-schemas-response.yaml
+  /schemas/{schemaName}:
+    parameters:
+    - $ref: parameters/schemaName-path.yaml
+    get:
+      operationId: get-schemas-schemaname
+      summary: Get a schema
+      description: |
+        Get a JSON schema for interacting with policies to validate different requests used with this API.
+      responses:
+        200:
+          description: |
+            Return schema.
+          content:
+            application/json:
+              example:
+                $ref: examples/schema-get-200.json
+              schema:
+                $ref: schemas/get-schemas-schemaname-response.yaml

@@ -1,0 +1,67 @@
+type: object
+description: |-
+  Contains updated functional test cases in a test suite and details about any failure of the operation.
+  
+x-akamai:
+  file-path: schemas/updateTestCasesForTestSuiteResponse.yaml
+additionalProperties: false
+required:
+- failures
+- successes
+properties:
+  failures:
+    type: array
+    description: |
+      Contains a list of [HTTP Problem Details](https://tools.ietf.org/html/rfc7807) objects and indicates errors together with unique identifiers of items for which the operation failed.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      - title
+      properties:
+        type:
+          type: string
+          description: |
+            Type of error.
+          minLength: 1
+        title:
+          type: string
+          description: |
+            Title of the error.
+          minLength: 1
+        existingEntities:
+          type: array
+          description: |
+            Functional test cases that already existed.
+          minItems: 0
+          items:
+            $ref: get-functional-test-case-response.yaml
+        requestField:
+          type: string
+          description: |
+            Request field name. It can be a URL path or query parameter or any request payload field name.
+          minLength: 1
+        requestObjects:
+          type: array
+          description: |
+            Request objects that were invalid.
+          minItems: 0
+          items:
+            $ref: update-functional-test-case-for-test-suite-request.yaml
+        requestValues:
+          type: array
+          description: |
+            Request field values.
+          minItems: 0
+          items:
+            type: integer
+            minimum: 0
+  successes:
+    type: array
+    description: |
+      Contains updated functional test cases.
+    minItems: 0
+    items:
+      $ref: get-functional-test-case-response.yaml

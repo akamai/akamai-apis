@@ -1,0 +1,388 @@
+openapi: 3.0.0
+info:
+  title: Sandboxes
+  version: v0
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/sandbox-api/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: sandboxes.yaml
+paths:
+  /sandboxes:
+    post:
+      operationId: post-sandbox
+      summary: Create a sandbox
+      tags:
+      - Sandboxes
+      description: |
+        You can create a sandbox based on an existing `property`, `hostname`, or property `version`. Refer to the example JSONs for each use case in the [Recipes](https://techdocs.akamai.com/sandbox/recipes). In order to create a sandbox with this method, you need to have an API client for the `Sandbox API` with read-write access and Property Manager authorization enabled in Control Center.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/sandbox-create-request.json
+            schema:
+              $ref: schemas/sandbox-create-request.yaml
+      responses:
+        201:
+          description: |
+            The resource was created.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+            X-Limit-Sandboxes-Limit:
+              $ref: headers/X-Limit-Sandboxes-Limit.yaml
+            X-Limit-Sandboxes-Remaining:
+              $ref: headers/X-Limit-Sandboxes-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/sandbox-create-response.json
+              schema:
+                $ref: schemas/sandbox.yaml
+    get:
+      operationId: get-sandboxes
+      summary: List sandboxes
+      tags:
+      - Sandboxes
+      description: |
+        This operation returns a list of sandboxes. In the response object, you can see the `sandboxId`, the developer who created the sandbox, and the sandbox `name`. The `X-Limit-Sandboxes-Remaining` in the response header indicates the number of remaining sandboxes you can create. Generally, you will only see a list of sandboxes you created. If your Control Center user role has permission to edit Property Manager configurations, you have access to view all the sandboxes within the account. You'll be able to [Delete a sandbox](ref:delete-sandbox) returned in the list. You will only be able to [Update a rule tree](ref:put-sandbox-properties-rules) if your user role has permission to edit the property within your Property Manager configuration. For more information on user roles and permissions, refer to [Identity and Access Management](https://techdocs.akamai.com/iam/docs/welcome-id-access-mgmt).
+      parameters:
+      - $ref: parameters/accessParam-query.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          headers:
+            X-Limit-Sandboxes-Limit:
+              $ref: headers/X-Limit-Sandboxes-Limit.yaml
+            X-Limit-Sandboxes-Remaining:
+              $ref: headers/X-Limit-Sandboxes-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/sandbox-list-response.json
+              schema:
+                $ref: schemas/sandboxes-get-response.yaml
+  /sandboxes/{sandboxId}:
+    parameters:
+    - $ref: parameters/sandboxId-path.yaml
+    get:
+      operationId: get-sandbox
+      summary: Get a sandbox
+      tags:
+      - Sandboxes
+      description: |
+        Get a specific sandbox based on `sandboxId`.
+      parameters:
+      - $ref: parameters/accessParam-query.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/sandbox-get-response.json
+              schema:
+                $ref: schemas/sandbox.yaml
+    put:
+      operationId: put-sandbox
+      summary: Modify a sandbox
+      tags:
+      - Sandboxes
+      description: |
+        Enable `isClonable` if you have preconfigured the settings for the sandbox and want to make it possible for other developers to create an exact replica in their development environment. You can also update the sandbox `name` to make it easy to identify when returned in a list or in a log line.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/sandbox-update-request.json
+            schema:
+              $ref: schemas/sandbox.yaml
+      responses:
+        204:
+          description: |
+            The request was successfully processed.
+    delete:
+      operationId: delete-sandbox
+      summary: Delete a sandbox
+      tags:
+      - Sandboxes
+      description: |
+        Remove a specific sandbox instance based on `sandboxId`. This is useful when you have completed testing and no longer need the sandbox, or when you are approaching the limit. There is a limit of 100 sandbox instances for each Control Center account. The `X-Limit-Sandboxes-Remaining` value in the response header indicates how many sandbox instances you have remaining to create.
+      parameters:
+      - $ref: parameters/accessParam-query.yaml
+      responses:
+        204:
+          description: |
+            The request was successfully processed.
+  /sandboxes/{sandboxId}/clone:
+    parameters:
+    - $ref: parameters/sandboxId-path.yaml
+    post:
+      operationId: post-sandbox-clone
+      summary: Clone a sandbox
+      tags:
+      - Sandboxes
+      description: |
+        Create a new sandbox instance based on the specified `sandboxId`. You can clone a sandbox that has `isClonable` enabled. This is useful if you want to copy a sandbox that was preconfigured by another developer within your organization.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/sandbox-clone-request.json
+            schema:
+              $ref: schemas/sandbox-clone-request.yaml
+      responses:
+        201:
+          description: |
+            Successful operation.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+            X-Limit-Sandboxes-Limit:
+              $ref: headers/X-Limit-Sandboxes-Limit.yaml
+            X-Limit-Sandboxes-Remaining:
+              $ref: headers/X-Limit-Sandboxes-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/sandbox-create-response.json
+              schema:
+                $ref: schemas/sandbox.yaml
+  /sandboxes/{sandboxId}/edgeworkers/{edgeWorkerId}:
+    parameters:
+    - $ref: parameters/edgeWorkerId-path.yaml
+    - $ref: parameters/sandboxId-path.yaml
+    get:
+      operationId: get-sandbox-edgeworker
+      summary: Download EdgeWorker code
+      tags:
+      - EdgeWorkers
+      description: |
+        Retrieve the script bundle in `.tgz` form for the specified `sandboxId` and `edgeWorkerId`. To learn more about EdgeWorkers, refer to the [EdgeWorkers API](https://techdocs.akamai.com/edgeworkers/reference/api).
+      parameters:
+      - $ref: parameters/accessParam-query.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+    put:
+      operationId: put-sandbox-edgeworker
+      summary: Upload EdgeWorker code
+      tags:
+      - EdgeWorkers
+      description: |
+        Add a script bundle for a given `edgeWorkerId` to the specified `sandboxId`.
+      parameters:
+      - $ref: parameters/accessParam-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/tar+gzip:
+            example: A binary file bundle.
+            schema:
+              type: string
+      responses:
+        201:
+          description: |
+            The resource was created.
+    delete:
+      operationId: delete-sandbox-edgeworker
+      summary: Delete EdgeWorker
+      tags:
+      - EdgeWorkers
+      description: |
+        Delete an EdgeWorker with an `edgeWorkerId` from the specified `sandboxId`.
+      parameters:
+      - $ref: parameters/accessParam-query.yaml
+      responses:
+        204:
+          description: |
+            The request was successfully processed.
+  /sandboxes/{sandboxId}/properties:
+    parameters:
+    - $ref: parameters/sandboxId-path.yaml
+    post:
+      operationId: post-sandbox-properties
+      summary: Add a property to a sandbox
+      tags:
+      - Properties
+      description: |
+        You can add a property to a sandbox. Use this if you need to support more than one `hostname` in your sandbox environment.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/property-create-request.json
+            schema:
+              $ref: schemas/property-create-request.yaml
+      responses:
+        201:
+          description: |
+            The resource was created.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/property-create-response.json
+              schema:
+                $ref: schemas/property.yaml
+    get:
+      operationId: get-sandbox-properties
+      summary: List properties
+      tags:
+      - Properties
+      description: |
+        This operation returns a list of sandbox properties available to the current user.
+      parameters:
+      - $ref: parameters/accessParam-query.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/property-list-response.json
+              schema:
+                $ref: schemas/properties.yaml
+  /sandboxes/{sandboxId}/properties/{sandboxPropertyId}:
+    parameters:
+    - $ref: parameters/sandboxPropertyId-path.yaml
+    - $ref: parameters/sandboxId-path.yaml
+    get:
+      operationId: get-sandbox-property
+      summary: Read a property
+      tags:
+      - Properties
+      description: |
+        Get a specific property of a sandbox so you can review the information in the response body.
+      parameters:
+      - $ref: parameters/accessParam-query.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/property-get-response.json
+              schema:
+                $ref: schemas/property.yaml
+    put:
+      operationId: put-sandbox-property
+      summary: Update a property
+      tags:
+      - Properties
+      description: |
+        Update the `requestHostnames` of the sandbox property. Your sandbox can support multiple hostnames for testing purposes.
+      parameters:
+      - $ref: parameters/accessParam-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/property-update-request.json
+            schema:
+              $ref: schemas/property.yaml
+      responses:
+        204:
+          description: |
+            The request was successfully processed.
+    delete:
+      operationId: delete-sandbox-property
+      summary: Delete a property
+      tags:
+      - Properties
+      description: |
+        Remove a property from a sandbox. This operation applies when the sandbox contains more than one property. You cannot delete the only property of a sandbox.
+      parameters:
+      - $ref: parameters/accessParam-query.yaml
+      responses:
+        204:
+          description: |
+            The request was successfully processed.
+  /sandboxes/{sandboxId}/properties/{sandboxPropertyId}/rules:
+    parameters:
+    - $ref: parameters/sandboxPropertyId-path.yaml
+    - $ref: parameters/sandboxId-path.yaml
+    get:
+      operationId: get-sandbox-properties-rules
+      summary: Get a rule tree
+      tags:
+      - Properties
+      description: |
+        Get a specific rule tree of a sandbox property. Each sandbox property references one rule tree. For more information on how content-handling rules are defined, review the [Property Manager API](https://techdocs.akamai.com/property-mgr/reference/api).
+      parameters:
+      - $ref: parameters/accessParam-query.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/rules-get-response.json
+              schema:
+                $ref: schemas/rules.yaml
+    put:
+      operationId: put-sandbox-properties-rules
+      summary: Update a rule tree
+      tags:
+      - Properties
+      description: |
+        Modify the rules of a sandbox property to make changes to content-handling behaviors for testing purposes within your development environment. Once you are satisfied with the results in your sandbox, you can use the [Property Manager API](https://techdocs.akamai.com/property-mgr/reference/api) to apply the rule changes to your property configuration.
+      parameters:
+      - $ref: parameters/accessParam-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/rules-update-request.json
+            schema:
+              $ref: schemas/rules.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/update-rules-response.json
+              schema:
+                $ref: schemas/update-rules-response.yaml
+  /sandboxes/{sandboxId}/rotateJWT:
+    parameters:
+    - $ref: parameters/sandboxId-path.yaml
+    post:
+      operationId: post-sandbox-rotate-jwt
+      summary: Rotate the JWT
+      tags:
+      - Rotate JWT
+      description: |
+        Generate a new `jwtToken` (JSON Web Token) for the specified sandbox instance. Use this to prevent access to a particular sandbox by developers who had the previous JWT.
+      parameters:
+      - $ref: parameters/accessParam-query.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/rotate-jwt.json
+              schema:
+                $ref: schemas/rotate-jwt-response.yaml

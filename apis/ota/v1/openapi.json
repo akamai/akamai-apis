@@ -1,0 +1,244 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's IoT OTA Updates API",
+    "url": "https://techdocs.akamai.com/iot-ota-updates/reference"
+  },
+  "info": {
+    "title": "Akamai: IoT OTA Updates API",
+    "version": "v1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/cpcodes": {
+      "get": {
+        "description": "Lists all content provider codes assigned to the Internet of Things product. Use one of the identifiers as input to the [List download notifications](https://techdocs.akamai.com/iot-ota-updates/reference/get-download-notifications) operation.",
+        "operationId": "get-cpcodes",
+        "summary": "List content provider codes",
+        "tags": [
+          "CP codes"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's IoT OTA Updates API",
+          "url": "https://techdocs.akamai.com/iot-ota-updates/reference/get-cpcodes"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Specifies a collection of content provider codes.",
+                  "type": "array",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "Specifies a content provider code.",
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "name"
+                    ],
+                    "properties": {
+                      "id": {
+                        "description": "The identifier of the content provider code.",
+                        "type": "integer"
+                      },
+                      "name": {
+                        "description": "The name of the content provider code.",
+                        "type": "string"
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/cpcode.yaml"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/cpcodes-200.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 100001,
+                    "name": "cp code 100001"
+                  },
+                  {
+                    "id": 100002,
+                    "name": "cp code 100002"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/download-notifications/{cpcode}": {
+      "get": {
+        "description": "Returns a single page of notifications about completed downloads to specific vehicles. The operation limits the downloads from the past 12 hours that exist under one CP code. All requests subsequent to the first request require storing `nextPageStart` from the last response's `notifications` array and using it as `start` of a new request.",
+        "operationId": "get-download-notifications",
+        "summary": "List download notifications",
+        "tags": [
+          "Download notifications"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's IoT OTA Updates API",
+          "url": "https://techdocs.akamai.com/iot-ota-updates/reference/get-download-notifications"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "nextPageStart": 1497627402001,
+                  "notifications": [
+                    {
+                      "cpcode": 1234567,
+                      "downloadTime": "2021-05-16T17:30:01+00:00",
+                      "host": "downloads.automotive-company.com",
+                      "path": "/files/0001",
+                      "uid": "0000-0000-0001"
+                    },
+                    {
+                      "cpcode": 1234567,
+                      "downloadTime": "2021-05-16T17:33:02+00:00",
+                      "host": "downloads.automotive-company.com",
+                      "path": "/files/0002",
+                      "uid": "0000-0000-0002"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates a collection of download notifications, with additional pagination context.",
+                  "type": "object",
+                  "required": [
+                    "notifications"
+                  ],
+                  "properties": {
+                    "nextPageStart": {
+                      "description": "The timestamp in milliseconds that indicates the `start` of the next page of notifications.",
+                      "type": "integer"
+                    },
+                    "notifications": {
+                      "description": "The set of download notifications.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Encapsulates each download notification.",
+                        "type": "object",
+                        "required": [
+                          "cpcode",
+                          "downloadTime",
+                          "host",
+                          "path",
+                          "uid"
+                        ],
+                        "properties": {
+                          "cpcode": {
+                            "description": "The content provider code used to bill the user-originated traffic.",
+                            "type": "integer"
+                          },
+                          "downloadTime": {
+                            "description": "The date and time of a download event on a Ghost server.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "host": {
+                            "description": "The host of a downloaded file.",
+                            "type": "string"
+                          },
+                          "path": {
+                            "description": "The path of a downloaded file.",
+                            "type": "string"
+                          },
+                          "uid": {
+                            "description": "The unique identifier of a vehicle.",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/notifications-200.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "The Unix timestamp in milliseconds that starts a range of notifications. It can't be older than the notification retention period of the past 12 hours. If not specified, the API returns notifications from the past 12 hours.",
+            "example": "{{start}}",
+            "in": "query",
+            "name": "start",
+            "schema": {
+              "example": 1497947550000,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/start-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The content provider code assigned to the Internet of Things product. Run the [List content provider codes](https://techdocs.akamai.com/iot-ota-updates/reference/get-cpcodes) operation to get an identifier.",
+          "example": "{{cpcode}}",
+          "in": "path",
+          "name": "cpcode",
+          "required": true,
+          "schema": {
+            "example": 100001,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/cpcode-path.yaml"
+          }
+        }
+      ]
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/ota/v1"
+    }
+  ]
+}

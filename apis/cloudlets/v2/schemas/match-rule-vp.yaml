@@ -1,0 +1,77 @@
+type: object
+description: |-
+  Contains match rule information for Visitor Prioritization.
+  
+x-akamai:
+  file-path: schemas/match-rule-vp.yaml
+title: Visitor Prioritization
+additionalProperties: false
+required:
+- type
+- passThroughPercent
+properties:
+  id:
+    type: integer
+    description: |
+      __Internal__ Akamai internal use only.
+    x-akamai:
+      status: INTERNAL
+    nullable: true
+  name:
+    type: string
+    description: |
+      The name of the rule.
+    nullable: true
+    maxLength: 8192
+  type:
+    type: string
+    description: |
+      The type of Cloudlet the rule is for. For example, the string for Visitor Prioritization is `vpMatchRule`.
+    enum:
+    - vpMatchRule
+  akaRuleId:
+    type: string
+    description: |
+      The rule's unique identifier.
+  disabled:
+    type: boolean
+    description: |
+      If `true`, disables a rule so it's not evaluated against incoming requests. The default setting is `false`.
+    default: false
+  end:
+    type: integer
+    description: |
+      The end time for this match rule. When `matchesAlways` is `false`, enter the `end` value in epoch seconds.
+    minimum: 0
+  matchURL:
+    type: string
+    description: |
+      The URL the Cloudlet uses to match the incoming request.
+    nullable: true
+    maxLength: 8192
+  matches:
+    type: array
+    description: |
+      The `matchType` and the `matchValue` or `objectMatchValue` used to conditionally pass through the request. Plus additional criteria to match on, like case sensitivity (`caseSensitive`).
+    nullable: true
+    items:
+      $ref: match-rule-vp-definitions.yaml#/definitions/matchCriteriaType
+  matchesAlways:
+    type: boolean
+    description: |
+      The match rule is always on when `true`. When `false`, the rule is applied according to the `start` and `end` times.
+  passThroughPercent:
+    type: number
+    description: |
+      The range `0.000: 99.000` specifies the percentage of requests that pass through to the origin. The value of `100` means the request always passes through to the origin. For Visitor Prioritization, a value of `-1` means send everyone to the waiting room.
+    minimum: -1
+    maximum: 100
+  start:
+    type: integer
+    description: |
+      The start time for this match rule. When `matchesAlways` is `false`, enter the `start` value in epoch seconds.
+    minimum: 0
+  useIncomingQueryString:
+    type: boolean
+    description: |
+      If set to `true`, the Cloudlet includes the request's query string in the rewritten or forwarded URL.

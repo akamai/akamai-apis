@@ -1,0 +1,414 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Client Access Control API",
+    "url": "https://techdocs.akamai.com/client-access-control/reference"
+  },
+  "info": {
+    "title": "Akamai: Client Access Control API",
+    "version": "1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/configurations": {
+      "get": {
+        "description": "Get the list of all Client Access Control (CAC) configurations to which you have access.",
+        "operationId": "get-configurations",
+        "summary": "List CAC configurations",
+        "tags": [
+          "CAC configurations"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Client Access Control API",
+          "url": "https://techdocs.akamai.com/client-access-control/reference/get-configurations"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Configuration collection.",
+                  "type": "array",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "Encapsulates the Client Access Control (CAC) configurations that you have access to. These configurations let your origin communicate with the Akamai network.",
+                    "type": "object",
+                    "properties": {
+                      "configurationId": {
+                        "description": "The unique ID for the CAC configuration.",
+                        "type": "integer"
+                      },
+                      "currentCidrs": {
+                        "additionalProperties": false,
+                        "description": "Encapsulates the current set of CIDR blocks.",
+                        "type": "object",
+                        "properties": {
+                          "acknowledgeDate": {
+                            "description": "An ISO-8601 timestamp for when your organization last acknowledged a proposed CIDR block version.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "cidrs": {
+                            "description": "CIDR blocks used to provide this CAC configuration with access to the Akamai portal.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "version": {
+                            "description": "The current version of CIDR blocks serving the CAC configuration. The first version is always `0`.",
+                            "type": "integer"
+                          }
+                        }
+                      },
+                      "description": {
+                        "description": "A description of the CAC configuration.",
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "The name of the CAC configuration.",
+                        "type": "string"
+                      },
+                      "proposedCidrs": {
+                        "description": "Encapsulates the set of CIDR blocks proposed by Akamai.",
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "type": "object",
+                          "properties": {
+                            "cidrs": {
+                              "description": "CIDR blocks used to provide this CAC configuration with access to the Akamai portal.",
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "proposedDate": {
+                              "description": "The time, in ISO-8601 format, that Akamai proposed the latest version of CIDR blocks.",
+                              "format": "date-time",
+                              "type": "string"
+                            },
+                            "version": {
+                              "description": "The latest version of CIDR blocks proposed.",
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/configuration.yaml"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/configurations.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "configurationId": 1060,
+                    "description": "The CAC configuration for an example application.",
+                    "name": "Example-CAC-Config",
+                    "currentCidrs": {
+                      "acknowledgeDate": "2021-12-08T16:42:49+0000",
+                      "version": 1,
+                      "cidrs": [
+                        "1.2.0.0/0"
+                      ]
+                    },
+                    "proposedCidrs": [
+                      {
+                        "proposedDate": "2021-12-08T17:13:41+0000",
+                        "version": 2,
+                        "cidrs": [
+                          "192.0.2.158/24",
+                          "192.0.2.161/24",
+                          "192.0.2.44/24",
+                          "192.0.2.169/24",
+                          "192.0.2.109/24",
+                          "192.0.2.117/24",
+                          "192.0.2.133/24"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "configurationId": 1062,
+                    "description": "CAC configuration type 2",
+                    "name": "CAC configuration type 2",
+                    "currentCidrs": {
+                      "acknowledgeDate": "2021-12-08T16:42:49+0000",
+                      "version": 2,
+                      "cidrs": [
+                        "192.0.2.151/24",
+                        "192.0.2.172/24",
+                        "192.0.2.127/24",
+                        "192.0.2.86/24",
+                        "192.0.2.238/24"
+                      ]
+                    },
+                    "proposedCidrs": [
+                      {
+                        "proposedDate": "2021-12-08T17:13:41+0000",
+                        "version": 3,
+                        "cidrs": [
+                          "192.0.2.43/24",
+                          "192.0.2.216/24",
+                          "192.0.2.60/24"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/configurations/{configurationId}": {
+      "get": {
+        "description": "Returns the CAC configuration for a specific `configurationId`.",
+        "operationId": "get-configuration",
+        "summary": "Get a CAC configuration",
+        "tags": [
+          "CAC configurations"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Client Access Control API",
+          "url": "https://techdocs.akamai.com/client-access-control/reference/get-configuration"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "configurationId": 1060,
+                  "description": "The CAC configuration for an example application.",
+                  "name": "Example-CAC-Config",
+                  "currentCidrs": {
+                    "acknowledgeDate": "2021-12-08T16:42:49+0000",
+                    "version": 1,
+                    "cidrs": [
+                      "1.2.0.0/0"
+                    ]
+                  },
+                  "proposedCidrs": [
+                    {
+                      "proposedDate": "2021-12-08T17:13:41+0000",
+                      "version": 2,
+                      "cidrs": [
+                        "192.0.2.223/24",
+                        "192.0.2.97/24",
+                        "192.0.2.83/24",
+                        "192.0.2.210/24",
+                        "192.0.2.49/24",
+                        "192.0.2.42/24",
+                        "192.0.2.150/24"
+                      ]
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates the Client Access Control (CAC) configurations that you have access to. These configurations let your origin communicate with the Akamai network.",
+                  "type": "object",
+                  "properties": {
+                    "configurationId": {
+                      "description": "The unique ID for the CAC configuration.",
+                      "type": "integer"
+                    },
+                    "currentCidrs": {
+                      "additionalProperties": false,
+                      "description": "Encapsulates the current set of CIDR blocks.",
+                      "type": "object",
+                      "properties": {
+                        "acknowledgeDate": {
+                          "description": "An ISO-8601 timestamp for when your organization last acknowledged a proposed CIDR block version.",
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "cidrs": {
+                          "description": "CIDR blocks used to provide this CAC configuration with access to the Akamai portal.",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "version": {
+                          "description": "The current version of CIDR blocks serving the CAC configuration. The first version is always `0`.",
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "description": {
+                      "description": "A description of the CAC configuration.",
+                      "type": "string"
+                    },
+                    "name": {
+                      "description": "The name of the CAC configuration.",
+                      "type": "string"
+                    },
+                    "proposedCidrs": {
+                      "description": "Encapsulates the set of CIDR blocks proposed by Akamai.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "cidrs": {
+                            "description": "CIDR blocks used to provide this CAC configuration with access to the Akamai portal.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "proposedDate": {
+                            "description": "The time, in ISO-8601 format, that Akamai proposed the latest version of CIDR blocks.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "version": {
+                            "description": "The latest version of CIDR blocks proposed.",
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/configuration.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "A unique identifier for a CAC configuration.",
+          "example": "{{configurationId}}",
+          "in": "path",
+          "name": "configurationId",
+          "required": true,
+          "schema": {
+            "example": 1234,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/configurationId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/configurations/{configurationId}/acknowledge/{version}": {
+      "put": {
+        "description": "Once you review the `proposedCidrs` from Akamai and update your Access Control List (ACL) accordingly, use this operation to acknowledge the change.",
+        "operationId": "put-configuration-acknowledge-version",
+        "summary": "Acknowledge proposed CIDR blocks",
+        "tags": [
+          "CIDR blocks"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Client Access Control API",
+          "url": "https://techdocs.akamai.com/client-access-control/reference/put-configuration-acknowledge-version"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The version of proposed CIDR blocks that you are acknowledging.",
+          "example": "{{version}}",
+          "in": "path",
+          "name": "version",
+          "required": true,
+          "schema": {
+            "example": 1,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/version-path.yaml"
+          }
+        },
+        {
+          "description": "A unique identifier for a CAC configuration.",
+          "example": "{{configurationId}}",
+          "in": "path",
+          "name": "configurationId",
+          "required": true,
+          "schema": {
+            "example": 1234,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/configurationId-path.yaml"
+          }
+        }
+      ]
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/client-access-control/v1"
+    }
+  ]
+}

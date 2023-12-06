@@ -1,0 +1,54 @@
+x-akamai:
+  file-path: paths/activations.yaml
+  path-info: /activations
+post:
+  operationId: post-activations
+  summary: Activate a configuration version
+  tags:
+  - Activations
+  description: |
+    Activates one or more configurations globally. Note that you need to explicitly list any invalid hosts in the `acknowledgedInvalidHostsByConfig` parameter in order to successfully activate a configuration that includes invalid hostnames. If you have an invalid hostname that isn't explicitly called out you'll receive an error telling you to add them to `acknowledgedInvalidHostsByConfig`. See [Activate with invalid hostnames](ref:activate-with-invalid-hostnames) for instructions. _Products:_ All.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/activations.json
+        schema:
+          $ref: ../schemas/activations-post.yaml
+  responses:
+    200:
+      description: |
+        Activation request successful.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/activation-status.json
+          schema:
+            $ref: ../schemas/activation-status.yaml
+    202:
+      description: |
+        Activation request launched.
+      headers:
+        Location:
+          description: |
+            Location at which you can find the status of the ongoing job to create your activation request.
+          schema:
+            type: string
+      content:
+        application/json:
+          example:
+            $ref: ../examples/activation-status-created.json
+          schema:
+            $ref: ../schemas/activation-request-status-created.yaml
+    400:
+      $ref: ../errors/400.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to the configuration.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/403.json
+          schema:
+            $ref: ../schemas/problem-details.yaml

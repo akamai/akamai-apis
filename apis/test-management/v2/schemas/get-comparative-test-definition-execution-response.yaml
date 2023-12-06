@@ -1,0 +1,167 @@
+type: object
+description: |-
+  The test definition execution is a component of a test run. A test run has one execution for each of its test definitions. A test definition execution contains the subset of test cases, IP versions, target hostname, and target environment of the test definition it belongs to.
+  
+x-akamai:
+  file-path: schemas/get-comparative-test-definition-execution-response.yaml
+additionalProperties: false
+required:
+- testDefinitionExecutionId
+- testDefinitionId
+- testRunId
+- targetHostname
+- targetEnvironment
+- supportedComparisonSettings
+- submittedBy
+- submittedDate
+- status
+- ipVersions
+- errors
+- testCaseIds
+properties:
+  completedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the test definition execution was completed.
+    format: date-time
+  diffCount:
+    type: object
+    description: |
+      Contains information about diffs detected during the test run. It appears only when the execution's `status` is `completed`.
+    additionalProperties: false
+    required:
+    - total
+    - outstanding
+    properties:
+      outstanding:
+        type: integer
+        description: |
+          Number of diffs not accepted.
+        minimum: 0
+      total:
+        type: integer
+        description: |
+          Total number of diffs detected.
+        minimum: 0
+  errors:
+    type: array
+    description: |
+      Contains [HTTP Problem Details](https://tools.ietf.org/html/rfc7807) objects indicating errors occurred during the test run. It appears only when the execution's `status` is `failed`.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      - title
+      - ipVersion
+      properties:
+        type:
+          type: string
+          description: |
+            Dot-notated identifier for each type of error.
+          minLength: 1
+        title:
+          type: string
+          description: |
+            Summary of each error.
+          minLength: 1
+        ipVersion:
+          type: string
+          description: |
+            IP version for which the test definition execution failed.
+          minLength: 1
+        testCaseId:
+          type: integer
+          description: |
+            Unique identifier for each comparative test case for which the test definition execution failed. If missing, the execution failed for all test cases for the corresponding IP version.
+          minimum: 0
+  ipVersions:
+    type: array
+    description: |
+      IP versions for which the test run executed. Possible values are: `ipv4`, `ipv6`, or both.
+    minItems: 1
+    maxItems: 2
+    uniqueItems: true
+    items:
+      type: string
+      enum:
+      - ipv4
+      - ipv6
+  note:
+    type: string
+    description: |
+      Notes about the test definition execution.
+    minLength: 0
+    maxLength: 500
+  status:
+    type: string
+    description: |
+      Execution's status. Possible values are: `in_progress`, `completed`, `failed`, or `archived`. A value of `failed` means that the execution couldn't be run because of an error. You can check its details in the `errors` array. A value of `archived` means there have been at least five subsequent runs for this test definition.
+    enum:
+    - in_progress
+    - completed
+    - failed
+    - archived
+  submittedBy:
+    type: string
+    description: |
+      Username who initiated the test definition execution.
+    minLength: 1
+  submittedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the test definition execution was submitted.
+    format: date-time
+  supportedComparisonSettings:
+    type: array
+    description: |
+      Attributes set for comparison between environments in the `comparisonSettings` array of each executed comparative test case. Possible values are: `responseCode`, `responseHeaders`, `cpcode`, `cachingOption`, `cacheKey`, `metadataVariables`, or `originServer`.
+    minItems: 0
+    items:
+      type: string
+      enum:
+      - responseCode
+      - responseHeaders
+      - cpcode
+      - cachingOption
+      - cacheKey
+      - metadataVariables
+      - originServer
+  targetEnvironment:
+    type: string
+    description: |
+      Environment against which Test Center executed the test run, either `production` or `staging`.
+    enum:
+    - production
+    - staging
+    maxLength: 100
+  targetHostname:
+    type: string
+    description: |
+      Target environment hostname against which the test definition was executed.
+    maxLength: 100
+    format: hostname
+  testCaseIds:
+    type: array
+    description: |
+      Contains unique identifiers of comparative test cases that executed. To get details of a test case, run the [Get a comparative test case](ref:get-test-definition-test-case) operation.
+    minItems: 0
+    items:
+      type: integer
+      minimum: 0
+  testDefinitionExecutionId:
+    type: integer
+    description: |
+      Unique identifier for each test definition execution.
+    minimum: 0
+  testDefinitionId:
+    type: integer
+    description: |
+      Unique identifier for each test definition that executed.
+    minimum: 0
+  testRunId:
+    type: integer
+    description: |
+      Identifier of the test run.
+    minimum: 0

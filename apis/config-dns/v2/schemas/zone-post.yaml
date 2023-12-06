@@ -1,0 +1,59 @@
+type: object
+description: |-
+  An Edge DNS zone. This object contains zone settings, but not record sets.
+  
+x-akamai:
+  file-path: schemas/zone-post.yaml
+additionalProperties: false
+required:
+- zone
+- type
+properties:
+  type:
+    type: string
+    description: |
+      The zone type. A `PRIMARY` zone's records are stored in the Akamai Portal. A `SECONDARY` zone's records are stored on the customer's nameservers. `ALIAS` zones allow users to duplicate the configuration of an existing zone.
+    enum:
+    - PRIMARY
+    - SECONDARY
+    - ALIAS
+  comment:
+    type: string
+    description: |
+      Free-form user comments.
+  endCustomerId:
+    type: string
+    description: |
+      Free-form user identifier for this zone, often used by resellers.
+  masters:
+    type: array
+    description: |
+      For `SECONDARY` zones only. The names or addresses of the customer's nameservers that the zone data should be retrieved from.
+    items:
+      type: string
+  signAndServe:
+    type: boolean
+    description: |
+      For `PRIMARY` and `SECONDARY` zones only. Indicates whether DNSSEC Sign&Serve enabled.
+  signAndServeAlgorithm:
+    type: string
+    description: |
+      The algorithm currently or last used for DNSSEC Sign&Serve. Absent if no algorithm has ever been assigned to this zone.
+    enum:
+    - RSA_SHA1
+    - RSA_SHA256
+    - RSA_SHA512
+    - ECDSA_P256_SHA256
+    - ECDSA_P384_SHA384
+  target:
+    type: string
+    description: |
+      For `ALIAS` zones only. The name of the zone whose configuration this zone will copy.
+  tsigKey:
+    description: |
+      For `SECONDARY` zones only. The TSIG key used for zone transfers.
+    $ref: tsigkey-get.yaml
+  zone:
+    type: string
+    description: |
+      The name of the zone.

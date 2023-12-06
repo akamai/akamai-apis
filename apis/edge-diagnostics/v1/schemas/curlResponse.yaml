@@ -1,0 +1,72 @@
+type: object
+description: |-
+  Collects the `curl` response and details about the request.
+  
+x-akamai:
+  file-path: schemas/curlResponse.yaml
+additionalProperties: false
+required:
+- createdBy
+- createdTime
+- completedTime
+- executionStatus
+- internalIp
+- edgeIpLocation
+- request
+properties:
+  completedTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the request was completed.
+    format: date-time
+  createdBy:
+    type: string
+    description: |
+      Username who submitted the request.
+    minLength: 1
+  createdTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the request was submitted.
+    format: date-time
+  edgeIpLocation:
+    description: |
+      Specifies the geolocation of the edge server used to run the operation.
+    $ref: edgeIpLocation.yaml
+  executionStatus:
+    type: string
+    description: |
+      Status of the request's execution, either `SUCCESS` or `FAILURE`.
+    enum:
+    - SUCCESS
+    - FAILURE
+  internalIp:
+    type: string
+    description: |
+      If your request contained `edgeLocationId` then this is the IP of a machine in that location. If you run the operation for a VIP, then this is the IP of a machine behind that VIP.
+    minLength: 1
+  request:
+    description: |
+      Specifies your `curl` request.
+    $ref: curlRequest.yaml
+  result:
+    description: |
+      Results of the `curl` command.
+    $ref: curlResults.yaml
+  siteShieldIp:
+    type: string
+    description: |
+      If your request specifies `runFromSiteShield` as `true`, then this is the IP used to run cURL.
+    minLength: 1
+  siteShieldIpLocation:
+    description: |
+      Specifies the geolocation of the edge server used to run the operation. It appears only for `runFromSiteShield` set to `true`.
+    $ref: edgeIpLocation.yaml
+  suggestedActions:
+    type: array
+    description: |
+      Suggestions on what to do next with the results.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1

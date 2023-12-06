@@ -1,0 +1,60 @@
+id: resource:/descriptors/papi/v1/schemas/CreateOrCloneIncludeRequestV0.json#
+javaType: com.akamai.luna.papi.model.IncludeCreateRequest
+type: object
+description: |-
+  Contains configuration data to apply to edge content. Relevant response objects appear within the outer envelope's `includes.items` array.
+  
+x-akamai:
+  file-path: schemas/include-create-request.yaml
+required:
+- productId
+- includeName
+- includeType
+properties:
+  cloneFrom:
+    type:
+    - object
+    - 'null'
+    description: |
+      Optionally identifies another include instance to clone when making a POST request to create a new include. You need to assign the same contract and group to the cloned include.
+    required:
+    - includeId
+    - version
+    properties:
+      version:
+        type: integer
+        description: |
+          Specifies the version of the include to clone.
+        minimum: 1
+      cloneFromVersionEtag:
+        type:
+        - string
+        - 'null'
+        description: |
+          Performs an ETag data integrity check on the original include. See [Concurrency control](ref:concurrency-control) for guidance.
+      includeId:
+        type: string
+        description: |
+          Specifies the include to clone. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `inc_` prefix.
+  includeName:
+    type: string
+    description: |
+      A descriptive name for the include.
+  includeType:
+    type: string
+    description: |
+      The type of an include. `MICROSERVICES` specifies includes with a separate access control and activation flow, which allows different teams to work independently on different parts of a single site. In a parent property's rule tree, you add the `MICROSERVICE` includes to rules with mutually exclusive path matches. `COMMON_SETTINGS` specifies includes used across different properties that share a significant number of settings. In a parent property's rule tree, you add the `COMMON_SETTINGS` includes to the default rule or rules without any matches. By updating or activating a single `COMMON_SETTINGS` include, the changes take effect immediately across all sites that use this include. You can use this member for filtering and grouping similar includes together.
+    enum:
+    - COMMON_SETTINGS
+    - MICROSERVICES
+  productId:
+    type: string
+    description: |
+      Unique identifier for the product. See [ID prefixes](ref:id-prefixes) for details on omitting the value's `prd_` prefix.
+  ruleFormat:
+    type:
+    - string
+    - 'null'
+    description: |
+      On GET, reflects the include's current format. Otherwise on POST, assigns a specific rule format to the include. Ignored on PUT, since you need to modify the `Content-Type` to change rule formats. For details, see [Update rules to a newer set of features](ref:manage-rules).
+$schema: http://json-schema.org/draft-04-schema#

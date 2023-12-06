@@ -1,0 +1,44 @@
+type: object
+description: |-
+  Contains information about a test suite with test cases and variables.
+  
+x-akamai:
+  file-path: schemas/test-suite-with-child-objects-auto-generate.yaml
+additionalProperties: false
+required:
+- testSuiteName
+- isLocked
+- isStateful
+- configs
+- testCases
+- variables
+properties:
+  configs:
+    $ref: configs-create-auto-generate-response.yaml
+  isLocked:
+    type: boolean
+    description: |
+      Locks the test suite so that only designated owners or editors can modify it.
+  isStateful:
+    type: boolean
+    description: |
+      Whether the test suite is run statefully. If a test suite is run statefully, cookies and session information are retained for subsequent test cases within the test suite.
+  testCases:
+    type: array
+    description: |
+      Lists generated functional test cases and included objects: condition, test request, and client profile.
+    minItems: 0
+    items:
+      $ref: functional-test-case-auto-generate.yaml
+  testSuiteName:
+    type: string
+    description: |
+      Unique name of the test suite.
+    minLength: 1
+  variables:
+    type: array
+    description: |
+      Lists generated variables referenced from a test case: `testRequestUrl`, `headerName`, `headerValue`, and `conditionExpression`.
+    minItems: 0
+    items:
+      $ref: variable-create.yaml

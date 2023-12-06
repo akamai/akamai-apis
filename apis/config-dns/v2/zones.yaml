@@ -1,0 +1,212 @@
+openapi: 3.0.0
+info:
+  title: Zones
+  version: v2
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/config-dns/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: zones.yaml
+paths:
+  /zones:
+    post:
+      operationId: post-zone
+      summary: Create a zone
+      tags:
+      - Zones
+      description: |
+        Creates a new zone. Carefully review the documentation for which fields are relevant to the type of zone you are creating.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/groupAware_gid.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/zone-post-request.json
+            schema:
+              $ref: schemas/zone-post.yaml
+      responses:
+        201:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/zone-get-secondary.json
+              schema:
+                $ref: schemas/zone-get.yaml
+    get:
+      operationId: get-zones
+      summary: List zones
+      tags:
+      - Zones
+      description: |
+        Get a list of all zones that the current user has access to manage. Includes the version identifier, propagation status, and SOA serial number for the most recently activated version. This operation is [paginated](ref:use-pagination).
+      parameters:
+      - $ref: parameters/contractIds-query-zones.yaml
+      - $ref: parameters/search-query-zones.yaml
+      - $ref: parameters/sortBy-query-zones.yaml
+      - $ref: parameters/subzoneGrant-query.yaml
+      - $ref: parameters/types-query-zones.yaml
+      - $ref: parameters/pageable_page.yaml
+      - $ref: parameters/pageable_pageSize.yaml
+      - $ref: parameters/pageable_showAll.yaml
+      responses:
+        200:
+          description: |
+            List of zones that you own.
+          content:
+            application/json:
+              example:
+                $ref: examples/zone-report.json
+              schema:
+                $ref: schemas/get-zones-response.yaml
+  /zones/dns-sec-status:
+    post:
+      operationId: post-zones-dns-sec-status
+      summary: Get zones DNSSEC status
+      tags:
+      - DNSSEC status
+      description: |
+        Returns the current DNSSEC status for one or more zones.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/zone-name-list.json
+            schema:
+              $ref: schemas/zone-name-list.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/dns-sec-status-post-response.json
+              schema:
+                $ref: schemas/dns-sec-status-list.yaml
+  /zones/zone-transfer-status:
+    post:
+      operationId: post-zones-zone-transfer-status
+      summary: Get secondary zones transfer status
+      tags:
+      - Zone transfer status
+      description: |
+        Returns the results of the most recent zone transfer attempts for one or more zones.  When you configure a `SECONDARY` zone, several Akamai nameservers known as zone transfer agents perform zone transfer requests to fetch the record data from the zone's configured master nameservers. The data returned by this operation describes the results of those zone transfers.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/zone-name-list.json
+            schema:
+              $ref: schemas/zone-name-list.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/zone-transfer-status-post-response.json
+              schema:
+                $ref: schemas/post-zones-zone-transfer-status-response.yaml
+  /zones/{zone}:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-zone
+      summary: Get zone's settings
+      tags:
+      - Zones
+      description: |
+        Retrieves the metadata for this zone. Does not include record sets.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/zone-get-primary.json
+              schema:
+                $ref: schemas/zone-get.yaml
+    put:
+      operationId: put-zone
+      summary: Update zone's settings
+      tags:
+      - Zones
+      description: |
+        Modifies a zone. You can't change the zone `type` with this operation.
+      parameters:
+      - $ref: parameters/skipSignAndServeSafetyCheck-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/zone-post-request.json
+            schema:
+              $ref: schemas/put-zones-zone-request.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/zone-get-primary.json
+              schema:
+                $ref: schemas/zone-get.yaml
+  /zones/{zone}/aliases:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-zone-aliases
+      summary: Get zone's aliases
+      tags:
+      - Zones
+      description: |
+        Show all zones that alias to this zone.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/zone-aliases-get.json
+              schema:
+                $ref: schemas/get-zones-zone-aliases-response.yaml
+  /zones/{zone}/contract:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-zone-contract
+      summary: Get zone's contract
+      tags:
+      - Zone contracts
+      description: |
+        Show data about the contract to which this zone belongs.
+      parameters:
+      - $ref: parameters/groupAware_gid.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/contract-get.json
+              schema:
+                $ref: schemas/contract-get.yaml

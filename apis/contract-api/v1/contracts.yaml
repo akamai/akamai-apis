@@ -1,0 +1,68 @@
+openapi: 3.0.0
+info:
+  title: Contracts
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/contract-api/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: contracts.yaml
+paths:
+  /contracts/identifiers:
+    get:
+      operationId: get-contract-ids
+      summary: List contracts
+      tags:
+      - Contracts
+      description: |
+        Get the list of contracts that a user has access to.
+      parameters:
+      - $ref: parameters/depth-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides a list of contracts.
+          content:
+            application/json:
+              example:
+                $ref: examples/contract-identifiers-list-200.json
+              schema:
+                $ref: schemas/contract-identifiers-200.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+  /contracts/{contractId}/products/summaries:
+    parameters:
+    - $ref: parameters/contractId-path.yaml
+    get:
+      operationId: get-contract-product-summaries
+      summary: List products per contract
+      tags:
+      - Products
+      description: |
+        Get the IDs and names of the products associated with a contract for the time frame selected.
+      parameters:
+      - $ref: parameters/from-query.yaml
+      - $ref: parameters/to-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides a list of products.
+          content:
+            application/json:
+              example:
+                $ref: examples/product-summaries-200.json
+              schema:
+                $ref: schemas/product-summaries-200.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml

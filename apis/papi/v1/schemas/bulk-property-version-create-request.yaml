@@ -1,0 +1,36 @@
+id: resource:/descriptors/papi/v1/schemas/CreateNewBulkPropertyVersionRequestV0.json#
+javaType: com.akamai.devops.model.BulkPropertyVersionCreateRequest
+type: object
+description: |-
+  Encapsulates a set of properties from which to bulk create new versions.
+  
+x-akamai:
+  file-path: schemas/bulk-property-version-create-request.yaml
+required:
+- createPropertyVersions
+properties:
+  createPropertyVersions:
+    type: array
+    description: |
+      Encapsulates information about each new property version to create.
+    items:
+      type: object
+      required:
+      - propertyId
+      - createFromVersion
+      properties:
+        createFromVersion:
+          type: integer
+          description: |
+            The property version on which to base the new version.
+          minimum: 1
+        createFromVersionEtag:
+          type: string
+          description: |
+            The data digest of the version on which to base the new version. If the digest doesn't match the current state of the version, batch-versioning fails for this property. See [Concurrency control](ref:concurrency-control) for guidance.
+        propertyId:
+          type: string
+          description: |
+            Identifies the property for which to create a new version. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+          pattern: ^(prp_|PRP_)?[0-9]+$
+$schema: http://json-schema.org/draft-04/schema#

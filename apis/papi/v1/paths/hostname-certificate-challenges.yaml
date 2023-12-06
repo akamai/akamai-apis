@@ -1,0 +1,51 @@
+x-akamai:
+  file-path: paths/hostname-certificate-challenges.yaml
+  path-for-file: /hostnames/certificate-challenges
+post:
+  operationId: post-certificate-challenges
+  summary: Generate domain validation challenges
+  tags:
+  - Property hostnames
+  description: |
+    If you're using Secure by Default, you can generate the domain validation challenges ahead of setting hostnames for your property. Ordinarily, you get the challenges when you [add hostnames to a property version](ref:patch-property-version-hostnames) or [add hostnames to a property's hostname bucket](ref:patch-property-hostnames). This operation returns the `validationCname` object that you use to validate the certificate's domain. For each requested property hostname, create a new CNAME record in the DNS configuration and map the object's `hostname` to the `target`.
+
+    **Note**: If you're using a new account, first register it on the Akamai network by activating any property version on either staging or production. Otherwise, your attempts to generate certificates will fail with a [403](ref:403) error.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/certificate-challenges-request.json
+        schema:
+          $ref: ../schemas/hostnames-certificate-challenges-request.yaml
+  responses:
+    200:
+      description: |
+        The response shows default certificate's domain validation challenges for the requested property hostnames.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/certificate-challenges-response.json
+          schema:
+            $ref: ../schemas/hostnames-certificate-challenges-post-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: certificateChallenges
+  group: Hostnames

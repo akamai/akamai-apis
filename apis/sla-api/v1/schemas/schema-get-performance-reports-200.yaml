@@ -1,0 +1,54 @@
+type: object
+description: |-
+  Represents the performance test results for the specified date range. Each item in the `data` array contains aggregate performance data for one calendar day.
+  
+x-akamai:
+  file-path: schemas/schema-get-performance-reports-200.yaml
+additionalProperties: false
+required:
+- data
+properties:
+  data:
+    type: array
+    description: |
+      Container for instances of performance report data.
+    minItems: 1
+    uniqueItems: true
+    items:
+      type: object
+      description: |
+        Each day's data.
+      additionalProperties: false
+      required:
+      - date
+      - averageAkamaiPerformanceGain
+      - numberOfAkamaiTests
+      - numberOfOriginTests
+      - averageResponseTimeOrigin
+      - averageResponseTimeAkamai
+      properties:
+        averageAkamaiPerformanceGain:
+          type: number
+          description: |
+            The average of all performance gains for the specified date. Each is the `averageResponseTimeOrigin` divided by the `averageResponseTimeAkamai`.
+        averageResponseTimeAkamai:
+          type: number
+          description: |
+            The average of all CDN test times in milliseconds measured on the specified date.
+        averageResponseTimeOrigin:
+          type: number
+          description: |
+            The average of all origin test times in milliseconds measured on the specified date.
+        date:
+          type: string
+          description: |
+            The day of each summary test, expressed as an ISO 8601 date stamp.
+          minLength: 1
+        numberOfAkamaiTests:
+          type: integer
+          description: |
+            The number of CDN performance test measurements included in the aggregation.
+        numberOfOriginTests:
+          type: integer
+          description: |
+            The number of origin performance test measurements included in the aggregation.

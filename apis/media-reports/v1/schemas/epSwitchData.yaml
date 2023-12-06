@@ -1,0 +1,96 @@
+type: object
+description: |-
+  Encapsulates a media data report.
+  
+x-akamai:
+  file-path: schemas/epSwitchData.yaml
+additionalProperties: false
+required:
+- columns
+- rows
+- metaData
+properties:
+  columns:
+    type: array
+    description: |
+      Provides context for each element listed within corresponding `rows`.
+    minItems: 1
+    uniqueItems: true
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - type
+      - index
+      properties:
+        name:
+          type: string
+          description: |
+            Depending on the `type`, provides the name of the relevant dimension or metric.
+          minLength: 1
+        type:
+          type: string
+          description: |
+            Type of data: `dimension` or `metric`.
+          enum:
+          - dimension
+          - metric
+          minLength: 1
+        index:
+          type: number
+          description: |
+            Positions each column within the table.
+  metaData:
+    type: object
+    description: |
+      Reflects the set of parameter values included in the request that determines this report's results.
+    additionalProperties: false
+    required:
+    - startTimeInEpoch
+    - endTimeInEpoch
+    - aggregation
+    - timeZone
+    - limit
+    - offset
+    - hasMoreData
+    properties:
+      aggregation:
+        type: number
+        description: |
+          The time span included in each record, expressed in seconds.
+      endTimeInEpoch:
+        type: number
+        description: |
+          The end of the requested time range, in epoch seconds.
+      hasMoreData:
+        type: boolean
+        description: |
+          Indicates that a constrained set of requested data does not represent the entire set.
+      limit:
+        type: number
+        description: |
+          The maximum number of requested data `rows`.
+      offset:
+        type: number
+        description: |
+          The offset of the row from which the data should start. Used with overall `limit`, it reflects where a batch of data starts. For example, setting both `offset` and `limit` to `100` selects rows 101-200 from the overall results.
+      startTimeInEpoch:
+        type: number
+        description: |
+          The start of the requested time range, in epoch seconds.
+      timeZone:
+        type: string
+        description: |
+          Identifies the time zone the request was made from.
+        minLength: 1
+  rows:
+    type: array
+    description: |
+      Encapsulates the report's two-dimensional table data. If there is no data to report, the array is empty.
+    uniqueItems: true
+    items:
+      type: array
+      uniqueItems: true
+      items:
+        type: string

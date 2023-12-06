@@ -1,0 +1,101 @@
+id: resource:/descriptors/papi/v1/schemas/GetHostnameAuditHistoryResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array.
+  
+x-akamai:
+  file-path: schemas/hostnames-audit-history-get-response.yaml
+additionalProperties: false
+properties:
+  history:
+    type: object
+    description: |
+      The set of requested property hostname data, available within an `items` array.
+    additionalProperties: false
+    properties:
+      items:
+        type: array
+        description: |
+          Each entry specifies a change to the requested property hostname with details about the user who made that modification and the time it happened. Relevant response objects appear in a descending chronological order within the outer envelope's `history.items` array.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - action
+          - edgeHostnameId
+          - certProvisioningType
+          - propertyId
+          - groupId
+          - contractId
+          - user
+          - timestamp
+          properties:
+            action:
+              type: string
+              description: |
+                The type of action performed to the property hostname, either:
+
+                - `ACTIVATE` if the hostname is currently serving traffic,
+                - `DEACTIVATE` if the hostname isn't serving traffic,
+                - `ADD` if the user requested to add the hostname to a property,
+                - `REMOVE` if the user requested to remove the hostname from a property,
+                - `MOVE` if the hostname was moved from one property to another,
+                - `MODIFY` if the user changed the `edgeHostnameId` or `certProvisioningType` values for an already-activated hostname,
+                - `ABORTED` when the user request to cancel the hostname activation,
+                - `ERROR` if the hostname activation failed.
+              enum:
+              - ADD
+              - ACTIVATE
+              - REMOVE
+              - DEACTIVATE
+              - MOVE
+              - MODIFY
+              - ABORTED
+              - ERROR
+            certProvisioningType:
+              type: string
+              description: |
+                Indicates the type of the certificate used in the property hostname. Either the `CPS_MANAGED` for the custom certificates you create with the [Certificate Provisioning System API](https://techdocs.akamai.com/cps/reference) (CPS), or `DEFAULT` for certificates deployed automatically. Note that you can't specify the `DEFAULT` value if your account hostname uses the `akamaized.net` domain suffix.
+              enum:
+              - CPS_MANAGED
+              - DEFAULT
+            cnameTo:
+              type: string
+              description: |
+                The edge hostname you point the property hostname to so that you can start serving traffic through Akamai servers. This member corresponds to the edge hostname object's `edgeHostnameDomain` member.
+            contractId:
+              type: string
+              description: |
+                Identifies the prevailing contract under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ctr_` prefix.
+            edgeHostnameId:
+              type: string
+              description: |
+                Identifies the edge hostname you mapped your traffic to. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ehn_` prefix.
+            groupId:
+              type: string
+              description: |
+                Identifies the group under which the property activated. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+            network:
+              type: string
+              description: |
+                The network of activated hostnames, either `STAGING` or `PRODUCTION`.
+              enum:
+              - STAGING
+              - PRODUCTION
+            propertyId:
+              type: string
+              description: |
+                Unique identifier for the property. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+            timestamp:
+              type: string
+              description: |
+                Indicates when the action occurred.
+            user:
+              type: string
+              description: |
+                The user who initiated the action.
+  hostname:
+    type: string
+    description: |
+      The `cnameFrom` for the hostname your end users see, indicated by the `Host` header in end user requests.
+$schema: http://json-schema.org/draft-04/schema#

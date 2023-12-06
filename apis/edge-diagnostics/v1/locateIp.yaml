@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: IP network location
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: locateIp.yaml
+paths:
+  /locate-ip:
+    post:
+      operationId: post-locate-ip
+      summary: Locate an IP network
+      tags:
+      - IP network location
+      description: |
+        Returns geolocation data of an IP's network. You can enter up to 10 IPs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/verifyLocateIpsRequest.json
+            schema:
+              $ref: schemas/verifyLocateIpsRequest.yaml
+      responses:
+        200:
+          description: |
+            The response provides location data for the IP's network.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/locateIp.json
+              schema:
+                $ref: schemas/locateIp.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

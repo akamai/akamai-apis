@@ -1,0 +1,230 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Certificates
+  version: v3
+servers:
+- url: https://{hostname}/etp-config/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: tls.yaml
+paths:
+  /customers/{configId}/certificates:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-customers-certificate
+      summary: Create a new proxy certificate
+      tags:
+      - Proxy certificates
+      description: |
+        Creates a new proxy certificate.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-certificate-body.json
+            schema:
+              $ref: schemas/certificate.yaml
+      responses:
+        201:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    get:
+      operationId: get-customers-certificates
+      summary: List proxy certificates
+      tags:
+      - Proxy certificates
+      description: |
+        Returns a list of all available proxy certificates.
+      parameters:
+      - $ref: parameters/debuggable_debug.yaml
+      - $ref: parameters/certificateQueryParams_include-certificate.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-certificates-200.json
+              schema:
+                $ref: schemas/certificates.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /customers/{configId}/certificates/{certificateId}:
+    parameters:
+    - $ref: parameters/certificateId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-customers-certificate
+      summary: Get a proxy certificate
+      tags:
+      - Proxy certificates
+      description: |
+        Returns the details of the specified proxy certificate.
+      parameters:
+      - $ref: parameters/debuggable_debug.yaml
+      - $ref: parameters/certificateQueryParams_include-certificate.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/get-certificate-200.json
+              schema:
+                $ref: schemas/certificate.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    put:
+      operationId: put-customers-certificate
+      summary: Modify a proxy certificate
+      tags:
+      - Proxy certificates
+      description: |
+        Updates the value of a proxy certificate.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/modify-certificate-body.json
+            schema:
+              $ref: schemas/certificate.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /customers/{configId}/certificates/{certificateId}/op/activate:
+    parameters:
+    - $ref: parameters/certificateId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-customers-certificate-activate
+      summary: Activate a proxy certificate
+      tags:
+      - Proxy certificates
+      description: |
+        Transitions the proxy certificate's state from `PENDING_ACTIVATION` to `ACTIVE`.
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /customers/{configId}/certificates/{certificateId}/op/confirm-distribution:
+    parameters:
+    - $ref: parameters/certificateId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-certificate-confirm-distribution
+      summary: Confirm proxy certificate distribution
+      tags:
+      - Proxy certificates
+      description: |
+        Transitions the certificate's state from `PENDING_DISTRIBUTION` to `PENDING_ACTIVATION`. Only perform this operation  after distributing the proxy certificates to relevant enterprise devices.
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /customers/{configId}/certificates/{certificateId}/op/confirm-download:
+    parameters:
+    - $ref: parameters/certificateId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-certificate-confirm-download
+      summary: Confirm proxy certificate download
+      tags:
+      - Proxy certificates
+      description: |
+        Transitions the certificate's state from `PENDING_DOWNLOAD` to `PENDING_ACTIVATION` or `INCOMPLETE`.
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /customers/{configId}/certificates/{certificateId}/op/deactivate:
+    parameters:
+    - $ref: parameters/certificateId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-certificate-deactivate
+      summary: Deactivate a proxy certificate
+      tags:
+      - Proxy certificates
+      description: |
+        Transitions the proxy certificate's state from any state to `DEACTIVATING`.
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml

@@ -1,0 +1,38 @@
+type: object
+description: |-
+  When you enable archiving for an MSL live stream, you can tell Akamai to keep the live archive for a maximum of 31 days. A VOD Asset is physical on-demand video content that you create from a live archive and store in Akamai NetStorage. This lets you preserve live archive content for longer than 31 days.
+  
+x-akamai:
+  file-path: schemas/post-vod.yaml
+additionalProperties: false
+required:
+- URI
+- startTime
+- endTime
+- assetId
+properties:
+  URI:
+    type: string
+    description: |
+      This is the URL for the live stream archive, using the form `/{format}/{streamId}/{eventName}/{manifestName}`. In it, `format` is either `hls` or `dash`, `streamId` is the unique, numeric identifier that's been assigned to the stream, `eventName` is the name of the event that you've assigned to the stream, and `manifestName` is the manifest filename. For example, `/hls/708976/helloworld/master.m3u8` is an HLS master manifest URL and `/dash/708976/helloworld/hello.mpd` is a DASH manifest URL.
+  assetId:
+    type: string
+    description: |
+      This is a unique identifier you set for a VOD asset. Start it with four alphanumeric characters followed by 16 numeric characters.
+  endTime:
+    type: integer
+    description: |
+      The Unix epoch timestamp that marks the end time of the VOD clip. The value needs to be greater than the `startTime` by at least 30 seconds and no more than 43200 seconds, representing the clip's maximum allowed duration of 12 hours. There is a 30 minute latency. So, this needs to be less than the current epoch time by at least 1800 seconds.
+  maxFileSize:
+    type: integer
+    description: |
+      The maximum exported segment size in MB. The default value is 100 MB. This only applies to HLS VOD assets.
+  preserveKeys:
+    type: boolean
+    description: |
+      When set to `true`, MSL won't export keys and won't change key metadata in the manifests. When set to `false`, MSL exports keys and may change metadata in the manifests to accommodate. The default value is `false`. This only applies to HLS VOD assets.
+    default: false
+  startTime:
+    type: integer
+    description: |
+      The Unix epoch timestamp that marks the start time of the VOD clip.

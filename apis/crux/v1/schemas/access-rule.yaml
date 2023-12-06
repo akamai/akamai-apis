@@ -1,0 +1,135 @@
+type: object
+description: |-
+  Properties to create and assign rules to restrict access to an application based on username, group name, time, or other conditions.
+  
+x-akamai:
+  file-path: schemas/access-rule.yaml
+additionalProperties: false
+required:
+- action
+- description
+- global_rule
+- merge_global
+- name
+- resource_uri
+- rule_type
+- settings
+- status
+- uuid_url
+properties:
+  name:
+    type: string
+    description: |
+      The rule's name.
+    minLength: 1
+  description:
+    type: string
+    description: |
+      A description of the rule.
+    nullable: true
+    minLength: 1
+  action:
+    type: integer
+    description: |
+      The action the rule takes. Refer to [Rule types & actions](ref:rule-types-actions) for more information. In case of access rules rule type will always be 1.
+    enum:
+    - 1
+    - 2
+    - 4
+    - 8
+    - 16
+    - 32
+    - 64
+    - 128
+    - 256
+    - 512
+  created_at:
+    type: string
+    description: |
+      ISO 8601 timestamp marking the rule's creation.
+    format: date-time
+  global_rule:
+    type: boolean
+    description: |
+      Whether to apply a rule globally. You can disable a rewrite rule for a specific content type if global application of a rule results in issues or conflicts with other rewrite rules.
+  merge_global:
+    type: boolean
+    description: |
+      Whether to merge with global rules. You can write custom rules that target specific content using the content type and URL or path while applying global rules to non-specified content.
+  modified_at:
+    type: string
+    description: |
+      ISO 8601 timestamp marking the rule's last modification.
+    format: date-time
+  resource_uri:
+    type: object
+    description: |
+      A plural bundle of navigable hypermedia links to other API resources.
+    additionalProperties: false
+    required:
+    - href
+    - service
+    properties:
+      href:
+        type: string
+        description: |
+          The href resource URI.
+      service:
+        type: string
+        description: |
+          The service resource URI.
+  rule_type:
+    type: integer
+    description: |
+      The action the rule takes. Refer to [Rule types & actions](ref:rule-types-actions) for more information. In case of access rules rule type will always be 1.
+    enum:
+    - 1
+  settings:
+    type: array
+    description: |
+      Array containing settings object for rules that have been defined. 
+    items:
+      type: object
+      description: |
+        The objects specify the rule definiton like the kind of rule, operator and value.
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          description: |
+            The access control type. Either `method`, `group`, `client_IP`, `user`, `region`, `country`, and `time`.
+          enum:
+          - method
+          - group
+          - client_IP
+          - user
+          - region
+          - country
+          - time
+        value:
+          type: string
+          description: |
+            The values for the selected `type`.
+        custom:
+          type: boolean
+          description: |
+            Defaults to `false` for access rules. Custom content types are used only for rewrite rules.
+        operator:
+          type: string
+          description: |
+            The logical operator, either `==` for is, or `!=` for is not.
+          enum:
+          - ==
+          - '!='
+  status:
+    type: integer
+    description: |
+      The rule status. Either `0` for disabled or `1` for enabled.
+    enum:
+    - 0
+    - 1
+  uuid_url:
+    type: string
+    description: |
+      The unique ID of the rule.
+    minLength: 1

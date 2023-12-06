@@ -1,0 +1,207 @@
+openapi: 3.0.0
+info:
+  title: Policy domains
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/ip-protect/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: policy-domains.yaml
+paths:
+  /policy-domains:
+    get:
+      operationId: get-policy-domains
+      summary: List policy domains
+      tags:
+      - Policy domains
+      description: |
+        Returns summary information for your policy domains, including information about each domain's configurations and subnets.
+      parameters:
+      - $ref: parameters/latest-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/OpenSummary.json
+              schema:
+                $ref: schemas/OpenSummary.yaml
+  /policy-domains/vips:
+    post:
+      operationId: post-policy-domains-vips
+      summary: List virtual IP addresses
+      tags:
+      - Virtual IP addresses
+      description: |
+        Returns information about the specified virtual IP addresses. Include the IDs of those virtual IP addresses in the `vipIds` array in the request body.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            example:
+              $ref: examples/VipIdRequest.json
+            schema:
+              $ref: schemas/VipIdInput.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/VipIdResponse.json
+              schema:
+                $ref: schemas/VipIdOutput.yaml
+  /policy-domains/vips/health-stats:
+    post:
+      operationId: post-policy-domains-vips-health-stats
+      summary: Get health status
+      tags:
+      - Health status
+      description: |
+        Returns the health status for the specified policy domains. List domain names in the `customers` array in the request body. You can also use `startTime` and `endTime` to define a health status time interval, beginning with the `startTime` and ending with the `endTime`. Be sure to use Unix epoch milliseconds when specifying these values. If you do not include `endTime` the time interval automatically extends to the current time. Akamai retains health statistics for seven days.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            example:
+              $ref: examples/BackendStatusRequest.json
+            schema:
+              $ref: schemas/BackendStatusInput.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/BackendStatusResponse.json
+              schema:
+                $ref: schemas/BackendStatusOutput.yaml
+  /policy-domains/{pdName}:
+    parameters:
+    - $ref: parameters/pdName-path.yaml
+    get:
+      operationId: get-policy-domains-pdname
+      summary: Get a policy domain
+      tags:
+      - Policy domains
+      description: |
+        Returns summary information for the specified policy domain. Use the `extended` parameter to return information about the number of virtual IP addresses available to, and configured for, the domain.
+      parameters:
+      - $ref: parameters/extended-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/SettingsUpdateOpenResponse.json
+              schema:
+                $ref: schemas/SettingUpdateOpenOutput.yaml
+  /policy-domains/{pdName}/configs:
+    parameters:
+    - $ref: parameters/pdName-path.yaml
+    post:
+      operationId: post-policy-domains-pdname-configs
+      summary: Create a new configuration version
+      tags:
+      - Policy configurations
+      description: |
+        Adds new virtual IP addresses (VIPs) and creates or deletes subnets as needed. This operation creates a new configuration version for the specified policy domain.
+
+        Along with the new configuration, the request body requires the previously deployed configuration. Include the previous configuration's `pdSubnet`, `vips`, `vipId`, `customerBackend`, `akamaiFrontend`, `ports`, `sourceIpProtocol`, `probeType`, and `probePort` values. If the previous configuration isn't added, it will be removed. To find the previous configuration, run [List policy configurations](ref:get-policy-domains-pdname-configs).
+      requestBody:
+        required: false
+        content:
+          application/json:
+            example:
+              $ref: examples/CreateOrDeployConfigOpen.json
+            schema:
+              $ref: schemas/CreateOrDeployConfigOpen.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/DeployOutputOpen.json
+              schema:
+                $ref: schemas/DeployOutputOpen.yaml
+    get:
+      operationId: get-policy-domains-pdname-configs
+      summary: List policy configurations
+      tags:
+      - Policy configurations
+      description: |
+        Returns configuration information for the specified policy domain. By default, this operation returns all the available configuration sets. Use the `latest` parameter to return only the most recent set of configuration values.
+      parameters:
+      - $ref: parameters/latest-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/AllConfigsOpenResponse.json
+              schema:
+                $ref: schemas/AllConfigOpenOutput.yaml
+  /policy-domains/{pdName}/pd-subnets/allocate:
+    parameters:
+    - $ref: parameters/pdName-path.yaml
+    put:
+      operationId: put-policy-domains-pdname-pd-subnets-allocate
+      summary: Allocate subnets
+      tags:
+      - Subnets
+      description: |
+        Adds virtual IP addresses to the specified policy domain. In the request body, use `addVips` to specify the number of virtual IP addresses you're adding, and use `allocateIpv6` to configure the IP addressing type for these addresses. Set `allocateIpv6` to `true` to use IPv6 addressing, and either omit `allocateIpv6` or set the value to `false` to use IPv4 addressing.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            example:
+              $ref: examples/addVipsExample.json
+            schema:
+              $ref: schemas/addVipsSchema.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/UpdatePdSubnetOpenResult.json
+              schema:
+                $ref: schemas/UpdatePdSubnetOpenResponse.yaml
+  /policy-domains/{pdName}/vips/health-stats:
+    parameters:
+    - $ref: parameters/pdName-path.yaml
+    get:
+      operationId: get-policy-domains-pdname-vips-health-stats
+      summary: Get health status for a policy domain
+      tags:
+      - Health status
+      description: |
+        Returns the health status for the specified policy domain. Health status measures the percentage of locations for a back end IP address that are currently available. IP Protect calculates separate health status scores for each back-end address.
+      parameters:
+      - $ref: parameters/startTime-query.yaml
+      - $ref: parameters/endTime-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/BackendStatusResponse.json
+              schema:
+                $ref: schemas/BackendStatusOutput.yaml

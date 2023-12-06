@@ -1,0 +1,51 @@
+type: object
+description: |-
+  Results for synchronous `grep` request.
+  
+x-akamai:
+  file-path: schemas/grepSyncResponse.yaml
+additionalProperties: false
+required:
+- executionStatus
+- createdBy
+- createdTime
+- request
+properties:
+  createdBy:
+    type: string
+    description: |
+      Username who submitted the request.
+    minLength: 1
+  createdTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the request was submitted.
+    format: date-time
+  executionStatus:
+    type: string
+    description: |
+      Status of the request's execution. For the POST operation, possible options are `SUCCESS`, `FAILURE`, or `PARTIAL_SUCCESS`. Check the `warning` array, to learn about the reasons behind `PARTIAL_SUCCESS`. For the GET operation, possible values are either `SUCCESS` or `FAILURE`.
+    enum:
+    - SUCCESS
+    - FAILURE
+  logLinesCount:
+    type: integer
+    description: |
+      Number of fetched logs.
+    minimum: 0
+  request:
+    description: |
+      Specifies your synchronous `grep` request.
+    $ref: grepSyncRequest.yaml
+  result:
+    description: |
+      Provides fetched logs.
+    $ref: logsContainer.yaml
+  suggestedActions:
+    type: array
+    description: |
+      Suggestions on what to do next with the results.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1

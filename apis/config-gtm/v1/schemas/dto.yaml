@@ -1,0 +1,125 @@
+type: object
+description: |-
+  Contains information about the resources in the GTM domain.
+  
+x-akamai:
+  file-path: schemas/dto.yaml
+additionalProperties: false
+required:
+- aggregationType
+- name
+- type
+properties:
+  name:
+    type: string
+    description: |
+      A descriptive label for the resource. A maximum 150 non-space characters.
+    maxLength: 150
+    pattern: ^((?!\s).)*$
+  type:
+    type: string
+    description: |
+      Indicates the kind of `loadObject` format used to determine the load on the resource. Either `XML load object via HTTP`, `XML load object via HTTPS`, `Non-XML load object via HTTP`, `Non-XML load object via HTTPS`, `Download score`, or `Push API`.
+    enum:
+    - XML load object via HTTP
+    - XML load object via HTTPS
+    - Non-XML load object via HTTP
+    - Non-XML load object via HTTPS
+    - Download score
+    - Push API
+  description:
+    type: string
+    description: |
+      A descriptive note to help you track what the resource constrains. For example, `aggregate bandwidth for all properties`. A maximum of 256 characters.
+  aggregationType:
+    type: string
+    description: |
+      Specifies how GTM handles different load numbers when multiple load servers are used for a data center or property. Either `sum`, `median`, or `latest`. For test time load feedback, consider `median`. (Akamai conducts tests from multiple locations, so you can ignore outlying values.) For load feedback with manual targets or dynamic targets, consider `latest` because all load servers normally report similar numbers.
+    enum:
+    - sum
+    - median
+    - latest
+    maxLength: 15
+  constrainedProperty:
+    type: string
+    description: |
+      Specifies the name of the property that this resource constrains, or `**` to constrain all properties.
+  decayRate:
+    type: number
+    description: |
+      For internal use only. Unless Akamai indicates otherwise, omit the value or set it to `null`.
+    minimum: 0
+    x-annotation-oas-maximum: 1
+  hostHeader:
+    type: string
+    description: |
+      Optionally specifies the host header used when fetching the load object.
+  leaderString:
+    type: string
+    description: |
+      Specifies the text that comes before the `loadObject`. GTM assumes that the current load is the first number to appear after this text, minus any white space. The value is a maximum of 256 characters. The default is `null`. For example, suppose your `loadObject` file contains, _This is a load object. TheLoadIs:497. This is the end of the load object_. Then GTM reads the current load as _497_ if the `leaderString` is set to _TheLoadIs_.
+  leastSquaresDecay:
+    type: number
+    description: |
+      For internal use only. Unless Akamai indicates otherwise, omit the value or set it to `null`.
+    minimum: 0
+    x-annotation-oas-maximum: 1
+  links:
+    type: array
+    description: |
+      Specifies the URL path that allows direct navigation to the resource.
+    items:
+      $ref: link.yaml
+  loadImbalancePercentage:
+    type: number
+    description: |
+      Indicates the percent of load imbalance factor (LIF) for the domain. It lets GTM exceed the value configured for traffic distribution. For example, if the data center's traffic allocation is 25 percent and the LIF is 1.5, the demand can grow to 37.5 percent (25% &times; 1.5) before the load balancer starts shifting load away from it. If the LIF is `0`, no load imbalance is allowed. However, internally, GTM adds one to the LIF to allow its use as a multiplier. The default LIF is 1.1, which is displayed as `10.0` percent. The value ranges from `0` to `1000000` percent.
+    minimum: 0
+    x-annotation-oas-maximum: 1000000
+  maxUMultiplicativeIncrement:
+    type: number
+    description: |
+      For internal use only. Unless Akamai indicates otherwise, omit the value or set it to `null`.
+    x-annotation-oas-minimum: 1
+  resourceInstances:
+    type: array
+    description: |
+      Contains information about the `resources` that constrain the `properties` within the data center.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - datacenterId
+      properties:
+        datacenterId:
+          type: integer
+          description: |
+            A unique identifier for an existing data center in the domain.
+        loadObject:
+          type: string
+          description: |
+            Identifies the load object file used to report real-time information about the current load, maximum allowable load, and target load on each resource. The maximum permitted length is 256 characters. [Learn more](https://techdocs.akamai.com/gtm/docs/welcome-to-global-traffic-management/perf-load-feedback).
+          nullable: true
+          maxLength: 256
+          pattern: ^(?!:).*$
+        loadObjectPort:
+          type: integer
+          description: |
+            Specifies the TCP port of the `loadObject`. The value ranges from `0` to `65535`. If the value is `0`, the default port is either `80` or `443`.
+          minimum: 0
+          maximum: 65535
+        loadServers:
+          type: array
+          description: |
+            Specifies a list of servers from which to request the load object. The value needs to contain IPv4 or IPv6 addresses, or DNS names that contain A or AAAA records. If a DNS name has both A and AAAA records, then GTM picks one randomly. For IP addresses, don't use non-routable [RFC 1918](https://tools.ietf.org/html/rfc1918) addresses.
+          nullable: true
+          items:
+            type: string
+        useDefaultLoadObject:
+          type: boolean
+          description: |
+            Indicates whether a default `loadObject` is used for the resources.
+  upperBound:
+    type: integer
+    description: |
+      An optional sanity check that specifies the maximum allowed value for any component of the load object. If the `loadObject` contains a number that exceeds this value, it rejects the entire load object as invalid and GTM continues to use the load values from the most recently acquired `loadObject`. To receive an alert when a load object is rejected, log in to [Control Center](https://control.akamai.com), select Alerts from the Common Services category, then create a Load Object File Invalid or Cannot be Fetched alert. [Learn more](https://techdocs.akamai.com/alerts-app/docs).

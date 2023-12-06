@@ -1,0 +1,49 @@
+type: object
+description: |-
+  Result of a bulk zone create operation. This object is only available after offline processing has completed.
+  
+x-akamai:
+  file-path: schemas/create-request-result.yaml
+additionalProperties: false
+required:
+- requestId
+properties:
+  failedZones:
+    type: array
+    description: |
+      A list of zones that failed to be created.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - zone
+      - failureReason
+      properties:
+        failureReason:
+          type: string
+          description: |
+            A value describing why zone creation failed.
+          enum:
+          - ZONE_ALREADY_EXISTS
+          - ZONE_TYPE_NOT_ALLOWED
+          - ZONE_LIMIT_EXCEEDED
+          - MALFORMED_ZONE
+          - ALIAS_TARGET_NOT_PROPAGATED
+          - SUBZONE_CHECK_FAILED
+          - GTM_CONFLICT
+          - INTERNAL_ERROR
+        zone:
+          type: string
+          description: |
+            The name of a zone that failed to be created.
+  requestId:
+    type: string
+    description: |
+      The ID of the request.
+    format: uuid
+  successfullyCreatedZones:
+    type: array
+    description: |
+      The names of all zones that were successfully created.
+    items:
+      type: string

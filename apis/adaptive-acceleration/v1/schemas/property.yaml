@@ -1,0 +1,81 @@
+type: object
+description: |-
+  Encapsulates Adaptive Acceleration report that targets a specific Ion property.
+  
+x-akamai:
+  file-path: schemas/property.yaml
+additionalProperties: false
+required:
+- commonPreconnectHeader
+- commonPushedResources
+- isActive
+- pageSpecificRules
+- version
+- domainSpecificResources
+properties:
+  version:
+    type: integer
+    description: |
+      Version of the Adaptive Acceleration rules.
+  commonPreconnectHeader:
+    $ref: preconnectHeader.yaml
+  commonPushedResources:
+    $ref: pushedResources.yaml
+  creationDate:
+    type: string
+    description: |
+      An ISO 8601 timestamp representing when the system created the Adaptive Acceleration report.
+    format: date-time
+  domainSpecificResources:
+    type: array
+    description: |
+      Encapsulates Adaptive Acceleration report rules targeted to a specific domain.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        domain:
+          type: string
+          description: |
+            This is the domain name.
+          format: uri
+        domainSpecificCommonPushedResource:
+          $ref: pushedResources.yaml
+        domainSpecificFontPreloads:
+          $ref: fontPreloads.yaml
+  isActive:
+    type: boolean
+    description: |
+      Indicates whether you've enabled Adaptive Acceleration in your Ion property.
+  lastModifiedDate:
+    type: string
+    description: |
+      An ISO 8601 timestamp representing when the system last modified the Adaptive Acceleration report.
+    format: date-time
+  lastReset:
+    type: string
+    description: |
+      An ISO 8601 timestamp that shows when you [last reset](https://techdocs.akamai.com/adaptive-acceleration/reference/post-property-reset) the Adaptive Acceleration data-gathering report.
+    format: date-time
+  pageSpecificRules:
+    type: array
+    description: |
+      Encapsulates Adaptive Acceleration property rules targeted to a specific page.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        basePageURL:
+          type: string
+          description: |
+            This is the URL in question.
+          format: uri
+        pageSpecificPreconnectHeader:
+          $ref: preconnectHeader.yaml
+        pageSpecificPushedResources:
+          $ref: pushedResources.yaml
+  zoneDeployDate:
+    type: string
+    description: |
+      An ISO 8601 timestamp representing when the Adaptive Acceleration report were last updated.
+    format: date-time

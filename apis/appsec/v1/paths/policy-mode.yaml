@@ -1,0 +1,63 @@
+x-akamai:
+  file-path: paths/policy-mode.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/mode
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/policyId-path.yaml
+get:
+  operationId: get-policy-mode
+  summary: Get the current mode
+  tags:
+  - 'WAF rules: Update mode'
+  description: |
+    When using Web Application Firewall in your security policy, this mode conveys how you're planning to keep the rules up to date, either `KRS` for manual updates or `AAG` for automatic updates. This operation returns which mode your rules are currently set to. _Products:_ All.
+  responses:
+    200:
+      description: |
+        Successfully retrieved the current mode.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-get-mode-200.json
+          schema:
+            $ref: ../schemas/mode-get-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-policy-mode
+  summary: Modify the mode
+  tags:
+  - 'WAF rules: Update mode'
+  description: |
+    The mode you set determines how your rule sets are updated. Use `KRS` mode to update the rule sets manually, or `AAG` to have them update automatically. _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module, Adaptive Security Engine.   If you're using Adaptive Security Engine, use `ASE_AUTO` to update the rules automatically, or `ASE_MANUAL` to update them yourself.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/policy-put-mode.json
+        schema:
+          $ref: ../schemas/mode-put.yaml
+  responses:
+    200:
+      description: |
+        Successfully set the security policy mode.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-put-mode-200.json
+          schema:
+            $ref: ../schemas/mode-put-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

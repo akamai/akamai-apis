@@ -1,0 +1,56 @@
+x-akamai:
+  file-path: paths/bulk-patches.yaml
+  path-for-file: /bulk/rules-patch-requests
+post:
+  operationId: post-bulk-patch
+  summary: Bulk patch a set of properties
+  tags:
+  - Bulk patch
+  description: |
+    Apply a series of JSON Patch operations to modify a set of property versions. Form this set of `patches` based on the [JSONPath](http://goessner.net/articles/JsonPath/) locations from a [bulk search](ref:post-bulk-search) response. Specify a set of new property versions based on the results of a [bulk versioning](ref:post-bulk-version) operation. The request is a bulk patch object. This operation launches an asynchronous process to update rule trees. To check its progress, run the [List bulk-updated properties](ref:get-bulk-patch) operation, whose link is available in the `Location` header or `bulkPatchLink` member of this operation's response. See [Bulk Search and Update](ref:bulk-search-and-update) for overall guidance on this feature.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional-bulk.yaml
+  - $ref: ../parameters/groupId-optional-bulk.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/patch-bulk-create-request.json
+        schema:
+          $ref: ../schemas/bulk-patch-create-request.yaml
+  responses:
+    202:
+      description: |
+        The response links the bulk patch process.
+      headers:
+        Location:
+          $ref: ../headers/Location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/patch-bulk-create-response.json
+          schema:
+            $ref: ../schemas/bulk-patch-post-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: bulkPatch
+  group: Bulk patch

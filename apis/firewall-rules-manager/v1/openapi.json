@@ -1,0 +1,876 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Firewall Rules Notification API",
+    "url": "https://techdocs.akamai.com/firewall-rules/reference"
+  },
+  "info": {
+    "title": "Akamai: Firewall Rules Notification API",
+    "version": "1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/cidr-blocks": {
+      "get": {
+        "description": "List all CIDR blocks for all services you are subscribed to. To see additional CIDR blocks, subscribe yourself to more services and run this operation again.",
+        "operationId": "get-cidr-blocks",
+        "summary": "List CIDR blocks",
+        "tags": [
+          "CIDR blocks"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Firewall Rules Notification API",
+          "url": "https://techdocs.akamai.com/firewall-rules/reference/get-cidr-blocks"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Test Schema to use with `./examples/cidr-blocks-200.json`.",
+                  "title": "cidrBlocks",
+                  "type": "array",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "Describes CIDR blocks and the services they belong to.",
+                    "type": "object",
+                    "required": [
+                      "cidrId",
+                      "serviceId",
+                      "serviceName",
+                      "cidr",
+                      "cidrMask",
+                      "port",
+                      "creationDate",
+                      "effectiveDate",
+                      "changeDate",
+                      "minIp",
+                      "maxIp",
+                      "lastAction"
+                    ],
+                    "properties": {
+                      "changeDate": {
+                        "description": "The ISO 8601 date when a CIDR block was last updated.",
+                        "type": "string"
+                      },
+                      "cidr": {
+                        "description": "A list of IP addresses belonging to Akamai edge servers for a particular service.",
+                        "type": "string"
+                      },
+                      "cidrId": {
+                        "description": "A unique identifier for a CIDR block.",
+                        "type": "integer"
+                      },
+                      "cidrMask": {
+                        "description": "Indicates the range (start and end IP) of a CIDR block. `/32` and `/64` denote whether the IP addresses in the CIDR block are IPv4 or IPv6, respectively.",
+                        "type": "string",
+                        "enum": [
+                          "/32",
+                          "/64"
+                        ]
+                      },
+                      "creationDate": {
+                        "description": "The ISO 8601 date the CIDR block was created.",
+                        "type": "string"
+                      },
+                      "effectiveDate": {
+                        "description": "The ISO 8601 date the IP addresses start passing traffic. Make sure your firewall rules are updated to accept traffic before this date. The date is typically two weeks after the CIDR block's creation date.",
+                        "type": "string"
+                      },
+                      "lastAction": {
+                        "description": "The last Action, or change, made to a CIDR block. Either `add`, `update`, or `delete`.",
+                        "type": "string",
+                        "enum": [
+                          "add",
+                          "update",
+                          "delete"
+                        ]
+                      },
+                      "maxIp": {
+                        "description": "The maximum IP is the top of the range for the CIDR block.",
+                        "type": "string"
+                      },
+                      "minIp": {
+                        "description": "The minimum IP is the base of the range for the CIDR block.",
+                        "type": "string"
+                      },
+                      "port": {
+                        "description": "The set of comma-delimited ports through which your server receives traffic from Akamai servers.",
+                        "type": "string"
+                      },
+                      "serviceId": {
+                        "description": "A unique identifier for a service.",
+                        "type": "integer"
+                      },
+                      "serviceName": {
+                        "description": "The name of a service. This is often the same as the product you purchased.",
+                        "type": "string"
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/cidrBlock.yaml"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/cidr-blocks-200.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "changeDate": "2021-02-21",
+                    "cidr": "192.0.2.238",
+                    "cidrId": 13742,
+                    "cidrMask": "/32",
+                    "creationDate": "2021-02-21",
+                    "effectiveDate": "2021-02-21",
+                    "lastAction": "add",
+                    "maxIp": "192.0.2.217",
+                    "minIp": "192.0.2.49",
+                    "port": "80,443",
+                    "serviceId": 9,
+                    "serviceName": "PERF_ANALYTICS"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ Whether a CIDR block was added, updated, or removed from service. You can use this parameter as a sorting mechanism and return only CIDR blocks with a change status of `add`, `update`, or `delete`. Note that a status of `delete` means the CIDR block is no longer in service, and you can remove it from your firewall rules.",
+            "example": "{{lastAction}}",
+            "in": "query",
+            "name": "lastAction",
+            "schema": {
+              "default": "all",
+              "example": "add",
+              "type": "string",
+              "enum": [
+                "all",
+                "add",
+                "update",
+                "delete"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/lastAction-query.yaml"
+            }
+          },
+          {
+            "description": "The ISO 8601 date the CIDR block starts serving traffic to your origin. Ensure your firewall rules are updated to allow this traffic to pass through before the effective date.",
+            "example": "{{effectiveDateGt}}",
+            "in": "query",
+            "name": "effectiveDateGt",
+            "schema": {
+              "example": "2021-02-21",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/effectiveDateGt-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/services": {
+      "get": {
+        "description": "Get a list of services you are subscribed to. To see additional services, subscribe to them first and run the operation again.",
+        "operationId": "get-services",
+        "summary": "List services",
+        "tags": [
+          "Services"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Firewall Rules Notification API",
+          "url": "https://techdocs.akamai.com/firewall-rules/reference/get-services"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Test test.",
+                  "title": "Services",
+                  "type": "array",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "Specifies service information.",
+                    "type": "object",
+                    "required": [
+                      "serviceId",
+                      "serviceName",
+                      "description"
+                    ],
+                    "properties": {
+                      "description": {
+                        "description": "A description of the service.",
+                        "type": "string"
+                      },
+                      "serviceId": {
+                        "description": "A unique identifier for a service.",
+                        "type": "integer"
+                      },
+                      "serviceName": {
+                        "description": "The name of a service. This is often the same as the product you purchased.",
+                        "type": "string"
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/service-200.yaml"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/services-200.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "description": "Test IPs",
+                    "serviceId": 3,
+                    "serviceName": "TestIP"
+                  },
+                  {
+                    "description": "Test IPs",
+                    "serviceId": 4,
+                    "serviceName": "TestIP again"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/services/{serviceId}": {
+      "get": {
+        "description": "Get information about a specific service.",
+        "operationId": "get-service",
+        "summary": "Get a service",
+        "tags": [
+          "Services"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Firewall Rules Notification API",
+          "url": "https://techdocs.akamai.com/firewall-rules/reference/get-service"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "description": "Test IPs",
+                  "serviceId": 3,
+                  "serviceName": "TestIP"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies service information.",
+                  "type": "object",
+                  "required": [
+                    "serviceId",
+                    "serviceName",
+                    "description"
+                  ],
+                  "properties": {
+                    "description": {
+                      "description": "A description of the service.",
+                      "type": "string"
+                    },
+                    "serviceId": {
+                      "description": "A unique identifier for a service.",
+                      "type": "integer"
+                    },
+                    "serviceName": {
+                      "description": "The name of a service. This is often the same as the product you purchased.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/service-200.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bad request.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "",
+                  "instance": "",
+                  "status": 404,
+                  "title": "Duplicated cidr block, identical cidr, cidrMask, and port",
+                  "type": "/firewall-rules-manager/error-types/9",
+                  "errors": []
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "status",
+                    "title",
+                    "detail",
+                    "instance",
+                    "errors"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "description": "Detail.",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "description": "Errors.",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "instance": {
+                      "description": "Instance.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Status.",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title string.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type string.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/error.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "A unique identifier for a service.",
+          "example": "{{serviceId}}",
+          "in": "path",
+          "name": "serviceId",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/serviceId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/subscriptions": {
+      "get": {
+        "description": "List subscriptions you created for yourself and other users. You can only see the subscription information for configurations you created yourself. If someone else subscribed you to a service, you won't see that subscription returned by this operation.",
+        "operationId": "get-subscriptions",
+        "summary": "List subscriptions",
+        "tags": [
+          "Subscriptions"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Firewall Rules Notification API",
+          "url": "https://techdocs.akamai.com/firewall-rules/reference/get-subscriptions"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "subscriptions": [
+                    {
+                      "createdBy": "hgildong",
+                      "email": "email@example.com",
+                      "serviceId": 13,
+                      "serviceName": "Test IPs",
+                      "signupDate": "2021-03-28",
+                      "subscriptionId": 1
+                    },
+                    {
+                      "createdBy": "mrossi",
+                      "email": "email@akamai.com",
+                      "serviceId": 15,
+                      "serviceName": "CCUAPI",
+                      "signupDate": "2021-10-11",
+                      "subscriptionId": 2
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Test.",
+                  "type": "object",
+                  "properties": {
+                    "subscriptions": {
+                      "description": "Displays subscriptions for a service.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Displays subscriptions for a service.",
+                        "type": "object",
+                        "required": [
+                          "subscriptionId",
+                          "createdBy",
+                          "serviceId",
+                          "serviceName",
+                          "email",
+                          "signupDate"
+                        ],
+                        "properties": {
+                          "createdBy": {
+                            "description": "A username who created a subscription.",
+                            "type": "string"
+                          },
+                          "email": {
+                            "description": "The email of the user subscribed to a service and receiving notifications about the CIDR block updates.",
+                            "type": "string"
+                          },
+                          "serviceId": {
+                            "description": "A unique identifier for a service.",
+                            "type": "integer"
+                          },
+                          "serviceName": {
+                            "description": "The name of a service. This is often the same as the product you purchased.",
+                            "type": "string"
+                          },
+                          "signupDate": {
+                            "description": "The date a subscriber signed up for notifications. The date is in ISO format.",
+                            "type": "string"
+                          },
+                          "subscriptionId": {
+                            "description": "A unique identifier for a subscription.",
+                            "type": "integer"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/subscription.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/subscriptions-200.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "description": "Subscribe or unsubscribe users to services.",
+        "operationId": "put-subscriptions",
+        "summary": "Update subscriptions",
+        "tags": [
+          "Subscriptions"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Firewall Rules Notification API",
+          "url": "https://techdocs.akamai.com/firewall-rules/reference/put-subscriptions"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "subscriptions": [
+                  {
+                    "email": "email@example.com",
+                    "serviceId": 13
+                  },
+                  {
+                    "email": "email@akamai.com",
+                    "serviceId": 15
+                  }
+                ]
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Test.",
+                "type": "object",
+                "properties": {
+                  "subscriptions": {
+                    "description": "Information necessary to include when subscribing users to CIDR block notifications for a service.",
+                    "type": "array",
+                    "items": {
+                      "additionalProperties": false,
+                      "description": "Information necessary to include when subscribing users to CIDR block notifications for a service.",
+                      "type": "object",
+                      "required": [
+                        "serviceId",
+                        "email"
+                      ],
+                      "properties": {
+                        "email": {
+                          "description": "The email belonging to the user you want to subscribe.",
+                          "type": "string"
+                        },
+                        "serviceId": {
+                          "description": "A unique identifier for a service.",
+                          "type": "integer"
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/subscriptionPutRequest.yaml"
+                      }
+                    }
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/subscription-put-requests-200.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "subscriptions": [
+                    {
+                      "createdBy": "tyamada",
+                      "email": "email@example.com",
+                      "serviceId": 13,
+                      "serviceName": "Test IPs",
+                      "signupDate": "2021-03-28",
+                      "subscriptionId": 1
+                    },
+                    {
+                      "createdBy": "szhang",
+                      "email": "email@akamai.com",
+                      "serviceId": 15,
+                      "serviceName": "CCUAPI",
+                      "signupDate": "2021-10-11",
+                      "subscriptionId": 2
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Test.",
+                  "type": "object",
+                  "properties": {
+                    "subscriptions": {
+                      "description": "Displays subscriptions for a service.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Displays subscriptions for a service.",
+                        "type": "object",
+                        "required": [
+                          "subscriptionId",
+                          "createdBy",
+                          "serviceId",
+                          "serviceName",
+                          "email",
+                          "signupDate"
+                        ],
+                        "properties": {
+                          "createdBy": {
+                            "description": "A username who created a subscription.",
+                            "type": "string"
+                          },
+                          "email": {
+                            "description": "The email of the user subscribed to a service and receiving notifications about the CIDR block updates.",
+                            "type": "string"
+                          },
+                          "serviceId": {
+                            "description": "A unique identifier for a service.",
+                            "type": "integer"
+                          },
+                          "serviceName": {
+                            "description": "The name of a service. This is often the same as the product you purchased.",
+                            "type": "string"
+                          },
+                          "signupDate": {
+                            "description": "The date a subscriber signed up for notifications. The date is in ISO format.",
+                            "type": "string"
+                          },
+                          "subscriptionId": {
+                            "description": "A unique identifier for a subscription.",
+                            "type": "integer"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/subscription.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/subscriptions-200.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "patch": {
+        "description": "Subscribe or unsubscribe users to services.",
+        "operationId": "patch-subscriptions",
+        "summary": "Add or remove subscriptions",
+        "tags": [
+          "Subscriptions"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Firewall Rules Notification API",
+          "url": "https://techdocs.akamai.com/firewall-rules/reference/patch-subscriptions"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Information necessary to include when subscribing users to CIDR block notifications for a service or removing them from the subscription list.",
+                "title": "subscriptionPatchRequest",
+                "type": "array",
+                "items": {
+                  "additionalProperties": false,
+                  "description": "Information necessary to include when subscribing users to CIDR block notifications for a service or removing them from the subscription list.",
+                  "type": "object",
+                  "required": [
+                    "op",
+                    "path"
+                  ],
+                  "properties": {
+                    "email": {
+                      "description": "The email belonging to the user you want to subscribe.",
+                      "type": "string"
+                    },
+                    "op": {
+                      "description": "The operation you want to perform on the subscription list, either `add` or `remove` users.",
+                      "type": "string",
+                      "enum": [
+                        "add",
+                        "remove"
+                      ]
+                    },
+                    "path": {
+                      "description": "A path to the `subscriptionId`. Specify either a blank `/` for a new subscription, or `/` followed by the `subscriptionId` when removing a subscription.",
+                      "type": "string"
+                    },
+                    "serviceId": {
+                      "description": "A unique identifier for a service.",
+                      "type": "integer"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/subscriptionPatchRequest.yaml"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/subscription-patch-requests-200.yaml"
+                }
+              },
+              "example": [
+                {
+                  "email": "email@example.com",
+                  "op": "add",
+                  "path": "/",
+                  "serviceId": 13
+                },
+                {
+                  "op": "remove",
+                  "path": "/15"
+                }
+              ]
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "subscriptions": [
+                    {
+                      "createdBy": "szhang",
+                      "email": "email@example.com",
+                      "serviceId": 13,
+                      "serviceName": "Test IPs",
+                      "signupDate": "2021-03-28",
+                      "subscriptionId": 1
+                    },
+                    {
+                      "createdBy": "mrossi",
+                      "email": "email@akamai.com",
+                      "serviceId": 15,
+                      "serviceName": "CCUAPI",
+                      "signupDate": "2021-10-11",
+                      "subscriptionId": 2
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Test.",
+                  "type": "object",
+                  "properties": {
+                    "subscriptions": {
+                      "description": "Displays subscriptions for a service.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Displays subscriptions for a service.",
+                        "type": "object",
+                        "required": [
+                          "subscriptionId",
+                          "createdBy",
+                          "serviceId",
+                          "serviceName",
+                          "email",
+                          "signupDate"
+                        ],
+                        "properties": {
+                          "createdBy": {
+                            "description": "A username who created a subscription.",
+                            "type": "string"
+                          },
+                          "email": {
+                            "description": "The email of the user subscribed to a service and receiving notifications about the CIDR block updates.",
+                            "type": "string"
+                          },
+                          "serviceId": {
+                            "description": "A unique identifier for a service.",
+                            "type": "integer"
+                          },
+                          "serviceName": {
+                            "description": "The name of a service. This is often the same as the product you purchased.",
+                            "type": "string"
+                          },
+                          "signupDate": {
+                            "description": "The date a subscriber signed up for notifications. The date is in ISO format.",
+                            "type": "string"
+                          },
+                          "subscriptionId": {
+                            "description": "A unique identifier for a subscription.",
+                            "type": "integer"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/subscription.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/subscriptions-200.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/firewall-rules-manager/v1"
+    }
+  ]
+}

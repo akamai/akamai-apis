@@ -1,0 +1,64 @@
+x-akamai:
+  file-path: paths/policy-rule.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/rules/{ruleId}
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/policyId-path.yaml
+- $ref: ../parameters/ruleId-path.yaml
+get:
+  operationId: get-rule
+  summary: Get the action for a rule
+  tags:
+  - 'WAF rules: General settings'
+  description: |
+    Return the action a rule takes when triggered. This applies to both ASE auto and ASE manual upgrade modes. Rule actions for `ASE_AUTO` are currently in beta. Contact your account team to access this option.  _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module.
+  responses:
+    200:
+      description: |
+        Successfully retrieved the rule action.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-put-eval-rule-action-200.json
+          schema:
+            $ref: ../schemas/rule-action-get-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-rule
+  summary: Modify the action for a rule
+  tags:
+  - 'WAF rules: General settings'
+  description: |
+    Update what action a rule takes when it's triggered. This applies to both ASE auto and ASE manual upgrade modes. Rule actions for `ASE_AUTO` are currently in beta. Contact your account team to access this option. Use `alert` to record the trigger of the event, `deny` to block the request, or `none` to take no action. _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/policy-put-eval-rule-action-200.json
+        schema:
+          $ref: ../schemas/rule-action-put.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the action of a rule.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-put-eval-rule-action-200.json
+          schema:
+            $ref: ../schemas/rule-action-put-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

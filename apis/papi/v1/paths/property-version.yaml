@@ -1,0 +1,52 @@
+x-akamai:
+  file-path: paths/property-version.yaml
+  path-for-file: /properties/{propertyId}/versions/{propertyVersion}
+parameters:
+- $ref: ../parameters/propertyVersion-path.yaml
+- $ref: ../parameters/propertyId-path.yaml
+get:
+  operationId: get-property-version
+  summary: Get a property version
+  tags:
+  - Property versions
+  description: |
+    This polls the state of a specific property version, for example to check its activation status. When specifying `Accept: text/xml`, this operation provides the Akamai _metadata_ configuration data that's distributed to edge servers when you activate a property version. This XML data encapsulates the property version's component rules and hostnames, and is available on a read-only basis. Contact your Akamai representative if you need help interpreting it.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  responses:
+    200:
+      description: |
+        The response shows details of the requested property version.
+      headers:
+        ETag:
+          $ref: ../headers/Etag.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/property-version-get-response.json
+          schema:
+            $ref: ../schemas/property-version-get-response.yaml
+        text/xml:
+          example:
+            $ref: ../examples/property-version-get-response.xml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: propertyVersion
+  group: Property versions

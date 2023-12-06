@@ -1,0 +1,1142 @@
+openapi: 3.0.0
+info:
+  title: API endpoints
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/api-definitions/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: ApiEndpointResource.yaml
+paths:
+  /endpoints:
+    post:
+      operationId: post-endpoints
+      summary: Register an endpoint
+      tags:
+      - Endpoints
+      description: |
+        Creates the first version of an API endpoint configuration. You can specify the new endpoint's full set of resources. Alternatively, you can create them later either by modifying the endpoint object, or separately with the [Create a resource](ref:post-resource) operation. The endpoint's name needs to be unique within an account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/apiEndpointWithResourceDto-post-example.json
+            schema:
+              $ref: schemas/apiEndpointWithResourceDto-recurse.yaml
+      responses:
+        201:
+          description: |
+            New resource successfully created.
+          headers:
+            Location:
+              description: |
+                Relative URL for the created API endpoint.
+              schema:
+                type: string
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointWithResourceDto-postresult-example.json
+              schema:
+                $ref: schemas/apiEndpointWithResourceDto-recurse.yaml
+        400:
+          description: |
+            Invalid data input.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            The system denies user access to the contract and group.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    get:
+      operationId: get-endpoints
+      summary: List endpoints
+      tags:
+      - Endpoints
+      description: |
+        Lists the available API endpoints, with results optionally paginated, sorted, and filtered. If no endpoints are available, the operation responds with an empty array.
+      parameters:
+      - $ref: parameters/pii-query.yaml
+      - $ref: parameters/page-query.yaml
+      - $ref: parameters/pageSize-query.yaml
+      - $ref: parameters/category-query.yaml
+      - $ref: parameters/contains-query.yaml
+      - $ref: parameters/sortBy-query.yaml
+      - $ref: parameters/sortOrder-query.yaml
+      - $ref: parameters/versionPreference-query.yaml
+      - $ref: parameters/show-query.yaml
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/groupId-query.yaml
+      responses:
+        200:
+          description: |
+            Lists API Endpoints you can access.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointListDto-example.json
+              schema:
+                $ref: schemas/apiEndpointListDto.yaml
+        403:
+          description: |
+            You don't have permission to retrieve API endpoint list.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/cloneEndpoint:
+    post:
+      operationId: post-endpoint-clone
+      summary: Clone an endpoint
+      tags:
+      - Endpoints
+      description: |
+        Creates an endpoint as a clone from the specified source endpoint ID and version.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/apiEndpointCloneDto-post-example.json
+            schema:
+              $ref: schemas/apiEndpointCloneDto.yaml
+      responses:
+        200:
+          description: |
+            Created API Endpoint.
+          headers:
+            Location:
+              description: |
+                Relative URL for the cloned API endpoint.
+              schema:
+                type: string
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointCloneDto-postresult-example.json
+              schema:
+                $ref: schemas/apiEndpointWithResourceDto-recurse.yaml
+        400:
+          description: |
+            Some of user input is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            You don't have access to the endpoint.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            The API endpoint is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/files:
+    post:
+      operationId: post-endpoints-file
+      summary: Register an endpoint from an API definition file
+      tags:
+      - Endpoints
+      description: |
+        Imports an API definition file and creates a new endpoint based on the file contents. You can run this operation in two ways. To POST JSON data, see [Make a JSON request to register an endpoint from an API definition file](ref:endpoint-request-json). To make a form request using these parameters, see [Make a form request to register an endpoint from an API definition file](ref:endpoint-request-form).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/importFileDto-example.json
+            schema:
+              $ref: schemas/importFileDto.yaml
+      responses:
+        201:
+          description: |
+            New resource successfully created.
+          headers:
+            Location:
+              description: |
+                Relative URL for the newly created API endpoint.
+              schema:
+                type: string
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointWithResourceDto-example.json
+              schema:
+                $ref: schemas/apiEndpointWithResourceDto-recurse.yaml
+        400:
+          description: |
+            Some of the file input data is invalid.
+          content:
+            application/json:
+              example:
+                $ref: examples/importResult-example.json
+              schema:
+                $ref: schemas/importResult.yaml
+  /endpoints/user-entitlements:
+    get:
+      operationId: get-user-entitlements
+      summary: List user entitlements
+      tags:
+      - Endpoints
+      description: |
+        Lists user entitlements based on your assigned permissions. It helps you determine if your user identity assigned to the API client can run various other operations to modify data. See [Get started](ref:api-get-started) for details on setting up the API client with the appropriate level of access. This operation's array values include `API_READ` for read-only access, `API_WRITE` for modifying the existing endpoint versions, `API_VERSIONING` for version management, `API_FEATURES` for access to Kona Site Defender security features, `AAG_FEATURES` for access to delivery features, and `API_PURPOSE` for access to resource purpose settings. Note that the `API_FEATURES` permission is only available for Kona Site Defender customers, and the `API_PURPOSE` permission is for Bot Manager customers.
+      responses:
+        200:
+          description: |
+            Set of entitlements.
+          content:
+            application/json:
+              example:
+                $ref: examples/userEntitlementsDto-example.json
+              schema:
+                $ref: schemas/userEntitlementsDto.yaml
+        403:
+          description: |
+            You don't have access to the endpoint.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/httpProblemDetails-403-example.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/verify-secure-connection:
+    post:
+      operationId: post-endpoints-verify-secure-connection
+      summary: Verify secure connection
+      tags:
+      - Endpoints
+      description: |
+        Verifies that provided hostnames are signed with a provided certificate chain. This ensures that edge servers can connect to the hostnames securely. The response is a map of hostnames to connection status values. For the list of available connection status values and their descriptions, see Connection status values. You can use the response information when setting up JWKS in the [Edit JWT settings](ref:put-jwt-settings) operation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/verifySecureConnectionDto-example.json
+            schema:
+              $ref: schemas/verifySecureConnectionDto.yaml
+      responses:
+        200:
+          description: |
+            The map of hostnames to verification statuses.
+          content:
+            application/json:
+              example:
+                $ref: examples/verifySecureConnectionDto-result-example.json
+              schema:
+                $ref: schemas/verifySecureConnectionDto-response.yaml
+  /endpoints/{apiEndPointId}:
+    parameters:
+    - $ref: parameters/apiEndPointId-path.yaml
+    delete:
+      operationId: delete-endpoint
+      summary: Delete an endpoint
+      tags:
+      - Endpoints
+      description: |
+        Removes an endpoint configuration from API Gateway if none of the endpoint's versions are active or pending activation on the staging or production network.
+      responses:
+        204:
+          description: |
+            Resource successfully deleted.
+        403:
+          description: |
+            You don't have access to the endpoint.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            The API endpoint is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/hide:
+    parameters:
+    - $ref: parameters/apiEndPointId-path.yaml
+    post:
+      operationId: post-endpoint-hide
+      summary: Hide an endpoint
+      tags:
+      - Endpoints
+      description: |
+        Hides an endpoint and all its versions. You can only hide an endpoint with no active versions on the staging or production network. You can't activate or delete versions of a hidden endpoint. A hidden endpoint appears in the [List endpoints](ref:get-endpoints) operation's response object by default, or when you set the operation's `show` query parameter to `ONLY_HIDDEN`. Running this operation affects the endpoint listing in the API Definitions user interface.
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointWithResourceDto-example.json
+              schema:
+                $ref: schemas/apiEndpointWithResourceDto-recurse.yaml
+        400:
+          description: |
+            Invalid data input.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            You don't have access to the endpoint.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/show:
+    parameters:
+    - $ref: parameters/apiEndPointId-path.yaml
+    post:
+      operationId: post-endpoint-show
+      summary: Show an endpoint
+      tags:
+      - Endpoints
+      description: |
+        Reveals a hidden endpoint and all its versions. A revealed endpoint appears in the [List endpoints](ref:get-endpoints) operation's response object by default, or when you set the operation's `show` query parameter to `ONLY_VISIBLE`. Running this operation affects the endpoint listing in the API Definitions user interface.
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointWithResourceDto-example.json
+              schema:
+                $ref: schemas/apiEndpointWithResourceDto-recurse.yaml
+        400:
+          description: |
+            Invalid data input.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            You don't have access to the endpoint.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions:
+    parameters:
+    - $ref: parameters/apiEndPointId-path.yaml
+    get:
+      operationId: get-endpoint-versions
+      summary: List versions
+      tags:
+      - Versions
+      description: |
+        Returns versions of an endpoint, with results optionally paginated, sorted, and filtered.
+      parameters:
+      - $ref: parameters/page-query.yaml
+      - $ref: parameters/versions/pageSize-query.yaml
+      - $ref: parameters/versions/sortBy-query.yaml
+      - $ref: parameters/versions/sortOrder-query.yaml
+      - $ref: parameters/versions/show-query.yaml
+      responses:
+        200:
+          description: |
+            Lists API endpoint versions you have access to in this account.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointVersionListDto-example.json
+              schema:
+                $ref: schemas/apiEndpointVersionListDto.yaml
+        403:
+          description: |
+            You don't have permission to retrieve the API endpoint versions list.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}:
+    parameters:
+    - $ref: parameters/versionNumber-path.yaml
+    - $ref: parameters/apiEndPointId-path.yaml
+    get:
+      operationId: get-endpoint-version
+      summary: Get a version summary
+      tags:
+      - Versions
+      description: |
+        Returns a summary for a specific endpoint version. The summary is for purely informational purposes, and you shouldn't use this operation's response in the corresponding [Edit a version](ref:put-endpoint-version) PUT request. For the PUT request, use the response object of [Get a version](ref:get-endpoint-version-resource).
+      responses:
+        200:
+          description: |
+            API Endpoint version summary defined by API Endpoint ID and Version Number.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiVersionSummaryDto-example.json
+              schema:
+                $ref: schemas/apiVersionSummaryDto.yaml
+        403:
+          description: |
+            You don't have access to the endpoint.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            The API endpoint is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    put:
+      operationId: put-endpoint-version
+      summary: Edit a version
+      tags:
+      - Versions
+      description: |
+        Updates details about an endpoint version that has never been activated on the staging or production network. You can configure the endpoint's security settings and other top-level metadata, or modify the endpoint's entire set of resources as an alternative to separate calls to [Edit a resource](ref:put-version-resource). Note that the corresponding [Get a version](ref:get-endpoint-version-resource) operation you need to run to GET the data uses a different URL.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/apiEndpointWithResourceDto-putresult-example.json
+            schema:
+              $ref: schemas/apiEndpointWithResourceDto-recurse.yaml
+      responses:
+        200:
+          description: |
+            Modify details of an endpoint version.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointWithResourceDto-putresult-example.json
+              schema:
+                $ref: schemas/apiEndpointWithResourceDto-recurse.yaml
+        400:
+          description: |
+            Some of user input is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            You don't have access to the endpoint.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            The API endpoint is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        409:
+          description: |
+            [Conflict](ref:409)
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    delete:
+      operationId: delete-endpoint-version
+      summary: Delete a version
+      tags:
+      - Versions
+      description: |
+        Removes an endpoint version from API Gateway if the version has never been activated on the staging or production network. This is a soft delete operation that preserves the version's information, such as its number, in the database. You can't remove the permanent number assigned to each endpoint version, even if you remove that version. A removed endpoint version no longer appears in the [List versions](ref:get-endpoint-versions) operation's response object.
+      responses:
+        204:
+          description: |
+            Resource successfully deleted.
+        403:
+          description: |
+            You don't have access to the endpoint.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            The API endpoint is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}/activate:
+    parameters:
+    - $ref: parameters/versionNumber-path.yaml
+    - $ref: parameters/apiEndPointId-path.yaml
+    post:
+      operationId: post-endpoint-version-activate
+      summary: Activate a version
+      tags:
+      - Versions
+      description: |
+        Activates an endpoint version on the staging or production network. If another version of the endpoint is already active on the specified network, that version automatically deactivates and the newly activated version takes its place. If an active version of another endpoint shares any hostnames with the version you activate, the API automatically deactivates the version with conflicting hostnames, creates a new version of the impacted endpoint, migrates the non-conflicting hostnames and other API details to the new version, and activates the new version.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/activationDto-example.json
+            schema:
+              $ref: schemas/activationDto.yaml
+      responses:
+        200:
+          description: |
+            Returns the activated entity.
+          content:
+            application/json:
+              example:
+                $ref: examples/activationDto-example.json
+              schema:
+                $ref: schemas/activationDto.yaml
+        400:
+          description: |
+            Some of user input is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}/cloneVersion:
+    parameters:
+    - $ref: parameters/versionNumber-path.yaml
+    - $ref: parameters/apiEndPointId-path.yaml
+    post:
+      operationId: post-endpoint-version-clone
+      summary: Clone a version
+      tags:
+      - Versions
+      description: |
+        Creates a new endpoint version as a clone of an existing version. The system assigns a new number to the version that you clone.
+      responses:
+        200:
+          description: |
+            Updated API Endpoint.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointCloneDto-postresult-example.json
+              schema:
+                $ref: schemas/apiEndpointWithResourceDto-recurse.yaml
+        403:
+          description: |
+            You don't have access to the endpoint.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            The API endpoint is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        409:
+          description: |
+            [Conflict](ref:409).
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}/deactivate:
+    parameters:
+    - $ref: parameters/versionNumber-path.yaml
+    - $ref: parameters/apiEndPointId-path.yaml
+    post:
+      operationId: post-endpoint-version-deactivate
+      summary: Deactivate a version
+      tags:
+      - Versions
+      description: |
+        Deactivates an endpoint version on the staging or production network. A deactivated endpoint version no longer serves traffic through the Akamai network.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/activationDto-example.json
+            schema:
+              $ref: schemas/activationDto.yaml
+      responses:
+        200:
+          description: |
+            Returns deactivated entity.
+          content:
+            application/json:
+              example:
+                $ref: examples/activationDto-example.json
+              schema:
+                $ref: schemas/activationDto.yaml
+        400:
+          description: |
+            Some of user input is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}/file:
+    parameters:
+    - $ref: parameters/versionNumber-path.yaml
+    - $ref: parameters/apiEndPointId-path.yaml
+    post:
+      operationId: post-endpoint-version-file
+      summary: Edit an endpoint from an API definition file
+      tags:
+      - Versions
+      description: |
+        Imports an API definition file with details about an endpoint. Unlike [Register an endpoint from an API definition file](ref:post-endpoints-file), this operation doesn't create a new endpoint, but updates details of an existing endpoint. You can run this operation in two ways. To POST JSON data, see [Make a JSON request to edit an endpoint from an API definition file](ref:endpoint-edit-json). To make a form request using these parameters, see [Make a form request to edit an endpoint from an API definition file](ref:endpoint-edit-form). Once you submit the POST request, to finish modifying the endpoint version, you need to take the response data and submit it as a request to the [Edit a version](ref:put-endpoint-version) operation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/importFileDto-example.json
+            schema:
+              $ref: schemas/importFileDto.yaml
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointWithResourceDto-example.json
+              schema:
+                $ref: schemas/apiEndpointWithResourceDto-recurse.yaml
+        400:
+          description: |
+            Some of the file input data is invalid.
+          content:
+            application/json:
+              example:
+                $ref: examples/importResult-example.json
+              schema:
+                $ref: schemas/importResult.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}/hide:
+    parameters:
+    - $ref: parameters/versionNumber-path.yaml
+    - $ref: parameters/apiEndPointId-path.yaml
+    post:
+      operationId: post-endpoint-version-hide
+      summary: Hide a version
+      tags:
+      - Versions
+      description: |
+        Hides an endpoint version. You can only hide inactive or deactivated versions. You can't activate or delete hidden versions. A hidden endpoint version appears in the [List versions](ref:get-endpoint-versions) operation's response object with the `hidden` parameter set to `true`. Running this operation affects the version listing in the API Definitions user interface.
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointWithResourceDto-example.json
+              schema:
+                $ref: schemas/apiEndpointWithResourceDto-recurse.yaml
+        400:
+          description: |
+            Invalid data input.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            You don't have access to the endpoint.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}/piis:
+    parameters:
+    - $ref: parameters/apiEndPointId-path.yaml
+    - $ref: parameters/versionNumber-path.yaml
+    - $ref: parameters/piiStatus-query.yaml
+    get:
+      operationId: get-endpoint-version-piis
+      summary: List parameters with PII for an endpoint version
+      tags:
+      - Personally identifiable information
+      description: |
+        Returns all PII objects for an endpoint version. This includes parameters with PII already in your API definition as well as parameters with PII the network discovers on your behalf. You can return this information for both active and inactive endpoint versions. All operations for PII are per endpoint version. Run [Enable PII learning settings for a configuration](https://techdocs.akamai.com/application-security/reference/put-advanced-settings-pii-learning) to use this feature.
+      responses:
+        200:
+          description: |
+            Successfully retrieved parameters with PII for this version.
+          content:
+            application/json:
+              example:
+                $ref: examples/piiListDto-example.json
+              schema:
+                $ref: schemas/piiListDto.yaml
+        403:
+          description: |
+            You don't have permission to access the API endpoint PII list.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}/piis/parameters/{paramId}:
+    parameters:
+    - $ref: parameters/apiEndPointId-path.yaml
+    - $ref: parameters/versionNumber-path.yaml
+    - $ref: parameters/paramId-path.yaml
+    post:
+      operationId: post-endpoint-version-piis-parameter
+      summary: Add or update a user-created PII instance
+      tags:
+      - Personally identifiable information
+      description: |
+        Adds or updates PII in an API parameter. This is for you to add to or modify in your API definition yourself, rather than the network discovering the PII for you.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/piiUpdate-example.json
+            schema:
+              $ref: schemas/piiUpdateTypeDto.yaml
+      responses:
+        204:
+          description: |
+            Successfully added or updated PII.
+        404:
+          description: |
+            Can't find the parameter ID.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}/piis/settings:
+    parameters:
+    - $ref: parameters/apiEndPointId-path.yaml
+    - $ref: parameters/versionNumber-path.yaml
+    post:
+      operationId: post-endpoint-version-pii-settings
+      summary: Modify PII settings for an endpoint version
+      tags:
+      - Personally identifiable information
+      description: |
+        Update the PII settings in an endpoint version. These settings are for a PII object per endpoint version, so if you have the same object in multiple endpoint versions, you'll need to run the operation for each version. n as well as parameters with PII the network discovers on your behalf. You can return this information for both active and inactive endpoint versions. All operations for PII are per endpoint version. Run [Enable PII learning settings for a configuration](https://techdocs.akamai.com/application-security/reference/put-advanced-settings-pii-learning) to use this feature.
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/piiSettingsDto-update-example.json
+            schema:
+              $ref: schemas/piiSettingsDto.yaml
+      responses:
+        200:
+          description: |
+            Successfully updated the endpoint version.
+          content:
+            application/json:
+              examples:
+                allDisabled:
+                  value:
+                    $ref: examples/piiSettingsDto-allDisabled-example.json
+                allEnabled:
+                  value:
+                    $ref: examples/piiSettingsDto-allEnabled-example.json
+                partiallyEnabled:
+                  value:
+                    $ref: examples/piiSettingsDto-partiallyEnabled-example.json
+              schema:
+                $ref: schemas/piiSettingsDto.yaml
+        403:
+          description: |
+            You don't have permission to update PII settings.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    get:
+      operationId: get-endpoint-version-pii-settings
+      summary: List PII settings for an endpoint version
+      tags:
+      - Personally identifiable information
+      description: |
+        Returns the PII settings in an endpoint version, including the inspection scope and constraints, and how you want the network to handle PII.
+      responses:
+        200:
+          description: |
+            Successfully fetched PII settings.
+          content:
+            application/json:
+              examples:
+                allDisabled:
+                  value:
+                    $ref: examples/piiSettingsDto-allDisabled-example.json
+                allEnabled:
+                  value:
+                    $ref: examples/piiSettingsDto-allEnabled-example.json
+                partiallyEnabled:
+                  value:
+                    $ref: examples/piiSettingsDto-partiallyEnabled-example.json
+                securityConfig:
+                  value:
+                    $ref: examples/piiSettingsDto-securityConfig-example.json
+              schema:
+                $ref: schemas/piiSettingsDto.yaml
+        403:
+          description: |
+            You don't have permission to get API endpoint PII settings.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}/piis/status:
+    parameters:
+    - $ref: parameters/apiEndPointId-path.yaml
+    - $ref: parameters/versionNumber-path.yaml
+    post:
+      operationId: post-endpoint-version-pii-status-from-register-form
+      summary: Modify PII status per endpoint version
+      tags:
+      - Personally identifiable information
+      description: |
+        Update the PII status. This operation applies to PII found by the network and not PII you add to your API definition yourself.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/piiUpdateStatusPerParamId-example.json
+            schema:
+              $ref: schemas/piiUpdateStatusPerParamIdDto.yaml
+      responses:
+        204:
+          description: |
+            Successfully updated the PII status.
+        403:
+          description: |
+            You don't have permission to update PII status.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            The API endpoint is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}/piis/{piiId}:
+    parameters:
+    - $ref: parameters/apiEndPointId-path.yaml
+    - $ref: parameters/versionNumber-path.yaml
+    - $ref: parameters/piiId-path.yaml
+    delete:
+      operationId: delete-endpoint-version-pii
+      summary: Delete PII in an endpoint version
+      tags:
+      - Personally identifiable information
+      description: |
+        Removes a PII object from your API endpoint definition for the version you specify. If you want to delete the PII object from all the versions where it exists, you'll need to make this request for each version of the endpoint.
+      responses:
+        204:
+          description: |
+            Successfully deleted the PII object from the endpoint version.
+        403:
+          description: |
+            You don't have permission to delete PII for this endpoint version.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}/piis/{piiId}/status:
+    parameters:
+    - $ref: parameters/apiEndPointId-path.yaml
+    - $ref: parameters/versionNumber-path.yaml
+    - $ref: parameters/piiId-path.yaml
+    patch:
+      operationId: patch-endpoint-version-pii-status
+      summary: Patch PII status per endpoint version
+      tags:
+      - Personally identifiable information
+      description: |
+        Update the PII status. This operation applies to PII found by the network and not PII you add to your API definition yourself.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/piiStatusDto-example.json
+            schema:
+              $ref: schemas/piiStatusDto.yaml
+      responses:
+        200:
+          description: |
+            Successfully updated the PII status.
+          content:
+            application/json:
+              example:
+                $ref: examples/piiDto-example.json
+              schema:
+                $ref: schemas/piiDto.yaml
+        403:
+          description: |
+            You don't have permission to update PII status.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}/resources:
+    parameters:
+    - $ref: parameters/versionNumber-path.yaml
+    - $ref: parameters/apiEndPointId-path.yaml
+    post:
+      operationId: post-resource
+      summary: Create a resource
+      tags:
+      - Resources
+      description: |
+        Creates a resource in an endpoint version. The resource's full URL (concatenated hostname, `basePath`, and `resourcepath`) needs to be unique within the account. You can only create resources for versions that have never been activated on the staging or production network.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/apiResourceMethParamsDto-post-example.json
+            schema:
+              $ref: schemas/apiResourceMethParamsDto.yaml
+      responses:
+        201:
+          description: |
+            Saved API Endpoint Resource data.
+          headers:
+            Location:
+              description: |
+                Relative URL for created API resource.
+              schema:
+                type: string
+          content:
+            application/json:
+              example:
+                $ref: examples/apiResourceMethParamsDto-example.json
+              schema:
+                $ref: schemas/apiResourceMethParamsDto.yaml
+    get:
+      operationId: get-endpoint-version-resources
+      summary: List resources
+      tags:
+      - Resources
+      description: |
+        Lists all resources assigned to an endpoint version. You can use the `apiResourceId` of each returned resource to modify resources individually through the [Edit a resource](ref:put-version-resource) operation, or run the [Edit a version](ref:put-endpoint-version) operation to batch-modify a group of resources.
+      responses:
+        200:
+          description: |
+            Gets a List of API Endpoint Resources accessible by the user.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiResourcesListDto-example.json
+              schema:
+                $ref: schemas/apiResourceMethParamsDto.yaml
+        403:
+          description: |
+            You don't have permission to the API  endpoint.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}/resources-detail:
+    parameters:
+    - $ref: parameters/versionNumber-path.yaml
+    - $ref: parameters/apiEndPointId-path.yaml
+    get:
+      operationId: get-version-details
+      summary: Get a version
+      tags:
+      - Resources
+      description: |
+        Returns an endpoint version. Use this operation's response object when modifying an endpoint version through [Edit a version](ref:put-endpoint-version). Don't use [Get a version summary](ref:get-endpoint-version) for the [Edit a version](ref:put-endpoint-version) operation.
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointWithResourceDto-example.json
+              schema:
+                $ref: schemas/apiEndpointWithResourceDto-recurse.yaml
+        403:
+          description: |
+            You don't have permission to retrieve API endpoint list.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}/resources/{apiResourceId}:
+    parameters:
+    - $ref: parameters/apiResourceId-path.yaml
+    - $ref: parameters/versionNumber-path.yaml
+    - $ref: parameters/apiEndPointId-path.yaml
+    get:
+      operationId: get-endpoint-version-resource
+      summary: Get a resource
+      tags:
+      - Resources
+      description: |
+        Returns a resource within an endpoint version.
+      responses:
+        200:
+          description: |
+            API Endpoint Resource details defined by API Endpoint ID and API Resource ID.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiResourceMethParamsDto-example.json
+              schema:
+                $ref: schemas/apiResourceMethParamsDto.yaml
+        403:
+          description: |
+            You don't have permission to the API endpoint.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            The required resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    put:
+      operationId: put-version-resource
+      summary: Edit a resource
+      tags:
+      - Resources
+      description: |
+        Updates a resource within an endpoint version. You can edit information about a resource, the methods, and the parameters assigned to a resource. You can only modify resources assigned to versions that have never been activated on the staging or production network.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/apiResourceMethParamsDto-example.json
+            schema:
+              $ref: schemas/apiResourceMethParamsDto.yaml
+      responses:
+        200:
+          description: |
+            Updated API Endpoint Resource Details.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiResourceMethParamsDto-example.json
+              schema:
+                $ref: schemas/apiResourceMethParamsDto.yaml
+        400:
+          description: |
+            Some of user input is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            You don't have permission to the API endpoint.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            The required resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        409:
+          description: |
+            After you get the data, you modify the API endpoint resource. You have to retrieve the updated data before update.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    delete:
+      operationId: delete-endpoint-version-resource
+      summary: Delete a resource
+      tags:
+      - Resources
+      description: |
+        Removes a resource from an endpoint version. You can only remove resources assigned to versions that have never been activated on the staging or production network.
+      responses:
+        204:
+          description: |
+            Resource successfully deleted.
+        403:
+          description: |
+            You don't have access to the endpoint.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            The API endpoint or resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /endpoints/{apiEndPointId}/versions/{versionNumber}/show:
+    parameters:
+    - $ref: parameters/versionNumber-path.yaml
+    - $ref: parameters/apiEndPointId-path.yaml
+    post:
+      operationId: post-version-show
+      summary: Show a version
+      tags:
+      - Versions
+      description: |
+        Reveals a hidden endpoint version. A revealed endpoint version appears in the [List versions](ref:get-endpoint-versions) operation's response object with the `hidden` parameter set to `false`. Running this operation affects the version listing in the API Definitions user interface.
+      responses:
+        200:
+          description: |
+            Operation succeeded.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointWithResourceDto-example.json
+              schema:
+                $ref: schemas/apiEndpointWithResourceDto-recurse.yaml
+        400:
+          description: |
+            Invalid data input.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            You don't have access to the endpoint.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/httpProblemDetails.yaml

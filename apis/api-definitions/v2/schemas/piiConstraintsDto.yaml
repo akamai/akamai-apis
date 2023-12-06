@@ -1,0 +1,72 @@
+type: object
+description: |
+  Describes how and where to look for personally identifiable information (PII) in your API payloads.
+x-akamai:
+  file-path: schemas/piiConstraintsDto.yaml
+additionalProperties: false
+required:
+- scope
+- requestEnabled
+- responseEnabled
+- types
+- resources
+properties:
+  requestEnabled:
+    type: boolean
+    description: |
+      Whether the network looks for PII in the request payloads.
+  resources:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - resourceId
+      - allMethods
+      - methods
+      properties:
+        allMethods:
+          type: boolean
+        methods:
+          type: array
+          description: |
+            The methods you want the network to inspect. Currently, `get`, `put`, `post`, `delete`, `head`, `patch`, and `options` are supported.
+          items:
+            type: string
+            enum:
+            - get
+            - put
+            - post
+            - delete
+            - head
+            - patch
+            - options
+        resourceId:
+          type: integer
+          description: |
+            A unique identifier for a resource.
+  responseEnabled:
+    type: boolean
+    description: |
+      Whether the network looks for PII in the response payloads.
+  scope:
+    type: string
+    description: |
+      The extent to which the network should inspect your API and enforce constraints you set. Use `NONE` to let all traffic though as if PII discovery is disabled. Use `API` to inspect and enforce constraints for every resource and method in your API. Use `RESOURCES_AND_METHODS` to inspect specific resources and methods within your API.
+    enum:
+    - NONE
+    - API
+    - RESOURCES_AND_METHODS
+  types:
+    type: object
+    description: |
+      Use `allTypes` to identify all PII types in a parameter, or `specific` to identify individual PII types you choose. Currently, only email and credit or debit cards are supported.
+    additionalProperties: false
+    required:
+    - allTypes
+    - specific
+    properties:
+      allTypes:
+        type: boolean
+      specific:
+        $ref: piiType.yaml

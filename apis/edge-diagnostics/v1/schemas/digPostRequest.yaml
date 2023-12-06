@@ -1,0 +1,47 @@
+type: object
+description: |-
+  Collects data to use in the `dig` request.
+  
+x-akamai:
+  file-path: schemas/digPostRequest.yaml
+additionalProperties: false
+required:
+- hostname
+- queryType
+- isGtmHostname
+properties:
+  edgeIp:
+    type: string
+    description: |
+      IP of an edge server you want to run the `dig` command from. Provide either this value or `edgeLocationId`. To verify if an IP belongs to an edge server, run the [Verify an IP](ref:post-verify-edge-ip) operation.
+    minLength: 1
+  edgeLocationId:
+    type: string
+    description: |
+      Unique identifier for an edge server location closest to your end users. Provide either this value or `edgeIp`. To get this value, run the [List available edge server locations](ref:get-edge-locations) operation first.
+    minLength: 1
+  hostname:
+    type: string
+    description: |
+      Hostname or a domain name you want to get the data for. For a GTM hostname, run the [List GTM properties](ref:get-gtm-properties) operation first, to get this value.
+    format: hostname
+  isGtmHostname:
+    type: boolean
+    description: |
+      Specifies `hostname` is a GTM hostname.
+  queryType:
+    type: string
+    description: |
+      DNS record type you want to get. Possible values are: `A`, `AAAA`, `SOA`, `CNAME`, `PTR`, `MX`, `NS`, `TXT`, `SRV`, `CAA`, and `ANY`. To learn more about them, check [Supported DNS record types](doc:domain-details-dig#supported-dns-record-types).
+    enum:
+    - A
+    - AAAA
+    - SOA
+    - CNAME
+    - PTR
+    - MX
+    - NS
+    - TXT
+    - SRV
+    - CAA
+    - ANY

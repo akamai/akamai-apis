@@ -1,0 +1,39 @@
+type: object
+description: |-
+  Provides information that you need to specify when creating a stream configuration.
+  
+x-akamai:
+  file-path: schemas/MigBulkStreamRequest.yaml
+additionalProperties: false
+required:
+- streams
+properties:
+  commonDestinations:
+    type: array
+    description: |
+      The common destination configuration for all the stream configurations in the `streams` array. Currently you can configure one destination per stream as the destination to send logs. You can use the `useCommonDestination` parameter to get the payload with same destination for all streams in [Prepare migration payload](ref:prepare-payload) operation.
+    items:
+      oneOf:
+      - $ref: Azure.yaml
+      - $ref: S3.yaml
+      - $ref: Datadog.yaml
+      - $ref: Splunk.yaml
+      - $ref: GCS.yaml
+      - $ref: HTTPS.yaml
+      - $ref: SumoLogic.yaml
+      - $ref: OCS.yaml
+      - $ref: Loggly.yaml
+      - $ref: Elasticsearch.yaml
+      - $ref: NewRelic.yaml
+      - $ref: S3Compatible.yaml
+  streams:
+    type: array
+    description: |
+      The details you need to specify when creating a stream configuration.
+    items:
+      $ref: MigSaveStreamRequest.yaml
+  validations:
+    description: |
+      Contains details about warnings, errors, or notices determined while preparing migration payload. Fix all errors before making a request for bulk stream migration. Please pay attention to the warnings that inform about partially supported or not supported features in DataStream 2.
+    readOnly: true
+    $ref: MigValidations.yaml

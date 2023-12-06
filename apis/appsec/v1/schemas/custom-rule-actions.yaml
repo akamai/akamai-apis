@@ -1,0 +1,59 @@
+type: object
+description: |-
+  Describes the settings for a custom rule.
+  
+x-akamai:
+  file-path: schemas/custom-rule-actions.yaml
+additionalProperties: false
+required:
+- customRules
+properties:
+  customRules:
+    type: array
+    description: |
+      Contains settings for custom rule actions.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - link
+      - name
+      - action
+      properties:
+        id:
+          type: integer
+          description: |
+            Uniquely identifies a rule.
+        name:
+          type: string
+          description: |
+            The name you assign to the custom rule.
+          readOnly: true
+        version:
+          type: integer
+          description: |
+            The rule version.
+          readOnly: true
+        action:
+          type: string
+          description: |
+            The action to assign to this custom rule, either `alert`, `deny`, or `none`. Use `deny_custom_{custom_deny_id}` to apply a custom action instead of Akamai's default. Run [Modify a custom deny action](ref:put-custom-deny) to manage your custom deny actions. If the action is `none`, the rule is inactive in the policy.
+          enum:
+          - alert
+          - deny
+          - none
+        link:
+          type: string
+          description: |
+            The link to additional information about the rule associated with this policy or the latest version of a rule if `action` is set to `none` (unassociated).
+          example: /appsec/v1/configs/18323/custom-rules/621212
+          readOnly: true
+        status:
+          type: string
+          description: |
+            The custom rule action's activation status. The custom rule deployment status. Either `activated` if a rule is enabled in at least one security policy within a security configuration currently active in production, `published` if a rule is associated with at least one security policy in an inactive security configuration, or `unused` if a rule exists as a shared resource, but isn't associated with any security policy.
+          readOnly: true
+          enum:
+          - unused
+          - published
+          - activated

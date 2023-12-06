@@ -1,0 +1,60 @@
+openapi: 3.0.0
+info:
+  title: Policies
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/script-management/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: policies.yaml
+paths:
+  /properties/{propertyId}/hostnames/{hostname}/network/{network}/policies:
+    parameters:
+    - $ref: parameters/network-path.yaml
+    - $ref: parameters/hostname-path.yaml
+    - $ref: parameters/propertyId-path.yaml
+    post:
+      operationId: post-property-hostname-network-policy
+      summary: Create a policy
+      tags:
+      - Policies
+      description: |
+        Creates a new policy for the specified `propertyId`, `hostname`, and `network`. The policy request needs to include the `spofConfig` object or `scriptConfig` array item, but it can contain both. Only one policy can exist per `hostname`. A change to the `spofConfig` or `scriptConfig` overwrites the existing policy. If a policy already exists with the same `spofConfig` and `scriptConfig`, the API responds with a 409 error and displays the existing policy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/policies-post.json
+            schema:
+              $ref: schemas/policies-request.yaml
+      responses:
+        201:
+          description: |
+            The policy object includes information about which scripts or groups to manage. This includes the action to apply and single point of failure settings, if applicable.
+          content:
+            application/json:
+              example:
+                $ref: examples/policies-post-201.json
+              schema:
+                $ref: schemas/policies-request.yaml
+    get:
+      operationId: get-property-hostname-network-policies
+      summary: Get a policy
+      tags:
+      - Policies
+      description: |
+        Returns information about the latest version of a policy for the specified `property`, `hostname`, and `network`.
+      responses:
+        200:
+          description: |
+            The response provides the policy.
+          content:
+            application/json:
+              example:
+                $ref: examples/policies-get-200.json
+              schema:
+                $ref: schemas/policies-get.yaml

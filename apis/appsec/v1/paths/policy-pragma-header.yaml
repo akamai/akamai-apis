@@ -1,0 +1,63 @@
+x-akamai:
+  file-path: paths/policy-pragma-header.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/advanced-settings/pragma-header
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/policyId-path.yaml
+get:
+  operationId: get-policies-pragma-header
+  summary: Get Pragma settings for a security policy
+  tags:
+  - Pragma settings
+  description: |
+    Return the `Pragma` header's excluded conditions. By default, the `Pragma` header debugging information is stripped from an operation's response except in cases where you set `excludeCondition`. This operation applies at the security policy level. To modify `Pragma` header settings at the security configuration level, run [List Pragma header settings for a configuration](ref:get-advanced-settings-pragma-header). _Products:_ All.
+  responses:
+    200:
+      description: |
+        Successfully retrieved the Pragma Header settings.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/pragma-header-200.json
+          schema:
+            $ref: ../schemas/pragma-header.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-policies-pragma-header
+  summary: Modify Pragma settings for a security policy
+  tags:
+  - Pragma settings
+  description: |
+    Update the pragma header excluded conditions. By default, the `Pragma` header debugging information is stripped from an operation's response except in cases where you set `excludeCondition`. To remove existing settings, submit your request with an empty payload `{}` at the top-level of an object. For example, submit `"type": "{}"` in the request body to remove the `requestHeaderValueMatch` from the excluded conditions. If you submit an empty payload for each member, you'll clear all of your condition settings. To modify `Pragma` header settings at the security configuration level, run [Modify Pragma header settings for a configuration](ref:put-advanced-settings-pragma-header) . _Products:_ All.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/pragma-header-200.json
+        schema:
+          $ref: ../schemas/pragma-header.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the Pragma header settings:.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/pragma-header-200.json
+          schema:
+            $ref: ../schemas/pragma-header.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

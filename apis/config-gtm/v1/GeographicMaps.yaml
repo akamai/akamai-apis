@@ -1,0 +1,98 @@
+openapi: 3.0.0
+info:
+  title: Geographic maps
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/config-gtm/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: GeographicMaps.yaml
+paths:
+  /domains/{domainName}/geographic-maps:
+    parameters:
+    - $ref: parameters/domainName-path.yaml
+    get:
+      operationId: get-geographic-maps
+      summary: List geographic maps
+      tags:
+      - Geographic maps
+      description: |
+        Returns a list of geographic maps.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-geographic-maps-200.json
+              schema:
+                $ref: schemas/get-all.yaml
+  /domains/{domainName}/geographic-maps/{mapName}:
+    parameters:
+    - $ref: parameters/mapName-path.yaml
+    - $ref: parameters/domainName-path.yaml
+    get:
+      operationId: get-geographic-map
+      summary: Get a geographic map
+      tags:
+      - Geographic maps
+      description: |
+        Returns information for a specific geographic map.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-a-geographic-map-200.json
+              schema:
+                $ref: schemas/geographic-map.yaml
+    put:
+      operationId: put-geographic-map
+      summary: Create or update a geographic map
+      tags:
+      - Geographic maps
+      description: |
+        Run this operation to create or update a geographic map.
+      parameters:
+      - $ref: parameters/domain-modification-comments-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-or-update-a-geographic-map.json
+            schema:
+              $ref: schemas/geographic-map.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/create-or-update-a-geographic-map-200.json
+              schema:
+                $ref: schemas/update-response.yaml
+    delete:
+      operationId: delete-geographic-map
+      summary: Remove a geographic map
+      tags:
+      - Geographic maps
+      description: |
+        Removes a geographic map.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/remove-a-resource-200.json
+              schema:
+                $ref: schemas/update-response.yaml

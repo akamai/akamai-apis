@@ -1,0 +1,139 @@
+type: object
+description: |-
+  Provides information that you need to specify when creating a stream configuration.
+  
+x-akamai:
+  file-path: schemas/SaveStreamRequest.yaml
+additionalProperties: false
+required:
+- streamName
+- groupId
+- contractId
+- properties
+- datasetFields
+- deliveryConfiguration
+- destination
+properties:
+  properties:
+    type: array
+    description: |
+      Identifies the properties that belong to the same product and you want to monitor in the stream. Note that a stream can only log data for active properties. You can [activate a property](https://developer.akamai.com/api/core_features/property_manager/v1.html#postpropertyactivations) in Property Manager.
+    title: Properties
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - propertyId
+      properties:
+        propertyId:
+          type: integer
+          description: |
+            The identifier of the property.
+  collectMidgress:
+    type: boolean
+    description: |
+      Set to `true` to collect midgress traffic data within the Akamai platform, such as between two edge servers. Enable logging midgress data to get numeric values in the second place of the log line that indicate if the request was processed within the Akamai platform. When you [Get a stream](ref:get-stream) that logs midgress traffic, the response returns `collectMidgress` as `true` and lists the `isMidgress` data set field with other fields. See [Midgress traffic](https://techdocs.akamai.com/datastream2/v2/docs/data-set-parameters#midgress-traffic) for details. If this feature is not enabled on your account, contact the Akamai support team.
+    title: Collect midgress
+    default: false
+  contractId:
+    type: string
+    description: |
+      Identifies the contract that has access to the product.a
+    title: Contract
+  datasetFields:
+    type: array
+    description: |
+      Identifiers of the data set fields that you want to receive in logs. In case of `STRUCTURED` format, the order of the identifiers define how the value for these fields appear in the log lines. See [Data set parameters](ref:data-set-parameters-1) for the complete list of the fields you can choose.
+    title: Dataset fields
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - datasetFieldId
+      properties:
+        datasetFieldId:
+          type: integer
+          description: |
+            Identifies the field.
+  deliveryConfiguration:
+    type: object
+    description: |
+      Provides information about the configuration of log lines, log file format, names of the log files sent to a destination, and delivery frequency for these files.
+    title: Delivery configuration
+    additionalProperties: false
+    required:
+    - format
+    - frequency
+    properties:
+      format:
+        type: string
+        description: |
+          The format in which you want to receive log files. `STRUCTURED` or `JSON` are the currently available formats. When the delimiter is present in the request, you need to choose the `STRUCTURED` format.
+        enum:
+        - STRUCTURED
+        - JSON
+      fieldDelimiter:
+        type: string
+        description: |
+          A delimiter that separates data set fields in the log lines, either `SPACE` or `TAB`. Set this only for the `STRUCTURED` log file `format`.
+        enum:
+        - SPACE
+        - TAB
+      frequency:
+        type: object
+        description: |
+          The frequency of collecting logs from each uploader and sending these logs to a destination.
+        additionalProperties: false
+        required:
+        - intervalInSeconds
+        properties:
+          intervalInSeconds:
+            type: integer
+            description: |
+              The interval in seconds (`30` or `60`) after which the system bundles log lines into a file and sends it to a destination.
+            enum:
+            - 30
+            - 60
+      uploadFilePrefix:
+        type: string
+        description: |
+          The prefix of the log file that you want to send to a object-based destination. It's a string of at most 200 characters. If unspecified, it defaults to `ak`. This member supports [Dynamic time variables](ref:custom-log-field#dynamic-time-variables), but doesn't support the `.` character. See [S3 naming conventions](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html), [Azure blob naming conventions](https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata#:%7E:text=Blob%20Names&text=A%20blob%20name%20can%20contain,up%20to%20256%20characters%20long), and [Google Cloud Storage object naming conventions](https://cloud.google.com/storage/docs/naming-objects).
+      uploadFileSuffix:
+        type: string
+        description: |
+          The suffix of the log file that you want to send to a object-based destination. It's a static string of at most 10 characters. If unspecified, it defaults to `ds`. This member doesn't support [Dynamic time variables](ref:custom-log-field#dynamic-time-variables), and the `.`, `/`, `%`, `?` characters. See [S3 naming conventions](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html), [Azure blob naming conventions](https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata#:%7E:text=Blob%20Names&text=A%20blob%20name%20can%20contain,up%20to%20256%20characters%20long), and [Google Cloud Storage object naming conventions](https://cloud.google.com/storage/docs/naming-objects).
+        maxLength: 10
+  destination:
+    description: |
+      The destination configuration in the stream to send logs. See [Destinations](ref:destinations) for details and features available for each destination.
+    title: Destination
+    oneOf:
+    - $ref: Azure.yaml
+    - $ref: S3.yaml
+    - $ref: Datadog.yaml
+    - $ref: Splunk.yaml
+    - $ref: GCS.yaml
+    - $ref: HTTPS.yaml
+    - $ref: SumoLogic.yaml
+    - $ref: OCS.yaml
+    - $ref: Loggly.yaml
+    - $ref: Elasticsearch.yaml
+    - $ref: NewRelic.yaml
+    - $ref: S3Compatible.yaml
+  groupId:
+    type: integer
+    description: |
+      Identifies the group that has access to the product and this stream configuration.
+  notificationEmails:
+    type: array
+    description: |
+      A list of e-mail addresses where you want to send notifications about activations and deactivations of the stream. You can omit this member and activate or deactivate the stream without notifications.
+    title: Notification emails
+    items:
+      type: string
+  streamName:
+    type: string
+    description: |
+      The name of the stream.
+    title: Stream name
+    maxLength: 1000

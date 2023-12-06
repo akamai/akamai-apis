@@ -1,0 +1,74 @@
+type: object
+description: |-
+  Specifies a group and a diagnostic link which can be sent to users to collect diagnostic data.
+  
+x-akamai:
+  file-path: schemas/userDiagnosticDataGroupsPostResponse.yaml
+additionalProperties: false
+oneOf:
+- required:
+  - url
+  - groupId
+  - createdBy
+  - createdTime
+  - diagnosticLink
+  - diagnosticLinkStatus
+  - recordCount
+  title: URL request
+- required:
+  - ipaHostname
+  - groupId
+  - createdBy
+  - createdTime
+  - diagnosticLink
+  - diagnosticLinkStatus
+  - recordCount
+  title: IPA hostname request
+properties:
+  createdBy:
+    type: string
+    description: |
+      Username who generated the diagnostic link.
+    minLength: 1
+  createdTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the request was submitted.
+    format: date-time
+  diagnosticLink:
+    type: string
+    description: |
+      Diagnostic link generated to share with end users to collect diagnostic data. Each link is valid for 7 days or 50 submissions.
+    minLength: 1
+  diagnosticLinkStatus:
+    type: string
+    description: |
+      Status of `diagnosticLink`. The possible values are either `ACTIVE` or `EXPIRED`. The `ACTIVE` link can be send to users to collect diagnostic data. The `EXPIRED` link is older than 7 days or has reached the limit of 50 submission. You can't collect more data with the `EXPIRED` link.
+    enum:
+    - ACTIVE
+    - EXPIRED
+  groupId:
+    type: string
+    description: |
+      Unique identifier for the group. Store this value to get the collected data using the [Get diagnostic data of a group](ref:get-user-diagnostic-data-group-records) operation.
+    minLength: 1
+  ipaHostname:
+    type: string
+    description: |
+      IP acceleration hostname you collected the diagnostic data for. Depending on the request, the response contains either this value or `url`.
+    format: hostname
+  note:
+    type: string
+    description: |
+      Notes about the group or issues experienced by group's end users.
+    minLength: 1
+  recordCount:
+    type: integer
+    description: |
+      Number of diagnostic data submitted with `diagnosticLink`.
+    minimum: 0
+  url:
+    type: string
+    description: |
+      URL you collected the diagnostic data for. Depending on the request, the response contains either this value or `ipaHostname`.
+    format: uri

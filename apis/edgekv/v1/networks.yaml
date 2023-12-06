@@ -1,0 +1,435 @@
+openapi: 3.0.0
+info:
+  title: Namespaces and data
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edgekv/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: networks.yaml
+paths:
+  /networks/{network}/namespaces:
+    parameters:
+    - $ref: parameters/network-path.yaml
+    post:
+      operationId: post-namespace
+      summary: Create a namespace
+      tags:
+      - Namespaces
+      description: |
+        Creates a namespace on Akamai's `STAGING` or `PRODUCTION` network. You should create namespaces in both networks so that you can test your EdgeWorkers code on staging.
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/post-namespace.json
+            schema:
+              $ref: schemas/namespace.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/namespace-200.json
+              schema:
+                $ref: schemas/namespace.yaml
+        400:
+          description: |
+            Invalid namespace name or missing attribute.
+          content:
+            application/problem+json:
+              examples:
+                Cannot change groupId:
+                  value:
+                    $ref: examples/namespace-group-change-400.json
+                Invalid Namespace:
+                  value:
+                    $ref: examples/namespace-invalid-400.json
+              schema:
+                $ref: schemas/error.yaml
+        409:
+          description: |
+            Namespace name already exists.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/namespace-409.json
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml
+    get:
+      operationId: get-namespaces
+      summary: List namespaces
+      tags:
+      - Namespaces
+      description: |
+        View a list of all EdgeKV namespaces.
+      parameters:
+      - $ref: parameters/details-query.yaml
+      responses:
+        200:
+          description: |
+            Returns a list of namespaces.
+          content:
+            application/json:
+              example:
+                $ref: examples/namespaces-200.json
+              schema:
+                $ref: schemas/namespaces-200.yaml
+        500:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml
+  /networks/{network}/namespaces/{namespaceId}:
+    parameters:
+    - $ref: parameters/namespaceId-path.yaml
+    - $ref: parameters/network-path.yaml
+    get:
+      operationId: get-namespace
+      summary: Get namespace details
+      tags:
+      - Namespaces
+      description: |
+        View details for the specified namespace.
+      responses:
+        200:
+          description: |
+            Returns a single namespace.
+          content:
+            application/json:
+              example:
+                $ref: examples/namespace-200.json
+              schema:
+                $ref: schemas/namespace.yaml
+        400:
+          description: |
+            Namespace doesn't exist.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/namespace-400.json
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          description: |
+            An internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml
+    put:
+      operationId: put-namespace
+      summary: Update namespace details
+      tags:
+      - Namespaces
+      description: |
+        You can update the retention period for any existing namespace other than the default namespace. It can take up to five minutes for a new retention policy to apply. The new retention period only applies to data added or updated in the namespace after this operation is complete. The retention period of existing data remains unchanged from the old retention period. Once you perform this operation you can't query the previously existing data. If you want to ensure that all data in the namespace has the same retention period you need to update the entire data set once the retention period has been updated.  To change the access group used to authorize permission to a namespace, see [Reauthorize a namespace](ref:reauthorize-namespace). If you try to run this operation to update the access group, you get a [400 error](ref:400).
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/put-namespace.json
+            schema:
+              $ref: schemas/namespace-put.yaml
+      responses:
+        200:
+          description: |
+            Returns a single namespace.
+          content:
+            application/json:
+              example:
+                $ref: examples/namespace-200.json
+              schema:
+                $ref: schemas/namespace.yaml
+        400:
+          description: |
+            Namespace does not exist.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/namespace-400.json
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          description: |
+            An internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml
+  /networks/{network}/namespaces/{namespaceId}/groups:
+    parameters:
+    - $ref: parameters/namespaceId-path.yaml
+    - $ref: parameters/network-path.yaml
+    get:
+      operationId: get-namespace-groups
+      summary: List groups within a namespace
+      tags:
+      - Namespaces
+      description: |
+        List group identifiers created when writing items to a namespace. You need to specify at least one of these group identifiers in the `groupId` parameter when writing items to a specific namespace. The group identifier is a logical container for a set of items stored inside a given namespace.
+      responses:
+        200:
+          description: |
+            Returns a list of groups within the specified namespace.
+          content:
+            application/json:
+              example:
+                $ref: examples/groups-200.json
+              schema:
+                $ref: schemas/groups-200.yaml
+        404:
+          description: |
+            No groups are found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/groups-404.json
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml
+  /networks/{network}/namespaces/{namespaceId}/groups/{groupId}:
+    parameters:
+    - $ref: parameters/groupId-path.yaml
+    - $ref: parameters/namespaceId-path.yaml
+    - $ref: parameters/network-path.yaml
+    get:
+      operationId: get-group-items
+      summary: List items within a group
+      tags:
+      - Items
+      description: |
+        View the details of an EdgeKV item (key-value pair) within a group. You need to specify the `namespace` and `group` the item belongs to. This operation returns up to 100 items by default or the number of items specified in the `maxItems`. If there are more than the default or requested items in the specified group, the operation returns a random set of the default or requested items. It can take ten seconds or longer to read an item that has been written to EdgeKV. The API may respond with a 404 error during that period. This is normal behavior for EdgeKV, which is an eventually consistent database.
+      parameters:
+      - $ref: parameters/maxItems-query.yaml
+      - $ref: parameters/sandboxId-query.yaml
+      responses:
+        200:
+          description: |
+            Returns the list of items in the specified group.
+          content:
+            application/json:
+              example:
+                $ref: examples/items-200.json
+              schema:
+                $ref: schemas/items-200.yaml
+        400:
+          description: |
+            Invalid namespace name or group name specified.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/items-400.json
+              schema:
+                $ref: schemas/error.yaml
+        404:
+          description: |
+            Namespace or group does not exist.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/items-404.json
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          description: |
+            Internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml
+  /networks/{network}/namespaces/{namespaceId}/groups/{groupId}/items/{itemId}:
+    parameters:
+    - $ref: parameters/itemId-path.yaml
+    - $ref: parameters/groupId-path.yaml
+    - $ref: parameters/namespaceId-path.yaml
+    - $ref: parameters/network-path.yaml
+    get:
+      operationId: get-item
+      summary: Read an item
+      tags:
+      - Items
+      description: |
+        Read an EdgeKV item. You need to specify the `namespace` and `group` the item belongs to. It can take ten seconds or longer to read an item that has been recently written to EdgeKV. The API may return a 404 error during that period. This is normal behavior for EdgeKV, which is an eventually consistent database.
+      parameters:
+      - $ref: parameters/sandboxId-query.yaml
+      responses:
+        200:
+          description: |
+            Returns the value for the item ID (key).
+          content:
+            application/json:
+              example:
+                $ref: examples/item-200.json
+        400:
+          description: |
+            Invalid namespace, group, or item.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/item-400.json
+              schema:
+                $ref: schemas/error.yaml
+        404:
+          description: |
+            Namespace, group, or item doesn't exist.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/item-404.json
+              schema:
+                $ref: schemas/error.yaml
+        429:
+          description: |
+            Request rate is too high.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/item-429.json
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          description: |
+            An internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml
+    put:
+      operationId: put-item
+      summary: Write an item
+      tags:
+      - Items
+      description: |
+        Create or update an EdgeKV item (name-value). You need to specify the `namespace` and `group` the item belongs to. The target `namespace` must already exist before writing, while the `group` is automatically created for you if it doesn't exist yet.
+      parameters:
+      - $ref: parameters/sandboxId-query.yaml
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/put-item.json
+            schema:
+              type: object
+          text/plain:
+            example: |
+              English
+            schema:
+              type: string
+      responses:
+        200:
+          description: |
+            Confirmation of successful update.
+          content:
+            text/plain:
+              example: |
+                Item was upserted in database, namespace default, group countries, and key US.
+              schema:
+                type: string
+        400:
+          description: |
+            Invalid namespace, group or item specified.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/item-400.json
+              schema:
+                $ref: schemas/error.yaml
+        413:
+          description: |
+            Payload too large. The value has exceeded the allowed limits.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/item-413.json
+              schema:
+                $ref: schemas/error.yaml
+        429:
+          description: |
+            Request rate is too high.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/item-429.json
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          description: |
+            An internal error.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/error-500.json
+              schema:
+                $ref: schemas/error.yaml
+    delete:
+      operationId: delete-item
+      summary: Delete an item
+      tags:
+      - Items
+      description: |
+        Mark an EdgeKV item for deletion. You need to specify the `namespace` and `group` the item belongs to. It can take ten seconds or longer for a deleted item to be removed from the database. If you attempt a read operation before the value has been updated globally, stale data may be returned until the update is complete. This is normal behavior for EdgeKV, which is an eventually consistent database.
+      parameters:
+      - $ref: parameters/sandboxId-query.yaml
+      responses:
+        200:
+          description: |
+            Successfully marked for deletion.
+          content:
+            text/plain:
+              example: |
+                Item was deleted in the KV store with database 123456 namespace default group countries key US.
+              schema:
+                type: string
+        400:
+          description: |
+            Invalid namespace specified.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/item-400.json
+              schema:
+                $ref: schemas/error.yaml
+        429:
+          description: |
+            Request rate is too high.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/item-429.json
+              schema:
+                $ref: schemas/error.yaml

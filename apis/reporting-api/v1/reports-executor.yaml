@@ -1,0 +1,178 @@
+openapi: 3.0.0
+info:
+  title: Reports
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/reporting-api/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: reports-executor.yaml
+paths:
+  /reports:
+    get:
+      operationId: get-reports
+      summary: List report types
+      tags:
+      - Report types
+      description: |
+        List all versions of all report types, optionally filtering out older deprecated versions.
+      parameters:
+      - $ref: parameters/ListReport_showDeprecated.yaml
+      - $ref: parameters/ListReport_showUnavailable.yaml
+      responses:
+        200:
+          description: |
+            Success.
+          content:
+            application/json:
+              example:
+                $ref: examples/report-list-response-example.json
+              schema:
+                $ref: schemas/ReportList.yaml
+  /reports/{name}/versions:
+    parameters:
+    - $ref: parameters/name-path.yaml
+    get:
+      operationId: get-report-versions
+      summary: List versions
+      tags:
+      - Report types
+      description: |
+        List all versions for a specific report type.
+      parameters:
+      - $ref: parameters/ListReport_showDeprecated.yaml
+      - $ref: parameters/ListReport_showUnavailable.yaml
+      responses:
+        200:
+          description: |
+            Success.
+          content:
+            application/json:
+              example:
+                $ref: examples/report-list-response-example.json
+              schema:
+                $ref: schemas/ReportList.yaml
+  /reports/{name}/versions/{version}:
+    parameters:
+    - $ref: parameters/version-path.yaml
+    - $ref: parameters/name-path.yaml
+    get:
+      operationId: get-report-version
+      summary: Get a report type
+      tags:
+      - Report types
+      description: |
+        Get a specific version of a report type.
+      responses:
+        200:
+          description: |
+            Success.
+          content:
+            application/json:
+              example:
+                $ref: examples/report-list-row-example.json
+              schema:
+                $ref: schemas/ReportListRow.yaml
+  /reports/{name}/versions/{version}/report-data:
+    parameters:
+    - $ref: parameters/version-path.yaml
+    - $ref: parameters/name-path.yaml
+    post:
+      operationId: post-report-version-data
+      summary: Generate a report
+      tags:
+      - Reports
+      description: |
+        Produce a report in either JSON or CSV format for a specific version of a type of report. In CSV data, values with commas or space characters are quoted. Query parameters specify the range of data and the aggregation interval for each record.
+      parameters:
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      - $ref: parameters/interval-query.yaml
+      - $ref: parameters/dataWrapNumberOfItems-query.yaml
+      - $ref: parameters/dataWrapLabel-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/report-request-example.json
+            schema:
+              $ref: schemas/ReportRequest.yaml
+      responses:
+        200:
+          description: |
+            Success.
+          content:
+            application/json:
+              example:
+                $ref: examples/report-response-example.json
+              schema:
+                $ref: schemas/ReportResponse.yaml
+            text/csv:
+              example:
+                $ref: examples/report-response-example.csv
+              schema:
+                type: string
+        400:
+          description: |
+            Invalid report request. Appropriate message is returned.
+          content:
+            application/json:
+              example:
+                $ref: examples/generate-report-400.json
+        403:
+          description: |
+            Access is forbidden for requested object IDs.
+          content:
+            application/json:
+              example:
+                $ref: examples/generate-report-403.json
+    get:
+      operationId: get-report-version-data
+      summary: Get a cacheable report
+      tags:
+      - Reports
+      description: |
+        Produce a report in either JSON or CSV format for a specific version of a type of report.  While functionally identical to [Generate a report](ref:post-report-version-data), this alternative GET operation specifies all request data as query parameters.
+      parameters:
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      - $ref: parameters/interval-query.yaml
+      - $ref: parameters/objectIds-query.yaml
+      - $ref: parameters/allObjectIds-query.yaml
+      - $ref: parameters/metrics-query.yaml
+      - $ref: parameters/filters-query.yaml
+      - $ref: parameters/dataWrapNumberOfItems-query.yaml
+      - $ref: parameters/dataWrapLabel-query.yaml
+      responses:
+        200:
+          description: |
+            Success.
+          content:
+            application/json:
+              example:
+                $ref: examples/report-response-example.json
+              schema:
+                $ref: schemas/ReportResponse.yaml
+            text/csv:
+              example:
+                $ref: examples/report-response-example.csv
+              schema:
+                type: string
+        400:
+          description: |
+            Invalid report request. Appropriate message is returned.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-cachebale-report-400.json
+        403:
+          description: |
+            Access is forbidden for requested object IDs.
+          content:
+            application/json:
+              example:
+                $ref: examples/generate-report-403.json

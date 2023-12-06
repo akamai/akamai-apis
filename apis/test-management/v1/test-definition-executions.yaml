@@ -1,0 +1,183 @@
+openapi: 3.0.0
+info:
+  title: Test definition executions
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/test-management/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: test-definition-executions.yaml
+paths:
+  /test-definition-executions/{testDefinitionExecutionId}/differences/{differenceId}/raw-request-response:
+    parameters:
+    - $ref: parameters/differenceId-path.yaml
+    - $ref: parameters/testDefinitionExecutionId-path.yaml
+    get:
+      operationId: get-test-definition-execution-difference-raw-request-response
+      summary: Get the raw request and response
+      tags:
+      - Differences
+      description: |
+        Get the raw request and response, the requests and responses from both compared environments from which a diff was generated.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-raw-request-response.json
+              schema:
+                $ref: schemas/getRawRequestResponseResponse.yaml
+  /test-definition-executions:
+    get:
+      operationId: get-test-definition-executions
+      summary: List executions
+      tags:
+      - Executions
+      description: |
+        Get list of test definition executions. One test definition execution is created for each test definition included in a completed test run.
+      parameters:
+      - $ref: parameters/testDefinitionIds-query.yaml
+      - $ref: parameters/latestPerTestDefinition-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-test-definition-executions-response.json
+              schema:
+                $ref: schemas/getTestDefinitionExecutionsResponse.yaml
+  /test-definition-executions/{testDefinitionExecutionId}:
+    parameters:
+    - $ref: parameters/testDefinitionExecutionId-path.yaml
+    get:
+      operationId: get-test-definition-execution
+      summary: Get an execution
+      tags:
+      - Executions
+      description: |
+        Get a specific test definition execution. The response includes the test case IDs of the test cases that belong to the test definitions that were included in the test run. Target hostname, target environment, IP versions, and notes are included in this object, for a test run. When the status is `completed` there is a diffCount object. When the status is `failed` there is an errors array.  If the test run is in progress when you request to get an execution, the API returns a 404 error.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-test-definition-execution-response.json
+              schema:
+                $ref: schemas/getTestDefinitionExecutionResponse.yaml
+  /test-definition-executions/{testDefinitionExecutionId}/context:
+    parameters:
+    - $ref: parameters/testDefinitionExecutionId-path.yaml
+    get:
+      operationId: get-test-definition-execution-context
+      summary: Get context
+      tags:
+      - Execution context
+      description: |
+        A snapshot of the test definition and test cases of when the test definition execution was run. If any note fails you are notified in the `failures` field of the response.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-test-definition-execution-context-response.json
+              schema:
+                $ref: schemas/getTestDefinitionExecutionContext.yaml
+  /test-definition-executions/{testDefinitionExecutionId}/differences:
+    parameters:
+    - $ref: parameters/testDefinitionExecutionId-path.yaml
+    get:
+      operationId: get-test-definition-execution-differences
+      summary: List differences
+      tags:
+      - Differences
+      description: |
+        Get the list of differences found for a specific test definition execution.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-differences-response.json
+              schema:
+                $ref: schemas/getDifferencesResponse.yaml
+    put:
+      operationId: put-test-definition-execution-differences
+      summary: Update differences
+      tags:
+      - Differences
+      description: |
+        Update the status of differences, marking the resolved differences as OK to be ignored. This returns the list of all differences, including both accepted and unaccepted diffs. You can update a set of differences ar once. If any of the updates fail, you are notified in the `failures` field of the response.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/update-differences-request.json
+            schema:
+              $ref: schemas/updateDifferencesRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/update-differences-response.json
+              schema:
+                $ref: schemas/updateDifferencesResponse.yaml
+  /test-definition-executions/{testDefinitionExecutionId}/differences/notes:
+    parameters:
+    - $ref: parameters/testDefinitionExecutionId-path.yaml
+    post:
+      operationId: post-test-definition-execution-differences-notes
+      summary: Create notes for a set of diffs
+      tags:
+      - Differences
+      description: |
+        Create notes for a set of diffs in bulk, under `testDefinitionExecutionId`. The only way to access created diffs is through the activity stream.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-diff-note-request.json
+            schema:
+              $ref: schemas/createDiffNoteRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /test-definition-executions/{testDefinitionExecutionId}/differences/{differenceId}:
+    parameters:
+    - $ref: parameters/differenceId-path.yaml
+    - $ref: parameters/testDefinitionExecutionId-path.yaml
+    get:
+      operationId: get-test-definition-execution-difference
+      summary: Get a difference
+      tags:
+      - Differences
+      description: |
+        Get the details of the test definition execution difference.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-difference-response.json
+              schema:
+                $ref: schemas/getDifferenceResponse.yaml

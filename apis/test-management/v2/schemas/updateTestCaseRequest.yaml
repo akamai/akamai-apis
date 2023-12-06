@@ -1,0 +1,228 @@
+type: object
+description: |-
+  An object containing data for a single test case.
+  
+x-akamai:
+  file-path: schemas/updateTestCaseRequest.yaml
+additionalProperties: false
+required:
+- testCaseId
+- url
+- testCaseName
+- testCaseDescription
+- requestHeaders
+- comparisonSettings
+properties:
+  comparisonSettings:
+    type: object
+    description: |
+      Attributes to compare on different environments.
+    additionalProperties: false
+    required:
+    - responseCode
+    - responseHeaders
+    - cpcode
+    - cachingOption
+    - cacheKey
+    - metadataVariables
+    - originServer
+    properties:
+      cacheKey:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      cachingOption:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      cpcode:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      metadataVariables:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        - compareOnly
+        - compareAllExcept
+        properties:
+          compareAllExcept:
+            type: array
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          compareOnly:
+            type: array
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      originServer:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      responseCode:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      responseHeaders:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        - compareOnly
+        - compareAllExcept
+        properties:
+          compareAllExcept:
+            type: array
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          compareOnly:
+            type: array
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+  createdBy:
+    type: string
+    description: |
+      The user who created the test case.
+    readOnly: true
+    minLength: 1
+  createdDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the test definition was created.
+    readOnly: true
+    format: date-time
+  modifiedBy:
+    type: string
+    description: |
+      The user who last modified the test case.
+    readOnly: true
+    minLength: 0
+  modifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the test definition was last modified.
+    readOnly: true
+    format: date-time
+  requestHeaders:
+    type: array
+    description: |
+      Request headers you want to add, modify, or filter.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - headerName
+      - headerValues
+      - headerAction
+      properties:
+        headerAction:
+          type: string
+          enum:
+          - add
+          - modify
+          - filter
+        headerName:
+          type: string
+          minLength: 1
+        headerValues:
+          type: string
+          minLength: 1
+  runOrder:
+    type: integer
+    description: |
+      The test case's run order within the parent test definition.
+    readOnly: true
+    minimum: 0
+  testCaseDescription:
+    type: string
+    description: |
+      Description about the test case.
+    minLength: 0
+    maxLength: 4000
+  testCaseId:
+    type: integer
+    readOnly: true
+    minimum: 1
+  testCaseName:
+    type: string
+    description: |
+      A short title for the test case.
+    minLength: 1
+    maxLength: 100
+  testDefinitionId:
+    type: integer
+    readOnly: true
+    minimum: 1
+  url:
+    type: string
+    description: |
+      URL of the page you want to test.
+    minLength: 1

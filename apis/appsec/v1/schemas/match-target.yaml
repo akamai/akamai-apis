@@ -1,0 +1,133 @@
+type: object
+description: |-
+  Contains information about a match target.
+  
+x-akamai:
+  file-path: schemas/match-target.yaml
+additionalProperties: false
+required:
+- type
+- securityPolicy
+properties:
+  type:
+    type: string
+    description: |
+      Describes the type of match target, either `website` or `api`.
+    enum:
+    - website
+    - api
+  apis:
+    type: array
+    description: |
+      Contains a list of objects containing an API endpoint ID and name. This field applies only to API match targets.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          description: |
+            Uniquely identifies the API endpoint.
+        name:
+          type: string
+          description: |
+            The API endpoint name.
+  bypassNetworkLists:
+    type: array
+    description: |
+      The list of network list identifiers and names.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: |
+            Uniquely identifies the network list.
+        name:
+          type: string
+          description: |
+            The name of the network list.
+  configId:
+    type: integer
+    description: |
+      Uniquely identifies the security configuration.
+  configVersion:
+    type: integer
+    description: |
+      The version of security configuration.
+  defaultFile:
+    type: string
+    description: |
+      Describes the rule to match on paths. Either `NO_MATCH` to not match on the default file, `BASE_MATCH` to match only requests for top-level hostnames ending in a trailing slash, or `RECURSIVE_MATCH` to match all requests for paths that end in a trailing slash.
+    default: NO_MATCH
+    enum:
+    - NO_MATCH
+    - BASE_MATCH
+    - RECURSIVE_MATCH
+  effectiveSecurityControls:
+    description: |
+      Defines the security controls to apply. For a security control to be effectively turned on, it has to be enabled in both the match target and the security policy.
+    readOnly: true
+    $ref: security-controls.yaml#
+  fileExtensions:
+    type: array
+    description: |
+      Contains a list of file extensions.
+    items:
+      type: string
+      description: |
+        The file extensions used in the path match.
+  filePaths:
+    type: array
+    description: |
+      Contains a list of file paths.
+    items:
+      type: string
+      description: |
+        The path used in the path match.
+  hostnames:
+    type: array
+    description: |
+      Contains a list of hostnames to protect.
+    items:
+      type: string
+      description: |
+        The hostnames to match the request on.
+  isNegativeFileExtensionMatch:
+    type: boolean
+    description: |
+      Describes whether the match target applies when a match is found in the specified `fileExtensions` or when a match isn't found.
+  isNegativePathMatch:
+    type: boolean
+    description: |
+      Describes whether the match target applies when a match is found in the specified paths or when a match isn't found.
+  securityPolicy:
+    type: object
+    description: |
+      The security policy associated with the match target.
+    additionalProperties: false
+    required:
+    - policyId
+    properties:
+      policyId:
+        type: string
+        description: |
+          Uniquely identifies the security policy.
+  sequence:
+    type: integer
+    description: |
+      The position in the sequence of match targets.
+  targetId:
+    type: integer
+    description: |
+      Uniquely identifies the match target.
+  validations:
+    description: |
+      Describes warnings, errors, or notices determined by a validation of this resource.
+    readOnly: true
+    $ref: validations.yaml#

@@ -1,0 +1,68 @@
+type: object
+x-akamai:
+  file-path: schemas/operation.yaml
+required:
+- op
+- path
+oneOf:
+- properties:
+    value:
+      description: |
+        The value to replace, test, or add. Specify any data type.
+      oneOf:
+      - title: String
+        type: string
+      - title: Numeric
+        type: number
+      - title: Boolean
+        type: boolean
+      - title: Object
+        type: object
+      - items:
+          anyOf:
+          - title: String
+            type: string
+          - title: Numeric
+            type: number
+          - title: Boolean
+            type: boolean
+          - title: Object
+            type: object
+        type: array
+        title: Array
+    op:
+      type: string
+      description: |
+        The operation to perform: `replace`, `add`, or `test` in this case.
+      enum:
+      - replace
+      - test
+      - add
+  title: Replace, add, test
+  required:
+  - value
+- properties:
+    op:
+      type: string
+      description: |
+        The operation to perform: `remove` in this case.
+      enum:
+      - remove
+  title: Remove
+- properties:
+    from:
+      type: string
+      description: |
+        A JSON Pointer path pointing to the location to move or copy from.
+    op:
+      type: string
+      description: |
+        The operation to perform: `move` or `copy` in this case.
+      enum:
+      - move
+      - copy
+  title: Move, copy
+  required:
+  - from
+allOf:
+- $ref: path.yaml

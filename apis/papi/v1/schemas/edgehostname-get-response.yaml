@@ -1,0 +1,148 @@
+id: resource:/descriptors/papi/v1/schemas/GetEdgeHostnameResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array.
+  
+x-akamai:
+  file-path: schemas/edgehostname-get-response.yaml
+additionalProperties: false
+properties:
+  accountId:
+    type: string
+    description: |
+      Identifies the prevailing account under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+  contractId:
+    type: string
+    description: |
+      Identifies the prevailing contract under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ctr_` prefix.
+  edgeHostnames:
+    type: object
+    description: |
+      The set of requested edge hostnames, available within an `items` array.
+    additionalProperties: false
+    properties:
+      items:
+        type: array
+        description: |
+          Specifies a set of available hostnames a property version may use. To POST a new edge hostname, specify a single object with `productId`, `domainPrefix`, and `domainSuffix` members, and optional `ipVersionBehavior` and `secure` members. Set `secureNetwork` for a Standard TLS, Enhanced TLS, or a shared certificate edge hostname. Relevant response objects appear within the outer envelope's `edgehostnames.items` array.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - domainPrefix
+          - domainSuffix
+          - edgeHostnameDomain
+          - edgeHostnameId
+          - ipVersionBehavior
+          - productId
+          - secure
+          properties:
+            domainPrefix:
+              type: string
+              description: |
+                The origin domain portion of the edge hostname. An edge hostname consists of a customer-specific `namePrefix` such as `www.example.com` and an Akamai-specific `domainSuffix` such as `edgesuite.net`. The edge hostname's final DNS CNAME combines the two, for example, `www.example.com.edgesuite.net`.
+            domainSuffix:
+              type: string
+              description: |
+                The Akamai-specific portion of the edge hostname, for example, `edgesuite.net`.
+            edgeHostnameDomain:
+              type: string
+              description: |
+                The full edge domain name formed from the `domainPrefix` and `domainSuffix`.
+            edgeHostnameId:
+              type: string
+              description: |
+                The edge hostname's unique identifier, which can be assigned to a property. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ehn_` prefix.
+            ipVersionBehavior:
+              type: string
+              description: |
+                Which version of the IP protocol to use: `IPV4` for version 4 only, or `IPV6_COMPLIANCE` for both 4 and 6. The default value for requests is `IPV4`.
+              default: IPV4
+              enum:
+              - IPV4
+              - IPV6_COMPLIANCE
+            mappingBehaviors:
+              type: array
+              description: |
+                The behaviors that provide mapping solutions to the edge hostnames
+              minItems: 1
+              items:
+                type: object
+                additionalProperties: false
+                required:
+                - behaviorName
+                - options
+                properties:
+                  options:
+                    type: array
+                    description: |
+                      Specifies the `options` associated with the mapping behavior
+                    minItems: 1
+                    items:
+                      type: object
+                      additionalProperties: false
+                      required:
+                      - optionName
+                      - optionValue
+                      properties:
+                        optionName:
+                          type: string
+                          description: |
+                            The option name of the option associated with the mapping behavior
+                        optionValue:
+                          type: array
+                          description: |
+                            The the option values of the option associated with the mapping behavior
+                          items:
+                            type: string
+                  behaviorName:
+                    type: string
+                    description: |
+                      The name of the mapping behavior
+            productId:
+              type: string
+              description: |
+                The product you created the edge hostname for. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prd_` prefix.
+            secure:
+              type: boolean
+              description: |
+                Whether to use the edge hostname with SSL. Defaults to `false` for POST requests. Enabling this option for new edge hostnames isn't supported.
+              default: false
+            status:
+              type: string
+              description: |
+                Appears as `PENDING` for any newly defined hostname whose DNS mapping hasn't yet been distributed across the entire Akamai network. If `status` is omitted, it indicates the edge hostname is active. Note that an edge hostname's status is unrelated to a property activation's deployment status.
+              enum:
+              - PENDING
+            useCases:
+              type: array
+              description: |
+                Available use cases for edge hostnames assigned to the product. The preset use case scenarios provided by Akamai help optimally map different types of traffic across the Akamai edge network.
+              minItems: 1
+              items:
+                type: object
+                additionalProperties: false
+                required:
+                - useCase
+                - option
+                - type
+                properties:
+                  type:
+                    type: string
+                    description: |
+                      Identifies the type of network over which traffic deploys. The only value currently available is `GLOBAL`. Use this to specify the same member name available in the use case response object.
+                    enum:
+                    - GLOBAL
+                  option:
+                    type: string
+                    description: |
+                      Specifies one of the available `options` available in the response object.
+                  useCase:
+                    type: string
+                    description: |
+                      Identifies each use case.
+  groupId:
+    type: string
+    description: |
+      Identifies the prevailing group under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+$schema: http://json-schema.org/draft-04/schema#

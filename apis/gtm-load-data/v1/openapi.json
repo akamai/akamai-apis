@@ -1,0 +1,974 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Global Traffic Management Load Feedback API",
+    "url": "https://techdocs.akamai.com/gtm-load-feedback/reference"
+  },
+  "info": {
+    "title": "Akamai: Global Traffic Management Load Feedback API",
+    "version": "v1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/{domain}/{resource}/{datacenterId}": {
+      "post": {
+        "description": "Use this action to submit load data. The URL specifies the `domain`, `resource`, and `datacenterId` of the instance to which the load data pertains. The data may be submitted in either XML or JSON format. To support legacy clients, we allow `region` as an alias for `datacenterId`. The timestamp string should be in XSD format.",
+        "operationId": "post-domain-resource",
+        "summary": "Submit load data",
+        "tags": [
+          "Load data"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Global Traffic Management Load Feedback API",
+          "url": "https://techdocs.akamai.com/gtm-load-feedback/reference/post-domain-resource"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "current-load": 20,
+                "datacenterId": 100,
+                "domain": "example.akadns.net",
+                "max-load": 30,
+                "resource": "connections",
+                "target-load": 25,
+                "timestamp": "2015-05-01T19:38:53.188Z"
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Provides information that you need to specify when submitting load data for a GTM domain.",
+                "type": "object",
+                "required": [
+                  "domain",
+                  "datacenterId",
+                  "resource",
+                  "current-load",
+                  "target-load",
+                  "max-load",
+                  "timestamp"
+                ],
+                "properties": {
+                  "current-load": {
+                    "description": "The current load on the resource in the given datacenter. For example, if the resource is database connections, and you have 50 connections, you would report 50 for this value.",
+                    "example": "{{current-load}}",
+                    "type": "integer"
+                  },
+                  "datacenterId": {
+                    "description": "The number of the datacenter (traffic target) being updated. This number comes from the Akamai code field in Control Center. To support legacy clients, we accept `region` as an alias for `datacenterId`.",
+                    "example": "{{datacenterId}}",
+                    "type": "integer"
+                  },
+                  "domain": {
+                    "description": "The name of the domain being updated, such as `example.akadns.net`.",
+                    "example": "{{domain}}",
+                    "type": "string"
+                  },
+                  "max-load": {
+                    "description": "If the load in every datacenter exceeds its target, GTM raises targets proportional to the difference between `max-load` and `target-load`. Set `max-load` higher in data centers that can handle more traffic when the whole system is overloaded.",
+                    "example": "{{max-load}}",
+                    "type": "integer"
+                  },
+                  "resource": {
+                    "description": "The name of the resource that is being used to balance load. This can be any quantity you define. For example, a resource can represent connections to a database, bandwidth, hits, or anything else.",
+                    "example": "{{resource}}",
+                    "type": "string"
+                  },
+                  "target-load": {
+                    "description": "GTM's load balancer begins to shift traffic away from a traffic target when the `current-load` exceeds the `target-load`. For example, if you want traffic to begin shifting away from a database location when it has 100 connections, you would set the `target-load` to 100.",
+                    "example": "{{target-load}}",
+                    "type": "integer"
+                  },
+                  "timestamp": {
+                    "description": "This should be the time at which the load was recorded, in XSD date format.",
+                    "example": "{{timestamp}}",
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/domain-resource-dc-json.yaml"
+                }
+              }
+            },
+            "application/xml": {
+              "example": "<load-object domain=\"example.akadns.net\" timestamp=\"2015-05-01T19:38:53.188Z\" version=\"1\" xmlns=\"http://www.akamai.com/FirstPoint/load-balancing\">\n    <datacenter datacenterId=\"100\">\n        <resource name=\"connections\">\n            <current-load>20</current-load>\n            <target-load>25</target-load>\n            <max-load>30</max-load>\n        </resource>\n    </datacenter>\n</load-object>",
+              "schema": {
+                "additionalProperties": false,
+                "description": "Provides information that you need to specify when submitting load data for a GTM domain.",
+                "type": "object",
+                "required": [
+                  "domain",
+                  "timestamp",
+                  "datacenter"
+                ],
+                "properties": {
+                  "datacenter": {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "datacenterId",
+                      "resource"
+                    ],
+                    "properties": {
+                      "datacenterId": {
+                        "description": "The number of the datacenter (traffic target) being updated. This number comes from the Akamai code field in Control Center. To support legacy clients, we accept `region` as an alias for `datacenterId`.",
+                        "type": "integer",
+                        "xml": {
+                          "attribute": true
+                        }
+                      },
+                      "resource": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "required": [
+                          "name",
+                          "current-load",
+                          "target-load",
+                          "max-load"
+                        ],
+                        "properties": {
+                          "current-load": {
+                            "description": "The current load on the resource in the given datacenter. For example, if the resource is database connections, and you have 50 connections, you would report 50 for this value.",
+                            "type": "integer"
+                          },
+                          "max-load": {
+                            "description": "If the load in every datacenter exceeds its target, GTM raises targets proportional to the difference between `max-load` and `target-load`. Set `max-load` higher in data centers that can handle more traffic when the whole system is overloaded.",
+                            "type": "integer"
+                          },
+                          "name": {
+                            "description": "The name of the resource that is being used to balance load. This can be any quantity you define. For example, a resource can represent connections to a database, bandwidth, hits, or anything else.",
+                            "type": "string",
+                            "xml": {
+                              "attribute": true
+                            }
+                          },
+                          "target-load": {
+                            "description": "GTM's load balancer begins to shift traffic away from a traffic target when the `current-load` exceeds the `target-load`. For example, if you want traffic to begin shifting away from a database location when it has 100 connections, you would set the `target-load` to 100.",
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "domain": {
+                    "description": "The name of the domain being updated, such as `example.akadns.net`.",
+                    "type": "string",
+                    "xml": {
+                      "attribute": true
+                    }
+                  },
+                  "timestamp": {
+                    "description": "This should be the time at which the load was recorded, in XSD date format.",
+                    "type": "string",
+                    "xml": {
+                      "attribute": true
+                    }
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/domain-resource-dc-xml.yaml"
+                },
+                "xml": {
+                  "name": "load-object"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Status 204.",
+            "content": {
+              "*/*": {}
+            }
+          },
+          "400": {
+            "description": "Missing mandatory API parameters.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Failed to parse JSON",
+                  "status": 400,
+                  "title": "Bad Request",
+                  "type": "https://developer.akamai.com/api/mapping/gtm-load-data/overview.html#badjson"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates debugging information for error responses.",
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "description": "Detailed description of the error.",
+                      "example": "Domain example.akadns.net is not configured or does not have load feedback",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Status code for the error.",
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title for the error type.",
+                      "example": "Forbidden",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "URL for the error type.",
+                      "example": "https://problems.luna.akamaiapis.net/siem/error-types/NOT-FOUND",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "403": {
+            "description": "The user specified has no entitlement to access data for the domain, resource, and datacenter.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Domain example.akadns.net is not configured or does not have load feedback",
+                  "status": 403,
+                  "title": "Forbidden",
+                  "type": "https://developer.akamai.com/api/mapping/gtm-load-data/overview.html#baddomain"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates debugging information for error responses.",
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "description": "Detailed description of the error.",
+                      "example": "Domain example.akadns.net is not configured or does not have load feedback",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Status code for the error.",
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title for the error type.",
+                      "example": "Forbidden",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "URL for the error type.",
+                      "example": "https://problems.luna.akamaiapis.net/siem/error-types/NOT-FOUND",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "405": {
+            "description": "Method is forbidden (only GET or POST allowed).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Request \"/gtm-load-data/v1/example.akadns.net/connections/100\" is forbidden (not GET or POST)",
+                  "status": 405,
+                  "title": "Method Not Allowed",
+                  "type": "https://developer.akamai.com/api/mapping/gtm-load-data/overview.html#badmethod"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates debugging information for error responses.",
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "description": "Detailed description of the error.",
+                      "example": "Domain example.akadns.net is not configured or does not have load feedback",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Status code for the error.",
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title for the error type.",
+                      "example": "Forbidden",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "URL for the error type.",
+                      "example": "https://problems.luna.akamaiapis.net/siem/error-types/NOT-FOUND",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/405.yaml"
+            }
+          },
+          "429": {
+            "description": "Too many requests. The user has sent too many requests in a given amount of time.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Domain example.akadns.net has hit request limit 100 for past minute",
+                  "status": 429,
+                  "title": "Too Many Requests",
+                  "type": "https://developer.akamai.com/api/mapping/gtm-load-data/overview.html#toomanyrequests"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates debugging information for error responses.",
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "description": "Detailed description of the error.",
+                      "example": "Domain example.akadns.net is not configured or does not have load feedback",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Status code for the error.",
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title for the error type.",
+                      "example": "Forbidden",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "URL for the error type.",
+                      "example": "https://problems.luna.akamaiapis.net/siem/error-types/NOT-FOUND",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/429.yaml"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Failed to create JSON for resource connections in domain example.akadns.net, region 100",
+                  "status": 500,
+                  "title": "Internal Server Error",
+                  "type": "https://developer.akamai.com/api/mapping/gtm-load-data/overview.html#internalerror"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates debugging information for error responses.",
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "description": "Detailed description of the error.",
+                      "example": "Domain example.akadns.net is not configured or does not have load feedback",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Status code for the error.",
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title for the error type.",
+                      "example": "Forbidden",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "URL for the error type.",
+                      "example": "https://problems.luna.akamaiapis.net/siem/error-types/NOT-FOUND",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "The name of the GTM domain.",
+            "example": "{{domain}}",
+            "in": "path",
+            "name": "domain",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/domain-path.yaml"
+            }
+          },
+          {
+            "description": "The name of the resource.",
+            "example": "{{resource}}",
+            "in": "path",
+            "name": "resource",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/resource-path.yaml"
+            }
+          },
+          {
+            "description": "The ID number for the datacenter (traffic target), from the \"Akamai code\" field in Control Center.",
+            "example": "{{datacenterId}}",
+            "in": "path",
+            "name": "datacenterId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/datacenterId-path.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "get": {
+        "description": "Use this action to fetch the load data for a resource instance. The URL format is the same as the POST action. The API returns either XML or JSON, depending on your `Accept` header. If both are specified, or there is no `Accept` header, the default is JSON. In this sample data, we're fetching load for a resource called `connections` in datacenter 100, in the `example.akadns.net` domain.",
+        "operationId": "get-domain-resource",
+        "summary": "Get load data",
+        "tags": [
+          "Load data"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Global Traffic Management Load Feedback API",
+          "url": "https://techdocs.akamai.com/gtm-load-feedback/reference/get-domain-resource"
+        },
+        "responses": {
+          "200": {
+            "description": "Status 200.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "current-load": 20,
+                  "datacenterId": 100,
+                  "domain": "example.akadns.net",
+                  "max-load": 30,
+                  "resource": "connections",
+                  "target-load": 25,
+                  "timestamp": "2015-05-01T19:38:53.188Z"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Provides information that you need to specify when submitting load data for a GTM domain.",
+                  "type": "object",
+                  "required": [
+                    "domain",
+                    "datacenterId",
+                    "resource",
+                    "current-load",
+                    "target-load",
+                    "max-load",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "current-load": {
+                      "description": "The current load on the resource in the given datacenter. For example, if the resource is database connections, and you have 50 connections, you would report 50 for this value.",
+                      "type": "integer"
+                    },
+                    "datacenterId": {
+                      "description": "The number of the datacenter (traffic target) being updated. This number comes from the Akamai code field in Control Center. To support legacy clients, we accept `region` as an alias for `datacenterId`.",
+                      "type": "integer"
+                    },
+                    "domain": {
+                      "description": "The name of the domain being updated, such as `example.akadns.net`.",
+                      "type": "string"
+                    },
+                    "max-load": {
+                      "description": "If the load in every datacenter exceeds its target, GTM raises targets proportional to the difference between `max-load` and `target-load`. Set `max-load` higher in data centers that can handle more traffic when the whole system is overloaded.",
+                      "type": "integer"
+                    },
+                    "resource": {
+                      "description": "The name of the resource that is being used to balance load. This can be any quantity you define. For example, a resource can represent connections to a database, bandwidth, hits, or anything else.",
+                      "type": "string"
+                    },
+                    "target-load": {
+                      "description": "GTM's load balancer begins to shift traffic away from a traffic target when the `current-load` exceeds the `target-load`. For example, if you want traffic to begin shifting away from a database location when it has 100 connections, you would set the `target-load` to 100.",
+                      "type": "integer"
+                    },
+                    "timestamp": {
+                      "description": "This should be the time at which the load was recorded, in XSD date format.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/domain-resource-dc-json.yaml"
+                  }
+                }
+              },
+              "application/xml": {
+                "example": "<load-object domain=\"example.akadns.net\" timestamp=\"2015-05-01T19:38:53.188Z\" version=\"1\" xmlns=\"http://www.akamai.com/FirstPoint/load-balancing\">\n    <datacenter datacenterId=\"100\">\n        <resource name=\"connections\">\n            <current-load>20</current-load>\n            <target-load>25</target-load>\n            <max-load>30</max-load>\n        </resource>\n    </datacenter>\n</load-object>",
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Provides information that you need to specify when submitting load data for a GTM domain.",
+                  "type": "object",
+                  "required": [
+                    "domain",
+                    "timestamp",
+                    "datacenter"
+                  ],
+                  "properties": {
+                    "datacenter": {
+                      "additionalProperties": false,
+                      "type": "object",
+                      "required": [
+                        "datacenterId",
+                        "resource"
+                      ],
+                      "properties": {
+                        "datacenterId": {
+                          "description": "The number of the datacenter (traffic target) being updated. This number comes from the Akamai code field in Control Center. To support legacy clients, we accept `region` as an alias for `datacenterId`.",
+                          "type": "integer",
+                          "xml": {
+                            "attribute": true
+                          }
+                        },
+                        "resource": {
+                          "additionalProperties": false,
+                          "type": "object",
+                          "required": [
+                            "name",
+                            "current-load",
+                            "target-load",
+                            "max-load"
+                          ],
+                          "properties": {
+                            "current-load": {
+                              "description": "The current load on the resource in the given datacenter. For example, if the resource is database connections, and you have 50 connections, you would report 50 for this value.",
+                              "type": "integer"
+                            },
+                            "max-load": {
+                              "description": "If the load in every datacenter exceeds its target, GTM raises targets proportional to the difference between `max-load` and `target-load`. Set `max-load` higher in data centers that can handle more traffic when the whole system is overloaded.",
+                              "type": "integer"
+                            },
+                            "name": {
+                              "description": "The name of the resource that is being used to balance load. This can be any quantity you define. For example, a resource can represent connections to a database, bandwidth, hits, or anything else.",
+                              "type": "string",
+                              "xml": {
+                                "attribute": true
+                              }
+                            },
+                            "target-load": {
+                              "description": "GTM's load balancer begins to shift traffic away from a traffic target when the `current-load` exceeds the `target-load`. For example, if you want traffic to begin shifting away from a database location when it has 100 connections, you would set the `target-load` to 100.",
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "domain": {
+                      "description": "The name of the domain being updated, such as `example.akadns.net`.",
+                      "type": "string",
+                      "xml": {
+                        "attribute": true
+                      }
+                    },
+                    "timestamp": {
+                      "description": "This should be the time at which the load was recorded, in XSD date format.",
+                      "type": "string",
+                      "xml": {
+                        "attribute": true
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/domain-resource-dc-xml.yaml"
+                  },
+                  "xml": {
+                    "name": "load-object"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing mandatory API parameters.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Failed to parse JSON",
+                  "status": 400,
+                  "title": "Bad Request",
+                  "type": "https://developer.akamai.com/api/mapping/gtm-load-data/overview.html#badjson"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates debugging information for error responses.",
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "description": "Detailed description of the error.",
+                      "example": "Domain example.akadns.net is not configured or does not have load feedback",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Status code for the error.",
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title for the error type.",
+                      "example": "Forbidden",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "URL for the error type.",
+                      "example": "https://problems.luna.akamaiapis.net/siem/error-types/NOT-FOUND",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "403": {
+            "description": "The user specified has no entitlement to access data for the domain, resource, and datacenter.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Domain example.akadns.net is not configured or does not have load feedback",
+                  "status": 403,
+                  "title": "Forbidden",
+                  "type": "https://developer.akamai.com/api/mapping/gtm-load-data/overview.html#baddomain"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates debugging information for error responses.",
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "description": "Detailed description of the error.",
+                      "example": "Domain example.akadns.net is not configured or does not have load feedback",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Status code for the error.",
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title for the error type.",
+                      "example": "Forbidden",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "URL for the error type.",
+                      "example": "https://problems.luna.akamaiapis.net/siem/error-types/NOT-FOUND",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "404": {
+            "description": "No data is available for the specified domain, resource, and datacenter.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "No DSA data for resource connections in domain example.akadns.net, region 100",
+                  "status": 404,
+                  "title": "Not Found",
+                  "type": "https://developer.akamai.com/api/mapping/gtm-load-data/overview.html#nodata"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates debugging information for error responses.",
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "description": "Detailed description of the error.",
+                      "example": "Domain example.akadns.net is not configured or does not have load feedback",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Status code for the error.",
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title for the error type.",
+                      "example": "Forbidden",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "URL for the error type.",
+                      "example": "https://problems.luna.akamaiapis.net/siem/error-types/NOT-FOUND",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          },
+          "405": {
+            "description": "Method is forbidden (only GET or POST allowed).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Request \"/gtm-load-data/v1/example.akadns.net/connections/100\" is forbidden (not GET or POST)",
+                  "status": 405,
+                  "title": "Method Not Allowed",
+                  "type": "https://developer.akamai.com/api/mapping/gtm-load-data/overview.html#badmethod"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates debugging information for error responses.",
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "description": "Detailed description of the error.",
+                      "example": "Domain example.akadns.net is not configured or does not have load feedback",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Status code for the error.",
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title for the error type.",
+                      "example": "Forbidden",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "URL for the error type.",
+                      "example": "https://problems.luna.akamaiapis.net/siem/error-types/NOT-FOUND",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/405.yaml"
+            }
+          },
+          "429": {
+            "description": "Too many requests. The user has sent too many requests in a given amount of time.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Domain example.akadns.net has hit request limit 100 for past minute",
+                  "status": 429,
+                  "title": "Too Many Requests",
+                  "type": "https://developer.akamai.com/api/mapping/gtm-load-data/overview.html#toomanyrequests"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates debugging information for error responses.",
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "description": "Detailed description of the error.",
+                      "example": "Domain example.akadns.net is not configured or does not have load feedback",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Status code for the error.",
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title for the error type.",
+                      "example": "Forbidden",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "URL for the error type.",
+                      "example": "https://problems.luna.akamaiapis.net/siem/error-types/NOT-FOUND",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/429.yaml"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Failed to create JSON for resource connections in domain example.akadns.net, region 100",
+                  "status": 500,
+                  "title": "Internal Server Error",
+                  "type": "https://developer.akamai.com/api/mapping/gtm-load-data/overview.html#internalerror"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates debugging information for error responses.",
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "description": "Detailed description of the error.",
+                      "example": "Domain example.akadns.net is not configured or does not have load feedback",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Status code for the error.",
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title for the error type.",
+                      "example": "Forbidden",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "URL for the error type.",
+                      "example": "https://problems.luna.akamaiapis.net/siem/error-types/NOT-FOUND",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "The name of the GTM domain.",
+            "example": "{{domain}}",
+            "in": "path",
+            "name": "domain",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/domain-path.yaml"
+            }
+          },
+          {
+            "description": "The name of the resource.",
+            "example": "{{resource}}",
+            "in": "path",
+            "name": "resource",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/resource-path.yaml"
+            }
+          },
+          {
+            "description": "The ID number for the datacenter (traffic target), from the \"Akamai code\" field in Control Center.",
+            "example": "{{datacenterId}}",
+            "in": "path",
+            "name": "datacenterId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/datacenterId-path.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "http://{hostname}/gtm-load-data/v1"
+    }
+  ]
+}

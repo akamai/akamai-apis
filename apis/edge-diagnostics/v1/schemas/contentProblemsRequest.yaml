@@ -1,0 +1,52 @@
+type: object
+description: |-
+  Collects data to use in the Content problems scenario request.
+  
+x-akamai:
+  file-path: schemas/contentProblemsRequest.yaml
+additionalProperties: false
+required:
+- url
+properties:
+  edgeLocationId:
+    type: string
+    description: |
+      Unique identifier for an edge server location closest to end users experiencing issues with the URL. Run the [List available edge server locations](ref:get-edge-locations) operation to get this value.
+    minLength: 1
+  ipVersion:
+    type: string
+    description: |
+      IP version for the Content problems scenario to use to run cURL and MTR commands, either `IPV4` or `IPV6`.
+    enum:
+    - IPV4
+    - IPV6
+  requestHeaders:
+    type: array
+    description: |
+      Customized headers for the `curl` request in the format `header: value`. The request includes [Akamai Pragma headers](doc:pragma-headers) by default.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  runFromSiteShield:
+    type: boolean
+    description: |
+      Runs Content problems from a Site Shield map. To learn more, check [Site Shield requests](ref:site-shield-requests).
+  sensitiveRequestHeaderKeys:
+    type: array
+    description: |
+      Sensitive `requestHeaders` you don't want to store in the database after running the request. Check [Sensitive headers](ref:sensitive-headers) to see the list of request headers treated as sensitive by default.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  spoofEdgeIp:
+    type: string
+    description: |
+      IP of the edge server you want to serve traffic from. You can use the `ip` value from the `edgeIps` array in the [collected diagnostic data](ref:get-user-diagnostic-data-group-records).
+    minLength: 1
+  url:
+    type: string
+    description: |
+      URL you want to run the Content problems scenario for.
+    format: uri

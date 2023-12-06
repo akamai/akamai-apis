@@ -1,0 +1,30 @@
+type: object
+description: |-
+  Contains action settings for penalty box protection.
+  
+x-akamai:
+  file-path: schemas/penalty-box.yaml
+additionalProperties: false
+required:
+- penaltyBoxProtection
+- action
+properties:
+  action:
+    oneOf:
+    - description: |
+        The action to take when penalty box protection is triggered: `alert` to record the trigger event, `abort` to block the request, or `none` to take no action. Ignored if `penaltyBoxProtection` is set to `false`.
+      type: string
+      title: action
+      enum:
+      - alert
+      - abort
+      - none
+    - description: |
+        The custom deny action to take when penalty box protection is triggered: `deny_custom_{custom_deny_id}` to execute a custom deny action. Ignored if `penaltyBoxProtection` is set to `false`.
+      type: string
+      title: custom action
+      pattern: deny_custom_{\d+}
+  penaltyBoxProtection:
+    type: boolean
+    description: |
+      Specifies whether penalty box protection is enabled for the security policy. When set to `true` the `action` occurs if triggered by a request.

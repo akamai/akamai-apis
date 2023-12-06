@@ -1,0 +1,126 @@
+type: object
+description: |-
+  Encapsulated details of the case to create.
+  
+x-akamai:
+  file-path: schemas/create-case-request.yaml
+additionalProperties: false
+required:
+- subject
+- description
+- accountId
+- categoryId
+properties:
+  description:
+    type: string
+    description: |
+      Details of your issue.
+    maxLength: 32000
+  accountId:
+    type: string
+    description: |
+      Identifier for the account you want to create the case for. To get this value, run the [List available accounts](ref:get-accounts) operation.
+    maxLength: 20
+  alsoNotify:
+    type: array
+    description: |
+      Lists email addresses to send case notifications to.
+    minItems: 0
+    items:
+      type: string
+      description: |
+        Email address to send notifications about update notifications.
+      maxLength: 255
+      format: email
+  alternateContact:
+    type: object
+    description: |
+      Specifies a person for the support team to contact, if you're unavailable. This person also gets notified about any updates to the case.
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        description: |
+          Full name.
+        maxLength: 255
+      company:
+        type: string
+        description: |
+          Name of the company the person works for.
+        maxLength: 255
+      email:
+        type: string
+        description: |
+          Email address.
+        maxLength: 255
+        format: email
+      phone:
+        type: string
+        description: |
+          Phone number.
+        maxLength: 40
+  areaName:
+    type: string
+    description: |
+      Area name the case refers to. Provide it only when the `categoryId` is set to `BILLING` or `BUSINESS_SUPPORT`. To get available values, run the [Get a case category](ref:get-category) operation.
+    maxLength: 255
+  categoryId:
+    type: string
+    description: |
+      Identifier for the category you want to create the case for. To learn more about available case categories, see [Categories of cases](doc:about-case-management#categories-of-cases).
+    enum:
+      $ref: categoryId-enum.yaml
+  customerTrackingNumber:
+    type: string
+    description: |
+      Identifier for a separate customer's support ticket.
+  parentAccountId:
+    type: string
+    description: |
+      Identifier for the parent account to associate and share the case with. Provide it only when creating a `BILLING` or `BUSINESS_SUPPORT` case associated to an indirect contract. To get this value, run the [Get a case category](ref:get-category) operation.
+    minLength: 1
+    maxLength: 20
+  partnerTicketNumber:
+    type: string
+    description: |
+      Identifier for a separate reseller's support ticket, up to 30 characters.
+    maxLength: 30
+  policyDomainName:
+    type: string
+    description: |
+      Name of the policy domain the case refers to. Provide it only when the `categoryId` is set to `SECURITY`. To get available values, run the [Get a case category](ref:get-category) operation.
+    maxLength: 80
+  problemName:
+    type: string
+    description: |
+      Problem name the case refers to. This value depends on the `productName` value. Provide it only when the `categoryId` is set to `TECHNICAL` or `SECURITY`. To get available combinations of `productName` and `problemName` values, run the [Get a case category](ref:get-category) operation.
+    maxLength: 255
+  productName:
+    type: string
+    description: |
+      Product name the case refers to. This value depends on the `problemName` value. Provide it only when the `categoryId` is set to `TECHNICAL` or `SECURITY`. To get available combinations of `productName` and `problemName` values, run the [Get a case category](ref:get-category) operation.
+    maxLength: 255
+  productSolutionName:
+    type: string
+    description: |
+      Product solution name the case refers to. Provide it only when the `categoryId` is set to `PROFESSIONAL_SERVICES`. To get available values, run the [Get a case category](ref:get-category) operation.
+    maxLength: 255
+  psPackageName:
+    type: string
+    description: |
+      Professional services package name the case refers to. Provide it only when the `categoryId` is set to `PROFESSIONAL_SERVICES`. To get available values, run the [Get a case category](ref:get-category) operation.
+    maxLength: 255
+  serviceName:
+    type: string
+    description: |
+      Service name the case refers to. This value depends on the `areaName` value. Provide it only when the `categoryId` is set to `BILLING` or `BUSINESS_SUPPORT`. To get available combinations of `areaName` and `serviceName` values, run the [Get a case category](ref:get-category) operation.
+    maxLength: 255
+  severity:
+    type: string
+    description: |
+      Severity level of the case. To get available values, run the [Get a case category](ref:get-category) operation.
+  subject:
+    type: string
+    description: |
+      Title of the case, up to 255 characters. Try to make it short and specific. This helps the support team to identify the case if you forget or don't have access to the case identifier.
+    maxLength: 255

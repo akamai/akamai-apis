@@ -1,0 +1,40 @@
+openapi: 3.0.0
+info:
+  title: Load feedback
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/gtm-api/v1/reports
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: load-feedback.yaml
+paths:
+  /load-feedback/domains/{domain}/resources/{resource}:
+    parameters:
+    - $ref: parameters/resource-path.yaml
+    - $ref: parameters/domain-path.yaml
+    get:
+      operationId: get-load-feedback
+      summary: Report load feedback
+      tags:
+      - Load feedback
+      description: |
+        This report shows the historical values of a given Resource across all data centers and the given time period. A resource is anything that can constrain the load sent to a data center. Examples of typical resources include bandwidth, CPU load average, database queries per second, or disk operations per second.
+      parameters:
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-load-feedback-for-a-resource-200.json
+              schema:
+                $ref: schemas/load-feedback.yaml
+            text/csv:
+              example:
+                $ref: examples/list-load-feedback-for-a-resource-200.csv

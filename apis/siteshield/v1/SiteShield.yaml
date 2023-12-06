@@ -1,0 +1,134 @@
+openapi: 3.0.0
+info:
+  title: Maps
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/siteshield/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: SiteShield.yaml
+paths:
+  /maps:
+    get:
+      operationId: get-maps
+      summary: List maps
+      tags:
+      - Maps
+      description: |
+        Returns a list of all Site Shield maps that belong to your account.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/siteShieldMaps-200.json
+              schema:
+                $ref: schemas/siteShieldMaps.yaml
+        400:
+          description: |
+            Bad request.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/httpProblemDetails-400.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            You don't have permission to access the resource.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/httpProblemDetails-403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            The resource doesn't exist.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/httpProblemDetails-404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /maps/{id}:
+    parameters:
+    - $ref: parameters/id-path.yaml
+    get:
+      operationId: get-map
+      summary: Get a map
+      tags:
+      - Maps
+      description: |
+        Returns information about the specified map, such as the map name, firewall addresses, and when the map was last updated.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/siteShieldMap-200.json
+              schema:
+                $ref: schemas/siteShieldMap.yaml
+        403:
+          description: |
+            You don't have permission to access the resource.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/httpProblemDetails-403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            The resource doesn't exist.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/httpProblemDetails-404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /maps/{id}/acknowledge:
+    parameters:
+    - $ref: parameters/id-path.yaml
+    post:
+      operationId: post-map-acknowledge
+      summary: Acknowledge the map
+      tags:
+      - Maps
+      description: |
+        Acknowledges the proposed firewall update for the specified map. When necessary, the Site Shield Management application issues an update to the IP address list and sends a notification to you to update your firewall. See [Firewall updates and address change acknowledgment](doc:updating-your-firewall-and-acknowledging-address-changes) for more details.
+      responses:
+        200:
+          description: |
+            Successfully acknowledged.
+          content:
+            application/json:
+              example:
+                $ref: examples/siteShieldMap-200.json
+              schema:
+                $ref: schemas/siteShieldMap.yaml
+        403:
+          description: |
+            You don't have permission to access the resource.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/httpProblemDetails-403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            Not found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/httpProblemDetails-404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml

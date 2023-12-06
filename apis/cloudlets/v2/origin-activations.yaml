@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: Load Balancer Activations
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cloudlets/api/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: origin-activations.yaml
+paths:
+  /origins/currentActivations:
+    get:
+      operationId: get-origins-currentactivations
+      summary: List current load balancing activations
+      description: |
+        Run this operation to return information about all the current load balancing activations.
+      responses:
+        200:
+          description: |
+            Schema for all current load balancer activations.
+          content:
+            application/json:
+              example:
+                $ref: examples/currentoriginactivations-get-200.json
+              schema:
+                $ref: schemas/get-origins-currentactivations-response.yaml
+  /origins/{originId}/activations:
+    parameters:
+    - $ref: parameters/originId-path.yaml
+    post:
+      operationId: post-origin-activations
+      summary: Activate a load balancing version
+      description: |
+        Activate the selected load balancing version. The load balancing version status is either `active` or `inactive`.
+      parameters:
+      - $ref: parameters/async-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/originactivations-post.json
+            schema:
+              $ref: schemas/post-origin-activations-request.yaml
+      responses:
+        200:
+          description: |
+            Schema for a load balancer activation.
+          content:
+            application/json:
+              example:
+                $ref: examples/originactivations-post-200.json
+              schema:
+                $ref: schemas/post-origin-activations-response.yaml
+    get:
+      operationId: get-origin-activations
+      summary: List activations for a load balancing configuration
+      description: |
+        The response lists the activations by the `activatedDate` with the most recent listed first.
+      responses:
+        200:
+          description: |
+            Schema for a list of load balancer activations.
+          content:
+            application/json:
+              example:
+                $ref: examples/originactivations-get-200.json
+              schema:
+                $ref: schemas/get-origin-activations-response.yaml

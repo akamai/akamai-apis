@@ -1,0 +1,1990 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's China CDN Manager API",
+    "url": "https://techdocs.akamai.com/chinacdn/reference"
+  },
+  "info": {
+    "title": "Akamai: China CDN Manager API",
+    "version": "1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/current-provision-states": {
+      "get": {
+        "description": "Returns a list of current provision states for all property hostnames under your account.",
+        "operationId": "get-current-provision-states",
+        "summary": "List current provision states",
+        "tags": [
+          "Provision states"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's China CDN Manager API",
+          "url": "https://techdocs.akamai.com/chinacdn/reference/get-current-provision-states"
+        },
+        "responses": {
+          "200": {
+            "description": "Provides information for the current provision states of all property hostnames under your account.",
+            "content": {
+              "application/vnd.akamai.chinacdn.provision-states.v1+json": {
+                "example": {
+                  "provisionStates": [
+                    {
+                      "hostname": "www.example.com",
+                      "pendingState": null,
+                      "provisionState": "WHITELISTED",
+                      "partnerStates": {
+                        "PARTNER1": {
+                          "pendingState": null,
+                          "provisionState": "WHITELISTED"
+                        },
+                        "PARTNER2": {
+                          "pendingState": "WHITELISTED",
+                          "provisionState": "DEPROVISIONED"
+                        }
+                      }
+                    },
+                    {
+                      "hostname": "www.example2.com",
+                      "pendingState": "DEPROVISIONED",
+                      "provisionState": "WHITELISTED",
+                      "partnerStates": {
+                        "PARTNER1": {
+                          "pendingState": "DEPROVISIONED",
+                          "provisionState": "WHITELISTED"
+                        },
+                        "PARTNER2": {
+                          "pendingState": null,
+                          "provisionState": "DEPROVISIONED"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "required": [
+                    "provisionStates"
+                  ],
+                  "properties": {
+                    "provisionStates": {
+                      "description": "The provision states for all property hostnames under your account.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Information about the current change made to the property hostname's deployment in China.",
+                        "type": "object",
+                        "properties": {
+                          "hostname": {
+                            "description": "The property hostname the provision state reflects.",
+                            "type": "string"
+                          },
+                          "partnerStates": {
+                            "description": "Specifies the current provision state for each partner based on the provision state change.",
+                            "type": "object"
+                          },
+                          "pendingChanges": {
+                            "description": "Indicates if there are any pending changes in progress for the property hostname.",
+                            "type": "boolean"
+                          },
+                          "provisionState": {
+                            "description": "The property hostname's current provision state, either `WHITELISTED` indicating you're waiting for approval from the China partner to enable your property `hostname` in China, `PROVISIONED` indicating your property `hostname` is whitelisted and mapped to the provided edge hostname on China CDN, or `DEPROVISIONED` indicating your property `hostname` was removed from the whitelist and unmapped from the edge hostname.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/provision-state.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/provision-states-current-get-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "Filter results by the given provision state.",
+            "example": "{{provisionState}}",
+            "in": "query",
+            "name": "provisionState",
+            "schema": {
+              "example": "WHITELISTED",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/provisionState-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/edge-hostnames": {
+      "get": {
+        "description": "Returns a filtered list of provided edge hostnames available for use on a China CDN enabled contract.",
+        "operationId": "get-edge-hostnames",
+        "summary": "List edge hostnames",
+        "tags": [
+          "Edge hostnames"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's China CDN Manager API",
+          "url": "https://techdocs.akamai.com/chinacdn/reference/get-edge-hostnames"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/vnd.akamai.chinacdn.edge-hostnames.v1+json": {
+                "example": {
+                  "edgeHostnames": [
+                    {
+                      "edgeHostname": "www.example.com.edgesuite.net",
+                      "propertyHostnames": 10,
+                      "status": "READY",
+                      "unmapSharedEdgeHostname": true
+                    },
+                    {
+                      "edgeHostname": "www.example.com.edgekey.net",
+                      "propertyHostnames": 0,
+                      "status": "NOT_SUPPORTED",
+                      "unmapSharedEdgeHostname": false
+                    },
+                    {
+                      "edgeHostname": "www.example2.com.edgesuite.net",
+                      "propertyHostnames": 7,
+                      "status": "NOT_READY",
+                      "unmapSharedEdgeHostname": true
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Information about the edge hostnames under your account that are available for use on China CDN.",
+                  "type": "object",
+                  "properties": {
+                    "edgeHostnames": {
+                      "description": "Information about the edge hostnames provided for use on the China CDN.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": true,
+                        "description": "Provides information about the edge hostnames provided to use on China CDN.",
+                        "type": "object",
+                        "required": [
+                          "edgeHostname"
+                        ],
+                        "properties": {
+                          "edgeHostname": {
+                            "description": "This hostname is usually your original origin hostname, suffixed with `.edgesuite.net` or `.edgekey.net`.",
+                            "maxLength": 4000,
+                            "type": "string"
+                          },
+                          "status": {
+                            "description": "Indicates the status of the edge hostname. `READY` means that you can use the edge hostname to deploy a property hostname in China. `NOT_READY` means the edge hostname isn't configured properly. For example, the edge hostname doesn't have a product ID specified. In this case, the API can't use the edge hostname until you resolve the issue. [Learn more](https://techdocs.akamai.com/edge-hostnames/reference/get-edgehostnameid). `NOT_SUPPORTED` means the API doesn't automatically manage mapping or unmapping for the DNS zone of the edge hostname. A `null` value means the edge hostname isn't needed for the provision state change. For example, if you're only whitelisting your property hostname.",
+                            "maxLength": 50,
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/edge-hostname-v1.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/edge-hostnames-v1.yaml"
+                  }
+                }
+              },
+              "application/vnd.akamai.chinacdn.edge-hostnames.v2+json": {
+                "example": {
+                  "edgeHostnames": [
+                    {
+                      "edgeHostname": "www.example.com.edgesuite.net",
+                      "propertyHostnames": 10,
+                      "status": "READY",
+                      "unmapSharedEdgeHostname": true
+                    },
+                    {
+                      "edgeHostname": "www.example.com.edgekey.net",
+                      "propertyHostnames": 0,
+                      "status": "NOT_SUPPORTED",
+                      "unmapSharedEdgeHostname": false
+                    },
+                    {
+                      "edgeHostname": "www.example2.com.edgesuite.net",
+                      "propertyHostnames": 7,
+                      "status": "NOT_READY",
+                      "unmapSharedEdgeHostname": true
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Information about the edge hostnames under your account that are available for use on the China CDN.",
+                  "type": "object",
+                  "properties": {
+                    "edgeHostnames": {
+                      "description": "Information about the edge hostnames provided for use on the China CDN.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": true,
+                        "description": "Provides information about the edge hostnames provided for use on the China CDN.",
+                        "type": "object",
+                        "required": [
+                          "edgeHostname"
+                        ],
+                        "properties": {
+                          "edgeHostname": {
+                            "description": "This hostname is typically your original origin hostname, suffixed with a DNS zone such as `.edgesuite.net` or `.edgekey.net`.",
+                            "maxLength": 4000,
+                            "type": "string"
+                          },
+                          "propertyHostnames": {
+                            "description": "The number of property hostnames which use this edge hostname.",
+                            "type": "integer"
+                          },
+                          "status": {
+                            "description": "Indicates the status of the edge hostname. `READY` means that you can use the edge hostname to deploy a property hostname in China. `NOT_READY` means the edge hostname isn't configured properly. For example, if the edge hostname doesn't have a product ID specified, the API can't use the edge hostname until you resolve the issue. [Learn more](https://techdocs.akamai.com/edge-hostnames/reference/get-edgehostnameid). `NOT_SUPPORTED` means the API doesn't automatically manage mapping or unmapping for the DNS zone of the edge hostname. `null` means the edge hostname isn't needed for the provision state change. For example, if you're only whitelisting your property hostname.",
+                            "maxLength": 50,
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "unmapSharedEdgeHostname": {
+                            "description": "Whether the deprovision policy unmaps the shared edge hostname during the deprovision process.",
+                            "type": "boolean"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/edge-hostname-v2.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/edge-hostnames-v2.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/edge-hostnames/{edgehostname}/deprovision-policy": {
+      "get": {
+        "description": "Returns the deprovision policy for the provided edge hostname.",
+        "operationId": "get-edge-hostname-deprovision-policy",
+        "summary": "Get deprovision policy",
+        "tags": [
+          "Edge hostnames"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's China CDN Manager API",
+          "url": "https://techdocs.akamai.com/chinacdn/reference/get-edge-hostname-deprovision-policy"
+        },
+        "responses": {
+          "200": {
+            "description": "Contains information about the deprovision policy assigned to the edge hostname.",
+            "content": {
+              "application/vnd.akamai.chinacdn.deprovision-policy.v1+json": {
+                "example": {
+                  "createdBy": "szhang",
+                  "createdDate": "2021-07-01T12:32:01Z",
+                  "unmapSharedEdgeHostname": true,
+                  "updatedBy": "szhang",
+                  "updatedDate": "2021-11-02T14:03:01Z"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "required": [
+                    "unmapSharedEdgeHostname"
+                  ],
+                  "properties": {
+                    "createdBy": {
+                      "description": "Username that created this policy.",
+                      "type": "string"
+                    },
+                    "createdDate": {
+                      "description": "ISO 8601 timestamp of when this policy was created.",
+                      "type": "string"
+                    },
+                    "unmapSharedEdgeHostname": {
+                      "description": "Whether to unmap the shared edge hostname before de-whitelisting the property hostname during the deprovision process.",
+                      "type": "boolean"
+                    },
+                    "updatedBy": {
+                      "description": "Username that last updated this policy.",
+                      "type": "string"
+                    },
+                    "updatedDate": {
+                      "description": "ISO 8601 timestamp of when this policy was last updated.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/edge-hostname-deprovision-policy-get-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "description": "Specify a deprovision policy for the provided edge hostname.",
+        "operationId": "put-edge-hostname-deprovision-policy",
+        "summary": "Specify a deprovision policy",
+        "tags": [
+          "Edge hostnames"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's China CDN Manager API",
+          "url": "https://techdocs.akamai.com/chinacdn/reference/put-edge-hostname-deprovision-policy"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/vnd.akamai.chinacdn.deprovision-policy.v1+json": {
+              "example": {
+                "createdBy": "hgildong",
+                "createdDate": "2023-08-31T13:28:46Z",
+                "unmapSharedEdgeHostname": true,
+                "updatedBy": "afero",
+                "updatedDate": "2023-08-31T13:39:14Z"
+              },
+              "schema": {
+                "additionalProperties": true,
+                "type": "object",
+                "required": [
+                  "unmapSharedEdgeHostname"
+                ],
+                "properties": {
+                  "createdBy": {
+                    "description": "Username that created this policy.",
+                    "type": "string"
+                  },
+                  "createdDate": {
+                    "description": "ISO 8601 timestamp of when this policy was created.",
+                    "type": "string"
+                  },
+                  "unmapSharedEdgeHostname": {
+                    "description": "Whether to unmap the shared edge hostname before de-whitelisting the property hostname during the deprovision process.",
+                    "type": "boolean"
+                  },
+                  "updatedBy": {
+                    "description": "Username that last updated this policy.",
+                    "type": "string"
+                  },
+                  "updatedDate": {
+                    "description": "ISO 8601 timestamp of when this policy was last updated.",
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/edge-hostname-deprovision-policy-put-request.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contains information about the deprovision policy assigned to the edge hostname.",
+            "content": {
+              "application/vnd.akamai.chinacdn.deprovision-policy.v1+json": {
+                "example": {
+                  "createdBy": "alfulani",
+                  "createdDate": "2021-07-01T12:32:01Z",
+                  "unmapSharedEdgeHostname": true,
+                  "updatedBy": "tyamada",
+                  "updatedDate": "2021-11-02T14:03:01Z"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "required": [
+                    "unmapSharedEdgeHostname"
+                  ],
+                  "properties": {
+                    "createdBy": {
+                      "description": "Username that created this policy.",
+                      "type": "string"
+                    },
+                    "createdDate": {
+                      "description": "ISO 8601 timestamp of when this policy was created.",
+                      "type": "string"
+                    },
+                    "unmapSharedEdgeHostname": {
+                      "description": "Whether to unmap the shared edge hostname before de-whitelisting the property hostname during the deprovision process.",
+                      "type": "boolean"
+                    },
+                    "updatedBy": {
+                      "description": "Username that last updated this policy.",
+                      "type": "string"
+                    },
+                    "updatedDate": {
+                      "description": "ISO 8601 timestamp of when this policy was last updated.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/edge-hostname-deprovision-policy-put-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The edge hostname available for use on a China CDN enabled contract.",
+          "example": "{{edgehostname}}",
+          "in": "path",
+          "name": "edgehostname",
+          "required": true,
+          "schema": {
+            "example": "www.example.com.edgesuite.net",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/edgehostname-path.yaml"
+          }
+        }
+      ]
+    },
+    "/groups": {
+      "get": {
+        "description": "Returns a filtered list of groups under your account available for use on a China CDN enabled contract.",
+        "operationId": "get-groups",
+        "summary": "List groups",
+        "tags": [
+          "Groups"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's China CDN Manager API",
+          "url": "https://techdocs.akamai.com/chinacdn/reference/get-groups"
+        },
+        "responses": {
+          "200": {
+            "description": "Provides information about the groups under your account that are available for use on China CDN.",
+            "content": {
+              "application/vnd.akamai.chinacdn.groups.v1+json": {
+                "example": {
+                  "groups": [
+                    {
+                      "groupId": 1,
+                      "groupName": "Group 1"
+                    },
+                    {
+                      "groupId": 2,
+                      "groupName": "Group 2"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "properties": {
+                    "groups": {
+                      "description": "Information about the groups under your account that are available for use on China CDN.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Provides information about the groups under your account that are available for use on China CDN.",
+                        "type": "object",
+                        "required": [
+                          "groupId"
+                        ],
+                        "properties": {
+                          "groupId": {
+                            "description": "A unique identifier for the group.",
+                            "minimum": 1,
+                            "type": "integer"
+                          },
+                          "groupName": {
+                            "description": "A descriptive label for the group.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/group.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/groups-get-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/icp-holding-entities": {
+      "get": {
+        "description": "Returns a list of read-only ICP holding entities available under your account. Use this operation to view compliance information for all ICP holding entities.",
+        "operationId": "get-icp-holding-entities",
+        "summary": "List ICP holding entities",
+        "tags": [
+          "ICP holding entities"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's China CDN Manager API",
+          "url": "https://techdocs.akamai.com/chinacdn/reference/get-icp-holding-entities"
+        },
+        "responses": {
+          "200": {
+            "description": "Provides information about the ICP holding entities.",
+            "content": {
+              "application/vnd.akamai.chinacdn.icp-holding-entities.v1+json": {
+                "example": {
+                  "icpHoldingEntities": [
+                    {
+                      "businessClassification": 4,
+                      "comments": "N/A",
+                      "createdBy": "szhang",
+                      "createdDate": "2021-07-01T12:32:01Z",
+                      "id": 1,
+                      "name": "My Holding Entity 1",
+                      "updatedBy": "tyamada",
+                      "updatedDate": "2021-11-02T14:03:01Z",
+                      "legalId": {
+                        "id": "A23453635",
+                        "type": 5
+                      },
+                      "legalRepresentative": {
+                        "name": "Fred Smith",
+                        "phone": "123-456-7890"
+                      }
+                    },
+                    {
+                      "businessClassification": 4,
+                      "comments": "N/A",
+                      "createdBy": "jsmith",
+                      "createdDate": "2021-07-01T12:32:01Z",
+                      "id": 2,
+                      "name": "My Holding Entity 2",
+                      "updatedBy": "tyamada",
+                      "updatedDate": "2021-11-02T14:03:01Z",
+                      "legalId": {
+                        "id": "L23453635",
+                        "type": 5
+                      },
+                      "legalRepresentative": {
+                        "name": "Joe Smith",
+                        "phone": "123-555-7890"
+                      }
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "properties": {
+                    "icpHoldingEntities": {
+                      "description": "Information about the ICP holding entity under your account. This information needs to match the information provided when applying for a license to operate in China. Any mismatch can result in Akamai's China partner rejecting your request to whitelist a property `hostname`.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": true,
+                        "description": "Provides information about the ICP holding entity under your account. This information needs to match the information provided when applying for a license to operate in China. Any mismatch can result in Akamai's China partner rejecting your request to whitelist a property `hostname`.",
+                        "type": "object",
+                        "required": [
+                          "name"
+                        ],
+                        "properties": {
+                          "businessClassification": {
+                            "description": "Identifies the principle function of the ICP holding entity responsible for deploying your web content in China. For available codes, see [Business classification types](https://techdocs.akamai.com/chinacdn/reference/business-classification-types).",
+                            "type": "integer"
+                          },
+                          "comments": {
+                            "description": "A descriptive comment about the ICP holding entity.",
+                            "maxLength": 4000,
+                            "type": "string"
+                          },
+                          "createdBy": {
+                            "description": "The Akamai username who created the ICP holding entity.",
+                            "maxLength": 255,
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "createdDate": {
+                            "description": "The time the ICP holding entity was created, in ISO 8601 format.",
+                            "format": "date-time",
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "description": "A unique identifier for the ICP holding entity.",
+                            "minimum": 1,
+                            "type": "integer"
+                          },
+                          "legalEntity": {
+                            "additionalProperties": false,
+                            "description": "The Chinese name of the ICP holding entity printed in the business registration certificate or representative office certificate issued by the Chinese government.",
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "description": "The legal entity ID value.",
+                                "maxLength": 32,
+                                "type": "string"
+                              },
+                              "type": {
+                                "description": "The legal entity type value. For available codes, see [Legal ID types](https://techdocs.akamai.com/chinacdn/reference/legal-id-types).",
+                                "type": "integer"
+                              }
+                            }
+                          },
+                          "name": {
+                            "description": "The name of the ICP holding entity.",
+                            "maxLength": 128,
+                            "type": "string"
+                          },
+                          "technicalContact": {
+                            "additionalProperties": false,
+                            "description": "Your technical contact who resides in China.",
+                            "type": "object",
+                            "properties": {
+                              "email": {
+                                "description": "The email address of your technical contact in China.",
+                                "maxLength": 32,
+                                "type": "string"
+                              },
+                              "id": {
+                                "description": "The ID value of your technical contact in China.",
+                                "maxLength": 32,
+                                "type": "string"
+                              },
+                              "name": {
+                                "description": "The name of your technical contact in China.",
+                                "maxLength": 32,
+                                "type": "string"
+                              },
+                              "phone": {
+                                "description": "The phone number of your technical contact in China, either cell or landline.",
+                                "maxLength": 32,
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "updatedBy": {
+                            "description": "The Akamai username who last updated the ICP holding entity.",
+                            "maxLength": 255,
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "updatedDate": {
+                            "description": "The time the ICP holding entity was last updated, in ISO 8601 format.",
+                            "format": "date-time",
+                            "readOnly": true,
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/icp-holding-entity.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/icp-holding-entities-get-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/icp-numbers": {
+      "get": {
+        "description": "Returns a list of read-only ICP numbers available under your account. Use this operation to view information about the ICP numbers and to identify the ICP holding entities for these ICP numbers.",
+        "operationId": "get-icp-numbers",
+        "summary": "List ICP numbers",
+        "tags": [
+          "ICP numbers"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's China CDN Manager API",
+          "url": "https://techdocs.akamai.com/chinacdn/reference/get-icp-numbers"
+        },
+        "responses": {
+          "200": {
+            "description": "Provides information about the ICP numbers issued by the Chinese government under your account.",
+            "content": {
+              "application/vnd.akamai.chinacdn.icp-numbers.v1+json": {
+                "example": {
+                  "icpNumbers": [
+                    {
+                      "createdBy": "tyamada",
+                      "createdDate": "2021-01-02T00:00:00.000Z",
+                      "icpHoldingEntityId": 1,
+                      "icpNumber": "icpNumber1",
+                      "id": 1,
+                      "updatedBy": "szhang",
+                      "updatedDate": "2019-11-02T14:03:01Z"
+                    },
+                    {
+                      "createdBy": "mrossi",
+                      "createdDate": "2021-01-02T00:00:00.000Z",
+                      "icpHoldingEntityId": 2,
+                      "icpNumber": "icpNumber2",
+                      "id": 2,
+                      "updatedBy": "afero",
+                      "updatedDate": "2019-11-02T14:03:01Z"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "properties": {
+                    "icpNumbers": {
+                      "description": "Information about the ICP number used to identify the ICP license issued to the ICP holding entity by the Chinese government. Your property `hostname` needs to reference the ICP number to deploy it in China. [List ICP numbers](https://techdocs.akamai.com/chinacdn/reference/get-icp-numbers) for the ICP numbers available under your account in China.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": true,
+                        "description": "Information about the ICP number used to identify the ICP license issued to the ICP holding entity by the Chinese government. Your property `hostname` needs to reference the ICP number to deploy it in China. [List ICP numbers](https://techdocs.akamai.com/chinacdn/reference/get-icp-numbers) for the ICP numbers available under your account in China.",
+                        "type": "object",
+                        "required": [
+                          "icpHoldingEntityId",
+                          "icpNumber"
+                        ],
+                        "properties": {
+                          "comments": {
+                            "description": "A descriptive comment about the ICP number.",
+                            "maxLength": 4000,
+                            "type": "string"
+                          },
+                          "createdBy": {
+                            "description": "The Akamai username who created the ICP number.",
+                            "maxLength": 255,
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "createdDate": {
+                            "description": "The time the ICP number was created, in ISO 8601 format.",
+                            "format": "date-time",
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "icpHoldingEntityId": {
+                            "description": "A unique identifier for the ICP holding entity that owns the ICP number.",
+                            "minimum": 1,
+                            "type": "integer"
+                          },
+                          "icpNumber": {
+                            "description": "The ICP number that appears in the Chinese government-issued license.",
+                            "maxLength": 64,
+                            "type": "string"
+                          },
+                          "id": {
+                            "description": "A unique identifier for the ICP number. On PUT, sets the `icpNumberId` for the property hostname.",
+                            "minimum": 1,
+                            "type": "integer"
+                          },
+                          "updatedBy": {
+                            "description": "The Akamai username who last updated the ICP number.",
+                            "maxLength": 255,
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "updatedDate": {
+                            "description": "The time the ICP number was last updated, in ISO 8601 format.",
+                            "format": "date-time",
+                            "readOnly": true,
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/icp-number.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/icp-numbers-get-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/property-hostnames": {
+      "get": {
+        "description": "Returns a list of the property hostnames under your account that are available for deployment on China CDN.",
+        "operationId": "get-property-hostnames",
+        "summary": "List property hostnames",
+        "tags": [
+          "Property hostnames"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's China CDN Manager API",
+          "url": "https://techdocs.akamai.com/chinacdn/reference/get-property-hostnames"
+        },
+        "responses": {
+          "200": {
+            "description": "Provides information about the property hostnames under your account.",
+            "content": {
+              "application/vnd.akamai.chinacdn.property-hostnames.v1+json": {
+                "example": {
+                  "propertyHostnames": [
+                    {
+                      "comments": "N/A",
+                      "createdBy": "jsmith",
+                      "createdDate": "2021-07-01T12:32:01Z",
+                      "hostname": "www.example.com",
+                      "icpNumberId": 456,
+                      "serviceCategory": 6,
+                      "updatedBy": "afero",
+                      "updatedDate": "2021-11-02T14:03:01Z"
+                    },
+                    {
+                      "comments": "N/A",
+                      "createdBy": "jperez",
+                      "createdDate": "2021-07-01T12:32:01Z",
+                      "hostname": "www.example2.com",
+                      "icpNumberId": 457,
+                      "serviceCategory": 13,
+                      "updatedBy": "jkowalski",
+                      "updatedDate": "2021-11-02T14:03:01Z"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "properties": {
+                    "propertyHostnames": {
+                      "description": "Information about the property hostname under your account.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": true,
+                        "description": "Information about the property hostname under your account.",
+                        "type": "object",
+                        "required": [
+                          "hostname"
+                        ],
+                        "properties": {
+                          "comments": {
+                            "description": "A descriptive comment about the property hostname.",
+                            "type": "string"
+                          },
+                          "createdBy": {
+                            "description": "The Akamai username who created the property hostname.",
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "createdDate": {
+                            "description": "The time the property hostname was created, in ISO 8601 format.",
+                            "format": "date-time",
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "hostname": {
+                            "description": "The fully qualified domain name of the property hostname.",
+                            "maxLength": 255,
+                            "type": "string"
+                          },
+                          "icpNumberId": {
+                            "description": "Identifies the ICP number assigned to the property hostname.",
+                            "minimum": 1,
+                            "type": "integer"
+                          },
+                          "serviceCategory": {
+                            "description": "Declares the type of website that you're deploying to China. For available codes, see [Service category types](https://techdocs.akamai.com/chinacdn/reference/service-category-types).",
+                            "type": "integer"
+                          },
+                          "updatedBy": {
+                            "description": "The Akamai username that last updated the property hostname.",
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "updatedDate": {
+                            "description": "The time the property hostname was last updated, in ISO 8601 format.",
+                            "format": "date-time",
+                            "readOnly": true,
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/property-hostname.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/hostnames-get-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/property-hostnames/{hostname}": {
+      "get": {
+        "description": "Returns a specific property hostname under your account.",
+        "operationId": "get-property-hostname",
+        "summary": "Get a property hostname",
+        "tags": [
+          "Property hostnames"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's China CDN Manager API",
+          "url": "https://techdocs.akamai.com/chinacdn/reference/get-property-hostname"
+        },
+        "responses": {
+          "200": {
+            "description": "Provides information about the property hostname under your account.",
+            "content": {
+              "application/vnd.akamai.chinacdn.property-hostname.v1+json": {
+                "example": {
+                  "comments": "N/A",
+                  "createdBy": "tyamada",
+                  "createdDate": "2021-07-01T12:32:01Z",
+                  "hostname": "www.example.com",
+                  "icpNumberId": 456,
+                  "serviceCategory": 13,
+                  "updatedBy": "jdupont",
+                  "updatedDate": "2021-11-02T14:03:01Z"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "required": [
+                    "hostname"
+                  ],
+                  "properties": {
+                    "comments": {
+                      "description": "A descriptive comment about the property hostname.",
+                      "type": "string"
+                    },
+                    "createdBy": {
+                      "description": "The Akamai username who created the property hostname.",
+                      "type": "string"
+                    },
+                    "createdDate": {
+                      "description": "The time the property hostname was created, in ISO 8601 format.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "hostname": {
+                      "description": "The fully qualified domain name of the property hostname.",
+                      "maxLength": 255,
+                      "type": "string"
+                    },
+                    "icpNumberId": {
+                      "description": "Identifies the ICP number assigned to the property hostname.",
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "serviceCategory": {
+                      "description": "Declares the type of website that you're deploying to China. For available codes, see [Service category types](https://techdocs.akamai.com/chinacdn/reference/service-category-types).",
+                      "type": "integer"
+                    },
+                    "updatedBy": {
+                      "description": "The Akamai username that last updated the property hostname.",
+                      "type": "string"
+                    },
+                    "updatedDate": {
+                      "description": "The time the property hostname was last updated, in ISO 8601 format.",
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/hostname-get-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "description": "This operation lets you create or update a property `hostname` based on the group for your current account and contract type. The API responds with a 201 code when you create a new property hostname, and a 200 code thereafter when updating it. If the property `hostname` has a provision status of `WHITELISTED` or `PROVISIONED` and you change the `icpNumberId`, the API creates a China partner re-approval request. If the partner denies the request for any reason, the property hostname's `provisionState` changes to `DEPROVISIONED`.",
+        "operationId": "put-property-hostname",
+        "summary": "Create or update a property hostname",
+        "tags": [
+          "Property hostnames"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's China CDN Manager API",
+          "url": "https://techdocs.akamai.com/chinacdn/reference/put-property-hostname"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/vnd.akamai.chinacdn.property-hostname.v1+json": {
+              "example": {
+                "hostname": "www.example.com",
+                "icpNumberId": 456,
+                "serviceCategory": 13
+              },
+              "schema": {
+                "additionalProperties": true,
+                "type": "object",
+                "required": [
+                  "hostname"
+                ],
+                "properties": {
+                  "comments": {
+                    "description": "A descriptive comment about the property hostname.",
+                    "type": "string"
+                  },
+                  "createdBy": {
+                    "description": "The Akamai username who created the property hostname.",
+                    "type": "string"
+                  },
+                  "createdDate": {
+                    "description": "The time the property hostname was created, in ISO 8601 format.",
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "hostname": {
+                    "description": "The fully qualified domain name of the property hostname.",
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "icpNumberId": {
+                    "description": "Identifies the ICP number assigned to the property hostname.",
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  "serviceCategory": {
+                    "description": "Declares the type of website that you're deploying to China. For available codes, see [Service category types](https://techdocs.akamai.com/chinacdn/reference/service-category-types).",
+                    "type": "integer"
+                  },
+                  "updatedBy": {
+                    "description": "The Akamai username that last updated the property hostname.",
+                    "type": "string"
+                  },
+                  "updatedDate": {
+                    "description": "The time the property hostname was last updated, in ISO 8601 format.",
+                    "format": "date-time",
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/property-hostname-put-request.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Provides information about the property hostname under your account.",
+            "content": {
+              "application/vnd.akamai.chinacdn.property-hostname.v1+json": {
+                "example": {
+                  "comments": "N/A",
+                  "createdBy": "jsmith",
+                  "createdDate": "2021-07-01T12:32:01Z",
+                  "hostname": "www.example.com",
+                  "icpNumberId": 456,
+                  "serviceCategory": 13,
+                  "updatedBy": "jkowalski",
+                  "updatedDate": "2021-11-02T14:03:01Z"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "required": [
+                    "hostname"
+                  ],
+                  "properties": {
+                    "comments": {
+                      "description": "A descriptive comment about the property hostname.",
+                      "type": "string"
+                    },
+                    "createdBy": {
+                      "description": "The Akamai username who created the property hostname.",
+                      "type": "string"
+                    },
+                    "createdDate": {
+                      "description": "The time the property hostname was created, in ISO 8601 format.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "hostname": {
+                      "description": "The fully qualified domain name of the property hostname.",
+                      "maxLength": 255,
+                      "type": "string"
+                    },
+                    "icpNumberId": {
+                      "description": "Identifies the ICP number assigned to the property hostname.",
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "serviceCategory": {
+                      "description": "Declares the type of website that you're deploying to China. For available codes, see [Service category types](https://techdocs.akamai.com/chinacdn/reference/service-category-types).",
+                      "type": "integer"
+                    },
+                    "updatedBy": {
+                      "description": "The Akamai username that last updated the property hostname.",
+                      "type": "string"
+                    },
+                    "updatedDate": {
+                      "description": "The time the property hostname was last updated, in ISO 8601 format.",
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/property-hostname-put-response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Provides information about the property hostname under your account.",
+            "content": {
+              "application/vnd.akamai.chinacdn.property-hostname.v1+json": {
+                "example": {
+                  "comments": "N/A",
+                  "createdBy": "alfulani",
+                  "createdDate": "2021-07-01T12:32:01Z",
+                  "hostname": "www.example.com",
+                  "icpNumberId": 456,
+                  "serviceCategory": 13,
+                  "updatedBy": "jdupont",
+                  "updatedDate": "2021-11-02T14:03:01Z"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "required": [
+                    "hostname"
+                  ],
+                  "properties": {
+                    "comments": {
+                      "description": "A descriptive comment about the property hostname.",
+                      "type": "string"
+                    },
+                    "createdBy": {
+                      "description": "The Akamai username who created the property hostname.",
+                      "type": "string"
+                    },
+                    "createdDate": {
+                      "description": "The time the property hostname was created, in ISO 8601 format.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "hostname": {
+                      "description": "The fully qualified domain name of the property hostname.",
+                      "maxLength": 255,
+                      "type": "string"
+                    },
+                    "icpNumberId": {
+                      "description": "Identifies the ICP number assigned to the property hostname.",
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "serviceCategory": {
+                      "description": "Declares the type of website that you're deploying to China. For available codes, see [Service category types](https://techdocs.akamai.com/chinacdn/reference/service-category-types).",
+                      "type": "integer"
+                    },
+                    "updatedBy": {
+                      "description": "The Akamai username that last updated the property hostname.",
+                      "type": "string"
+                    },
+                    "updatedDate": {
+                      "description": "The time the property hostname was last updated, in ISO 8601 format.",
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/property-hostname-put-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "A unique identifier for a group. A unique identifier for a group. This parameter is only needed when creating a property `hostname`.",
+            "example": "{{groupId}}",
+            "in": "query",
+            "name": "groupId",
+            "required": true,
+            "schema": {
+              "example": 123,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/groupId-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The fully qualified domain name of the property hostname.",
+          "example": "{{hostname}}",
+          "in": "path",
+          "name": "hostname",
+          "required": true,
+          "schema": {
+            "example": "www.example.com",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/hostname-path.yaml"
+          }
+        }
+      ]
+    },
+    "/property-hostnames/{hostname}/provision-state-changes": {
+      "post": {
+        "description": "Run this operation to change your property hostname's current deployment state. For more information, see the [Provision state change workflow](https://techdocs.akamai.com/chinacdn/reference/provision-state-change-workflow), [Deployment states](https://techdocs.akamai.com/chinacdn/reference/deployment-states), and [Manage property hostnames](https://techdocs.akamai.com/chinacdn/reference/manage-property-hostnames) sections. For delivery in China, Akamai recommends you map the CNAME of your property hostname to the new `*88.net` Chinese operational domain that corresponds to your original edge hostname selection. For example, with an `example.com.edgesuite.net` edge hostname, change the CNAME to `example.com.edgesuite88.net`. For more information, see: [New Chinese operational domains](https://techdocs.akamai.com/chinacdn/docs/add-edit-prop-hn#new-chinese-operational-domains).",
+        "operationId": "post-property-hostname-provision-state-change",
+        "summary": "Create a new provision state change",
+        "tags": [
+          "Provision state changes"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's China CDN Manager API",
+          "url": "https://techdocs.akamai.com/chinacdn/reference/post-property-hostname-provision-state-change"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/vnd.akamai.chinacdn.provision-state-change.v1+json": {
+              "example": {
+                "edgeHostname": "www.example.com.edgesuite.net",
+                "hostname": "www.example.com",
+                "sendEmail": true,
+                "targetState": "PROVISIONED"
+              },
+              "schema": {
+                "additionalProperties": true,
+                "type": "object",
+                "required": [
+                  "hostname",
+                  "targetState"
+                ],
+                "properties": {
+                  "completedDate": {
+                    "description": "The date when the provision state change completed, in ISO 8601 format.",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "createdDate": {
+                    "description": "The date when the provision state change was created, in ISO 8601 format.",
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "currentStatus": {
+                    "description": "The current status of the provision state change, either `COMPLETED` indicating your property hostname's deployment was successful, `PENDING` indicating your property hostname is awaiting deployment, `CANCELED` indicating your property hostname's deployment was terminated by the China partner, `REJECTED` indicating your property hostname's deployment was denied by the China partner, or `FAILED` indicating your property hostname's deployment was unsuccessful. This typically occurs if you [create a new provision state change](https://techdocs.akamai.com/chinacdn/reference/post-property-hostname-provision-state-change) for a property `hostname` that has a `targetState` change in progress.",
+                    "type": "string"
+                  },
+                  "edgeHostname": {
+                    "description": "The provided edge hostname used to map to your property `hostname` for deployment in China. Use this value only when the `targetState` is `PROVISIONED`. A `null` value means the edge hostname isn't needed for the provision state change. For example, if you're only whitelisting your property hostname.",
+                    "type": "string"
+                  },
+                  "hostname": {
+                    "description": "The hostname that this provision state change affects.",
+                    "type": "string"
+                  },
+                  "id": {
+                    "description": "A unique identifier for the provision state change.",
+                    "type": "integer"
+                  },
+                  "partnerStatuses": {
+                    "description": "Specifies the provision statuses for each partner based on the provision state change.",
+                    "type": "object"
+                  },
+                  "previousState": {
+                    "description": "The state of the property `hostname` before this change, either `WHITELISTED` indicating you're waiting for approval from the China partner to enable your property `hostname` in China, `PROVISIONED` indicating your property `hostname` is whitelisted and mapped to the provided edge hostname on China CDN, or `DEPROVISIONED` indicating your property `hostname` was removed from the whitelist and unmapped from the edge hostname.",
+                    "type": "string"
+                  },
+                  "sendEmail": {
+                    "description": "Specifies whether email updates are sent for status changes on this provision state change.",
+                    "type": "boolean"
+                  },
+                  "targetState": {
+                    "description": "Specifies how you want your property `hostname` deployed in China. Specify `WHITELISTED` to enabled your traffic in China and get approval from the China partner. Specify `PROVISIONED` to whitelist and map your property `hostname` to the provided edge hostname on China CDN. This optimizes your website or application's performance in China. Specify `DEPROVISIONED` to unmap and remove your property `hostname` from the whitelist. If you mapped a property `hostname` to a shared edge hostname, deprovisioning it doesn't unmap the edge hostname from it. It only removes the property `hostname` from the whitelist. This might result in denial of service if your DNS configuration still assigns the property `hostname` to the shared edge hostname.",
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/property-hostname-provision-state-changes-post-request.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Provides information about the change made to the property hostname's deployment in China.",
+            "content": {
+              "application/vnd.akamai.chinacdn.provision-state-change.v1+json": {
+                "example": {
+                  "completedDate": null,
+                  "createdDate": "2021-07-01T12:32:01Z",
+                  "currentStatus": "PENDING",
+                  "edgeHostname": "www.example.com.edgesuite.net",
+                  "hostname": "www.example.com",
+                  "id": 654,
+                  "previousState": "DEPROVISIONED",
+                  "sendEmail": true,
+                  "targetState": "PROVISIONED",
+                  "partnerStatuses": {
+                    "PARTNER1": {
+                      "completedDate": null,
+                      "currentStatus": "PENDING",
+                      "previousState": "DEPROVISIONED",
+                      "targetState": "PROVISIONED"
+                    },
+                    "PARTNER2": {
+                      "completedDate": null,
+                      "currentStatus": "PENDING",
+                      "previousState": "DEPROVISIONED",
+                      "targetState": "PROVISIONED"
+                    }
+                  }
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "required": [
+                    "hostname",
+                    "targetState"
+                  ],
+                  "properties": {
+                    "completedDate": {
+                      "description": "The date when the provision state change completed, in ISO 8601 format.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "createdDate": {
+                      "description": "The date when the provision state change was created, in ISO 8601 format.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "currentStatus": {
+                      "description": "The current status of the provision state change, either `COMPLETED` indicating your property hostname's deployment was successful, `PENDING` indicating your property hostname is awaiting deployment, `CANCELED` indicating your property hostname's deployment was terminated by the China partner, `REJECTED` indicating your property hostname's deployment was denied by the China partner, or `FAILED` indicating your property hostname's deployment was unsuccessful. This typically occurs if you [create a new provision state change](https://techdocs.akamai.com/chinacdn/reference/post-property-hostname-provision-state-change) for a property `hostname` that has a `targetState` change in progress.",
+                      "type": "string"
+                    },
+                    "edgeHostname": {
+                      "description": "The provided edge hostname used to map to your property `hostname` for deployment in China. Use this value only when the `targetState` is `PROVISIONED`. A `null` value means the edge hostname isn't needed for the provision state change. For example, if you're only whitelisting your property hostname.",
+                      "type": "string"
+                    },
+                    "hostname": {
+                      "description": "The hostname that this provision state change affects.",
+                      "type": "string"
+                    },
+                    "id": {
+                      "description": "A unique identifier for the provision state change.",
+                      "type": "integer"
+                    },
+                    "partnerStatuses": {
+                      "description": "Specifies the provision statuses for each partner based on the provision state change.",
+                      "type": "object"
+                    },
+                    "previousState": {
+                      "description": "The state of the property `hostname` before this change, either `WHITELISTED` indicating you're waiting for approval from the China partner to enable your property `hostname` in China, `PROVISIONED` indicating your property `hostname` is whitelisted and mapped to the provided edge hostname on China CDN, or `DEPROVISIONED` indicating your property `hostname` was removed from the whitelist and unmapped from the edge hostname.",
+                      "type": "string"
+                    },
+                    "sendEmail": {
+                      "description": "Specifies whether email updates are sent for status changes on this provision state change.",
+                      "type": "boolean"
+                    },
+                    "targetState": {
+                      "description": "Specifies how you want your property `hostname` deployed in China. Specify `WHITELISTED` to enabled your traffic in China and get approval from the China partner. Specify `PROVISIONED` to whitelist and map your property `hostname` to the provided edge hostname on China CDN. This optimizes your website or application's performance in China. Specify `DEPROVISIONED` to unmap and remove your property `hostname` from the whitelist. If you mapped a property `hostname` to a shared edge hostname, deprovisioning it doesn't unmap the edge hostname from it. It only removes the property `hostname` from the whitelist. This might result in denial of service if your DNS configuration still assigns the property `hostname` to the shared edge hostname.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/property-hostname-provision-state-changes-post-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "When deprovisioning a property `hostname` that's mapped to a shared edge hostname, the API responds with an `edgehostname-shared` error. To override the error, set the `forceDeprovision` value to `true`.  This removes the property `hostname` from the whitelist without unmapping the edge hostname from it. To avoid a denial in service once the deprovision is complete, change  the current CNAME from the property `hostname` to the shared edge hostname.",
+            "example": "{{forceDeprovision}}",
+            "in": "query",
+            "name": "forceDeprovision",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            },
+            "x-akamai": {
+              "file-path": "parameters/forceDeprovision-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The fully qualified domain name of the property hostname.",
+          "example": "{{hostname}}",
+          "in": "path",
+          "name": "hostname",
+          "required": true,
+          "schema": {
+            "example": "www.example.com",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/hostname-path.yaml"
+          }
+        }
+      ]
+    },
+    "/property-hostnames/{hostname}/provision-state-changes/current": {
+      "get": {
+        "description": "Returns details about current deployment changes for the specified property `hostname` under your account.",
+        "operationId": "get-property-hostname-provision-state-changes-current",
+        "summary": "Get the current provision state changes",
+        "tags": [
+          "Provision state changes"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's China CDN Manager API",
+          "url": "https://techdocs.akamai.com/chinacdn/reference/get-property-hostname-provision-state-changes-current"
+        },
+        "responses": {
+          "200": {
+            "description": "Contains a list of provisions state changes.",
+            "content": {
+              "application/vnd.akamai.chinacdn.provision-state-changes.v1+json": {
+                "example": {
+                  "provisionStateChanges": [
+                    {
+                      "completedDate": "2021-10-01T17:23:44Z",
+                      "createdDate": "2021-07-01T12:32:01Z",
+                      "currentStatus": "COMPLETED",
+                      "edgeHostname": "www.example.com.edgesuite.net",
+                      "hostname": "www.example.com",
+                      "id": 654,
+                      "previousState": "DEPROVISIONED",
+                      "sendEmail": true,
+                      "targetState": "WHITELISTED",
+                      "partnerStatuses": {
+                        "PARTNER1": {
+                          "completedDate": "2021-10-01T11:21:32Z",
+                          "currentStatus": "COMPLETED",
+                          "previousState": "DEPROVISIONED",
+                          "targetState": "WHITELISTED"
+                        },
+                        "PARTNER2": {
+                          "completedDate": "2021-10-01T17:23:44Z",
+                          "currentStatus": "REJECTED",
+                          "previousState": "DEPROVISIONED",
+                          "targetState": "PROVISIONED",
+                          "rejection": {
+                            "explanation": "Invalid ICP license.",
+                            "reason": "INVALID_ICP_LICENSE"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "completedDate": "2021-10-01T17:23:44Z",
+                      "createdDate": "2021-07-01T12:32:01Z",
+                      "currentStatus": "COMPLETED",
+                      "edgeHostname": "www.example2.com.edgesuite.net",
+                      "hostname": "www.example.com",
+                      "id": 655,
+                      "previousState": "DEPROVISIONED",
+                      "sendEmail": true,
+                      "targetState": "WHITELISTED",
+                      "partnerStatuses": {
+                        "PARTNER3": {
+                          "completedDate": "2021-10-01T11:21:32Z",
+                          "currentStatus": "COMPLETED",
+                          "previousState": "DEPROVISIONED",
+                          "targetState": "WHITELISTED"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "properties": {
+                    "provisionStateChanges": {
+                      "description": "Information about the change made to the property hostname's deployment in China.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": true,
+                        "description": "Information about the change made to the property hostname's deployment in China.",
+                        "type": "object",
+                        "required": [
+                          "hostname",
+                          "targetState"
+                        ],
+                        "properties": {
+                          "completedDate": {
+                            "description": "The date when the provision state change completed, in ISO 8601 format.",
+                            "format": "date-time",
+                            "nullable": true,
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "createdDate": {
+                            "description": "The date when the provision state change was created, in ISO 8601 format.",
+                            "format": "date-time",
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "currentStatus": {
+                            "description": "The current status of the provision state change, either `COMPLETED` indicating your property hostname's deployment was successful, `PENDING` indicating your property hostname is awaiting deployment, `CANCELED` indicating your property  hostname's deployment was terminated by the China partner, `REJECTED` indicating your property hostname's deployment was denied by the China partner, or `FAILED` indicating your property hostname's deployment was unsuccessful. This typically occurs if you [create a new provision state change](https://techdocs.akamai.com/chinacdn/reference/post-property-hostname-provision-state-change) for a property `hostname` that has a `targetState` change in progress.",
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "edgeHostname": {
+                            "description": "The provided edge hostname used to map to your property `hostname` for deployment in China. Use this value only when the `targetState` is `PROVISIONED`. A `null` value means the edge hostname isn't needed for the provision state change. For example, if you're only whitelisting your property hostname.",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "hostname": {
+                            "description": "The hostname that this provision state change affects.",
+                            "type": "string"
+                          },
+                          "id": {
+                            "description": "A unique identifier for the provision state change.",
+                            "type": "integer"
+                          },
+                          "partnerStatuses": {
+                            "additionalProperties": false,
+                            "description": "Specifies the provision statuses for each partner based on the provision state change.",
+                            "type": "object",
+                            "properties": {
+                              "partnerStatus": {
+                                "additionalProperties": false,
+                                "description": "Information about each partner's provision state change.",
+                                "type": "object",
+                                "properties": {
+                                  "completedDate": {
+                                    "description": "The time the provision state change for this partner completed, in ISO 8601 format.",
+                                    "format": "date-time",
+                                    "nullable": true,
+                                    "readOnly": true,
+                                    "type": "string"
+                                  },
+                                  "currentStatus": {
+                                    "description": "The China partner's current status, either `COMPLETED` indicating your property hostname's deployment was successful, `PENDING` indicating your property `hostname` is awaiting deployment, `CANCELED` indicating your property hostname's deployment was terminated by the China partner, `REJECTED` indicating your property hostname's deployment was denied by the China partner, or `FAILED` indicating your property hostname's deployment was unsuccessful. This typically occurs if you [create a new provision state change](https://techdocs.akamai.com/chinacdn/reference/post-property-hostname-provision-state-change) for a property `hostname` that has a `targetState` change in progress.",
+                                    "readOnly": true,
+                                    "type": "string"
+                                  },
+                                  "partner": {
+                                    "description": "Identifies the partner allowed to deploy the property hostname in China.",
+                                    "maxLength": 32,
+                                    "type": "string"
+                                  },
+                                  "previousState": {
+                                    "description": "The China partner's previous provision state change, either `WHITELISTED` indicating you're waiting for approval from the China partner to enable your property `hostname` in China, `PROVISIONED` indicating your property `hostname` is whitelisted and mapped to the provided edge hostname on China CDN, or `DEPROVISIONED` indicating your property `hostname` was removed from the whitelist and unmapped from the edge hostname.",
+                                    "readOnly": true,
+                                    "type": "string"
+                                  },
+                                  "rejection": {
+                                    "additionalProperties": false,
+                                    "description": "Information on why the partner's provision change failed.",
+                                    "type": "object",
+                                    "properties": {
+                                      "explanation": {
+                                        "description": "Describes why the requested change was rejected.",
+                                        "type": "string"
+                                      },
+                                      "reason": {
+                                        "description": "Indicates why the requested change was rejected. `INVALID_ICP_LICENSE` means the ICP license to provision the property hostname isn't valid.",
+                                        "type": "string"
+                                      }
+                                    }
+                                  },
+                                  "targetState": {
+                                    "description": "Specifies how you want your property `hostname` deployed in China. Specify `WHITELISTED` to enabled your traffic in China and get approval from the China partner. Specify `PROVISIONED` to whitelist and map your property `hostname` to the edge hostname. This optimizes your website or application's performance in China. Specify `DEPROVISIONED` to unmap and remove your property `hostname` from the whitelist. If you mapped a property `hostname` to a shared edge hostname, deprovisioning it doesn't unmap the edge hostname from it. It only removes the property `hostname` from the whitelist. This might result in denial of service if your DNS configuration still assigns the property `hostname` to the shared edge hostname.",
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "previousState": {
+                            "description": "The state of the property `hostname` before this change, either `WHITELISTED` indicating you're waiting for approval from the China partner to enable your property `hostname` in China, `PROVISIONED` indicating your property `hostname` is whitelisted and mapped to the provided edge hostname on China CDN, or `DEPROVISIONED` indicating your property `hostname` was removed from the whitelist and unmapped from the edge hostname.",
+                            "readOnly": true,
+                            "type": "string"
+                          },
+                          "sendEmail": {
+                            "description": "Specifies whether email updates are sent for status changes on this provision state change.",
+                            "type": "boolean"
+                          },
+                          "targetState": {
+                            "description": "Specifies how you want your property `hostname` deployed in China. Specify `WHITELISTED` to enabled your traffic in China and get approval from the China partner. Specify `PROVISIONED` to whitelist and map your property `hostname` to the provided edge hostname on China CDN. This optimizes your website or application's performance in China. Specify `DEPROVISIONED` to unmap and remove your property `hostname` from the whitelist. If you mapped a property `hostname` to a shared edge hostname, deprovisioning it doesn't unmap the edge hostname from it. It only removes the property `hostname` from the whitelist. This might result in denial of service if your DNS configuration still assigns the property `hostname` to the shared edge hostname.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/provision-state-change.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/hostname-provision-state-changes-current-get-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The fully qualified domain name of the property hostname.",
+          "example": "{{hostname}}",
+          "in": "path",
+          "name": "hostname",
+          "required": true,
+          "schema": {
+            "example": "www.example.com",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/hostname-path.yaml"
+          }
+        }
+      ]
+    },
+    "/property-hostnames/{hostname}/provision-state-changes/{changeId}": {
+      "get": {
+        "description": "Returns details about a specific deployment change for the specified property `hostname`.",
+        "operationId": "get-property-hostname-provision-state-change",
+        "summary": "Get a provision state change",
+        "tags": [
+          "Provision state changes"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's China CDN Manager API",
+          "url": "https://techdocs.akamai.com/chinacdn/reference/get-property-hostname-provision-state-change"
+        },
+        "responses": {
+          "200": {
+            "description": "Provides information about the change made to the property hostname's deployment in China.",
+            "content": {
+              "application/vnd.akamai.chinacdn.provision-state-change.v1+json": {
+                "example": {
+                  "completedDate": "2021-10-01T17:23:44Z",
+                  "createdDate": "2021-07-01T12:32:01Z",
+                  "currentStatus": "COMPLETED",
+                  "edgeHostname": "www.example.com.edgesuite.net",
+                  "hostname": "www.example.com",
+                  "id": 654,
+                  "previousState": "DEPROVISIONED",
+                  "sendEmail": true,
+                  "targetState": "WHITELISTED",
+                  "partnerStatuses": {
+                    "PARTNER1": {
+                      "completedDate": "2021-10-01T11:21:32Z",
+                      "currentStatus": "COMPLETED",
+                      "previousState": "DEPROVISIONED",
+                      "targetState": "WHITELISTED"
+                    },
+                    "PARTNER2": {
+                      "completedDate": "2021-10-01T17:23:44Z",
+                      "currentStatus": "REJECTED",
+                      "previousState": "DEPROVISIONED",
+                      "targetState": "PROVISIONED",
+                      "rejection": {
+                        "explanation": "Invalid ICP license.",
+                        "reason": "INVALID_ICP_LICENSE"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "required": [
+                    "hostname",
+                    "targetState"
+                  ],
+                  "properties": {
+                    "completedDate": {
+                      "description": "The date when the provision state change completed, in ISO 8601 format.",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "createdDate": {
+                      "description": "The date when the provision state change was created, in ISO 8601 format.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "currentStatus": {
+                      "description": "The current status of the provision state change, either `COMPLETED` indicating your property hostname's deployment was successful, `PENDING` indicating your property hostname is awaiting deployment, `CANCELED` indicating your property hostname's deployment was terminated by the China partner, `REJECTED` indicating your property hostname's deployment was denied by the China partner, or `FAILED` indicating your property hostname's deployment was unsuccessful. This typically occurs if you [create a new provision state change](https://techdocs.akamai.com/chinacdn/reference/post-property-hostname-provision-state-change) for a property `hostname` that has a `targetState` change in progress.",
+                      "type": "string"
+                    },
+                    "edgeHostname": {
+                      "description": "The provided edge hostname used to map to your property `hostname` for deployment in China. Use this value only when the `targetState` is `PROVISIONED`. A `null` value means the edge hostname isn't needed for the provision state change. For example, if you're only whitelisting your property hostname.",
+                      "type": "string"
+                    },
+                    "hostname": {
+                      "description": "The hostname that this provision state change affects.",
+                      "type": "string"
+                    },
+                    "id": {
+                      "description": "A unique identifier for the provision state change.",
+                      "type": "integer"
+                    },
+                    "partnerStatuses": {
+                      "description": "Specifies the provision statuses for each partner based on the provision state change.",
+                      "type": "object"
+                    },
+                    "previousState": {
+                      "description": "The state of the property `hostname` before this change, either `WHITELISTED` indicating you're waiting for approval from the China partner to enable your  property `hostname` in China, `PROVISIONED` indicating your property `hostname` is whitelisted and mapped to the provided edge hostname on China CDN, or `DEPROVISIONED` indicating your property `hostname` was removed from the whitelist and unmapped from the edge hostname.",
+                      "type": "string"
+                    },
+                    "sendEmail": {
+                      "description": "Specifies whether email updates are sent for status changes on this provision state change.",
+                      "type": "boolean"
+                    },
+                    "targetState": {
+                      "description": "Specifies how you want your property `hostname` deployed in China. Specify `WHITELISTED` to enabled your traffic in China and get approval from the China partner. Specify `PROVISIONED` to whitelist and map your property `hostname` to the provided edge hostname on China CDN. This optimizes your website or application's performance in China. Specify `DEPROVISIONED` to unmap and remove your property `hostname` from the whitelist. If you mapped a property  `hostname` to a shared edge hostname, deprovisioning it doesn't unmap the edge hostname from it. It only removes the property `hostname` from the whitelist. This might result in denial of service if your DNS configuration still assigns  the property `hostname` to the shared edge hostname.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/hostname-provision-state-change-get-response.yaml"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "A unique identifier for the property hostname's current provision state change.",
+          "example": "{{changeId}}",
+          "in": "path",
+          "name": "changeId",
+          "required": true,
+          "schema": {
+            "example": 64,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/changeId-path.yaml"
+          }
+        },
+        {
+          "description": "The fully qualified domain name of the property hostname.",
+          "example": "{{hostname}}",
+          "in": "path",
+          "name": "hostname",
+          "required": true,
+          "schema": {
+            "example": "www.example.com",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/hostname-path.yaml"
+          }
+        }
+      ]
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/chinacdn/v1"
+    }
+  ]
+}

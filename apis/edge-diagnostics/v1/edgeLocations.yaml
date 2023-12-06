@@ -1,0 +1,44 @@
+openapi: 3.0.0
+info:
+  title: Edge server locations
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: edgeLocations.yaml
+paths:
+  /edge-locations:
+    get:
+      operationId: get-edge-locations
+      summary: List available edge server locations
+      tags:
+      - Edge server locations
+      description: |
+        Lists active edge server locations you can use to run [Request content with cURL](ref:post-curl), [Get domain details with dig](ref:post-dig), [Test network connectivity with MTR](ref:post-mtr), [Run the URL health check](ref:post-url-health-check), [Run the connectivity problems scenario](ref:post-connectivity-problems), and [Run the content problems scenario](ref:post-content-problems) operations. To get a subset of edge servers supporting metadata tracer, run the [List available edge server locations for metadata tracing](ref:get-mdt-locations) operation.
+      responses:
+        200:
+          description: |
+            The response lists available edge server locations.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/edgeLocations.json
+              schema:
+                $ref: schemas/edgeLocations.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

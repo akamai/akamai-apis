@@ -1,0 +1,180 @@
+openapi: 3.0.0
+info:
+  title: Cloudlets Origins for Application Load Balancer
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cloudlets/api/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: origins.yaml
+paths:
+  /origins:
+    post:
+      operationId: post-origin
+      summary: Create a load balancing configuration
+      description: |
+        For Application Load Balancer, run this operation to create a load balancing configuration. This operation is only available for the `APPLICATION_LOAD_BALANCER` origin type.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/origins-post.json
+            schema:
+              $ref: schemas/post-origins-request.yaml
+      responses:
+        201:
+          description: |
+            Schema for a Cloudlets Origin.
+          content:
+            application/json:
+              example:
+                $ref: examples/origins-post-201.json
+              schema:
+                $ref: schemas/post-origins-response.yaml
+    get:
+      operationId: get-origins
+      summary: List conditional origins
+      description: |
+        Lists the Application Load Balancer conditonal origins. You can use `type` to narrow the number of results returned. Options for the origin type include `APPLICATION_LOAD_BALANCER` for Application Load Balancer origins, `CUSTOMER` for standard origins, and `NETSTORAGE` for NetStorage-based origins.
+      parameters:
+      - $ref: parameters/type-query.yaml
+      responses:
+        200:
+          description: |
+            Schema for a list of origins.
+          content:
+            application/json:
+              example:
+                $ref: examples/origins-get-200.json
+              schema:
+                $ref: schemas/get-origins-response.yaml
+  /origins/{originId}:
+    parameters:
+    - $ref: parameters/originId-path.yaml
+    get:
+      operationId: get-origin
+      summary: Get a conditional origin
+      description: |
+        Run this operation to get data for a specific conditional origin using the `originId`. Run the [List conditional origins](https://techdocs.akamai.com/cloudlets/v2/reference/get-origins) to get the `originId`. This operation is only available for the `APPLICATION_LOAD_BALANCER` origin type.
+      responses:
+        200:
+          description: |
+            Schema for a Cloudlets Origin.
+          content:
+            application/json:
+              example:
+                $ref: examples/origin-get-200.json
+              schema:
+                $ref: schemas/get-origin-response.yaml
+    put:
+      operationId: put-origin
+      summary: Update a load balancing configuration
+      description: |
+        For Application Load Balancer, run this operation to update the description of an existing load balancing configuration. This operation is only available for the `APPLICATION_LOAD_BALANCER` origin type.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/origin-put.json
+            schema:
+              $ref: schemas/put-origin-request.yaml
+      responses:
+        200:
+          description: |
+            Schema for a Cloudlets Origin.
+          content:
+            application/json:
+              example:
+                $ref: examples/origin-put-200.json
+              schema:
+                $ref: schemas/put-origin-response.yaml
+  /origins/{originId}/versions:
+    parameters:
+    - $ref: parameters/originId-path.yaml
+    post:
+      operationId: post-origin-versions
+      summary: Create a load balancing version
+      description: |
+        You can create multiple versions of the load balancing configuration. By versioning these settings, you can test new configurations, or manage changes to the data centers supporting Application Load Balancer.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/originversions-post.json
+            schema:
+              $ref: schemas/post-origin-versions-request.yaml
+      responses:
+        201:
+          description: |
+            Return details about origin version.
+          content:
+            application/json:
+              example:
+                $ref: examples/originversions-post-201.json
+              schema:
+                $ref: schemas/post-origin-versions-response.yaml
+    get:
+      operationId: get-origin-versions
+      summary: List load balancing versions
+      description: |
+        For Application Load Balancer, run this operation to list all versions of a load balancing configuration. The response lists the versions in descending order.
+      responses:
+        200:
+          description: |
+            Schema for a list of load balancer versions.
+          content:
+            application/json:
+              example:
+                $ref: examples/originversions-get-200.json
+              schema:
+                $ref: schemas/get-origin-versions-response.yaml
+  /origins/{originId}/versions/{version}:
+    parameters:
+    - $ref: parameters/version-path.yaml
+    - $ref: parameters/originId-path.yaml
+    get:
+      operationId: get-origin-version
+      summary: Get a load balancing version
+      description: |
+        For this operation, you have the option of using the `validate` query parameter.  When set to `true`, this parameter verifies whether the settings for the selected `loadBalancerId` and `version` are valid. The default setting for this parameter is `false`.
+      parameters:
+      - $ref: parameters/validate-query.yaml
+      responses:
+        200:
+          description: |
+            Return details about origin version.
+          content:
+            application/json:
+              example:
+                $ref: examples/originversion-get-200.json
+              schema:
+                $ref: schemas/get-origin-version-response.yaml
+    put:
+      operationId: put-origin-version
+      summary: Update a load balancing version
+      description: |
+        Use this operation to update a selected load balancer version. You cannot edit a load balancer version that has ever been activated.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/originversion-put.json
+            schema:
+              $ref: schemas/put-origin-version-request.yaml
+      responses:
+        200:
+          description: |
+            Return details about origin version.
+          content:
+            application/json:
+              example:
+                $ref: examples/originversion-put-200.json
+              schema:
+                $ref: schemas/put-origin-version-response.yaml

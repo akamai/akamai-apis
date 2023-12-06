@@ -1,0 +1,1293 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's IoT Token Access Control API",
+    "url": "https://techdocs.akamai.com/iot-token-access-control/reference"
+  },
+  "info": {
+    "title": "Akamai: IoT Token Access Control API",
+    "version": "1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/activations": {
+      "post": {
+        "description": "Deploys the version of a key collection in the staging or production environment. Note that a key collection uses the public keys from its active version to validate JWTs in client requests. See [API concepts](https://techdocs.akamai.com/iot-token-access-control/reference/api-concepts).",
+        "operationId": "post-activation",
+        "summary": "Activate a key collection version",
+        "tags": [
+          "Activations"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's IoT Token Access Control API",
+          "url": "https://techdocs.akamai.com/iot-token-access-control/reference/post-activation"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "environment": "PRODUCTION",
+                "keyCollectionVersionId": 12
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Contains information that you need to provide when posting an activation request for a key collection version.",
+                "type": "object",
+                "required": [
+                  "environment",
+                  "keyCollectionVersionId"
+                ],
+                "properties": {
+                  "environment": {
+                    "description": "The environment where you want to activate the version of the key collection, either `STAGING` or `PRODUCTION`.",
+                    "example": "{{environment}}",
+                    "type": "string",
+                    "enum": [
+                      "STAGING",
+                      "PRODUCTION"
+                    ]
+                  },
+                  "keyCollectionVersionId": {
+                    "description": "The identifier the key collection version that you want to activate.",
+                    "example": "{{keyCollectionVersionId}}",
+                    "type": "integer"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/activationRequest.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "activatedBy": "keyAdministrator_EdgeConnect",
+                  "environment": "PRODUCTION",
+                  "id": 1,
+                  "keyCollectionVersionId": 12,
+                  "keyCollectionVersionNo": 1,
+                  "startTime": 1522748047092,
+                  "state": "DONE"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Contains detailed information about an activation of a key collection version, including the environment where you're activating this version and the status of the activation.",
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "environment",
+                    "state",
+                    "activatedBy",
+                    "startTime",
+                    "keyCollectionVersionNo",
+                    "keyCollectionVersionId"
+                  ],
+                  "properties": {
+                    "activatedBy": {
+                      "description": "The username who sent the activation request.",
+                      "type": "string"
+                    },
+                    "environment": {
+                      "description": "The environment where you're activating the key collection version, either `STAGING` or `PRODUCTION`.",
+                      "type": "string",
+                      "enum": [
+                        "STAGING",
+                        "PRODUCTION"
+                      ]
+                    },
+                    "id": {
+                      "description": "The identifier of the activation.",
+                      "type": "integer"
+                    },
+                    "keyCollectionVersionId": {
+                      "description": "The identifier of the key collection version that you're activating.",
+                      "type": "integer"
+                    },
+                    "keyCollectionVersionNo": {
+                      "description": "The number of the version within the key collection. With each new version of this key collection, this number increments by 1.",
+                      "type": "integer"
+                    },
+                    "startTime": {
+                      "description": "An epoch timestamp marking when the activation was created.",
+                      "type": "integer"
+                    },
+                    "state": {
+                      "description": "The status of the activation across the platform. These values are available: `PREPARED` when the system is ready to propagate the activation, `IN_PROGRESS` when the system is already propagating the activation, `DONE` when the system has successfully propagated the activation, `NOT_AVAILABLE` when the system has been unable to access data for the activation, or `ERROR` when the system has failed to propagate the activation. To fix the `ERROR` and `NOT_AVAILABLE` states, send another activation request. If it fails, contact support.",
+                      "type": "string",
+                      "enum": [
+                        "PREPARED",
+                        "IN_PROGRESS",
+                        "DONE",
+                        "NOT_AVAILABLE",
+                        "ERROR"
+                      ]
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/activationResponse.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Key collection version couldn't be found.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "get": {
+        "description": "Returns a list of activations for the key collection. If you don't already have the `collectionId`, run the [Get key collections](https://techdocs.akamai.com/iot-token-access-control/reference/get-key-collections) operation and use the appropriate `id` from the returned array.",
+        "operationId": "get-activations",
+        "summary": "List activations",
+        "tags": [
+          "Activations"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's IoT Token Access Control API",
+          "url": "https://techdocs.akamai.com/iot-token-access-control/reference/get-activations"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Contains a list of activations for a key collection.",
+                  "type": "array",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "Contains detailed information about an activation of a key collection version, including the environment where you're activating this version and the status of the activation.",
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "environment",
+                      "state",
+                      "activatedBy",
+                      "startTime",
+                      "keyCollectionVersionNo",
+                      "keyCollectionVersionId"
+                    ],
+                    "properties": {
+                      "activatedBy": {
+                        "description": "The username who sent the activation request.",
+                        "type": "string"
+                      },
+                      "environment": {
+                        "description": "The environment where you're activating the key collection version, either `STAGING` or `PRODUCTION`.",
+                        "type": "string",
+                        "enum": [
+                          "STAGING",
+                          "PRODUCTION"
+                        ]
+                      },
+                      "id": {
+                        "description": "The identifier of the activation.",
+                        "type": "integer"
+                      },
+                      "keyCollectionVersionId": {
+                        "description": "The identifier of the key collection version that you're activating.",
+                        "type": "integer"
+                      },
+                      "keyCollectionVersionNo": {
+                        "description": "The number of the version within the key collection. With each new version of this key collection, this number increments by 1.",
+                        "type": "integer"
+                      },
+                      "startTime": {
+                        "description": "An epoch timestamp marking when the activation was created.",
+                        "type": "integer"
+                      },
+                      "state": {
+                        "description": "The status of the activation across the platform. These values are available: `PREPARED` when the system is ready to propagate the activation, `IN_PROGRESS` when the system is already propagating the activation, `DONE` when the system has successfully propagated the activation, `NOT_AVAILABLE` when the system has been unable to access data for the activation, or `ERROR` when the system has failed to propagate the activation. To fix the `ERROR` and `NOT_AVAILABLE` states, send another activation request. If it fails, contact support.",
+                        "type": "string",
+                        "enum": [
+                          "PREPARED",
+                          "IN_PROGRESS",
+                          "DONE",
+                          "NOT_AVAILABLE",
+                          "ERROR"
+                        ]
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/activationResponse.yaml"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/activationsListResponse.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "activatedBy": "keyAdministrator_EdgeConnect",
+                    "environment": "STAGING",
+                    "id": 1,
+                    "keyCollectionVersionId": 12,
+                    "keyCollectionVersionNo": 1,
+                    "startTime": 1522748047092,
+                    "state": "DONE"
+                  },
+                  {
+                    "activatedBy": "keyAdministrator_EdgeConnect",
+                    "environment": "PRODUCTION",
+                    "id": 2,
+                    "keyCollectionVersionId": 12,
+                    "keyCollectionVersionNo": 1,
+                    "startTime": 1522748072292,
+                    "state": "DONE"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "The identifier of the key collection.",
+            "example": "{{collectionId}}",
+            "in": "query",
+            "name": "collectionId",
+            "required": true,
+            "schema": {
+              "example": 50,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/collectionId-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/key-collections": {
+      "post": {
+        "description": "Creates an empty key collection. To upload public keys to a newly created collection, run the [Create a key collection version](https://techdocs.akamai.com/iot-token-access-control/reference/post-key-collection-version) operation. Also, store the `id` of the key collection for when you want to start referring to this collection in the JWT behavior of your property. See [API concepts](https://techdocs.akamai.com/iot-token-access-control/reference/api-concepts).",
+        "operationId": "post-key-collection",
+        "summary": "Create a key collection",
+        "tags": [
+          "Key collections"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's IoT Token Access Control API",
+          "url": "https://techdocs.akamai.com/iot-token-access-control/reference/post-key-collection"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "EdgeConnectKeySet"
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Provides information you need to provide when creating a key collection.",
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "description": "A descriptive label for the key collection.",
+                    "example": "{{name}}",
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/keyCollectionRequest.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "createdBy": "alfulani",
+                  "createdDate": 1522747964221,
+                  "id": 12,
+                  "jwt": "12",
+                  "name": "EdgeConnectKeySet"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Contains basic information about a key collection, including versions that are active in the staging and production environments and the types of public keys they use to validate JWT signatures.",
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "name",
+                    "createdDate",
+                    "jwt"
+                  ],
+                  "properties": {
+                    "createdBy": {
+                      "description": "The username who created the key collection.",
+                      "type": "string"
+                    },
+                    "createdDate": {
+                      "description": "An epoch timestamp marking when the key collection was created.",
+                      "type": "integer"
+                    },
+                    "id": {
+                      "description": "The identifier of the key collection.",
+                      "type": "integer"
+                    },
+                    "jwt": {
+                      "description": "A string version of this key collection's `id` value.",
+                      "type": "string"
+                    },
+                    "name": {
+                      "description": "A descriptive label for the key collection.",
+                      "type": "string"
+                    },
+                    "production": {
+                      "additionalProperties": false,
+                      "description": "Provides information about the key collection version currently active in the production environment.",
+                      "type": "object",
+                      "properties": {
+                        "algorithm": {
+                          "description": "The encryption algorithm of the public keys that the version uses in this environment to validate JWT signatures, either `RSA` or `ECDSA_P_256`. To see the  public keys that the version uses, run the [View a key collection version](https://techdocs.akamai.com/iot-token-access-control/reference/get-key-collection-version) operation.",
+                          "type": "string",
+                          "enum": [
+                            "RSA",
+                            "ECDSA_P_256"
+                          ]
+                        },
+                        "false": {
+                          "description": "The number of the key collection version.",
+                          "type": "integer"
+                        },
+                        "id": {
+                          "description": "The identifier of the key collection version.",
+                          "type": "integer"
+                        },
+                        "startTime": {
+                          "description": "An epoch timestamp marking when the key collection version was created.",
+                          "type": "integer"
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/currentVersionResponse.yaml"
+                      }
+                    },
+                    "staging": {
+                      "additionalProperties": false,
+                      "description": "Provides information about the key collection version currently active in the staging environment.",
+                      "type": "object",
+                      "properties": {
+                        "algorithm": {
+                          "description": "The encryption algorithm of the public keys that the version uses in this environment to validate JWT signatures, either `RSA` or `ECDSA_P_256`. To see the  public keys that the version uses, run the [View a key collection version](https://techdocs.akamai.com/iot-token-access-control/reference/get-key-collection-version) operation.",
+                          "type": "string",
+                          "enum": [
+                            "RSA",
+                            "ECDSA_P_256"
+                          ]
+                        },
+                        "false": {
+                          "description": "The number of the key collection version.",
+                          "type": "integer"
+                        },
+                        "id": {
+                          "description": "The identifier of the key collection version.",
+                          "type": "integer"
+                        },
+                        "startTime": {
+                          "description": "An epoch timestamp marking when the key collection version was created.",
+                          "type": "integer"
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/currentVersionResponse.yaml"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/keyCollectionResponse.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A name collision has occurred.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "get": {
+        "description": "Returns a list of key collections for the associated account. Also, for each returned collection, it specifies if any key collection versions are active in the staging and production environments.",
+        "operationId": "get-key-collections",
+        "summary": "List key collections",
+        "tags": [
+          "Key collections"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's IoT Token Access Control API",
+          "url": "https://techdocs.akamai.com/iot-token-access-control/reference/get-key-collections"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Provides a list of key collections available within the account.",
+                  "type": "array",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "Contains basic information about a key collection, including versions that are active in the staging and production environments and the types of public keys they use to validate JWT signatures.",
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "name",
+                      "createdDate",
+                      "jwt"
+                    ],
+                    "properties": {
+                      "createdBy": {
+                        "description": "The username who created the key collection.",
+                        "type": "string"
+                      },
+                      "createdDate": {
+                        "description": "An epoch timestamp marking when the key collection was created.",
+                        "type": "integer"
+                      },
+                      "id": {
+                        "description": "The identifier of the key collection.",
+                        "type": "integer"
+                      },
+                      "jwt": {
+                        "description": "A string version of this key collection's `id` value.",
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "A descriptive label for the key collection.",
+                        "type": "string"
+                      },
+                      "production": {
+                        "additionalProperties": false,
+                        "description": "Provides information about the key collection version currently active in the production environment.",
+                        "type": "object",
+                        "properties": {
+                          "algorithm": {
+                            "description": "The encryption algorithm of the public keys that the version uses in this environment to validate JWT signatures, either `RSA` or `ECDSA_P_256`. To see the  public keys that the version uses, run the [View a key collection version](https://techdocs.akamai.com/iot-token-access-control/reference/get-key-collection-version) operation.",
+                            "type": "string",
+                            "enum": [
+                              "RSA",
+                              "ECDSA_P_256"
+                            ]
+                          },
+                          "false": {
+                            "description": "The number of the key collection version.",
+                            "type": "integer"
+                          },
+                          "id": {
+                            "description": "The identifier of the key collection version.",
+                            "type": "integer"
+                          },
+                          "startTime": {
+                            "description": "An epoch timestamp marking when the key collection version was created.",
+                            "type": "integer"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/currentVersionResponse.yaml"
+                        }
+                      },
+                      "staging": {
+                        "additionalProperties": false,
+                        "description": "Provides information about the key collection version currently active in the staging environment.",
+                        "type": "object",
+                        "properties": {
+                          "algorithm": {
+                            "description": "The encryption algorithm of the public keys that the version uses in this environment to validate JWT signatures, either `RSA` or `ECDSA_P_256`. To see the  public keys that the version uses, run the [View a key collection version](https://techdocs.akamai.com/iot-token-access-control/reference/get-key-collection-version) operation.",
+                            "type": "string",
+                            "enum": [
+                              "RSA",
+                              "ECDSA_P_256"
+                            ]
+                          },
+                          "false": {
+                            "description": "The number of the key collection version.",
+                            "type": "integer"
+                          },
+                          "id": {
+                            "description": "The identifier of the key collection version.",
+                            "type": "integer"
+                          },
+                          "startTime": {
+                            "description": "An epoch timestamp marking when the key collection version was created.",
+                            "type": "integer"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/currentVersionResponse.yaml"
+                        }
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/keyCollectionResponse.yaml"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/keyCollectionsListResponse.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "createdBy": "alfulani",
+                    "createdDate": 1522747964221,
+                    "id": 12,
+                    "jwt": "12",
+                    "name": "EdgeConnectKeySet",
+                    "production": {
+                      "algorithm": "RSA",
+                      "id": 11,
+                      "no": 1,
+                      "startTime": 1522748047092
+                    },
+                    "staging": {
+                      "algorithm": "RSA",
+                      "id": 16,
+                      "no": 2,
+                      "startTime": 1522748072292
+                    }
+                  },
+                  {
+                    "createdBy": "jkowalski",
+                    "createdDate": 1522251911450,
+                    "id": 15,
+                    "jwt": "15",
+                    "name": "OTAUpdatesKeySet",
+                    "production": {
+                      "algorithm": "ECDSA_P_256",
+                      "id": 14,
+                      "no": 1,
+                      "startTime": 1522252265017
+                    },
+                    "staging": {
+                      "algorithm": "RSA",
+                      "id": 15,
+                      "no": 4,
+                      "startTime": 1546613339629
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/key-collections/{collectionId}": {
+      "get": {
+        "description": "Returns details about the key collection, listing all created versions and specifying the ones active in the production and staging environments. If you don't already have the `collectionId`, run the [Get a collection](https://techdocs.akamai.com/iot-token-access-control/reference/get-key-collections) operation and use the appropriate `id` value from the returned array.",
+        "operationId": "get-key-collection",
+        "summary": "View a key collection",
+        "tags": [
+          "Key collections"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's IoT Token Access Control API",
+          "url": "https://techdocs.akamai.com/iot-token-access-control/reference/get-key-collection"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 12,
+                  "name": "test_collection",
+                  "production": {
+                    "algorithm": "ECDSA_P_256",
+                    "id": 12,
+                    "no": 2,
+                    "startTime": 1522252265017
+                  },
+                  "staging": {
+                    "algorithm": "RSA",
+                    "id": 11,
+                    "no": 1,
+                    "startTime": 1546613339629
+                  },
+                  "versions": [
+                    {
+                      "algorithm": "RSA",
+                      "collectionId": 12,
+                      "createdBy": "hgildong",
+                      "createdDate": 1546613339629,
+                      "description": "Key Collection Version no1",
+                      "id": 11,
+                      "no": 1,
+                      "productionStatus": "INACTIVE",
+                      "stagingStatus": "ACTIVE"
+                    },
+                    {
+                      "algorithm": "ECDSA_P_256",
+                      "collectionId": 12,
+                      "createdBy": "jperez",
+                      "createdDate": 1522252265017,
+                      "description": "Key Collection Version no2",
+                      "id": 12,
+                      "no": 2,
+                      "productionStatus": "ACTIVE",
+                      "stagingStatus": "INACTIVE"
+                    },
+                    {
+                      "algorithm": "ECDSA_P_256",
+                      "collectionId": 12,
+                      "createdBy": "jkowalski",
+                      "createdDate": 1522252256725,
+                      "description": "Key Collection Version no3",
+                      "id": 13,
+                      "no": 3,
+                      "productionStatus": "INACTIVE",
+                      "stagingStatus": "INACTIVE"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Contains detailed information about a key collection, including all its versions as well as those active in the staging and production environments. It also shows the type of public keys these versions use to validate JWT signatures.",
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "name",
+                    "versions"
+                  ],
+                  "properties": {
+                    "id": {
+                      "description": "The identifier of the key collection.",
+                      "type": "integer"
+                    },
+                    "name": {
+                      "description": "A descriptive label for the key collection.",
+                      "type": "string"
+                    },
+                    "production": {
+                      "additionalProperties": false,
+                      "description": "Contains information about the key collection version that's active in the production environment.",
+                      "type": "object",
+                      "properties": {
+                        "algorithm": {
+                          "description": "The encryption algorithm of the public keys that the version uses in this environment to validate JWT signatures, either `RSA` or `ECDSA_P_256`. To see the  public keys that the version uses, run the [View a key collection version](https://techdocs.akamai.com/iot-token-access-control/reference/get-key-collection-version) operation.",
+                          "type": "string",
+                          "enum": [
+                            "RSA",
+                            "ECDSA_P_256"
+                          ]
+                        },
+                        "false": {
+                          "description": "The number of the key collection version.",
+                          "type": "integer"
+                        },
+                        "id": {
+                          "description": "The identifier of the key collection version.",
+                          "type": "integer"
+                        },
+                        "startTime": {
+                          "description": "An epoch timestamp marking when the key collection version was created.",
+                          "type": "integer"
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/currentVersionResponse.yaml"
+                      }
+                    },
+                    "staging": {
+                      "additionalProperties": false,
+                      "description": "Contains information about the key collection version that's active in the staging environment.",
+                      "type": "object",
+                      "properties": {
+                        "algorithm": {
+                          "description": "The encryption algorithm of the public keys that the version uses in this environment to validate JWT signatures, either `RSA` or `ECDSA_P_256`. To see the  public keys that the version uses, run the [View a key collection version](https://techdocs.akamai.com/iot-token-access-control/reference/get-key-collection-version) operation.",
+                          "type": "string",
+                          "enum": [
+                            "RSA",
+                            "ECDSA_P_256"
+                          ]
+                        },
+                        "false": {
+                          "description": "The number of the key collection version.",
+                          "type": "integer"
+                        },
+                        "id": {
+                          "description": "The identifier of the key collection version.",
+                          "type": "integer"
+                        },
+                        "startTime": {
+                          "description": "An epoch timestamp marking when the key collection version was created.",
+                          "type": "integer"
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/currentVersionResponse.yaml"
+                      }
+                    },
+                    "versions": {
+                      "description": "Information about key collection versions, which includes the type of public keys they use to validate JWT signatures, and whether they're active in the staging and production environments.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Contains information about a key collection version, including the type of public keys it uses to validate JWT signatures, and whether it's active in the staging and production environments.",
+                        "type": "object",
+                        "properties": {
+                          "algorithm": {
+                            "description": "The encryption algorithm of the public keys that the key collection version uses, either `RSA` or `ECDSA_P_256`. To see the public keys that the version uses, run the [View a key collection version](https://techdocs.akamai.com/iot-token-access-control/reference/get-key-collection-version) operation.",
+                            "type": "string",
+                            "enum": [
+                              "RSA",
+                              "ECDSA_P_256"
+                            ]
+                          },
+                          "collectionId": {
+                            "description": "The identifier of the key collection associated with the key collection version.",
+                            "type": "integer"
+                          },
+                          "createdBy": {
+                            "description": "The username who created the key collection version.",
+                            "type": "string"
+                          },
+                          "createdDate": {
+                            "description": "An epoch timestamp marking when the key collection version was created.",
+                            "type": "integer"
+                          },
+                          "description": {
+                            "description": "A description for the key collection version.",
+                            "type": "string"
+                          },
+                          "false": {
+                            "description": "The number of the key collection version. With each new version of this key collection, this number increments by 1.",
+                            "type": "integer"
+                          },
+                          "id": {
+                            "description": "The identifier of the key collection version.",
+                            "type": "integer"
+                          },
+                          "productionStatus": {
+                            "description": "The status of the key collection version in the production environment, either `ACTIVE`, `INACTIVE`, or `PENDING`.",
+                            "type": "string",
+                            "enum": [
+                              "ACTIVE",
+                              "INACTIVE",
+                              "PENDING"
+                            ]
+                          },
+                          "stagingStatus": {
+                            "description": "The status of the key collection version in the staging environment, either `ACTIVE`, `INACTIVE`, or `PENDING`.",
+                            "type": "string",
+                            "enum": [
+                              "ACTIVE",
+                              "INACTIVE",
+                              "PENDING"
+                            ]
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/keyCollectionVersionResponse.yaml"
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/keyCollectionWithVersionsResponse.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Key collection couldn't be found.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The identifier of the key collection.",
+          "example": "{{collectionId}}",
+          "in": "path",
+          "name": "collectionId",
+          "required": true,
+          "schema": {
+            "example": 1,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/collectionId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/key-collections/{collectionId}/versions": {
+      "post": {
+        "description": "Creates a version of the key collection. This lets you provide primary and secondary public keys to verify JWTs passed in client requests. If you don't already have the `collectionId`, run the [Get a collection](https://techdocs.akamai.com/iot-token-access-control/reference/get-key-collections) operation and use the appropriate `id` value from the returned array. Also, to start using the public keys on staging or production, run the [Activate this key collection version](https://techdocs.akamai.com/iot-token-access-control/reference/post-activation) operation.",
+        "operationId": "post-key-collection-version",
+        "summary": "Create a key collection version",
+        "tags": [
+          "Versions"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's IoT Token Access Control API",
+          "url": "https://techdocs.akamai.com/iot-token-access-control/reference/post-key-collection-version"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "description": "A key for IoT Edge Connect ",
+                "primaryKey": "-----BEGIN PUBLIC KEY-----\nsamplepublickey\n-----END PUBLIC KEY-----"
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Contains information that you need to provide when creating a key collection version.",
+                "type": "object",
+                "required": [
+                  "primaryKey"
+                ],
+                "properties": {
+                  "description": {
+                    "description": "A descriptive label for the key collection version.",
+                    "example": "{{description}}",
+                    "type": "string"
+                  },
+                  "primaryKey": {
+                    "description": "The primary public key that you want to use to validate JWT signatures. You can use an RSA key that's between 1024 and 4096 bits long, an ECDSA key that uses the P-256 (secp256k1) curve. Use a key in PEM format, which presents base64-encoded data between the begin header and the end footer. Make sure to use the same  encryption algorithm for the public keys in the `primaryKey` and `secondaryKey` members, either `RSA` or `ECDSA_P_256`. See [Keys and JWT signing algorithms](https://techdocs.akamai.com/iot-token-access-control/reference/keys-and-jwt-signing-algorithms).",
+                    "example": "{{primaryKey}}",
+                    "type": "string"
+                  },
+                  "secondaryKey": {
+                    "description": "The secondary public key that you want to use to validate JWT signatures in case `primaryKey` fails. You can use an RSA key that's between 1024 and 4096  bits long, an ECDSA key that uses the P-256 (secp256k1) curve. Use a key in PEM format, which presents base64-encoded data between the begin header and the end footer. Make sure to use the same encryption algorithm for the public keys in the `primaryKey` and `secondaryKey` members, either `RSA` or `ECDSA_P_256`. See [Key rotation](https://techdocs.akamai.com/iot-token-access-control/reference/rotate-public-keys) and [Keys and JWT signing algorithms](https://techdocs.akamai.com/iot-token-access-control/reference/keys-and-jwt-signing-algorithms).",
+                    "example": "{{secondaryKey}}",
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/pemPublicKeysRequest.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "algorithm": "ECDSA_P_256",
+                  "collectionId": 12,
+                  "createdBy": "adevi",
+                  "createdDate": 1522252256725,
+                  "description": "A version active in the staging environment. ",
+                  "id": 2,
+                  "no": 1,
+                  "productionStatus": "INACTIVE",
+                  "stagingStatus": "ACTIVE"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Contains information about a key collection version, including the type of public keys it uses to validate JWT signatures, and whether it's active in the staging and production environments.",
+                  "type": "object",
+                  "properties": {
+                    "algorithm": {
+                      "description": "The encryption algorithm of the public keys that the key collection version uses, either `RSA` or `ECDSA_P_256`. To see the public keys that the version uses, run the [View a key collection version](https://techdocs.akamai.com/iot-token-access-control/reference/get-key-collection-version) operation.",
+                      "type": "string",
+                      "enum": [
+                        "RSA",
+                        "ECDSA_P_256"
+                      ]
+                    },
+                    "collectionId": {
+                      "description": "The identifier of the key collection associated with the key collection version.",
+                      "type": "integer"
+                    },
+                    "createdBy": {
+                      "description": "The username who created the key collection version.",
+                      "type": "string"
+                    },
+                    "createdDate": {
+                      "description": "An epoch timestamp marking when the key collection version was created.",
+                      "type": "integer"
+                    },
+                    "description": {
+                      "description": "A description for the key collection version.",
+                      "type": "string"
+                    },
+                    "false": {
+                      "description": "The number of the key collection version. With each new version of this key collection, this number increments by 1.",
+                      "type": "integer"
+                    },
+                    "id": {
+                      "description": "The identifier of the key collection version.",
+                      "type": "integer"
+                    },
+                    "productionStatus": {
+                      "description": "The status of the key collection version in the production environment, either `ACTIVE`, `INACTIVE`, or `PENDING`.",
+                      "type": "string",
+                      "enum": [
+                        "ACTIVE",
+                        "INACTIVE",
+                        "PENDING"
+                      ]
+                    },
+                    "stagingStatus": {
+                      "description": "The status of the key collection version in the staging environment, either `ACTIVE`, `INACTIVE`, or `PENDING`.",
+                      "type": "string",
+                      "enum": [
+                        "ACTIVE",
+                        "INACTIVE",
+                        "PENDING"
+                      ]
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/keyCollectionVersionResponse.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "You need at least one public key to create a key collection version.",
+            "content": {
+              "*/*": {}
+            }
+          },
+          "404": {
+            "description": "The system can't find the key collection.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The identifier of the key collection.",
+          "example": "{{collectionId}}",
+          "in": "path",
+          "name": "collectionId",
+          "required": true,
+          "schema": {
+            "example": 1,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/collectionId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/key-collections/{collectionId}/versions/{versionId}": {
+      "get": {
+        "description": "Returns details about the key collection version. It returns the public keys the version uses to verify JWTs and reports on whether they're are active in the production and staging environments.",
+        "operationId": "get-key-collection-version",
+        "summary": "View a key collection version",
+        "tags": [
+          "Versions"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's IoT Token Access Control API",
+          "url": "https://techdocs.akamai.com/iot-token-access-control/reference/get-key-collection-version"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "algorithm": "RSA",
+                  "algorithmDetails": "512 bits",
+                  "collectionId": 12,
+                  "description": "The first version of the collection with a primary key for Edge Connect.",
+                  "primaryKey": "-----BEGIN PUBLIC KEY-----\nsamplepublickey\n-----END PUBLIC KEY-----",
+                  "versionId": 12,
+                  "versionNo": 1,
+                  "production": {
+                    "activatedBy": "keyAdministrator_EdgeConnect",
+                    "activatedOn": 1522748047092,
+                    "status": "ACTIVE"
+                  },
+                  "staging": {
+                    "activatedBy": "keyAdministrator_EdgeConnect",
+                    "activatedOn": 1522748072292,
+                    "status": "ACTIVE"
+                  }
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Contains detailed information about a key collection version, including its public keys and details about the encryption algorithm used for their generation. It also specifies whether the version is active in the staging and production environments.",
+                  "type": "object",
+                  "required": [
+                    "collectionId",
+                    "versionId",
+                    "versionNo",
+                    "primaryKey",
+                    "staging",
+                    "production"
+                  ],
+                  "properties": {
+                    "algorithm": {
+                      "description": "The encryption algorithm of the public keys in the `primaryKey` and `secondaryKey` members, either `RSA` or `ECDSA_P_256`.",
+                      "type": "string",
+                      "enum": [
+                        "RSA",
+                        "ECDSA_P_256"
+                      ]
+                    },
+                    "algorithmDetails": {
+                      "description": "Details about the encryption algorithm used to generate the public  key in the `primaryKey` member. For `RSA`, it specifies the length of an RSA   key. For `ECDSA_P_256`, it specifies the parameter of the P-256 elliptic curve, only `secp256k1` is available at this time. See [Keys and JWT signing algorithms](https://techdocs.akamai.com/iot-token-access-control/reference/keys-and-jwt-signing-algorithms).",
+                      "type": "string"
+                    },
+                    "collectionId": {
+                      "description": "The identifier of the key collection.",
+                      "type": "integer"
+                    },
+                    "description": {
+                      "description": "A description for the key collection version.",
+                      "type": "string"
+                    },
+                    "primaryKey": {
+                      "description": "The primary RSA or ECDSA public key that the version uses to validate JWT signatures. This key is in PEM format, which presents base64-encoded data between the begin header and the end footer. See [Keys and JWT signing algorithms](https://techdocs.akamai.com/iot-token-access-control/reference/keys-and-jwt-signing-algorithms).",
+                      "type": "string"
+                    },
+                    "production": {
+                      "additionalProperties": false,
+                      "description": "Contains detailed information about the status of the key collection version in this environment.",
+                      "type": "object",
+                      "properties": {
+                        "activatedBy": {
+                          "description": "The username who activated the key collection version.",
+                          "type": "string"
+                        },
+                        "activatedOn": {
+                          "description": "An epoch timestamp marking when the activation was started.",
+                          "type": "integer"
+                        },
+                        "status": {
+                          "description": "The status of the key collection version in the environment. These values are available: `ACTIVE`, `INACTIVE`, or `PENDING`.",
+                          "type": "string",
+                          "enum": [
+                            "ACTIVE",
+                            "INACTIVE",
+                            "PENDING"
+                          ]
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/currentVersionDetailsResponse.yaml"
+                      }
+                    },
+                    "secondaryAlgorithmDetails": {
+                      "description": "Details about the encryption algorithm used to generate the public  key in the `secondaryKey` member. For `RSA`, it specifies the length of the  RSA key. For `ECDSA_P_256`, it specifies the parameter of the P-256 elliptic curve, only `secp256k1` is available at this time. See [Keys and JWT signing algorithms](https://techdocs.akamai.com/iot-token-access-control/reference/keys-and-jwt-signing-algorithms).",
+                      "type": "string"
+                    },
+                    "secondaryKey": {
+                      "description": "The backup RSA or ECDSA public key that the version uses to validate JWT signatures in case the `primaryKey` fails. This key is in PEM format, which presents base64-encoded data between the begin header and the end footer. See [Key rotation](https://techdocs.akamai.com/iot-token-access-control/reference/rotate-public-keys) and [Keys and JWT signing algorithms](https://techdocs.akamai.com/iot-token-access-control/reference/keys-and-jwt-signing-algorithms).",
+                      "type": "string"
+                    },
+                    "staging": {
+                      "additionalProperties": false,
+                      "description": "Contains detailed information about the status of the key collection version in this environment.",
+                      "type": "object",
+                      "properties": {
+                        "activatedBy": {
+                          "description": "The username who activated the key collection version.",
+                          "type": "string"
+                        },
+                        "activatedOn": {
+                          "description": "An epoch timestamp marking when the activation was started.",
+                          "type": "integer"
+                        },
+                        "status": {
+                          "description": "The status of the key collection version in the environment. These values are available: `ACTIVE`, `INACTIVE`, or `PENDING`.",
+                          "type": "string",
+                          "enum": [
+                            "ACTIVE",
+                            "INACTIVE",
+                            "PENDING"
+                          ]
+                        }
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/currentVersionDetailsResponse.yaml"
+                      }
+                    },
+                    "versionId": {
+                      "description": "The identifier of the key collection version.",
+                      "type": "integer"
+                    },
+                    "versionNo": {
+                      "description": "The number of the key collection version. With each new version of this key collection, this number increments by 1.",
+                      "type": "integer"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/keyCollectionVersionDetailsResponse.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The system can't find this key collection version.",
+            "content": {
+              "*/*": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The identifier of the key collection version.",
+          "example": "{{versionId}}",
+          "in": "path",
+          "name": "versionId",
+          "required": true,
+          "schema": {
+            "example": 2,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/versionId-path.yaml"
+          }
+        },
+        {
+          "description": "The identifier of the key collection.",
+          "example": "{{collectionId}}",
+          "in": "path",
+          "name": "collectionId",
+          "required": true,
+          "schema": {
+            "example": 1,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/collectionId-path.yaml"
+          }
+        }
+      ]
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/jwt-api/v1"
+    }
+  ]
+}

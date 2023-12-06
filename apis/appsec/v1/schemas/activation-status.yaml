@@ -1,0 +1,103 @@
+type: object
+description: |-
+  Contains the activation status and settings for a configuration version.
+  
+x-akamai:
+  file-path: schemas/activation-status.yaml
+additionalProperties: false
+required:
+- activationId
+- action
+- network
+- status
+- activationConfigs
+- createdBy
+- createDate
+properties:
+  action:
+    type: string
+    description: |
+      The action performed on this activation, either `ACTIVATE` or `DEACTIVATE`.
+    enum:
+    - ACTIVATE
+    - DEACTIVATE
+  activationConfigs:
+    type: array
+    description: |
+      Specifies the security configuration and activation version.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - configId
+      - configVersion
+      properties:
+        configId:
+          type: integer
+          description: |
+            The origin identifier or the activation's destination configuration.
+        configName:
+          type: string
+          description: |
+            The name you assigned to the configuration. This field is provided for information purposes and only appears in the API output.
+        configVersion:
+          type: integer
+          description: |
+            The origin version or the activation's destination configuration.
+        previousConfigVersion:
+          type: integer
+          description: |
+            The previous active configuration version.
+          readOnly: true
+  activationId:
+    type: integer
+    description: |
+      Uniquely identifies the activation.
+  completionDate:
+    type: string
+    description: |
+      The ISO 8601 timestamp at which the activation reaches a steady state and validates across the Akamai network.
+    readOnly: true
+    format: date-time
+  createDate:
+    type: string
+    description: |
+      The ISO 8601 timestamp at which the activation request was submitted.
+    readOnly: true
+    format: date-time
+  createdBy:
+    type: string
+    description: |
+      The user who created the activation request.
+    readOnly: true
+  dispatchCount:
+    type: integer
+    description: |
+      The number of times which this activation has been dispatched to the Akamai edge network. A number greater than 1 indicates that this activation may be retried due to network safety concerns.
+    readOnly: true
+  estimate:
+    type: string
+    description: |
+      The estimated time remaining to complete the activation in ISO 8601 duration format, starting when the response is generated.
+  network:
+    type: string
+    description: |
+      The Akamai activation environment, either `STAGING` or `PRODUCTION`.
+    enum:
+    - STAGING
+    - PRODUCTION
+  status:
+    type: string
+    description: |
+      The current activation status, either `RECEIVED`, `LIVE`, `DEPLOYED`, `CANCELING`, `STOPPED`, `REMOVED`, `ROLLBACK`, `ACTIVATED`, `FAILED`, `CANCELLING`, or `UNDEPLOYED`.
+    enum:
+    - RECEIVED
+    - LIVE
+    - DEPLOYED
+    - STOPPED
+    - REMOVED
+    - ROLLBACK
+    - ACTIVATED
+    - FAILED
+    - CANCELLING
+    - UNDEPLOYED

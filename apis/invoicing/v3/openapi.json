@@ -1,0 +1,4497 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Invoicing API",
+    "url": "https://techdocs.akamai.com/invoice-api/reference"
+  },
+  "info": {
+    "title": "Akamai: Invoicing API",
+    "version": "v1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/contracts/{contractId}/invoices": {
+      "get": {
+        "description": "Returns invoices and credit memos for the specified contract and the selected month.",
+        "operationId": "get-contracts-invoices",
+        "summary": "List invoices and credit memos for a contract",
+        "tags": [
+          "Invoices"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Invoicing API",
+          "url": "https://techdocs.akamai.com/invoice-api/reference/get-contracts-invoices"
+        },
+        "responses": {
+          "200": {
+            "description": "The response lists invoices and credit memos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "List of invoices and credit memos.",
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "List of invoices and credit memos.",
+                    "type": "object",
+                    "required": [
+                      "invoiceId",
+                      "invoiceDate",
+                      "invoiceTotal",
+                      "invoiceCurrency",
+                      "invoiceType",
+                      "contractId",
+                      "accountId",
+                      "files"
+                    ],
+                    "properties": {
+                      "accountId": {
+                        "description": "Identifies the account.",
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "contractId": {
+                        "description": "Identifies the contract the data reflects.",
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "files": {
+                        "description": "Specifies invoice and credit memo files.",
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "type": "object",
+                          "required": [
+                            "fileName",
+                            "fileFormat",
+                            "fileVersion"
+                          ],
+                          "properties": {
+                            "fileFormat": {
+                              "description": "The format of the file, either `PDF`, `CSV`, or `JSON`.",
+                              "type": "string",
+                              "enum": [
+                                "PDF",
+                                "CSV",
+                                "JSON"
+                              ]
+                            },
+                            "fileName": {
+                              "description": "The name of the file.",
+                              "minLength": 1,
+                              "type": "string"
+                            },
+                            "fileVersion": {
+                              "description": "The version of the file.",
+                              "minimum": 1,
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      },
+                      "invoiceCurrency": {
+                        "description": "Three-letter ISO 4217 code indicating the currency that measures all totals.",
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "invoiceDate": {
+                        "description": "The invoice's or credit memo's published date, formatted as ISO 8601 date.",
+                        "format": "date",
+                        "type": "string"
+                      },
+                      "invoiceDueDate": {
+                        "description": "The invoice's or credit memo's due date.",
+                        "format": "date",
+                        "type": "string"
+                      },
+                      "invoiceId": {
+                        "description": "Identifies the invoice or credit memo.",
+                        "minimum": 1,
+                        "type": "integer"
+                      },
+                      "invoiceTotal": {
+                        "description": "The amount billed.",
+                        "type": "number"
+                      },
+                      "invoiceType": {
+                        "description": "The overall category for the document, such as `INVOICE` or `CREDIT_MEMO` for adjustments.",
+                        "type": "string",
+                        "enum": [
+                          "INVOICE",
+                          "CREDIT_MEMO"
+                        ]
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/invoice-schema.yaml"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/list-invoices-schema.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "accountId": "A-CCT7890",
+                    "contractId": "C-0N7RAC71",
+                    "invoiceCurrency": "USD",
+                    "invoiceDate": "2021-01-01",
+                    "invoiceDueDate": "2021-01-20",
+                    "invoiceId": 1234567890,
+                    "invoiceTotal": 50000.42,
+                    "invoiceType": "INVOICE",
+                    "files": [
+                      {
+                        "fileFormat": "PDF",
+                        "fileName": "InvoiceName_1-XYZ_1-ABCD_1234567890_FINAL_1.pdf",
+                        "fileVersion": 1
+                      },
+                      {
+                        "fileFormat": "CSV",
+                        "fileName": "1234567890_1.csv",
+                        "fileVersion": 1
+                      }
+                    ]
+                  },
+                  {
+                    "accountId": "A-CCT7890",
+                    "contractId": "K-0N7RAK7",
+                    "invoiceCurrency": "USD",
+                    "invoiceDate": "2021-01-01",
+                    "invoiceDueDate": "2021-01-20",
+                    "invoiceId": 8234567890,
+                    "invoiceTotal": -1020.71,
+                    "invoiceType": "CREDIT_MEMO",
+                    "files": [
+                      {
+                        "fileFormat": "PDF",
+                        "fileName": "CreditMemoName_1-XYZ_1-ABCD_8234567890_FINAL_1.pdf",
+                        "fileVersion": 2
+                      },
+                      {
+                        "fileFormat": "CSV",
+                        "fileName": "8234567890_1.csv",
+                        "fileVersion": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "204": {
+            "description": "No content. No data to be returned for the requested parameters.",
+            "content": {
+              "*/*": {}
+            }
+          },
+          "400": {
+            "description": "[Bad request](https://techdocs.akamai.com/invoice-api/reference/400).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An incorrect request has been sent",
+                  "type": "/billing/error-types/1",
+                  "errors": [
+                    {
+                      "title": "Field 'from' is invalid. Incorrect value: null",
+                      "type": "/billing/error-types/2"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "description": "[Authorization error](https://techdocs.akamai.com/invoice-api/reference/401).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "192.0.2.0",
+                  "detail": "The signature does not match",
+                  "instance": "https://akab-xxxxx-xxxxx.luna.akamaiapis.net/invoicing-api/v3/notifications",
+                  "method": "GET",
+                  "requestId": "933ed8a4",
+                  "requestTime": "2023-02-26T17:41:25Z",
+                  "serverIp": "192.0.2.106",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "properties": {
+                    "clientIp": {
+                      "description": "IP address of the client.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "More information about the error.",
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "The URL for this error occurrence.",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "HTTP method.",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "Identifies the request.",
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "Request date expressed as an ISO 8601 timestamp.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "IP address of the server.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem-401.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          },
+          "403": {
+            "description": "[Access is forbidden](https://techdocs.akamai.com/invoice-api/reference/403).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "c7b6d7be-9268-4410-a031-cc0d013ce5c3",
+                  "title": "User in current context cannot access resource",
+                  "type": "/billing/error-types/11",
+                  "errors": [
+                    {
+                      "title": "Access is denied",
+                      "type": "/billing/error-types/11"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "404": {
+            "description": "[Resource not found](https://techdocs.akamai.com/invoice-api/reference/404).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "5109160e-ea62-4627-afa3-3a7c0838d7ad",
+                  "title": "URL not found",
+                  "type": "/billing/error-types/3",
+                  "errors": [
+                    {
+                      "title": "No handler found for GET /billing/v1/contracts/1-ABCDEF/products-abc",
+                      "type": "/billing/error-types/3"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          },
+          "405": {
+            "description": "[Method not allowed](https://techdocs.akamai.com/invoice-api/reference/405).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "f9c951f2-9d10-4eac-9951-36471884e7f6",
+                  "title": "Method not allowed",
+                  "type": "/billing/error-types/4",
+                  "errors": [
+                    {
+                      "title": "Request method 'POST' not supported",
+                      "type": "/billing/error-types/4"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/405.yaml"
+            }
+          },
+          "500": {
+            "description": "[Server error](https://techdocs.akamai.com/invoice-api/reference/500).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An unexpected error occurred during request processing",
+                  "type": "/billing-api/error-types/5"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "Selected billable usage period, expressed as an ISO 8601 datestamp (YYYY-MM).",
+            "example": "{{month}}",
+            "in": "query",
+            "name": "month",
+            "required": true,
+            "schema": {
+              "example": "2020-07",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/monthQueryParam_month.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Identifies the contract that you want to see aggregated data from.",
+          "example": "{{contractId}}",
+          "in": "path",
+          "name": "contractId",
+          "required": true,
+          "schema": {
+            "example": "1-5QRKWT",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/contractId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/contracts/{contractId}/invoices/{invoiceId}/download": {
+      "get": {
+        "description": "Returns the content of the selected contract's invoice or credit memo file. The downloadable file is available in the response body. The `Content-Type` depends on the format of the file you're downloading.",
+        "operationId": "get-contract-invoice-download",
+        "summary": "Download an invoice or a credit memo file",
+        "tags": [
+          "Invoices"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Invoicing API",
+          "url": "https://techdocs.akamai.com/invoice-api/reference/get-contract-invoice-download"
+        },
+        "responses": {
+          "200": {
+            "description": "The response provides requested file.",
+            "content": {
+              "*/*": {}
+            }
+          },
+          "204": {
+            "description": "No content. No data to be returned for the requested parameters.",
+            "content": {
+              "*/*": {}
+            }
+          },
+          "400": {
+            "description": "[Bad request](https://techdocs.akamai.com/invoice-api/reference/400).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An incorrect request has been sent",
+                  "type": "/billing/error-types/1",
+                  "errors": [
+                    {
+                      "title": "Field 'from' is invalid. Incorrect value: null",
+                      "type": "/billing/error-types/2"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "description": "[Authorization error](https://techdocs.akamai.com/invoice-api/reference/401).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "192.0.2.0",
+                  "detail": "The signature does not match",
+                  "instance": "https://akab-xxxxx-xxxxx.luna.akamaiapis.net/invoicing-api/v3/notifications",
+                  "method": "GET",
+                  "requestId": "933ed8a4",
+                  "requestTime": "2023-02-26T17:41:25Z",
+                  "serverIp": "192.0.2.253",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "properties": {
+                    "clientIp": {
+                      "description": "IP address of the client.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "More information about the error.",
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "The URL for this error occurrence.",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "HTTP method.",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "Identifies the request.",
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "Request date expressed as an ISO 8601 timestamp.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "IP address of the server.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem-401.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          },
+          "403": {
+            "description": "[Access is forbidden](https://techdocs.akamai.com/invoice-api/reference/403).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "c7b6d7be-9268-4410-a031-cc0d013ce5c3",
+                  "title": "User in current context cannot access resource",
+                  "type": "/billing/error-types/11",
+                  "errors": [
+                    {
+                      "title": "Access is denied",
+                      "type": "/billing/error-types/11"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "404": {
+            "description": "[Resource not found](https://techdocs.akamai.com/invoice-api/reference/404).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "5109160e-ea62-4627-afa3-3a7c0838d7ad",
+                  "title": "URL not found",
+                  "type": "/billing/error-types/3",
+                  "errors": [
+                    {
+                      "title": "No handler found for GET /billing/v1/contracts/1-ABCDEF/products-abc",
+                      "type": "/billing/error-types/3"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          },
+          "405": {
+            "description": "[Method not allowed](https://techdocs.akamai.com/invoice-api/reference/405).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "f9c951f2-9d10-4eac-9951-36471884e7f6",
+                  "title": "Method not allowed",
+                  "type": "/billing/error-types/4",
+                  "errors": [
+                    {
+                      "title": "Request method 'POST' not supported",
+                      "type": "/billing/error-types/4"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/405.yaml"
+            }
+          },
+          "500": {
+            "description": "[Server error](https://techdocs.akamai.com/invoice-api/reference/500).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An unexpected error occurred during request processing",
+                  "type": "/billing-api/error-types/5"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "__Enum__ File format of the invoice. These are the available values: `PDF`, `CSV`, and `JSON`.",
+            "example": "{{fileFormat}}",
+            "in": "query",
+            "name": "fileFormat",
+            "required": true,
+            "schema": {
+              "example": "PDF",
+              "type": "string",
+              "enum": [
+                "PDF",
+                "CSV",
+                "JSON"
+              ]
+            },
+            "x-akamai": {
+              "file-path": "parameters/fileFormat-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Identifies the invoice or credit memo that you want to download.",
+          "example": "{{invoiceId}}",
+          "in": "path",
+          "name": "invoiceId",
+          "required": true,
+          "schema": {
+            "example": 17331001020,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/invoiceId-path.yaml"
+          }
+        },
+        {
+          "description": "Identifies the contract that you want to see aggregated data from.",
+          "example": "{{contractId}}",
+          "in": "path",
+          "name": "contractId",
+          "required": true,
+          "schema": {
+            "example": "1-5QRKWT",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/contractId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/invoices": {
+      "get": {
+        "description": "Returns invoices and credit memos for the current account and the selected month.",
+        "operationId": "get-invoices",
+        "summary": "List invoices and credit memos for an account",
+        "tags": [
+          "Invoices"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Invoicing API",
+          "url": "https://techdocs.akamai.com/invoice-api/reference/get-invoices"
+        },
+        "responses": {
+          "200": {
+            "description": "The response lists invoices and credit memos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "List of invoices and credit memos.",
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "List of invoices and credit memos.",
+                    "type": "object",
+                    "required": [
+                      "invoiceId",
+                      "invoiceDate",
+                      "invoiceTotal",
+                      "invoiceCurrency",
+                      "invoiceType",
+                      "contractId",
+                      "accountId",
+                      "files"
+                    ],
+                    "properties": {
+                      "accountId": {
+                        "description": "Identifies the account.",
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "contractId": {
+                        "description": "Identifies the contract the data reflects.",
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "files": {
+                        "description": "Specifies invoice and credit memo files.",
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "type": "object",
+                          "required": [
+                            "fileName",
+                            "fileFormat",
+                            "fileVersion"
+                          ],
+                          "properties": {
+                            "fileFormat": {
+                              "description": "The format of the file, either `PDF`, `CSV`, or `JSON`.",
+                              "type": "string",
+                              "enum": [
+                                "PDF",
+                                "CSV",
+                                "JSON"
+                              ]
+                            },
+                            "fileName": {
+                              "description": "The name of the file.",
+                              "minLength": 1,
+                              "type": "string"
+                            },
+                            "fileVersion": {
+                              "description": "The version of the file.",
+                              "minimum": 1,
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      },
+                      "invoiceCurrency": {
+                        "description": "Three-letter ISO 4217 code indicating the currency that measures all totals.",
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "invoiceDate": {
+                        "description": "The invoice's or credit memo's published date, formatted as ISO 8601 date.",
+                        "format": "date",
+                        "type": "string"
+                      },
+                      "invoiceDueDate": {
+                        "description": "The invoice's or credit memo's due date.",
+                        "format": "date",
+                        "type": "string"
+                      },
+                      "invoiceId": {
+                        "description": "Identifies the invoice or credit memo.",
+                        "minimum": 1,
+                        "type": "integer"
+                      },
+                      "invoiceTotal": {
+                        "description": "The amount billed.",
+                        "type": "number"
+                      },
+                      "invoiceType": {
+                        "description": "The overall category for the document, such as `INVOICE` or `CREDIT_MEMO` for adjustments.",
+                        "type": "string",
+                        "enum": [
+                          "INVOICE",
+                          "CREDIT_MEMO"
+                        ]
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/invoice-schema.yaml"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/list-invoices-schema.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "accountId": "A-CCT5678",
+                    "contractId": "C-0N7RAC71",
+                    "invoiceCurrency": "USD",
+                    "invoiceDate": "2021-01-01",
+                    "invoiceDueDate": "2021-01-20",
+                    "invoiceId": 1234567890,
+                    "invoiceTotal": 50000.42,
+                    "invoiceType": "INVOICE",
+                    "files": [
+                      {
+                        "fileFormat": "PDF",
+                        "fileName": "InvoiceName_1-XYZ_1-ABCD_1234567890_FINAL_1.pdf",
+                        "fileVersion": 1
+                      },
+                      {
+                        "fileFormat": "CSV",
+                        "fileName": "1234567890_1.csv",
+                        "fileVersion": 1
+                      }
+                    ]
+                  },
+                  {
+                    "accountId": "A-CCT7890",
+                    "contractId": "K-0N7RAK7",
+                    "invoiceCurrency": "USD",
+                    "invoiceDate": "2021-01-01",
+                    "invoiceDueDate": "2021-01-20",
+                    "invoiceId": 8234567890,
+                    "invoiceTotal": -1020.71,
+                    "invoiceType": "CREDIT_MEMO",
+                    "files": [
+                      {
+                        "fileFormat": "PDF",
+                        "fileName": "CreditMemoName_1-XYZ_1-ABCD_8234567890_FINAL_1.pdf",
+                        "fileVersion": 2
+                      },
+                      {
+                        "fileFormat": "CSV",
+                        "fileName": "8234567890_1.csv",
+                        "fileVersion": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "204": {
+            "description": "No content. No data to be returned for the requested parameters.",
+            "content": {
+              "*/*": {}
+            }
+          },
+          "400": {
+            "description": "[Bad request](https://techdocs.akamai.com/invoice-api/reference/400).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An incorrect request has been sent",
+                  "type": "/billing/error-types/1",
+                  "errors": [
+                    {
+                      "title": "Field 'from' is invalid. Incorrect value: null",
+                      "type": "/billing/error-types/2"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "description": "[Authorization error](https://techdocs.akamai.com/invoice-api/reference/401).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "192.0.2.0",
+                  "detail": "The signature does not match",
+                  "instance": "https://akab-xxxxx-xxxxx.luna.akamaiapis.net/invoicing-api/v3/notifications",
+                  "method": "GET",
+                  "requestId": "933ed8a4",
+                  "requestTime": "2023-02-26T17:41:25Z",
+                  "serverIp": "192.0.2.46",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "properties": {
+                    "clientIp": {
+                      "description": "IP address of the client.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "More information about the error.",
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "The URL for this error occurrence.",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "HTTP method.",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "Identifies the request.",
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "Request date expressed as an ISO 8601 timestamp.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "IP address of the server.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem-401.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          },
+          "403": {
+            "description": "[Access is forbidden](https://techdocs.akamai.com/invoice-api/reference/403).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "c7b6d7be-9268-4410-a031-cc0d013ce5c3",
+                  "title": "User in current context cannot access resource",
+                  "type": "/billing/error-types/11",
+                  "errors": [
+                    {
+                      "title": "Access is denied",
+                      "type": "/billing/error-types/11"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "404": {
+            "description": "[Resource not found](https://techdocs.akamai.com/invoice-api/reference/404).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "5109160e-ea62-4627-afa3-3a7c0838d7ad",
+                  "title": "URL not found",
+                  "type": "/billing/error-types/3",
+                  "errors": [
+                    {
+                      "title": "No handler found for GET /billing/v1/contracts/1-ABCDEF/products-abc",
+                      "type": "/billing/error-types/3"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          },
+          "405": {
+            "description": "[Method not allowed](https://techdocs.akamai.com/invoice-api/reference/405).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "f9c951f2-9d10-4eac-9951-36471884e7f6",
+                  "title": "Method not allowed",
+                  "type": "/billing/error-types/4",
+                  "errors": [
+                    {
+                      "title": "Request method 'POST' not supported",
+                      "type": "/billing/error-types/4"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/405.yaml"
+            }
+          },
+          "500": {
+            "description": "[Server error](https://techdocs.akamai.com/invoice-api/reference/500).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An unexpected error occurred during request processing",
+                  "type": "/billing-api/error-types/5"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "Selected billable usage period, expressed as an ISO 8601 datestamp (YYYY-MM).",
+            "example": "{{month}}",
+            "in": "query",
+            "name": "month",
+            "required": true,
+            "schema": {
+              "example": "2020-07",
+              "type": "string"
+            },
+            "x-akamai": {
+              "file-path": "parameters/monthQueryParam_month.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/notifications": {
+      "post": {
+        "description": "Creates a notification informing a set of users about new invoices or credit memos for a set of contracts. Each notification needs to specify a unique set of contracts. The request yields an error if the set of `contractId` values matches that of another notification.",
+        "operationId": "post-notification",
+        "summary": "Create a notification",
+        "tags": [
+          "Notifications"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Invoicing API",
+          "url": "https://techdocs.akamai.com/invoice-api/reference/post-notification"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "notificationStatus": "ACTIVE",
+                "notificationTitle": "Notification for 1-ABCDEF",
+                "contracts": [
+                  "1-ABCDEF"
+                ],
+                "emails": [
+                  "user@example.com"
+                ]
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Creation of invoice or credit memo notification.",
+                "type": "object",
+                "required": [
+                  "notificationTitle",
+                  "notificationStatus",
+                  "emails",
+                  "contracts"
+                ],
+                "properties": {
+                  "contracts": {
+                    "description": "The contracts for which the notification applies.",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "emails": {
+                    "description": "The recipients' email addresses.",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "notificationStatus": {
+                    "description": "Either `ACTIVE` to notify recipients about changes to invoices, or `SUSPENDED` to disable a notification.",
+                    "example": "{{notificationStatus}}",
+                    "type": "string",
+                    "enum": [
+                      "ACTIVE",
+                      "SUSPENDED"
+                    ]
+                  },
+                  "notificationTitle": {
+                    "description": "The title of the notification.",
+                    "example": "{{notificationTitle}}",
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/create-update-notification-schema.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The operation was successful.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "creationDate": "2020-12-09T08:30:14Z",
+                  "modificationDate": "2020-12-09T08:30:14Z",
+                  "notificationId": 25056,
+                  "notificationStatus": "ACTIVE",
+                  "notificationTitle": "Notification for 1-ABCDEF",
+                  "contracts": [
+                    "1-ABCDEF"
+                  ],
+                  "emails": [
+                    "user@example.com"
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies a set of people to notify whenever an invoice is available for a set of contracts.",
+                  "type": "object",
+                  "required": [
+                    "notificationId",
+                    "notificationTitle",
+                    "creationDate",
+                    "modificationDate",
+                    "notificationStatus",
+                    "emails",
+                    "contracts"
+                  ],
+                  "properties": {
+                    "contracts": {
+                      "description": "The contracts for which the notification applies.",
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "creationDate": {
+                      "description": "The ISO 8601 timestamp of the notification's creation.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "emails": {
+                      "description": "The recipients' email addresses.",
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "modificationDate": {
+                      "description": "The ISO 8601 timestamp of the notification's most recent change.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "notificationId": {
+                      "description": "Identifies the notification.",
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "notificationStatus": {
+                      "description": "Either `ACTIVE` to notify recipients about changes to invoices, or `SUSPENDED` to disable a notification.",
+                      "type": "string",
+                      "enum": [
+                        "ACTIVE",
+                        "SUSPENDED"
+                      ]
+                    },
+                    "notificationTitle": {
+                      "description": "The title of the notification.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/notification-schema.yaml"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Location of created resource.",
+                "schema": {
+                  "example": "/invoicing-api/v3/notifications/123",
+                  "type": "string"
+                },
+                "x-akamai": {
+                  "file-path": "headers/Location.yaml"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "[Bad request](https://techdocs.akamai.com/invoice-api/reference/400).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An incorrect request has been sent",
+                  "type": "/billing/error-types/1",
+                  "errors": [
+                    {
+                      "title": "Field 'from' is invalid. Incorrect value: null",
+                      "type": "/billing/error-types/2"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "description": "[Authorization error](https://techdocs.akamai.com/invoice-api/reference/401).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "192.0.2.0",
+                  "detail": "The signature does not match",
+                  "instance": "https://akab-xxxxx-xxxxx.luna.akamaiapis.net/invoicing-api/v3/notifications",
+                  "method": "GET",
+                  "requestId": "933ed8a4",
+                  "requestTime": "2023-02-26T17:41:25Z",
+                  "serverIp": "192.0.2.245",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "properties": {
+                    "clientIp": {
+                      "description": "IP address of the client.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "More information about the error.",
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "The URL for this error occurrence.",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "HTTP method.",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "Identifies the request.",
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "Request date expressed as an ISO 8601 timestamp.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "IP address of the server.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem-401.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          },
+          "403": {
+            "description": "[Access is forbidden](https://techdocs.akamai.com/invoice-api/reference/403).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "c7b6d7be-9268-4410-a031-cc0d013ce5c3",
+                  "title": "User in current context cannot access resource",
+                  "type": "/billing/error-types/11",
+                  "errors": [
+                    {
+                      "title": "Access is denied",
+                      "type": "/billing/error-types/11"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "405": {
+            "description": "[Method not allowed](https://techdocs.akamai.com/invoice-api/reference/405).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "f9c951f2-9d10-4eac-9951-36471884e7f6",
+                  "title": "Method not allowed",
+                  "type": "/billing/error-types/4",
+                  "errors": [
+                    {
+                      "title": "Request method 'POST' not supported",
+                      "type": "/billing/error-types/4"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/405.yaml"
+            }
+          },
+          "500": {
+            "description": "[Server error](https://techdocs.akamai.com/invoice-api/reference/500).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An unexpected error occurred during request processing",
+                  "type": "/billing-api/error-types/5"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "get": {
+        "description": "Returns notifications for the current account. Notifications inform a set of users whenever there are changes to an invoice or credit memo.",
+        "operationId": "get-notifications",
+        "summary": "List notifications for an account",
+        "tags": [
+          "Notifications"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Invoicing API",
+          "url": "https://techdocs.akamai.com/invoice-api/reference/get-notifications"
+        },
+        "responses": {
+          "200": {
+            "description": "The response lists notifications.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "List of notifications.",
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "Specifies a set of people to notify whenever an invoice is available for a set of contracts.",
+                    "type": "object",
+                    "required": [
+                      "notificationId",
+                      "notificationTitle",
+                      "creationDate",
+                      "modificationDate",
+                      "notificationStatus",
+                      "emails",
+                      "contracts"
+                    ],
+                    "properties": {
+                      "contracts": {
+                        "description": "The contracts for which the notification applies.",
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "minLength": 1,
+                          "type": "string"
+                        }
+                      },
+                      "creationDate": {
+                        "description": "The ISO 8601 timestamp of the notification's creation.",
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "emails": {
+                        "description": "The recipients' email addresses.",
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "minLength": 1,
+                          "type": "string"
+                        }
+                      },
+                      "modificationDate": {
+                        "description": "The ISO 8601 timestamp of the notification's most recent change.",
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "notificationId": {
+                        "description": "Identifies the notification.",
+                        "minimum": 1,
+                        "type": "integer"
+                      },
+                      "notificationStatus": {
+                        "description": "Either `ACTIVE` to notify recipients about changes to invoices, or `SUSPENDED` to disable a notification.",
+                        "type": "string",
+                        "enum": [
+                          "ACTIVE",
+                          "SUSPENDED"
+                        ]
+                      },
+                      "notificationTitle": {
+                        "description": "The title of the notification.",
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "x-akamai": {
+                      "file-path": "schemas/notification-schema.yaml"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/notifications-list-schema.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "creationDate": "2020-12-09T08:30:14Z",
+                    "modificationDate": "2020-12-09T08:30:14Z",
+                    "notificationId": 25056,
+                    "notificationStatus": "ACTIVE",
+                    "notificationTitle": "Notification for 1-ABCDEF",
+                    "contracts": [
+                      "1-ABCDEF"
+                    ],
+                    "emails": [
+                      "user@example.com"
+                    ]
+                  },
+                  {
+                    "creationDate": "2020-12-09T08:30:14Z",
+                    "modificationDate": "2020-12-09T08:30:14Z",
+                    "notificationId": 25059,
+                    "notificationStatus": "SUSPENDED",
+                    "notificationTitle": "Notification for 2-FEDCBA",
+                    "contracts": [
+                      "2-FEDCBA"
+                    ],
+                    "emails": [
+                      "user@example.com"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "204": {
+            "description": "No content. No data to be returned for the requested parameters.",
+            "content": {
+              "*/*": {}
+            }
+          },
+          "400": {
+            "description": "[Bad request](https://techdocs.akamai.com/invoice-api/reference/400).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An incorrect request has been sent",
+                  "type": "/billing/error-types/1",
+                  "errors": [
+                    {
+                      "title": "Field 'from' is invalid. Incorrect value: null",
+                      "type": "/billing/error-types/2"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "description": "[Authorization error](https://techdocs.akamai.com/invoice-api/reference/401).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "192.0.2.0",
+                  "detail": "The signature does not match",
+                  "instance": "https://akab-xxxxx-xxxxx.luna.akamaiapis.net/invoicing-api/v3/notifications",
+                  "method": "GET",
+                  "requestId": "933ed8a4",
+                  "requestTime": "2023-02-26T17:41:25Z",
+                  "serverIp": "192.0.2.52",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "properties": {
+                    "clientIp": {
+                      "description": "IP address of the client.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "More information about the error.",
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "The URL for this error occurrence.",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "HTTP method.",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "Identifies the request.",
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "Request date expressed as an ISO 8601 timestamp.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "IP address of the server.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem-401.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          },
+          "403": {
+            "description": "[Access is forbidden](https://techdocs.akamai.com/invoice-api/reference/403).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "c7b6d7be-9268-4410-a031-cc0d013ce5c3",
+                  "title": "User in current context cannot access resource",
+                  "type": "/billing/error-types/11",
+                  "errors": [
+                    {
+                      "title": "Access is denied",
+                      "type": "/billing/error-types/11"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "405": {
+            "description": "[Method not allowed](https://techdocs.akamai.com/invoice-api/reference/405).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "f9c951f2-9d10-4eac-9951-36471884e7f6",
+                  "title": "Method not allowed",
+                  "type": "/billing/error-types/4",
+                  "errors": [
+                    {
+                      "title": "Request method 'POST' not supported",
+                      "type": "/billing/error-types/4"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/405.yaml"
+            }
+          },
+          "500": {
+            "description": "[Server error](https://techdocs.akamai.com/invoice-api/reference/500).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An unexpected error occurred during request processing",
+                  "type": "/billing-api/error-types/5"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/notifications/{notificationId}": {
+      "get": {
+        "description": "Accesses a specific notification, for example when making modifications to a specific notification.",
+        "operationId": "get-notification",
+        "summary": "Get a notification",
+        "tags": [
+          "Notifications"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Invoicing API",
+          "url": "https://techdocs.akamai.com/invoice-api/reference/get-notification"
+        },
+        "responses": {
+          "200": {
+            "description": "The response returns a specific notification.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "creationDate": "2020-12-09T08:30:14Z",
+                  "modificationDate": "2020-12-09T08:30:14Z",
+                  "notificationId": 25056,
+                  "notificationStatus": "ACTIVE",
+                  "notificationTitle": "Notification for 1-ABCDEF",
+                  "contracts": [
+                    "1-ABCDEF"
+                  ],
+                  "emails": [
+                    "user@example.com"
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies a set of people to notify whenever an invoice is available for a set of contracts.",
+                  "type": "object",
+                  "required": [
+                    "notificationId",
+                    "notificationTitle",
+                    "creationDate",
+                    "modificationDate",
+                    "notificationStatus",
+                    "emails",
+                    "contracts"
+                  ],
+                  "properties": {
+                    "contracts": {
+                      "description": "The contracts for which the notification applies.",
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "creationDate": {
+                      "description": "The ISO 8601 timestamp of the notification's creation.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "emails": {
+                      "description": "The recipients' email addresses.",
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "modificationDate": {
+                      "description": "The ISO 8601 timestamp of the notification's most recent change.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "notificationId": {
+                      "description": "Identifies the notification.",
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "notificationStatus": {
+                      "description": "Either `ACTIVE` to notify recipients about changes to invoices, or `SUSPENDED` to disable a notification.",
+                      "type": "string",
+                      "enum": [
+                        "ACTIVE",
+                        "SUSPENDED"
+                      ]
+                    },
+                    "notificationTitle": {
+                      "description": "The title of the notification.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/notification-schema.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "[Bad request](https://techdocs.akamai.com/invoice-api/reference/400).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An incorrect request has been sent",
+                  "type": "/billing/error-types/1",
+                  "errors": [
+                    {
+                      "title": "Field 'from' is invalid. Incorrect value: null",
+                      "type": "/billing/error-types/2"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "description": "[Authorization error](https://techdocs.akamai.com/invoice-api/reference/401).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "192.0.2.0",
+                  "detail": "The signature does not match",
+                  "instance": "https://akab-xxxxx-xxxxx.luna.akamaiapis.net/invoicing-api/v3/notifications",
+                  "method": "GET",
+                  "requestId": "933ed8a4",
+                  "requestTime": "2023-02-26T17:41:25Z",
+                  "serverIp": "192.0.2.239",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "properties": {
+                    "clientIp": {
+                      "description": "IP address of the client.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "More information about the error.",
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "The URL for this error occurrence.",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "HTTP method.",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "Identifies the request.",
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "Request date expressed as an ISO 8601 timestamp.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "IP address of the server.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem-401.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          },
+          "403": {
+            "description": "[Access is forbidden](https://techdocs.akamai.com/invoice-api/reference/403).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "c7b6d7be-9268-4410-a031-cc0d013ce5c3",
+                  "title": "User in current context cannot access resource",
+                  "type": "/billing/error-types/11",
+                  "errors": [
+                    {
+                      "title": "Access is denied",
+                      "type": "/billing/error-types/11"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "404": {
+            "description": "[Resource not found](https://techdocs.akamai.com/invoice-api/reference/404).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "5109160e-ea62-4627-afa3-3a7c0838d7ad",
+                  "title": "URL not found",
+                  "type": "/billing/error-types/3",
+                  "errors": [
+                    {
+                      "title": "No handler found for GET /billing/v1/contracts/1-ABCDEF/products-abc",
+                      "type": "/billing/error-types/3"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          },
+          "405": {
+            "description": "[Method not allowed](https://techdocs.akamai.com/invoice-api/reference/405).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "f9c951f2-9d10-4eac-9951-36471884e7f6",
+                  "title": "Method not allowed",
+                  "type": "/billing/error-types/4",
+                  "errors": [
+                    {
+                      "title": "Request method 'POST' not supported",
+                      "type": "/billing/error-types/4"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/405.yaml"
+            }
+          },
+          "500": {
+            "description": "[Server error](https://techdocs.akamai.com/invoice-api/reference/500).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An unexpected error occurred during request processing",
+                  "type": "/billing-api/error-types/5"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "description": "Updates a notification. Any read-only members retained from a GET operation are ignored on subsequent PUTs.",
+        "operationId": "put-notification",
+        "summary": "Modify a notification",
+        "tags": [
+          "Notifications"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Invoicing API",
+          "url": "https://techdocs.akamai.com/invoice-api/reference/put-notification"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "notificationStatus": "ACTIVE",
+                "notificationTitle": "Notification for 1-ABCDEF",
+                "contracts": [
+                  "1-ABCDEF"
+                ],
+                "emails": [
+                  "user@example.com"
+                ]
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Creation of invoice or credit memo notification.",
+                "type": "object",
+                "required": [
+                  "notificationTitle",
+                  "notificationStatus",
+                  "emails",
+                  "contracts"
+                ],
+                "properties": {
+                  "contracts": {
+                    "description": "The contracts for which the notification applies.",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "emails": {
+                    "description": "The recipients' email addresses.",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "notificationStatus": {
+                    "description": "Either `ACTIVE` to notify recipients about changes to invoices, or `SUSPENDED` to disable a notification.",
+                    "example": "{{notificationStatus}}",
+                    "type": "string",
+                    "enum": [
+                      "ACTIVE",
+                      "SUSPENDED"
+                    ]
+                  },
+                  "notificationTitle": {
+                    "description": "The title of the notification.",
+                    "example": "{{notificationTitle}}",
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/create-update-notification-schema.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The operation was successful.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "creationDate": "2020-12-09T08:30:14Z",
+                  "modificationDate": "2020-12-09T08:30:14Z",
+                  "notificationId": 25056,
+                  "notificationStatus": "ACTIVE",
+                  "notificationTitle": "Notification for 1-ABCDEF",
+                  "contracts": [
+                    "1-ABCDEF"
+                  ],
+                  "emails": [
+                    "user@example.com"
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies a set of people to notify whenever an invoice is available for a set of contracts.",
+                  "type": "object",
+                  "required": [
+                    "notificationId",
+                    "notificationTitle",
+                    "creationDate",
+                    "modificationDate",
+                    "notificationStatus",
+                    "emails",
+                    "contracts"
+                  ],
+                  "properties": {
+                    "contracts": {
+                      "description": "The contracts for which the notification applies.",
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "creationDate": {
+                      "description": "The ISO 8601 timestamp of the notification's creation.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "emails": {
+                      "description": "The recipients' email addresses.",
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "modificationDate": {
+                      "description": "The ISO 8601 timestamp of the notification's most recent change.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "notificationId": {
+                      "description": "Identifies the notification.",
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "notificationStatus": {
+                      "description": "Either `ACTIVE` to notify recipients about changes to invoices, or `SUSPENDED` to disable a notification.",
+                      "type": "string",
+                      "enum": [
+                        "ACTIVE",
+                        "SUSPENDED"
+                      ]
+                    },
+                    "notificationTitle": {
+                      "description": "The title of the notification.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/notification-schema.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "[Bad request](https://techdocs.akamai.com/invoice-api/reference/400).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An incorrect request has been sent",
+                  "type": "/billing/error-types/1",
+                  "errors": [
+                    {
+                      "title": "Field 'from' is invalid. Incorrect value: null",
+                      "type": "/billing/error-types/2"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "description": "[Authorization error](https://techdocs.akamai.com/invoice-api/reference/401).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "192.0.2.0",
+                  "detail": "The signature does not match",
+                  "instance": "https://akab-xxxxx-xxxxx.luna.akamaiapis.net/invoicing-api/v3/notifications",
+                  "method": "GET",
+                  "requestId": "933ed8a4",
+                  "requestTime": "2023-02-26T17:41:25Z",
+                  "serverIp": "192.0.2.241",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "properties": {
+                    "clientIp": {
+                      "description": "IP address of the client.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "More information about the error.",
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "The URL for this error occurrence.",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "HTTP method.",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "Identifies the request.",
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "Request date expressed as an ISO 8601 timestamp.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "IP address of the server.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem-401.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          },
+          "403": {
+            "description": "[Access is forbidden](https://techdocs.akamai.com/invoice-api/reference/403).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "c7b6d7be-9268-4410-a031-cc0d013ce5c3",
+                  "title": "User in current context cannot access resource",
+                  "type": "/billing/error-types/11",
+                  "errors": [
+                    {
+                      "title": "Access is denied",
+                      "type": "/billing/error-types/11"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "404": {
+            "description": "[Resource not found](https://techdocs.akamai.com/invoice-api/reference/404).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "5109160e-ea62-4627-afa3-3a7c0838d7ad",
+                  "title": "URL not found",
+                  "type": "/billing/error-types/3",
+                  "errors": [
+                    {
+                      "title": "No handler found for GET /billing/v1/contracts/1-ABCDEF/products-abc",
+                      "type": "/billing/error-types/3"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          },
+          "500": {
+            "description": "[Server error](https://techdocs.akamai.com/invoice-api/reference/500).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An unexpected error occurred during request processing",
+                  "type": "/billing-api/error-types/5"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "description": "Deletes a notification.",
+        "operationId": "delete-notification",
+        "summary": "Remove a notification",
+        "tags": [
+          "Notifications"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Invoicing API",
+          "url": "https://techdocs.akamai.com/invoice-api/reference/delete-notification"
+        },
+        "responses": {
+          "204": {
+            "description": "The operation was successful.",
+            "content": {
+              "*/*": {}
+            }
+          },
+          "400": {
+            "description": "[Bad request](https://techdocs.akamai.com/invoice-api/reference/400).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An incorrect request has been sent",
+                  "type": "/billing/error-types/1",
+                  "errors": [
+                    {
+                      "title": "Field 'from' is invalid. Incorrect value: null",
+                      "type": "/billing/error-types/2"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "description": "[Authorization error](https://techdocs.akamai.com/invoice-api/reference/401).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "192.0.2.0",
+                  "detail": "The signature does not match",
+                  "instance": "https://akab-xxxxx-xxxxx.luna.akamaiapis.net/invoicing-api/v3/notifications",
+                  "method": "GET",
+                  "requestId": "933ed8a4",
+                  "requestTime": "2023-02-26T17:41:25Z",
+                  "serverIp": "192.0.2.123",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "properties": {
+                    "clientIp": {
+                      "description": "IP address of the client.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "More information about the error.",
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "The URL for this error occurrence.",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "HTTP method.",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "Identifies the request.",
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "Request date expressed as an ISO 8601 timestamp.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "IP address of the server.",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem-401.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          },
+          "403": {
+            "description": "[Access is forbidden](https://techdocs.akamai.com/invoice-api/reference/403).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "c7b6d7be-9268-4410-a031-cc0d013ce5c3",
+                  "title": "User in current context cannot access resource",
+                  "type": "/billing/error-types/11",
+                  "errors": [
+                    {
+                      "title": "Access is denied",
+                      "type": "/billing/error-types/11"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "404": {
+            "description": "[Resource not found](https://techdocs.akamai.com/invoice-api/reference/404).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "5109160e-ea62-4627-afa3-3a7c0838d7ad",
+                  "title": "URL not found",
+                  "type": "/billing/error-types/3",
+                  "errors": [
+                    {
+                      "title": "No handler found for GET /billing/v1/contracts/1-ABCDEF/products-abc",
+                      "type": "/billing/error-types/3"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          },
+          "405": {
+            "description": "[Method not allowed](https://techdocs.akamai.com/invoice-api/reference/405).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "f9c951f2-9d10-4eac-9951-36471884e7f6",
+                  "title": "Method not allowed",
+                  "type": "/billing/error-types/4",
+                  "errors": [
+                    {
+                      "title": "Request method 'POST' not supported",
+                      "type": "/billing/error-types/4"
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/405.yaml"
+            }
+          },
+          "500": {
+            "description": "[Server error](https://techdocs.akamai.com/invoice-api/reference/500).",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "incidentId": "82ea2b60-a0c8-425f-9300-85bb3185cdf2",
+                  "title": "An unexpected error occurred during request processing",
+                  "type": "/billing-api/error-types/5"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Specifies the errors.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "title",
+                    "incidentId"
+                  ],
+                  "properties": {
+                    "errors": {
+                      "description": "Objects indicating causes of failure.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A further nested problem object.",
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "title"
+                        ],
+                        "properties": {
+                          "title": {
+                            "description": "Title of the error.",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "Type of error.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/problem-nested.yaml"
+                        }
+                      }
+                    },
+                    "incidentId": {
+                      "description": "Identifies the incident.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Title of the error.",
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Type of error.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Identifies the notification.",
+          "example": "{{notificationId}}",
+          "in": "path",
+          "name": "notificationId",
+          "required": true,
+          "schema": {
+            "example": 782131,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/notificationId-path.yaml"
+          }
+        }
+      ]
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/invoicing-api/v3"
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+type: object
+description: |-
+  IP addresses and CIDR blocks for an assigned policy based on a region or geographic area.
+  
+x-akamai:
+  file-path: schemas/site-create.yaml
+additionalProperties: false
+required:
+- name
+properties:
+  name:
+    type: string
+    description: |
+      The name of the site configuration.
+    minLength: 1
+  description:
+    type: string
+    description: |
+      A description of the site configuration that you provide.
+    minLength: 1
+  clientOverridePolicyId:
+    type: integer
+    description: |
+      The unique ID of the related client override policy.
+  clientOverridePolicyInfo:
+    type: object
+    description: |
+      The unique policy for handling the traffic arriving from the Zero Trust Client or SIA Client.
+    additionalProperties: false
+    required:
+    - name
+    - id
+    properties:
+      id:
+        type: integer
+        description: |
+          The unique ID for the policy.
+        minimum: 1
+      name:
+        type: string
+        description: |
+          The policy name.
+        minLength: 1
+  dynamicExitPoints:
+    type: array
+    description: |
+      Site dynamic exit points.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - ipAddr
+      - addrType
+      properties:
+        addrType:
+          type: string
+          description: |
+            The IP address type, either `ADDR_TYPE_IPV4` or `ADDR_TYPE_IPV6`.
+          enum:
+          - ADDR_TYPE_IPV4
+          - ADDR_TYPE_IPV6
+        ipAddr:
+          type: string
+          description: |
+            The organizational IP address or CIDR block used to match requests to a policy.
+          minLength: 1
+  dynamicIpEnabled:
+    type: boolean
+    description: |
+      Enables dynamic IP onramp for the site.
+  exitPoints:
+    type: array
+    description: |
+      Site exit points.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - ipAddr
+      - addrType
+      properties:
+        addrType:
+          type: string
+          description: |
+            The IP address type, either `ADDR_TYPE_IPV4` or `ADDR_TYPE_IPV6`.
+          enum:
+          - ADDR_TYPE_IPV4
+          - ADDR_TYPE_IPV6
+        ipAddr:
+          type: string
+          description: |
+            The organizational IP address or CIDR block used to match requests to a policy.
+          minLength: 1
+  ipsecOnrampcredential:
+    type: object
+    description: |
+      IPsec credential properties.
+    additionalProperties: false
+    required:
+    - password
+    - username
+    properties:
+      password:
+        type: string
+        description: |
+          The password for the IPsec credential in base-64 format.
+        format: byte
+      username:
+        type: string
+        description: |
+          The username for the IPsec credential.
+        minLength: 5
+        maxLength: 128
+  ipsecOverDNSEnabled:
+    type: boolean
+    description: |
+      Enables DNS over IPsec protection for the site.
+  policyId:
+    type: integer
+    description: |
+      The unique ID of the related policy.
+    minimum: 1
+  policyInfo:
+    type: object
+    description: |
+      The policy to apply to incoming DNS requests.
+    additionalProperties: false
+    required:
+    - name
+    - id
+    properties:
+      id:
+        type: integer
+        description: |
+          The unique ID for the policy.
+        minimum: 1
+      name:
+        type: string
+        description: |
+          The policy name.
+        minLength: 1
+  useInternalIpPrivacyMask:
+    type: boolean
+    description: |
+      Applies an internal IP privacy mask.

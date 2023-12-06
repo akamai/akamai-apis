@@ -1,0 +1,53 @@
+id: resource:/descriptors/papi/v1/schemas/PostCertificateChallengesResponseV0.json#
+javaType: com.akamai.luna.papi.model.PostCertificateChallengesResponse
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array.
+  
+x-akamai:
+  file-path: schemas/hostnames-certificate-challenges-post-response.yaml
+additionalProperties: false
+properties:
+  accountId:
+    type: string
+    description: |
+      Identifies the prevailing account under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+  hostnames:
+    type: object
+    description: |
+      The set of requested default certificate challenges, available within an `items` array.
+    additionalProperties: false
+    properties:
+      items:
+        type: array
+        description: |
+          Specifies the certificate domain validation challenges for your property hostnames. Relevant response objects appear within the outer [Envelope](#envelope) object's `hostnames.items` array.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - cnameFrom
+          - validationCname
+          properties:
+            cnameFrom:
+              type: string
+              description: |
+                The hostname that your end users see, indicated by the `Host` header in end user requests.
+            validationCname:
+              type: object
+              description: |
+                The CNAME record used to validate the certificate's domain.
+              additionalProperties: false
+              required:
+              - hostname
+              - target
+              properties:
+                hostname:
+                  type: string
+                  description: |
+                    The hostname part of the CNAME record used to validate the certificate's domain.
+                target:
+                  type: string
+                  description: |
+                    The destination part of the CNAME record used to validate the certificate's domain.
+$schema: http://json-schema.org/draft-04-schema#

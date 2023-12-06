@@ -1,0 +1,103 @@
+type: object
+description: |-
+  Applies a method to detect faces in the source image and applies the rectangular crop on either the `biggest` face or `all` of the faces detected. Image & Video Manager tries to preserve faces in the image instead of using specified crop coordinates.
+  
+x-akamai:
+  file-path: schemas/t-face-crop.yaml
+title: FaceCrop
+additionalProperties: false
+required:
+- transformation
+- width
+- height
+properties:
+  style:
+    description: |
+      Specifies how to crop or scale a crop area for the faces detected in the source image, `zoom` by default. The output image resizes to the specified `width` and `height` values. A value of `crop` places a raw crop around the faces, relative to the specified `gravity` value.  A value of `fill` scales the crop area to include as much of the image and faces as possible, relative to the specified `width` and `height` values. A value of `zoom` scales the crop area as small as possible to fit the faces, relative to the specified `width` and `height` values.
+    oneOf:
+    - default: zoom
+      type: string
+      title: String enum
+      enum:
+      - crop
+      - fill
+      - zoom
+    - $ref: variable-inline.yaml
+  algorithm:
+    description: |
+      Specifies the type of algorithm used to detect faces in the image, either `cascade` for the cascade classifier algorithm or `dnn` for the deep neural network algorithm, `cascade` by default.
+    oneOf:
+    - default: cascade
+      type: string
+      title: String enum
+      enum:
+      - cascade
+      - dnn
+    - $ref: variable-inline.yaml
+  confidence:
+    description: |
+      With `algorithm` set to `dnn`, specifies the minimum confidence needed to detect faces in the image. Values range from `0` to `1` for increased confidence, and possibly fewer faces detected.
+    oneOf:
+    - default: 0.25
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 1
+    - $ref: variable-inline.yaml
+  failGravity:
+    description: |
+      Controls placement of the crop if Image & Video Manager does not detect any faces in the image. Directions are relative to the edges of the image being transformed.
+    default: Center
+    oneOf:
+    - $ref: gravity.yaml
+    - $ref: variable-inline.yaml
+  focus:
+    description: |
+      Distinguishes the faces detected, either `biggestFace` or `allFaces` to place the crop rectangle around the full set of faces. This is `all` by default.
+    oneOf:
+    - default: allFaces
+      type: string
+      title: String enum
+      enum:
+      - allFaces
+      - biggestFace
+    - $ref: variable-inline.yaml
+  gravity:
+    description: |
+      Controls placement of the crop. Directions are relative to the face, plus padding.
+    default: Center
+    oneOf:
+    - $ref: gravity.yaml
+    - $ref: variable-inline.yaml
+  height:
+    description: |
+      The height of the output image in pixels relative to the specified `style` value.
+    oneOf:
+    - title: Integer
+      type: integer
+    - $ref: variable-inline.yaml
+  padding:
+    description: |
+      The padding ratio based on the dimensions of the biggest face detected, `0.5` by default. Larger values increase padding.
+    oneOf:
+    - default: 0.5
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+    - $ref: variable-inline.yaml
+  transformation:
+    type: string
+    description: |
+      Identifies the type of transformation, `FaceCrop` in this case.
+    default: FaceCrop
+    enum:
+    - FaceCrop
+  width:
+    description: |
+      The width of the output image in pixels relative to the specified `style` value.
+    oneOf:
+    - title: Integer
+      type: integer
+    - $ref: variable-inline.yaml

@@ -1,0 +1,139 @@
+openapi: 3.0.0
+info:
+  title: Your user profile
+  version: '3'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/identity-management/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: 05-user-profile-api.yaml
+paths:
+  /user-profile:
+    get:
+      operationId: get-user-profile
+      summary: View your profile
+      tags:
+      - Profile
+      description: |
+        This operation gets your profile information. To make changes to your profile, run the [Edit your profile](ref:put-user-profile-info) operation.
+      parameters:
+      - $ref: parameters/authGrants-query.yaml
+      - $ref: parameters/notifications-query.yaml
+      - $ref: parameters/QParamsActions_actions.yaml
+      responses:
+        200:
+          description: |
+            The response provides your profile.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-uiidentity.json
+              schema:
+                $ref: schemas/UserResponse.yaml
+  /user-profile/additionalAuthentication:
+    put:
+      operationId: put-user-profile-additional-authentication
+      summary: Set multi-factor authentication for a user profile
+      tags:
+      - User authentication settings
+      description: |
+        This operation sets multi-factor authentication (TFA/MFA/NONE). You have five login attempts with MFA or 2FA before your account is locked. If your account is locked, use the [Reset additional authentication](ref:put-user-profile-reset-additional-authentication) to unlock it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-request-update-additional-authentication.json
+            schema:
+              $ref: schemas/AdditionalAuthenticationRequest.yaml
+      responses:
+        204:
+          description: |
+            MFA/2FA successfully set.
+  /user-profile/additionalAuthentication/reset:
+    put:
+      operationId: put-user-profile-reset-additional-authentication
+      summary: Reset multi-factor authentication for a user profile
+      tags:
+      - User authentication settings
+      description: |
+        This operation resets your multi-factor authentication.
+      responses:
+        204:
+          description: |
+            MFA/2FA successfully reset.
+  /user-profile/basic-info:
+    put:
+      operationId: put-user-profile-info
+      summary: Edit your profile
+      tags:
+      - Profile
+      description: |
+        This operation updates your basic profile information, such as your name or phone number. You can't update your group or role assignments with this operation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-request-basic-info.json
+            schema:
+              $ref: schemas/UpdateUserBasicInfoRequest.yaml
+      responses:
+        200:
+          description: |
+            The response reflects the user's modified profile.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-response-basic-info.json
+              schema:
+                $ref: schemas/UserResponse.yaml
+  /user-profile/change-password:
+    post:
+      operationId: post-profile-change-password
+      summary: Rotate your password
+      tags:
+      - User authentication settings
+      description: |
+        This operation changes your password. Include your old password and your new password in the request body. Before you create your new password, run the [View password policy](ref:get-common-password-policy) operation to ensure it adheres to your policy. If you include your existing password incorrectly and make too many login attempts, your account locks.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-request-change-password.json
+            schema:
+              $ref: schemas/ChangePasswordRequest.yaml
+      responses:
+        204:
+          description: |
+            Password successfully rotated.
+  /user-profile/notifications:
+    put:
+      operationId: put-user-profile-notifications
+      summary: Update notifications for a user profile
+      tags:
+      - User notifications
+      description: |
+        This operation subscribes to notifications emails for password expiration reminders, proactive maintenance emails, and upgrade notification emails.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-request-update-notifications.json
+            schema:
+              $ref: schemas/NotificationsRequest.yaml
+      responses:
+        200:
+          description: |
+            The response reflects the modified notifications emails.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-request-update-notifications.json
+              schema:
+                $ref: schemas/NotificationsResponse.yaml

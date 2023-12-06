@@ -1,0 +1,158 @@
+id: resource:/descriptors/papi/v1/schemas/GetHostnameActivationListResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array.
+  
+x-akamai:
+  file-path: schemas/property-hostnames-activation-list-response.yaml
+additionalProperties: false
+properties:
+  accountId:
+    type: string
+    description: |
+      Identifies the prevailing account under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+    minLength: 1
+  contractId:
+    type: string
+    description: |
+      Identifies the prevailing contract under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ctr_` prefix.
+    minLength: 1
+  currentItemCount:
+    type: integer
+    description: |
+      The total count of items present in the current response body for requested criteria.
+  groupId:
+    type: string
+    description: |
+      Identifies the prevailing group under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+    minLength: 1
+  hostnameActivations:
+    type: object
+    description: |
+      The set of requested property hostname activations, available within an `items` array.
+    additionalProperties: false
+    properties:
+      items:
+        type: array
+        description: |
+          Activated property hostnames on a specific network. Relevant response objects appear within the outer envelope's `activations.items` array.
+        items:
+          additionalProperties: false
+          required:
+          - hostnameActivationId
+          - activationType
+          - network
+          - note
+          - notifyEmails
+          - propertyId
+          - propertyName
+          - status
+          - submitDate
+          - updateDate
+          properties:
+            accountId:
+              type: string
+              description: |
+                Identifies the prevailing account under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+            activationType:
+              type: string
+              description: |
+                Either `ACTIVATE` or `DEACTIVATE`. The default is `ACTIVATE`. Any new activation automatically deactivates the current activation. Note that if you were to POST a `DEACTIVATE` type on an active property hostname, it would no longer serve any traffic. You'd need to modify your DNS configuration and specify a different way to field the traffic.
+              default: ACTIVATE
+              enum:
+              - ACTIVATE
+              - DEACTIVATE
+            groupId:
+              type: string
+              description: |
+                Identifies the prevailing group under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+            hostnameActivationId:
+              type: string
+              description: |
+                The property hostname activation's unique identifier. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `atv_` prefix.
+            network:
+              type: string
+              description: |
+                The network to activate on, either `STAGING` or `PRODUCTION`.
+              enum:
+              - STAGING
+              - PRODUCTION
+            note:
+              type: string
+              description: |
+                Assigns a log message to the activation request.
+            notifyEmails:
+              type: array
+              description: |
+                Email addresses to notify when the activation status changes.
+              minItems: 0
+              items:
+                type: string
+            propertyId:
+              type: string
+              description: |
+                Unique identifier for the property with the hostname bucket the activated property hostnames belong to. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+            propertyName:
+              type: string
+              description: |
+                A descriptive name for the property with the hostname bucket the activated property hostnames belong to.
+            propertyVersion:
+              type: integer
+              description: |
+                The version of the property to activate hostnames for.
+              minimum: 1
+            status:
+              type: string
+              description: |
+                The activation's status. `ACTIVE` if currently serving traffic. `INACTIVE` if another activation has superseded this one. `PENDING` if not yet active. `ABORTED` if the client followed up with a [DELETE request](ref:delete-property-hostname-activations) in time. `FAILED` if the activation causes a range of edge network errors that [may cause a fallback to the previous activation](ref:property-activation-error-handling). `PENDING_DEACTIVATION` or `DEACTIVATED` when the `activationType` is `DEACTIVATE` to no longer serve traffic.
+              enum:
+              - ACTIVE
+              - INACTIVE
+              - PENDING
+              - ABORTED
+              - FAILED
+              - DEACTIVATED
+              - PENDING_DEACTIVATION
+            submitDate:
+              type: string
+              description: |
+                A date stamp marking when the activation initiated.
+              readOnly: true
+            updateDate:
+              type: string
+              description: |
+                A date stamp marking when the `status` last changed.
+              readOnly: true
+      currentItemCount:
+        type: integer
+        description: |
+          The number of items present in the current response body view.
+        minimum: 0
+      nextLink:
+        type: string
+        description: |
+          For paginated responses, this links to the next set of response items.
+      previousLink:
+        type: string
+        description: |
+          For paginated responses, this links to the next set of response items.
+      totalItems:
+        type: integer
+        description: |
+          The total count of items returned for the requested criteria.
+        minimum: 0
+  nextLink:
+    type: string
+    description: |
+      The link to next set of response items for paginated response.
+    minLength: 1
+  prevLink:
+    type: string
+    description: |
+      The link to previous set of response items for paginated response.
+    minLength: 1
+  totalItems:
+    type: integer
+    description: |
+      The total count of items for requested criteria.
+$schema: http://json-schema.org/draft-04/schema#

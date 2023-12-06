@@ -1,0 +1,214 @@
+id: resource:/descriptors/papi/v1/schemas/GetBulkActivationResponse.json#
+javaType: com.akamai.devops.model.BulkPropertyActivationResourcesResponse
+type: object
+description: |-
+  Encapsulates each batch of bulk activations. While essentially a wrapper for an activation object array, this specifies additional settings to apply to all activations within the batch. See [Bulk Search and Update](ref:bulk-search-and-update) for guidance on this feature.
+  
+x-akamai:
+  file-path: schemas/bulk-property-activation-get-response.yaml
+additionalProperties: false
+required:
+- bulkActivationId
+- bulkActivationStatus
+- bulkActivationSubmitDate
+- bulkActivationUpdateDate
+properties:
+  activatePropertyVersions:
+    type: array
+    description: |
+      Specifies each property version to include in the bulk activation. Following bulk activation, this reflects the activation state for each property.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - propertyId
+      - propertyVersion
+      - acknowledgeAllWarnings
+      - useFastFallback
+      - fastPush
+      - network
+      - activationStatus
+      - activationSubmitDate
+      - activationUpdateDate
+      - propertyActivationLink
+      properties:
+        acknowledgeAllWarnings:
+          type: boolean
+          description: |
+            Indicates whether you specified `acknowledgeAllWarnings` as part of the bulk activation request's `defaultActivationSettings`. This allows properties to activate despite any warnings.
+        activationErrors:
+          type: array
+          description: |
+            Validation errors that prevented a bulk activation.
+          minItems: 0
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              type:
+                type: string
+                description: |
+                  A URI that identifies each error case. See the [Errors](ref:api-errors) section for details on each.
+              detail:
+                type: string
+                description: |
+                  Provides context for the problem that triggered the error.
+        activationStatus:
+          type: string
+          description: |
+            This property's initial activation status usually `NEW`. Values are the same as for individual activations: `ACTIVE`, `INACTIVE`, `NEW`, `PENDING`, `ZONE_1`, `ZONE_2`, `ZONE_3`, `ABORTED`, `FAILED`, `PENDING_DEACTIVATION` or `DEACTIVATED`.
+          enum:
+          - ACTIVE
+          - INACTIVE
+          - PENDING
+          - ZONE_1
+          - ZONE_2
+          - ZONE_3
+          - ABORTED
+          - FAILED
+          - DEACTIVATED
+          - PENDING_DEACTIVATION
+          - NEW
+        activationSubmitDate:
+          type: string
+          description: |
+            An ISO 8601 timestamp indicating when activation initiated for this property.
+        activationUpdateDate:
+          type: string
+          description: |
+            An ISO 8601 timestamp indicating when this property's `activationStatus` last changed.
+        activationWarnings:
+          type: array
+          description: |
+            Validation warnings resulting from the bulk activation. You need to acknowledge them when bulk-activating property versions.
+          minItems: 0
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              type:
+                type: string
+                description: |
+                  A URI that identifies each warning case. See the [Errors](ref:api-errors) section for details on each.
+              detail:
+                type: string
+                description: |
+                  Provides context for the problem that triggered the warning.
+              messageId:
+                type: string
+                description: |
+                  Identifies the validation warnings. You may need it to acknowledge when bulk-activating property versions. Specifying `acknowledgeAllWarnings` avoids the need to acknowledge specific warnings.
+        fastPush:
+          type: boolean
+          description: |
+            Whether you specified `fastPush` as part of the bulk activation request's `defaultActivationSettings`. This allows properties to rely on fast metadata push.
+        fatalError:
+          type: string
+          description: |
+            Indicates an error that prevented this property version from activating.
+        network:
+          type: string
+          description: |
+            The network on which to activate this property, either `STAGING` or `PRODUCTION`.
+          enum:
+          - STAGING
+          - PRODUCTION
+        note:
+          type: string
+          description: |
+            An optional log message for this property's activation.
+        notifyEmails:
+          type: array
+          description: |
+            Email addresses to notify when this property's `activationStatus` changes. Note that these may supplement the set of `notifyEmails` specified within the bulk activation request's `defaultActivationSettings`.
+          minItems: 0
+          items:
+            type: string
+        numberOfWarningsFromActivation:
+          type: integer
+          description: |
+            This counts the number of non-blocking warnings present in the activated rule tree.
+          minimum: 0
+        propertyActivationLink:
+          type: string
+          description: |
+            Provides an API hypermedia link to each activation within the bulk activation job.
+        propertyId:
+          type: string
+          description: |
+            Identifies each property targeted for activation within the bulk activation job. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+        propertyName:
+          type: string
+          description: |
+            Identifies the property name targeted for activation within the bulk activation job.
+        propertyVersion:
+          type: integer
+          description: |
+            Identifies the property version targeted for activation within the bulk activation job. Once activated, you can no longer modify that version of the property.
+          minimum: 1
+        taskStatus:
+          type: string
+          description: |
+            This property's initial task status. Values are the same as for individual activations: `PENDING`, `IN_PROGRESS`, `SUBMITTED`, `INTERRUPTED`, `SUBMISSION_ERROR`, and `COMPLETE`.
+          enum:
+          - PENDING
+          - IN_PROGRESS
+          - SUBMITTED
+          - INTERRUPTED
+          - SUBMISSION_ERROR
+          - COMPLETE
+        useFastFallback:
+          type: boolean
+          description: |
+            Indicates whether you sepcified `useFastFallback` as part of the bulk activation request's `defaultActivationSettings`. This allows properties to quickly fall back to the previous activation.
+  bulkActivationId:
+    type: integer
+    description: |
+      Unique identifier for each bulk activation request.
+    minimum: 1
+  bulkActivationStatus:
+    type: string
+    description: |
+      Reflects the status of the entire bulk update request, either `PENDING`, `IN_PROGRESS`, or `COMPLETE`.
+    enum:
+    - PENDING
+    - COMPLETE
+    - IN_PROGRESS
+  bulkActivationSubmitDate:
+    type: string
+    description: |
+      An ISO 8601 timestamp indicating when the bulk activation process initiated.
+  bulkActivationUpdateDate:
+    type: string
+    description: |
+      An ISO 8601 timestamp indicating when the `bulkActivationStatus` last changed.
+  defaultActivationSettings:
+    type: object
+    description: |
+      Common settings to apply to all activations in the batch.
+    additionalProperties: false
+    properties:
+      acknowledgeAllWarnings:
+        type: boolean
+        description: |
+          Indicates whether you specified `acknowledgeAllWarnings` as part of the bulk activation request's `defaultActivationSettings`. This allows properties to activate despite any warnings.
+      fastPush:
+        type: boolean
+        description: |
+          Indicates whether you specified `fastPush` as part of the bulk activation request's `defaultActivationSettings`. This allows properties to rely on fast metadata push.
+      notifyEmails:
+        type: array
+        description: |
+          Email addresses to notify when the activation status changes for any property within the bulk activation. Note that you can supplement additional email addresses for each property you activate.
+        minItems: 0
+        items:
+          type: string
+      useFastFallback:
+        type: boolean
+        description: |
+          Indicates whether you specified `useFastFallback` as part of the bulk activation request's `defaultActivationSettings`. This allows properties to quickly fall back to the previous activation.
+  message:
+    type: string
+    description: |
+      A notification in case the bulk request repeatedly fails to process.
+$schema: http://json-schema.org/draft-04/schema#

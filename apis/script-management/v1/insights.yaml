@@ -1,0 +1,38 @@
+openapi: 3.0.0
+info:
+  title: Insights
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/script-management/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: insights.yaml
+paths:
+  /properties/{propertyId}/hostnames/{hostname}/network/{network}/insights:
+    parameters:
+    - $ref: parameters/network-path-insights.yaml
+    - $ref: parameters/hostname-path.yaml
+    - $ref: parameters/propertyId-path.yaml
+    get:
+      operationId: get-property-hostname-network-insights
+      summary: Get insights
+      tags:
+      - Insights
+      description: |
+        Returns script performance information for the specified `propertyId`, `hostname`, and `network`.
+      parameters:
+      - $ref: parameters/firstParty-query.yaml
+      - $ref: parameters/thirdParty-query.yaml
+      responses:
+        200:
+          description: |
+            Collects information about each script's performance for both production and staging networks.
+          content:
+            application/json:
+              example:
+                $ref: examples/insights-get-200.json
+              schema:
+                $ref: schemas/insights-get.yaml

@@ -1,0 +1,57 @@
+type: object
+description: |-
+  Contains information about downstream caching settings. Downstream caching refers to the caching instructions assigned to objects sent with responses toward clients&mdash;browsers, mobile devices, or client proxies.
+  
+x-akamai:
+  file-path: schemas/cacheDownstreamDto.yaml
+additionalProperties: false
+required:
+- option
+- markAsPrivate
+- lifetime
+- headers
+- maxAge
+properties:
+  headers:
+    type: string
+    description: |
+      The policy for sending headers downstream, either `CACHE_CONTROL_AND_EXPIRES` to send both `Cache-Control` and `Expires` headers, `CACHE_CONTROL` to send only the `Cache-Control` header, `EXPIRES` to send only the `Expires` header, or `SAME_AS_ORIGIN` to send the same headers as your origin.
+    default: SMALLER_VALUE
+    enum:
+    - CACHE_CONTROL_AND_EXPIRES
+    - CACHE_CONTROL
+    - EXPIRES
+    - SAME_AS_ORIGIN
+    - SMALLER_VALUE
+  lifetime:
+    type: string
+    description: |
+      The cache lifetime policy, either `SMALLER_VALUE` for a value smaller than specified in the origin header or the remaining edge TTL, `GREATER_VALUE` for a value greater than specified in the origin header or the remaining edge TTL, `REMAINING_EDGE_TTL` for a remaining edge TTL, `FULL_EDGE_TTL` for a full edge TTL, `FIXED_VALUE` for a value that you specify, or `CALCULATES_EXPIRES_FROM_ORIGIN_CACHE_CONTROL` for calculating the maximum age from the origin `Cache-Control` header.
+    default: SMALLER_VALUE
+    enum:
+    - SMALLER_VALUE
+    - GREATER_VALUE
+    - REMAINING_EDGE_TTL
+    - FULL_EDGE_TTL
+    - FIXED_VALUE
+    - CALCULATES_EXPIRES_FROM_ORIGIN_CACHE_CONTROL
+  markAsPrivate:
+    type: boolean
+    description: |
+      Specifies whether to disallow storing responses in a shared cache. This is useful when you want to set a maximum age for the end client, but have shared caches not store the response.
+    nullable: true
+  maxAge:
+    description: |
+      Contains information about the maximum duration to keep content in a cache.
+    $ref: durationDto.yaml
+  option:
+    type: string
+    description: |
+      The option for downstream caching, either `ALLOW_CACHING` to allow downstream caching, `ALLOW_CACHING_REQUIRES_REVALIDATION` to allow downstream caching, but require origin revalidation, `NOT_ALLOW_CACHING` to disallow downstream caching, `PASS_CACHEABILITY_HEADERS_FROM_ORIGIN` to pass cacheability headers from your origin, or `DO_NOT_SEND_HEADERS` to disallow sending headers and apply browser defaults.
+    default: ALLOW_CACHING
+    enum:
+    - ALLOW_CACHING
+    - ALLOW_CACHING_REQUIRES_REVALIDATION
+    - NOT_ALLOW_CACHING
+    - PASS_CACHEABILITY_HEADERS_FROM_ORIGIN
+    - DO_NOT_SEND_HEADERS

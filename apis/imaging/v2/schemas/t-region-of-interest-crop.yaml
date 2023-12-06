@@ -1,0 +1,58 @@
+type: object
+description: |-
+  Crops to a region around a specified area of interest relative to the specified `width` and `height` values.
+  
+x-akamai:
+  file-path: schemas/t-region-of-interest-crop.yaml
+title: RegionOfInterestCrop
+additionalProperties: false
+required:
+- transformation
+- width
+- height
+- regionOfInterest
+properties:
+  style:
+    description: |
+      Specifies how to crop or scale a crop area for the specified area of interest in the source image, `zoom` by default. The output image resizes to the specified `width` and `height` values. A value of `crop` places raw crop around the point of interest, relative to the specified `gravity` value.  A value of `fill` scales the crop area to include as much of the image and point of interest as possible, relative to the specified `width` and `height` values. A value of `zoom` scales the crop area as small as possible to fit the point of interest, relative to the specified `width` and `height` values.
+    oneOf:
+    - default: fill
+      type: string
+      title: String enum
+      enum:
+      - crop
+      - fill
+      - zoom
+    - $ref: variable-inline.yaml
+  gravity:
+    description: |
+      The placement of the crop area relative to the specified area of interest.
+    default: Center
+    oneOf:
+    - $ref: gravity.yaml
+    - $ref: variable-inline.yaml
+  height:
+    description: |
+      The height in pixels of the output image relative to the specified `style` value.
+    oneOf:
+    - minimum: 1
+      type: integer
+      title: Integer
+    - $ref: variable-inline.yaml
+  regionOfInterest:
+    $ref: shape-type.yaml
+  transformation:
+    type: string
+    description: |
+      Identifies the type of transformation, `RegionOfInterestCrop` in this case.
+    default: RegionOfInterestCrop
+    enum:
+    - RegionOfInterestCrop
+  width:
+    description: |
+      The width in pixels of the output image relative to the specified `style` value.
+    oneOf:
+    - minimum: 1
+      type: integer
+      title: Integer
+    - $ref: variable-inline.yaml

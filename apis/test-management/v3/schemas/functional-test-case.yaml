@@ -1,0 +1,67 @@
+type: object
+description: |-
+  Specifies the functional test case and included objects: condition, test request, and client profile.
+  
+x-akamai:
+  file-path: schemas/functional-test-case.yaml
+additionalProperties: false
+required:
+- testCaseId
+- order
+- testRequest
+- condition
+- clientProfile
+properties:
+  clientProfile:
+    $ref: client-profile.yaml
+  condition:
+    $ref: condition.yaml
+  createdBy:
+    $ref: createdBy.yaml
+  createdDate:
+    $ref: createdDate.yaml
+  deletedBy:
+    $ref: deletedBy.yaml
+  deletedDate:
+    $ref: deletedDate.yaml
+  derivedTestCases:
+    type: array
+    description: |
+      Derived test cases in the response when there is reference to variable group(s).
+    readOnly: true
+    minItems: 0
+    items:
+      $ref: functional-derived-test-case.yaml
+  modifiedBy:
+    $ref: modifiedBy.yaml
+  modifiedDate:
+    $ref: modifiedDate.yaml
+  order:
+    type: integer
+    description: |
+      Order of the test case. In stateful test suites, a test run's test cases execute in this order.
+    readOnly: true
+    minimum: 1
+  setVariables:
+    type: array
+    description: |
+      Contains test case variables to resolve at runtime. To learn more, see [Variables](ref:variables-overview).
+    minItems: 0
+    items:
+      $ref: set-variable.yaml
+  testCaseId:
+    type: integer
+    description: |
+      Identifies a functional test case. To get this value, run the [List test cases](ref:get-test-cases) operation.
+    readOnly: true
+    minimum: 1
+  testRequest:
+    $ref: test-request.yaml
+  warnings:
+    type: array
+    description: |
+      [HTTP Problem Details](https://tools.ietf.org/html/rfc7807). Any warnings related to variable groups would be captured here.
+    readOnly: true
+    minItems: 0
+    items:
+      $ref: sub-problem.yaml

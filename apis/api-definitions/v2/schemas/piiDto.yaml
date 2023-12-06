@@ -1,0 +1,102 @@
+type: object
+description: |
+  Describes a personally identifiable information (PII) object.
+x-akamai:
+  file-path: schemas/piiDto.yaml
+additionalProperties: false
+required:
+- type
+- parameterId
+properties:
+  id:
+    type: integer
+    description: |
+      The unique identifier for a PII object.
+  type:
+    $ref: piiType.yaml
+  contentType:
+    type: string
+    description: |
+      The content type of the payload in which PII exists. Currently `json`, `xml`, and `urlencoded` are supported.
+    enum:
+    - json
+    - xml
+    - urlencoded
+  dateFirstSeen:
+    type: string
+    description: |
+      The date when PII is added to an API endpoint definition either by you or the network.
+    format: date
+  lastAction:
+    type: object
+    description: |
+      Describes the last action made by a user.
+    additionalProperties: false
+    nullable: true
+    properties:
+      by:
+        type: string
+        description: |
+          The username of the person who made the change.
+      date:
+        type: string
+        description: |
+          The ISO 8601 timestamp the action was taken.
+        format: date
+  location:
+    type: string
+    description: |
+      The payload location where the parameter with PII exists, the `path`, `header`, `cookie`, `query`, or `body`.
+    enum:
+    - path
+    - header
+    - cookie
+    - query
+    - body
+  method:
+    type: string
+    description: |
+      The HTTP method for the call in which PII exists.
+  newPii:
+    type: boolean
+    description: |
+      Whether the PII is new. When PII is new and found by the network, it has a status of `discovered`.
+  parameterId:
+    type: integer
+    description: |
+      The unique identifier for the parameter that contains PII.
+    nullable: true
+  parameterName:
+    type: string
+    description: |
+      The name of the parameter that contains PII.
+    nullable: true
+  parameterPath:
+    type: string
+    description: |
+      The parameter path where the PII exists. Each segment of the path is delineated by `/`.
+  resourceName:
+    type: string
+    description: |
+      The name of the resource in which PII exists.
+    nullable: true
+  resourcePath:
+    type: string
+    description: |
+      The URL path in which PII exists.
+  response:
+    type: boolean
+    description: |
+      Whether the PII is registered in the response. When `false`, the parameter is in the request.
+  status:
+    $ref: piiStatus.yaml
+  statusCodes:
+    type: array
+    description: |
+      The collection of status codes in which PII exists. For a request the array is empty.
+    items:
+      type: integer
+  userCreated:
+    type: boolean
+    description: |
+      When `true`, PII is defined by a user. When `false`, the PII is discovered by the network.

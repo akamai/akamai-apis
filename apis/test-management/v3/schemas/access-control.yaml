@@ -1,0 +1,58 @@
+type: object
+description: |-
+  This object contains details about the user or group who has been granted access to a given locked test suite.
+  
+x-akamai:
+  file-path: schemas/access-control.yaml
+additionalProperties: false
+required:
+- accessControlId
+- accessorId
+- type
+- role
+- status
+- createdBy
+- createdDate
+- modifiedBy
+- modifiedDate
+properties:
+  type:
+    type: string
+    description: |
+      Whether the access list refers to a single `USER` or a `GROUP` of users.
+    enum:
+    - GROUP
+    - USER
+  accessControlId:
+    type: integer
+    description: |
+      Unique identifier for each access object.
+    minimum: 1
+  accessorId:
+    type: string
+    description: |
+      Depending on the `type` value, the `accessorId` value can be either a unique identifier for a USER or a GROUP of users. The two GROUPs available are: `USERS_IN_THIS_ACCOUNT` and `INTERNAL_USERS` for all Akamai users who have access to the account.
+    minLength: 1
+  createdBy:
+    $ref: createdBy.yaml
+  createdDate:
+    $ref: createdDate.yaml
+  modifiedBy:
+    $ref: modifiedBy.yaml
+  modifiedDate:
+    $ref: modifiedDate.yaml
+  role:
+    type: string
+    description: |
+      USER's or GROUP's test suite role, `OWNER`,`EDITOR`or `VIEWER`. The `EDITOR` can only include new functional test cases and remove those already included. The `OWNER` can also edit the test cases and remove them. The `VIEWER` can only view the test cases.
+    enum:
+    - OWNER
+    - EDITOR
+    - VIEWER
+  status:
+    type: string
+    description: |
+      Access control object's status, either `PENDING` or `ACTIVE`. The `PENDING` status means that user's edit access request waits for owners' decision. The `ACTIVE` status means that the request was approved and the user can work on the test suite.
+    enum:
+    - PENDING
+    - ACTIVE

@@ -1,0 +1,161 @@
+openapi: 3.0.0
+info:
+  title: Image & Video Manager policy sets
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/imaging/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: policy-sets.yaml
+paths:
+  /policysets:
+    parameters:
+    - $ref: parameters/contractId-header.yaml
+    post:
+      operationId: post-policyset
+      summary: Create a policy set
+      tags:
+      - Policy sets
+      description: |
+        Create a new policy set for the contract on both networks.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/policyset-create.json
+            schema:
+              $ref: schemas/policyset.yaml
+      responses:
+        201:
+          description: |
+            The response shows the new policy set.
+          content:
+            application/json:
+              example:
+                $ref: examples/policyset.json
+              schema:
+                $ref: schemas/policyset.yaml
+        400:
+          description: |
+            Unable to create policy set.
+          content:
+            application/problem+json:
+              examples:
+                Missing China Addon:
+                  value:
+                    $ref: examples/policyset-create-400-china-region.json
+                Missing Product:
+                  value:
+                    $ref: examples/policyset-create-400-product-type.json
+              schema:
+                $ref: schemas/error.yaml
+    get:
+      operationId: get-policysets
+      summary: List policy sets
+      tags:
+      - Policy sets
+      description: |
+        Returns a list of all policy sets for a contract in production.
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/policyset-array.json
+              schema:
+                $ref: schemas/policyset-array.yaml
+  /policysets/{policySetId}:
+    parameters:
+    - $ref: parameters/policySetId-path.yaml
+    - $ref: parameters/contractId-header.yaml
+    get:
+      operationId: get-policyset
+      summary: Get a policy set
+      tags:
+      - Policy sets
+      description: |
+        View details for a specific policy set in production.
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/policyset.json
+              schema:
+                $ref: schemas/policyset.yaml
+        404:
+          description: |
+            Not found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policyset-get-404.json
+              schema:
+                $ref: schemas/error.yaml
+    put:
+      operationId: put-policyset
+      summary: Update a policy set
+      tags:
+      - Policy sets
+      description: |
+        Update the `name` or `region` of an existing policy set on both networks.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/policyset-update.json
+            schema:
+              $ref: schemas/policyset-update.yaml
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/policyset-update-200.json
+              schema:
+                $ref: schemas/policyset.yaml
+        400:
+          description: |
+            Unable to update policy set.
+          content:
+            application/problem+json:
+              examples:
+                Does Not Exist:
+                  value:
+                    $ref: examples/policyset-update-400-none.json
+                Missing China Addon:
+                  value:
+                    $ref: examples/policyset-create-400-china-region.json
+              schema:
+                $ref: schemas/error.yaml
+    delete:
+      operationId: delete-policyset
+      summary: Delete a policy set
+      tags:
+      - Policy sets
+      description: |
+        Delete a policy set from a contract on both networks.
+      responses:
+        204:
+          description: |
+            Confirms the deletion of the policy set.
+        404:
+          description: |
+            Could not delete policy set.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policyset-get-404.json
+              schema:
+                $ref: schemas/error.yaml

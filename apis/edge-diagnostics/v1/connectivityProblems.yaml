@@ -1,0 +1,90 @@
+openapi: 3.0.0
+info:
+  title: Connectivity problems
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: connectivityProblems.yaml
+paths:
+  /connectivity-problems:
+    post:
+      operationId: post-connectivity-problems
+      summary: Run the connectivity problems scenario
+      tags:
+      - Connectivity problems
+      description: |
+        Launches an [asynchronous](ref:asynchronous-processes) request to simultaneously run [Launch a GREP request](ref:post-grep), [Request content with cURL](ref:post-curl), and [Test network connectivity with MTR](ref:post-mtr) operations for a URL. It may help you diagnose issues with slow download and high response time. Successful operations return fetched GREP, cURL, and MTR data.
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/connectivityProblemsRequest.json
+            schema:
+              $ref: schemas/connectivityProblemsRequest.yaml
+      responses:
+        202:
+          description: |
+            Process successfully launched.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/connectivityProblemsResponse.json
+              schema:
+                $ref: schemas/connectivityProblemsResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml
+  /connectivity-problems/requests/{requestId}:
+    parameters:
+    - $ref: parameters/requestId-path.yaml
+    get:
+      operationId: get-connectivity-problems-request
+      summary: Get the Connectivity problems scenario response
+      tags:
+      - Connectivity problems
+      description: |
+        Returns the status of the [asynchronous](ref:asynchronous-processes) [Run the connectivity problems scenario](ref:post-connectivity-problems) request. Operations with the `SUCCESS` status include also fetched GREP, cURL, and MTR data.
+      parameters:
+      - $ref: parameters/includeContentResponseBody-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides the status of the request and its details.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/connectivityProblemsResponse.json
+              schema:
+                $ref: schemas/connectivityProblemsResponse.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

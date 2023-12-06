@@ -1,0 +1,130 @@
+type: object
+description: |-
+  Collects metrics about each script's performance. The top-level response object includes separate arrays for scripts running on the `STAGING` and `PRODUCTION` networks.
+  
+x-akamai:
+  file-path: schemas/script-view.yaml
+additionalProperties: false
+properties:
+  action:
+    type: string
+    description: |
+      The action taken on the script. `DEFER` executes the script after the page load event. `BLOCK` prevents the script from loading entirely. `NO_ACTION` loads the script normally. `NO_ACTION_LOCKED` prevents the script from being blocked or deferred to ensure it functions properly. `NO_ACTION_LOCKED` also applies to scripts that are necessary for Script Management functionality, such as when running [mPulse](https://techdocs.akamai.com/property-mgr/reference/latest-m-pulse).
+    readOnly: true
+    enum:
+    - DEFER
+    - BLOCK
+    - NO_ACTION_LOCKED
+    - NO_ACTION
+  analysis:
+    type: string
+    description: |
+      An estimate of a script's possible impact according to Script Management's algorithms. `HIGH` indicate scripts that slow page loading significantly. `MEDIUM` indicate scripts that have less impact. Scripts with `LOW` analysis are of least concern.
+    readOnly: true
+    enum:
+    - HIGH
+    - MEDIUM
+    - LOW
+  analysisReason:
+    type: string
+    description: |
+      Describes the reason for analysis.
+    readOnly: true
+  avgPopularityPercentage:
+    type: integer
+    description: |
+      The mean popularity value from previous insights within a one month period, including the current analysis.
+    readOnly: true
+  avgTransferSizeBytes:
+    type: integer
+    description: |
+      The mean transfer size from previous insights within a one month period, including the current analysis. A value of zero means that the user's browser cached the script.
+    readOnly: true
+  avgTransferTimeMs:
+    type: integer
+    description: |
+      The mean transfer time from previous insights within a one month period, including the current analysis. A value of zero means that the user's browser cached the script.
+    readOnly: true
+  category:
+    type: string
+    description: |
+      For `THIRD_PARTY` scripts, the type of functionality that this script or group provides, such as Analytics, Advertising, or Security. For `FIRST_PARTY` scripts, the category is the domain where the script or group resides.
+    readOnly: true
+  group:
+    type: string
+    description: |
+      For `THIRD_PARTY` scripts, a set of scripts with shared functionality. Typically, the scripts in a group are part of the same application. For `FIRST_PARTY` scripts, the group is the hostname where the scripts reside.
+    readOnly: true
+  maxPopularityPercentage:
+    type: integer
+    description: |
+      The maximum popularity value from previous insights within a one month period, including the current analysis.
+    readOnly: true
+  maxTransferSizeBytes:
+    type: integer
+    description: |
+      The maximum transfer size from previous insights within a one month period, including the current analysis. A value of zero means that the user's browser cached the script.
+    readOnly: true
+  maxTransferTimeMs:
+    type: integer
+    description: |
+      The maximum transfer time from previous insights within a one month period, including the current analysis. A value of zero means that the user's browser cached the script.
+    readOnly: true
+  minPopularityPercentage:
+    type: integer
+    description: |
+      The minimum popularity value from previous insights within a one month period, including the current analysis.
+    readOnly: true
+  minTransferSizeBytes:
+    type: integer
+    description: |
+      The minimum transfer size from previous insights within a one month period, including the current analysis. A value of zero means that the user's browser cached the script.
+    readOnly: true
+  minTransferTimeMs:
+    type: integer
+    description: |
+      The minimum transfer time from previous insights within a one month period, including the current analysis. A value of zero means that the user's browser cached the script.
+    readOnly: true
+  party:
+    type: string
+    description: |
+      The domain location for the script. Scripts on the same domain as your site are `FIRST_PARTY`. Scripts on a different domain are `THIRD_PARTY`.
+    readOnly: true
+    enum:
+    - FIRST_PARTY
+    - THIRD_PARTY
+  recentPopularityPercentage:
+    type: integer
+    description: |
+      The percentage of beacons that included a reference to this script. Higher values mean the script affects many requesting clients.
+    readOnly: true
+    minimum: 0
+    maximum: 100
+  recentTransferSizeBytes:
+    type: integer
+    description: |
+      The transfer size of the script resource. If your site compressed the script before transfer, this is its compressed size. A value of `Cached` indicates the user's browser cached the script. No transfer occurred.
+    readOnly: true
+  recentTransferTimeMs:
+    type: integer
+    description: |
+      The average time, in milliseconds, it took for the script to transfer once requested. A value of zero means that the user's browser cached the script. No transfer occured.
+    readOnly: true
+  script:
+    type: string
+    description: |
+      URL of the script.
+    readOnly: true
+  spof:
+    type: boolean
+    description: |
+      Whether your policy includes Single-Point-of-Failure (SPOF) protection.
+    readOnly: true
+  testingSuggestions:
+    type: array
+    description: |
+      Fully qualified URL of pages on your site that reference the selected script. This isn't a complete list, but shows only the five pages with the most beacons referencing the script.
+    readOnly: true
+    minItems: 0
+    items:
+      type: string

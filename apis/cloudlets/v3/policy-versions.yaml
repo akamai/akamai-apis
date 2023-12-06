@@ -1,0 +1,226 @@
+openapi: 3.0.0
+info:
+  title: Policy versions
+  version: v3
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cloudlets/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: policy-versions.yaml
+paths:
+  /policies/{policyId}/versions:
+    parameters:
+    - $ref: parameters/policyId-path.yaml
+    post:
+      operationId: post-policy-version
+      summary: Create a policy version
+      tags:
+      - Versions
+      description: |
+        Creates a policy version, including match rules for a Cloudlet that you're using. For Virtual Waiting Room, you can also configure the number of visitors that can enter your origin per second (`originNewVisitorLimit`). If you don't already have the `policyId`, run the [List shared policies](ref:get-policies) operation and store the relevant `id` value.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/policy-versions-post-request.json
+            schema:
+              $ref: schemas/post-policy-versions-request.yaml
+      responses:
+        201:
+          description: |
+            Contains detailed information about a shared policy version.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-version-response.json
+              schema:
+                $ref: schemas/policy-version.yaml
+        400:
+          description: |
+            [Invalid request parameters, or problems parsing or validating the request object.](ref:400)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-version-400-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        403:
+          description: |
+            [No permission to access this resource.](ref:403)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-version-403-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        404:
+          description: |
+            [Resource not found.](ref:404)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-version-404-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+    get:
+      operationId: get-policy-versions
+      summary: List policy versions
+      tags:
+      - Versions
+      description: |
+        Returns information about all versions of a shared policy.
+      parameters:
+      - $ref: parameters/page-query.yaml
+      - $ref: parameters/size-query.yaml
+      responses:
+        200:
+          description: |
+            A list of versions for a shared policy.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-versions-get-response.json
+              schema:
+                $ref: schemas/get-policy-versions-response.yaml
+        403:
+          description: |
+            [No permission to access this resource.](ref:403)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-version-403-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        404:
+          description: |
+            [Resource not found.](ref:404)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-version-404-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+  /policies/{policyId}/versions/{version}:
+    parameters:
+    - $ref: parameters/version-path.yaml
+    - $ref: parameters/policyId-path.yaml
+    get:
+      operationId: get-policy-version
+      summary: Get a policy version
+      tags:
+      - Versions
+      description: |
+        Returns information about a shared policy version, including match rules for a Cloudlet that you're using and whether its locked for changes.
+      responses:
+        200:
+          description: |
+            Contains detailed information about a shared policy version.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-version-response.json
+              schema:
+                $ref: schemas/policy-version.yaml
+        403:
+          description: |
+            [No permission to access this resource.](ref:403)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-version-403-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        404:
+          description: |
+            [Resource not found.](ref:404)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-version-404-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+    put:
+      operationId: put-policy-version
+      summary: Update a policy version
+      tags:
+      - Versions
+      description: |
+        Updates the description and match rules for a policy version. For Virtual Waiting Room, you can also configure the number of visitors that can enter your origin per second (`originNewVisitorLimit`).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/policy-version-put-request.json
+            schema:
+              $ref: schemas/put-policy-version-request.yaml
+      responses:
+        200:
+          description: |
+            Contains detailed information about a shared policy version.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-version-response.json
+              schema:
+                $ref: schemas/policy-version.yaml
+        400:
+          description: |
+            [Invalid request parameters, or problems parsing or validating the request object.](ref:400)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-version-400-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        403:
+          description: |
+            [No permission to access this resource.](ref:403)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-version-403-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        404:
+          description: |
+            [Resource not found.](ref:404)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-version-404-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+    delete:
+      operationId: delete-policy-version
+      summary: Remove a policy version
+      tags:
+      - Versions
+      description: |
+        Deletes a version of a shared policy. You can't delete a policy if it's active on the staging or production network. When you remove a policy version, version numbers aren't reallocated. For example, a policy has 15 versions, and you delete versions 14 and 15. The next version created would be 16, not 14.
+      responses:
+        204:
+          description: |
+            The policy version is deleted.
+        403:
+          description: |
+            [No permission to access this resource.](ref:403)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-version-403-problem-response.json
+              schema:
+                $ref: schemas/error.yaml
+        404:
+          description: |
+            [Resource not found.](ref:404)
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/policy-version-404-problem-response.json
+              schema:
+                $ref: schemas/error.yaml

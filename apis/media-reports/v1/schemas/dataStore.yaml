@@ -1,0 +1,104 @@
+type: object
+description: |-
+  A data store is a collection of dimensions and metrics stored in a data base.
+  
+x-akamai:
+  file-path: schemas/dataStore.yaml
+additionalProperties: false
+required:
+- id
+- name
+- type
+- dimensions
+- metrics
+- aggregation
+- purgeIntervalInDays
+- maxQueryDurationInMinutes
+- description
+properties:
+  id:
+    type: integer
+    description: |
+      Unique identifier for each data store.
+  name:
+    type: string
+    description: |
+      The name of the data store.
+  type:
+    type: string
+    description: |
+      The type of data store, either `standard` or `custom`.
+    enum:
+    - standard
+    - custom
+  description:
+    type: string
+    description: |
+      Text describing the data store.
+  aggregation:
+    type: integer
+    description: |
+      Number of seconds for which data is aggregated.
+  dimensions:
+    type: array
+    description: |
+      Encapsulates dimensions for the data store. A dimension acts like a key in data exploration and answers questions such as who, what, where, and which. Each dimension object provides information on the ID, name, type, and description of the dimension.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - name
+      - description
+      properties:
+        id:
+          type: integer
+          description: |
+            A unique identifier for each dimension.
+        name:
+          type: string
+          description: |
+            The name of the dimension.
+        type:
+          type: string
+          description: |
+            The type of dimension, either `standard` or `custom`.
+          enum:
+          - standard
+          - custom
+        description:
+          type: string
+          description: |
+            A description of the dimension.
+  maxQueryDurationInMinutes:
+    type: integer
+    description: |
+      Maximum number of minutes for which a user can query a data store. It is a system-imposed limit for better performance.
+  metrics:
+    type: array
+    description: |
+      Encapsulates metrics for the data store. A metric is a numeric aggregation against one or more dimensions and answers questions on volume of activity or attack. Each metric object provides information on the name, description, and ID of the metric.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - name
+      - description
+      properties:
+        id:
+          type: integer
+          description: |
+            A unique identifier for each metric.
+        name:
+          type: string
+          description: |
+            The name of the metric.
+        description:
+          type: string
+          description: |
+            A description of the dimension.
+  purgeIntervalInDays:
+    type: integer
+    description: |
+      Number of days for which the data store keeps data.

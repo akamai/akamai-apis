@@ -1,0 +1,90 @@
+x-akamai:
+  file-path: paths/property-activation.yaml
+  path-for-file: /properties/{propertyId}/activations/{activationId}
+parameters:
+- $ref: ../parameters/propertyId-path.yaml
+- $ref: ../parameters/activationId-path.yaml
+get:
+  operationId: get-property-activation
+  summary: Get a property activation
+  tags:
+  - Property activations
+  description: |
+    Gets details about an activation. You typically get a single activation from an `activationLink` when [launching a new activation](ref:post-property-activations) and following up to poll its `status`. For activations whose `status` is `PENDING`, a `Retry-After` header provides an estimate for when it's likely to change.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  responses:
+    200:
+      description: |
+        The response shows the property activation details.
+      headers:
+        Retry-After:
+          $ref: ../headers/Retry-After.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/activation-get-response.json
+          schema:
+            $ref: ../schemas/property-activation-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+delete:
+  operationId: delete-property-activation
+  summary: Cancel a property's pending activation
+  tags:
+  - Property activations
+  description: |
+    If you detect a problem with a property version while its activation is still `PENDING`, use this operation to cancel it. Make a DELETE request on the `activationLink` you get from the [Activate a property](ref:post-property-activations) operation's response. Once you DELETE the activation, it no longer appears in the [list of activations](ref:get-property-activations), but you can still [access it individually](ref:get-property-activation). If there are unexpected problems with an activation that goes live before you're able to cancel it, you often have a one-hour window to quickly fall back to a previous activation. See [Activate or deactivate a property](ref:post-property-activations) for details.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  responses:
+    200:
+      description: |
+        The response shows details for the cancelled property activation.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/activation-delete-response.json
+          schema:
+            $ref: ../schemas/property-activation-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    409:
+      $ref: ../errors/409.yaml
+    422:
+      $ref: ../errors/422.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: propertyActivation
+  group: Property activations

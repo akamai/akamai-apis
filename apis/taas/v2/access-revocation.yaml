@@ -1,0 +1,316 @@
+openapi: 3.0.0
+info:
+  title: Access Revocation
+  version: v2
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/taas/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: access-revocation.yaml
+paths:
+  /revocation-lists:
+    post:
+      operationId: post-revocation-list
+      summary: Add a revocation list
+      tags:
+      - Revocation lists
+      description: |
+        Add a new list to house token identifiers that you want revoked from access. You can have a total of 10 revocation lists. You can't modify these settings for a revocation list, so be sure you provide the proper details when adding one. However, you can [revoke](ref:post-revocation-list-ids) or [unrevoke](ref:unrevoke-revocation-list-ids) token identifiers from each revocation list, as necessary.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-revocation-list.json
+            schema:
+              $ref: schemas/post-revocation-list.yaml
+      responses:
+        202:
+          description: |
+            The API accepted your request to create a revocation list.
+          content:
+            application/json:
+              example:
+                $ref: examples/addRevocation-listResponse-202.json
+              schema:
+                $ref: schemas/post-revocation-list-202.yaml
+        400:
+          description: |
+            [Bad Request](ref:400). You provided bad parameter data or formatted the request body incorrectly.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/addRevocation-listResponse-400.json
+              schema:
+                $ref: schemas/error.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        415:
+          $ref: errors/415.yaml
+        500:
+          $ref: errors/500.yaml
+    get:
+      operationId: get-revocation-lists
+      summary: List revocation lists
+      tags:
+      - Revocation lists
+      description: |
+        List all of your revocation lists and view details about them.
+      responses:
+        200:
+          description: |
+            The response provides the revocation lists.
+          content:
+            application/json:
+              example:
+                $ref: examples/revocation-lists-200.json
+              schema:
+                $ref: schemas/revocation-lists-200.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        415:
+          $ref: errors/415.yaml
+        500:
+          $ref: errors/500.yaml
+  /revocation-lists/{revocationListId}:
+    parameters:
+    - $ref: parameters/revocationListId-path.yaml
+    delete:
+      operationId: delete-revocation-list
+      summary: Delete a revocation list
+      tags:
+      - Revocation lists
+      description: |
+        Delete a specific revocation list. This removes support for Access Revocation in any AMD property that may have this revocation list currently selected for use.
+      responses:
+        204:
+          description: |
+            The delete operation completed successfully.
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /revocation-lists/{revocationListId}/identifiers:
+    parameters:
+    - $ref: parameters/revocationListId-path.yaml
+    get:
+      operationId: get-revocation-list-ids
+      summary: List identifiers
+      tags:
+      - Identifiers
+      description: |
+        List all of the identifiers for a specific revocation list to review their details.
+      responses:
+        200:
+          description: |
+            The response provides the identifiers.
+          content:
+            application/json:
+              example:
+                $ref: examples/identifiers-response-200.json
+              schema:
+                $ref: schemas/identifiers-200.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /revocation-lists/{revocationListId}/identifiers/add:
+    parameters:
+    - $ref: parameters/revocationListId-path.yaml
+    post:
+      operationId: post-revocation-list-ids
+      summary: Revoke tokens
+      tags:
+      - Identifiers
+      description: |
+        Add a set of token identifiers to a revocation list to revoke them. Add up to 5,000 token identifiers in a single operation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-identifiers.json
+            schema:
+              $ref: schemas/post-identifiers.yaml
+      responses:
+        200:
+          description: |
+            The API added the tokens to the revocation list.
+          content:
+            application/json:
+              example:
+                $ref: examples/metaInfo-200.json
+              schema:
+                $ref: schemas/metaInfo-200.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        415:
+          $ref: errors/415.yaml
+        500:
+          $ref: errors/500.yaml
+  /revocation-lists/{revocationListId}/identifiers/remove:
+    parameters:
+    - $ref: parameters/revocationListId-path.yaml
+    post:
+      operationId: post-unrevoke-revocation-list-ids
+      summary: Unrevoke tokens
+      tags:
+      - Identifiers
+      description: |
+        Remove token identifiers from a revocation list.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/unrevoke-identifiers.json
+            schema:
+              $ref: schemas/unrevoke-identifiers.yaml
+      responses:
+        200:
+          description: |
+            The API removed the tokens from the revocation list.
+          content:
+            application/json:
+              example:
+                $ref: examples/metaInfo-200.json
+              schema:
+                $ref: schemas/metaInfo-200.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/401.yaml
+        415:
+          $ref: errors/415.yaml
+        500:
+          $ref: errors/500.yaml
+  /revocation-lists/{revocationListId}/identifiers/{tokenId}:
+    parameters:
+    - $ref: parameters/tokenId-path.yaml
+    - $ref: parameters/revocationListId-path.yaml
+    get:
+      operationId: get-revocation-list-token
+      summary: Get an identifier
+      tags:
+      - Identifiers
+      description: |
+        Get a specific identifier that belongs to a revocation list and review its details.
+      responses:
+        200:
+          description: |
+            The response provides the revocation list.
+          content:
+            application/json:
+              example:
+                $ref: examples/identifier-response-200.json
+              schema:
+                $ref: schemas/identifier-200.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /revocation-lists/{revocationListId}/meta:
+    parameters:
+    - $ref: parameters/revocationListId-path.yaml
+    get:
+      operationId: get-revocation-list-meta
+      summary: Get revocation list identifier count information
+      tags:
+      - Identifiers
+      description: |
+        Get the current count and maximum number of identifiers allowed in the revocation list.
+      responses:
+        200:
+          description: |
+            The response shows revocation list count information.
+          content:
+            application/json:
+              example:
+                $ref: examples/metaInfo-200.json
+              schema:
+                $ref: schemas/metaInfo-200.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /revocation-lists/{revocationListId}/properties:
+    parameters:
+    - $ref: parameters/revocationListId-path.yaml
+    get:
+      operationId: get-revocation-list-properties
+      summary: List revocation list ARL properties
+      tags:
+      - Properties
+      description: |
+        Get Property Manager-specific information for AMD properties that use this revocation list.
+      responses:
+        200:
+          description: |
+            The response provides the AMD properties that use the revocation list.
+          content:
+            application/json:
+              example:
+                $ref: examples/revocation-list-properties-200.json
+              schema:
+                $ref: schemas/revocation-list-properties-200.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        415:
+          $ref: errors/415.yaml
+        500:
+          $ref: errors/500.yaml

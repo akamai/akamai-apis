@@ -1,0 +1,63 @@
+x-akamai:
+  file-path: paths/policy-logging.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/advanced-settings/logging
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/policyId-path.yaml
+get:
+  operationId: get-policies-logging
+  summary: Get HTTP header log settings
+  tags:
+  - HTTP header logs
+  description: |
+    List a security policy's settings for HTTP header logging. HTTP header logging is on by default, and in most cases you should leave it enabled. You can filter requests by header type, including or excluding requests with a specific header, or by cookie. This operation applies at the security policy level, and overrides the HTTP header log settings at the configuration level on a per-policy basis. _Products:_ All.
+  responses:
+    200:
+      description: |
+        Successfully retrieved the policy HTTP Header Logging settings.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-http-header-logging-get-200.json
+          schema:
+            $ref: ../schemas/http-header-logging-get-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-policies-logging
+  summary: Modify HTTP header log settings
+  tags:
+  - HTTP header logs
+  description: |
+    Enable, disable, or update HTTP header logging settings for a specific policy. This operation applies at the security policy level, and overrides the HTTP header log settings at the configuration level on a per-policy basis. _Products:_ All.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/policy-http-header-logging-get-200.json
+        schema:
+          $ref: ../schemas/http-header-logging-put.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the policy HTTP Header Logging settings:.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-http-header-logging-get-200.json
+          schema:
+            $ref: ../schemas/http-header-logging-put-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

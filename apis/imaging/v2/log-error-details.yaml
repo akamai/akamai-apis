@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  title: Log error details
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/imaging/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: log-error-details.yaml
+paths:
+  /network/{network}/details/errors:
+    parameters:
+    - $ref: parameters/network-path.yaml
+    - $ref: parameters/contractId-header.yaml
+    - $ref: parameters/policySetId-header.yaml
+    - $ref: parameters/detailsLimit-query.yaml
+    - $ref: parameters/detailsUrl-query.yaml
+    - $ref: parameters/detailsPolicyId-query.yaml
+    - $ref: parameters/detailsSize-query.yaml
+    - $ref: parameters/detailsTransformationType-query.yaml
+    get:
+      operationId: get-errors
+      summary: List error details
+      tags:
+      - Errors
+      description: |
+        Returns a list of image or video errors for the transformations requested in the past three days.
+      responses:
+        200:
+          description: |
+            The request was successful.
+          content:
+            application/json:
+              example:
+                $ref: examples/details-error-array.json
+              schema:
+                $ref: schemas/details-error-array.yaml
+  /network/{network}/details/logs:
+    get:
+      operationId: get-logs
+      summary: List log details
+      tags:
+      - Logs
+      description: |
+        Returns a list of image or video logs for the transformations requested in the past three days.
+      parameters:
+      - $ref: parameters/network-path.yaml
+      - $ref: parameters/contractId-header.yaml
+      - $ref: parameters/policySetId-header.yaml
+      - $ref: parameters/detailsLimit-query.yaml
+      - $ref: parameters/detailsUrl-query.yaml
+      - $ref: parameters/detailsPolicyId-query.yaml
+      - $ref: parameters/detailsSize-query.yaml
+      - $ref: parameters/detailsTransformationType-query.yaml
+      responses:
+        200:
+          description: |
+            The request was successful.
+          content:
+            application/json:
+              example:
+                $ref: examples/details-log-array.json
+              schema:
+                $ref: schemas/details-log-array.yaml

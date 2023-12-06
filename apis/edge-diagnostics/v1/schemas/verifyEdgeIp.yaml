@@ -1,0 +1,48 @@
+type: object
+description: |-
+  Collects information whether an IP belongs to an edge server and details about the request.
+  
+x-akamai:
+  file-path: schemas/verifyEdgeIp.yaml
+additionalProperties: false
+required:
+- request
+- createdBy
+- createdTime
+- executionStatus
+- results
+properties:
+  completedTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the request was completed.
+    format: date-time
+  createdBy:
+    type: string
+    description: |
+      Username who submitted the request.
+    minLength: 1
+  createdTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the request was submitted.
+    format: date-time
+  executionStatus:
+    type: string
+    description: |
+      Status of the request's execution. Possible values are: `SUCCESS`, `FAILURE`, or `PARTIAL_SUCCESS`. `PARTIAL_SUCCESS` is for bulk requests, if some of the requested IPs couldn't be processed.
+    enum:
+    - SUCCESS
+    - FAILURE
+    - PARTIAL_SUCCESS
+  request:
+    description: |
+      IP addresses you want to get the data for.
+    $ref: verifyLocateIpsRequest.yaml
+  results:
+    type: array
+    description: |
+      Lists results for requested IPs.
+    minItems: 0
+    items:
+      $ref: verifyEdgeIpData.yaml

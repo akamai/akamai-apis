@@ -1,0 +1,66 @@
+type: object
+description: |-
+  Contains details about a Test Center user or a group to which you want to change the range of actions you want to allow. When sending the PUT request you need to provide only required members. For optional, missing ones Test Center uses default values.
+  
+x-akamai:
+  file-path: schemas/updateAccessControlRequest.yaml
+additionalProperties: false
+required:
+- role
+properties:
+  type:
+    type: string
+    description: |
+      Whether the access list refers to a single `user` or a `group` of users.
+    enum:
+    - group
+    - user
+  accessControlId:
+    type: integer
+    description: |
+      Unique identifier for each access list.
+    readOnly: true
+    minimum: 1
+  accessorId:
+    type: string
+    description: |
+      Depending on the `type` value, the `accessorId` value can be either a unique identifier for a user or a group of users. The two groups available are: `users_in_this_account` and `internal_users` for all Akamai users who have access to the account.
+    minLength: 1
+  createdBy:
+    type: string
+    description: |
+      Username who created the access list.
+    minLength: 1
+  createdDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the access list was created.
+    readOnly: true
+    format: date-time
+  modifiedBy:
+    type: string
+    description: |
+      Username who last modified the access list.
+    readOnly: true
+    minLength: 0
+  modifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the access list was last modified.
+    readOnly: true
+    format: date-time
+  role:
+    type: string
+    description: |
+      User's or group's test suite role, either `owner` or `editor`. The `editor` can only include new functional test cases and remove those already included. The `owner` can also edit the test cases and remove them.
+    enum:
+    - owner
+    - editor
+  status:
+    type: string
+    description: |
+      Access list's status, either `pending` or `active`. The `pending` status means the user's edit access request waits for the owners' decision. The `active` status means the user can work on the test suite.
+    readOnly: true
+    enum:
+    - pending
+    - active

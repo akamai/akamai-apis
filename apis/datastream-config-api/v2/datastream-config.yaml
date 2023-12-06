@@ -1,0 +1,391 @@
+openapi: 3.0.0
+info:
+  title: DataStream 2 configuration
+  version: v2
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/datastream-config-api/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: datastream-config.yaml
+paths:
+  /log/datasets-fields:
+    get:
+      operationId: get-dataset-fields
+      summary: List data set fields
+      tags:
+      - Data sets
+      description: |
+        Returns the list of available data set fields you can choose to monitor in your logs in a stream configuration. Set the `productId` query parameter to get data sets available for a specific product. See the [Create a stream](ref:post-stream) or [Edit a stream](ref:put-stream) operations.
+      parameters:
+      - $ref: parameters/productId-query.yaml
+      responses:
+        200:
+          description: |
+            The response lists data set fields.
+          content:
+            application/json:
+              example:
+                $ref: examples/DatasetsExample.json
+              schema:
+                $ref: schemas/Datasets.yaml
+  /log/groups:
+    get:
+      operationId: get-groups
+      summary: List groups
+      tags:
+      - Groups
+      description: |
+        Returns access groups with contracts on your account. You can later use the `groupId` and `contractId` values to create and view streams or list properties by group. Set the `contractId` query parameter to get groups for a specific contract.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            The response lists groups with contracts on your account.
+          content:
+            application/json:
+              example:
+                $ref: examples/GroupsExample.json
+              schema:
+                $ref: schemas/Groups.yaml
+  /log/groups/{groupId}/properties:
+    parameters:
+    - $ref: parameters/groupId-path.yaml
+    get:
+      operationId: get-group-properties
+      summary: List properties by group
+      tags:
+      - Properties
+      description: |
+        Returns properties that are active on the production and staging network and available within a specific group. Run this operation to get and store the `propertyId` values for the [Create a stream](ref:post-stream) and [Edit a stream](ref:put-stream) operations.
+      responses:
+        200:
+          description: |
+            The response lists active properties by group.
+          content:
+            application/json:
+              example:
+                $ref: examples/PropertiesExample.json
+              schema:
+                $ref: schemas/Properties.yaml
+  /log/streams:
+    post:
+      operationId: post-stream
+      summary: Create a stream
+      tags:
+      - Streams
+      description: |
+        Creates a stream configuration. Within a stream configuration, you can select properties to monitor in the stream, data set fields to collect in logs, and a destination to send these log files to. Get the `streamId` value from the response to use in the `https://{hostname}/datastream-config-api/v2/log/streams/{streamId}` endpoint URL. Apart from the log and delivery frequency configurations, you can decide whether to activate the stream on making the request or later using the `activate` parameter. Note that only active streams collect and send logs to their destinations. See [Activate a stream](ref:post-stream-activate).
+      parameters:
+      - $ref: parameters/activate-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              Google Cloud Storage:
+                value:
+                  $ref: examples/PostBodyGCS.json
+              Oracle Cloud Storage:
+                value:
+                  $ref: examples/PostBodyOracle.json
+              Sumo Logic:
+                value:
+                  $ref: examples/PostBodySumologic.json
+              Azure:
+                value:
+                  $ref: examples/PostBodyAzure.json
+              Datadog:
+                value:
+                  $ref: examples/PostBodyDatadog.json
+              Elasticsearch:
+                value:
+                  $ref: examples/PostBodyElasticsearch.json
+              HTTPS:
+                value:
+                  $ref: examples/PostBodyHttps.json
+              Loggly:
+                value:
+                  $ref: examples/PostBodyLoggly.json
+              Newrelic:
+                value:
+                  $ref: examples/PostBodyNewrelic.json
+              S3:
+                value:
+                  $ref: examples/PostBodyS3.json
+              Splunk:
+                value:
+                  $ref: examples/PostBodySplunk.json
+            schema:
+              $ref: schemas/SaveStreamRequest.yaml
+      responses:
+        201:
+          description: |
+            The response confirms the stream has been created and returns its details.
+          content:
+            application/json:
+              example:
+                $ref: examples/StreamDetailExample.json
+              schema:
+                $ref: schemas/StreamDetail.yaml
+    get:
+      operationId: get-streams
+      summary: List streams
+      tags:
+      - Streams
+      description: |
+        Returns the latest versions of the stream configurations for all groups within your account. You can use the `groupId` parameter to view the latest versions of all configurations in a specific group, and up to five property names as the `propertyName` parameter to get streams for specific properties.
+      parameters:
+      - $ref: parameters/groupId-query.yaml
+      - $ref: parameters/propertyName-query.yaml
+      responses:
+        200:
+          description: |
+            The response lists streams.
+          content:
+            application/json:
+              example:
+                $ref: examples/StreamsExample.json
+              schema:
+                $ref: schemas/Streams.yaml
+  /log/streams/metrics:
+    get:
+      operationId: get-streams-metrics
+      summary: View upload metrics
+      tags:
+      - Streams
+      description: |
+        Returns aggregated metrics for log file uploads, including success or failure upload counts, upload latency, and the volume of data uploaded in the stream. Set the `start` and `end` dates to get metrics from a specific time range, and `aggregationInterval` to group data by time intervals.
+      parameters:
+      - $ref: parameters/metrics-start-query.yaml
+      - $ref: parameters/metrics-end-query.yaml
+      - $ref: parameters/metrics-streamId-query.yaml
+      - $ref: parameters/metrics-groupId-query.yaml
+      - $ref: parameters/metrics-aggregationInterval-query.yaml
+      - $ref: parameters/metrics-includeDetails-query.yaml
+      responses:
+        200:
+          description: |
+            The response returns aggregated upload metrics.
+          content:
+            application/json:
+              example:
+                $ref: examples/StreamsMetricsExample.json
+              schema:
+                $ref: schemas/StreamsMetrics.yaml
+  /log/streams/{streamId}:
+    parameters:
+    - $ref: parameters/streamId-path.yaml
+    get:
+      operationId: get-stream
+      summary: Get a stream
+      tags:
+      - Streams
+      description: |
+        Returns information about any version of a stream, including details about the monitored properties, logged data set fields, and log delivery destination. If you omit the `version` query parameter, this operation returns the last version of the stream.
+      parameters:
+      - $ref: parameters/version-query.yaml
+      responses:
+        200:
+          description: |
+            The response returns stream version details.
+          content:
+            application/json:
+              example:
+                $ref: examples/StreamDetailExample.json
+              schema:
+                $ref: schemas/StreamDetail.yaml
+    put:
+      operationId: put-stream
+      summary: Edit a stream
+      tags:
+      - Streams
+      description: |
+        Updates the latest version of a stream. Running this operation creates a version of the stream that replaces the existing one. Note that only active streams collect and send logs to their destinations. You need to set the `activate` parameter to `true` while patching active streams, and optionally for inactive streams if you want to activate them upon request. See [Version management](ref:version-management) and [Activate a stream](ref:post-stream-activate).
+      parameters:
+      - $ref: parameters/activate-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              Google Cloud Storage:
+                value:
+                  $ref: examples/PutBodyGCS.json
+              Oracle Cloud Storage:
+                value:
+                  $ref: examples/PutBodyOracle.json
+              Sumo Logic:
+                value:
+                  $ref: examples/PutBodySumologic.json
+              Azure:
+                value:
+                  $ref: examples/PutBodyAzure.json
+              Datadog:
+                value:
+                  $ref: examples/PutBodyDatadog.json
+              Elasticsearch:
+                value:
+                  $ref: examples/PutBodyElasticsearch.json
+              HTTPS:
+                value:
+                  $ref: examples/PutBodyHttps.json
+              Loggly:
+                value:
+                  $ref: examples/PutBodyLoggly.json
+              Newrelic:
+                value:
+                  $ref: examples/PutBodyNewrelic.json
+              S3:
+                value:
+                  $ref: examples/PutBodyS3.json
+              Splunk:
+                value:
+                  $ref: examples/PutBodySplunk.json
+            schema:
+              $ref: schemas/EditStreamRequest.yaml
+      responses:
+        200:
+          description: |
+            The response confirms the stream has been updated and returns its details.
+          content:
+            application/json:
+              example:
+                $ref: examples/StreamDetailExample.json
+              schema:
+                $ref: schemas/StreamDetail.yaml
+    patch:
+      operationId: patch-stream
+      summary: Patch a stream
+      tags:
+      - Streams
+      description: |
+        Updates selected details of an existing stream. Running this operation using [JSON Patch](http://jsonpatch.com) syntax creates a stream version that replaces the current one. Currently you can patch a stream using only the `REPLACE` operation. When updating configuration objects such as `destination` or `deliveryConfiguration`, pass a complete object to avoid overwriting current details with default values for omitted members such as `tags`, `uploadFilePrefix`, and `uploadFileSuffix`. Note that only active streams collect and send logs to their destinations. You need to set the `activate` parameter to `true` while patching active streams, and optionally for inactive streams if you want to activate them upon request. See [Patching streams](ref:patching-streams) for details.
+      parameters:
+      - $ref: parameters/activate-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json-patch+json:
+            examples:
+              Update data set fields and stream name:
+                value:
+                  $ref: examples/PatchDatasetExample.json
+              Update delivery configuration:
+                value:
+                  $ref: examples/PatchDeliveryConfigExample.json
+              Update destination:
+                value:
+                  $ref: examples/PatchDestinationExample.json
+              Update properties and notification e-mails:
+                value:
+                  $ref: examples/PatchPropertiesExample.json
+            schema:
+              $ref: schemas/PatchStreamRequest.yaml
+      responses:
+        200:
+          description: |
+            The response confirms the stream has been patched and returns its details.
+          content:
+            application/json:
+              example:
+                $ref: examples/StreamDetailExample.json
+              schema:
+                $ref: schemas/StreamDetail.yaml
+    delete:
+      operationId: delete-stream
+      summary: Delete a stream
+      tags:
+      - Streams
+      description: |
+        Deletes a deactivated stream. Deleting a stream means that you can't activate this stream again, and that you stop receiving logs for the properties that this stream monitors. Before deleting any stream, you need to deactivate it first. See [Deactivate a stream](ref:post-stream-activate).
+      responses:
+        204:
+          description: |
+            The response confirms the stream has been deleted.
+  /log/streams/{streamId}/activate:
+    parameters:
+    - $ref: parameters/streamId-path.yaml
+    post:
+      operationId: post-stream-activate
+      summary: Activate a stream
+      tags:
+      - Activations
+      description: |
+        Activates the latest version of a stream. Activating a stream takes approximately an hour. Once a stream is active, and the DataStream behavior is enabled in Property Manager, it replaces the previous active version which is deactivated by default, starts collecting data and sending log files to a destination. If you want to stop receiving the logs, you can deactivate the stream at any time. See the [Deactivate a stream](ref:post-stream-activate) operation.
+      responses:
+        200:
+          description: |
+            The response confirms the stream has been activated and returns its details.
+          content:
+            application/json:
+              example:
+                $ref: examples/StreamDetailExample.json
+              schema:
+                $ref: schemas/StreamDetail.yaml
+  /log/streams/{streamId}/activation-history:
+    parameters:
+    - $ref: parameters/streamId-path.yaml
+    get:
+      operationId: get-stream-activation-history
+      summary: View activation history
+      tags:
+      - Activations
+      description: |
+        Returns the details of activation status changes for all versions of a given stream.
+      responses:
+        200:
+          description: |
+            The response lists changes in stream activation status.
+          content:
+            application/json:
+              example:
+                $ref: examples/ActivationHistoriesExample.json
+              schema:
+                $ref: schemas/ActivationHistories.yaml
+  /log/streams/{streamId}/deactivate:
+    parameters:
+    - $ref: parameters/streamId-path.yaml
+    post:
+      operationId: post-stream-deactivate
+      summary: Deactivate a stream
+      tags:
+      - Activations
+      description: |
+        Deactivates the latest version of a stream. Deactivating a stream means that you stop receiving logs for the properties that this stream monitors and changes status to `DEACTIVATED` in approximately an hour. If you want to start receiving log files again, you can activate the stream at any time using the [Activate a stream](ref:post-stream-activate) operation.
+      responses:
+        200:
+          description: |
+            The response confirms the stream has been deactivated and returns its details.
+          content:
+            application/json:
+              example:
+                $ref: examples/StreamDetailExample.json
+              schema:
+                $ref: schemas/StreamDetail.yaml
+  /log/streams/{streamId}/history:
+    parameters:
+    - $ref: parameters/streamId-path.yaml
+    get:
+      operationId: get-stream-history
+      summary: View history
+      tags:
+      - History
+      description: |
+        Returns details about all versions of a given stream. It helps you track changes between the versions of the stream, including monitored properties, logged data set fields, and log delivery destinations. Optionally, set both the `startVersion` and `endVersion` parameters to get details on all stream versions for a given range. For example, setting `startVersion` to `1` and `endVersion` to `3` returns details on the `1`, `2`, and `3` versions of the stream.
+      parameters:
+      - $ref: parameters/history-startVersion-query.yaml
+      - $ref: parameters/history-endVersion-query.yaml
+      responses:
+        200:
+          description: |
+            The response returns details of all versions of the stream.
+          content:
+            application/json:
+              example:
+                $ref: examples/ExampleStreamHistories.json
+              schema:
+                $ref: schemas/StreamHistories.yaml

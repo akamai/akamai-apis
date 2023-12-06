@@ -1,0 +1,68 @@
+type: object
+description: |-
+  Specifies the error with the specific reference code and about the request. For operations in progress, the returned object contains `retryAfter`, `requestId`, and `link`. In this case, wait for the duration of the `retryAfter` interval, then either use the `requestId` to run the [Get a translate error string response](ref:get-error-translator-request) operation, or simply GET the `link`.
+  
+x-akamai:
+  file-path: schemas/errorTranslatorResponse.yaml
+additionalProperties: false
+required:
+- createdBy
+- createdTime
+- completedTime
+- executionStatus
+- request
+properties:
+  completedTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the request was completed.
+    format: date-time
+  createdBy:
+    type: string
+    description: |
+      Username who submitted the request.
+    minLength: 1
+  createdTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the request was submitted.
+    format: date-time
+  executionStatus:
+    type: string
+    description: |
+      Status of the request's execution. Possible values are `SUCCESS`, `FAILURE`, or `IN_PROGRESS`.
+    enum:
+    - SUCCESS
+    - FAILURE
+    - IN_PROGRESS
+  link:
+    type: string
+    description: |
+      Link to GET the error translator response after the `retryAfter` interval passes. It occurs only for operations with the `IN_PROGRESS` status.
+    minLength: 1
+  request:
+    description: |
+      Specifies your request.
+    $ref: errorTranslatorRequest.yaml
+  requestId:
+    type: integer
+    description: |
+      Unique identifier for the error translator request. Store this value to run [Get a translate error string response](ref:get-error-translator-request) operation.
+    minimum: 0
+  result:
+    description: |
+      Specifies the error. It occurs only for operations with the `SUCCESS` status. 
+    $ref: translatedError.yaml
+  retryAfter:
+    type: integer
+    description: |
+      Number of seconds when the request is estimated to have processed. It occurs only for operations with the `IN_PROGRESS` status.
+    minimum: 0
+  suggestedActions:
+    type: array
+    description: |
+      Suggestions on what to do next with the results.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1

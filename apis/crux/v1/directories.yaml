@@ -1,0 +1,653 @@
+openapi: 3.0.0
+info:
+  title: Directories
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/crux/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: directories.yaml
+paths:
+  /mgmt-pop/directories:
+    post:
+      operationId: post-directory
+      summary: Create a directory
+      tags:
+      - Directory administration
+      description: |
+        Creates a new directory.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/add-directory-request-post.json
+            schema:
+              $ref: schemas/directories.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/add-directory-post-200.json
+              schema:
+                $ref: schemas/directory.yaml
+    get:
+      operationId: get-directories
+      summary: List directories
+      tags:
+      - Directory administration
+      description: |
+        Gets a list of directories.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/expand-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/pageable_offset.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-directories-200.json
+              schema:
+                $ref: schemas/directories.yaml
+  /mgmt-pop/directories/createusers:
+    post:
+      operationId: post-users
+      summary: Bulk create users
+      tags:
+      - User administration
+      description: |
+        Creates users in bulk for a cloud directory using a CSV.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            example:
+              $ref: examples/bulk-user-import.csv
+            schema:
+              $ref: schemas/bulk-create-user-post.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/create-bulk-user-200.json
+              schema:
+                $ref: schemas/cmdid.yaml
+  /mgmt-pop/directories/createusers/status/{cmd_id}:
+    parameters:
+    - $ref: parameters/cmd_id-path.yaml
+    get:
+      operationId: get-create-users-status
+      summary: Get user upload status
+      tags:
+      - User administration
+      description: |
+        Gets a user's upload status.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-create-user-cmd-status-200.json
+              schema:
+                $ref: schemas/status.yaml
+  /mgmt-pop/directories/reinviteusers/status/{cmd_id}:
+    parameters:
+    - $ref: parameters/cmd_id-path.yaml
+    get:
+      operationId: get-users-reinvite-status
+      summary: Verify user re-invite status
+      tags:
+      - User administration
+      description: |
+        Gets the re-invite status for a user.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-create-user-cmd-status-200.json
+              schema:
+                $ref: schemas/status.yaml
+  /mgmt-pop/directories/search:
+    post:
+      operationId: post-search
+      summary: Search a directory
+      tags:
+      - Directory administration
+      description: |
+        Searches a directory for the specified query string.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/search-directory-body.json
+            schema:
+              $ref: schemas/need-schema-here.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/search-directory-200.json
+              schema:
+                $ref: schemas/cmdid.yaml
+  /mgmt-pop/directories/verify:
+    post:
+      operationId: post-verify
+      summary: Verify a directory
+      tags:
+      - Directory administration
+      description: |
+        Verifies that connectors can reach and connect to the directory.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/verify-directory-200.json
+              schema:
+                $ref: schemas/cmdid.yaml
+  /mgmt-pop/directories/verify/{cmd_id}:
+    parameters:
+    - $ref: parameters/cmd_id-path.yaml
+    get:
+      operationId: get-verify-status
+      summary: Check verify operation status
+      tags:
+      - Directory administration
+      description: |
+        Checks the status of directory verification.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/check-verify-status-200.json
+              schema:
+                $ref: schemas/status.yaml
+  /mgmt-pop/directories/{directory_id}:
+    parameters:
+    - $ref: parameters/directory_id-path.yaml
+    get:
+      operationId: get-directory
+      summary: Get a directory
+      tags:
+      - Directory administration
+      description: |
+        Gets a single directory.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-directory-details-200.json
+              schema:
+                $ref: schemas/directory.yaml
+    put:
+      operationId: put-directory
+      summary: Modify a directory
+      tags:
+      - Directory administration
+      description: |
+        Updates an existing directory.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/update-directory-request.json
+            schema:
+              $ref: schemas/directories.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-directory-details-200.json
+              schema:
+                $ref: schemas/directory.yaml
+    delete:
+      operationId: delete-directory
+      summary: Delete a directory
+      tags:
+      - Directory administration
+      description: |
+        Deletes an existing directory.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        204:
+          description: |
+            Successful response.
+  /mgmt-pop/directories/{directory_id}/apps:
+    parameters:
+    - $ref: parameters/directory_id-path.yaml
+    get:
+      operationId: get-directory-apps
+      summary: List directory applications
+      tags:
+      - Applications
+      description: |
+        Gets list of applications associated with the directory.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-directory-apps-200.json
+              schema:
+                $ref: schemas/application.yaml
+  /mgmt-pop/directories/{directory_id}/deleteusers:
+    parameters:
+    - $ref: parameters/directory_id-path.yaml
+    post:
+      operationId: post-users-delete
+      summary: Bulk delete user
+      tags:
+      - User administration
+      description: |
+        Deletes users in bulk for a cloud directory.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/delete-directory-users-body.json
+            schema:
+              $ref: schemas/users-delete-bulk.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/delete-directory-users-200.json
+              schema:
+                $ref: schemas/status.yaml
+  /mgmt-pop/directories/{directory_id}/groups:
+    parameters:
+    - $ref: parameters/directory_id-path.yaml
+    get:
+      operationId: get-directory-groups
+      summary: List directory groups
+      tags:
+      - Directory groups
+      description: |
+        Gets a list of associated groups.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-directory-groups-200.json
+              schema:
+                $ref: schemas/group.yaml
+  /mgmt-pop/directories/{directory_id}/groups/{group_id}:
+    parameters:
+    - $ref: parameters/group_id-path.yaml
+    - $ref: parameters/directory_id-path.yaml
+    get:
+      operationId: get-directory-group
+      summary: Get details for a directory group
+      tags:
+      - Directory groups
+      description: |
+        Gets the details of a group.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-directory-group-detail-200.json
+              schema:
+                $ref: schemas/need-schema-here.yaml
+  /mgmt-pop/directories/{directory_id}/groups/{group_id}/users:
+    parameters:
+    - $ref: parameters/group_id-path.yaml
+    - $ref: parameters/directory_id-path.yaml
+    get:
+      operationId: get-directory-group-users
+      summary: List directory group users
+      tags:
+      - Directory groups
+      description: |
+        Gets a list of users for a group.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-group-users-200.json
+              schema:
+                $ref: schemas/user.yaml
+  /mgmt-pop/directories/{directory_id}/reinviteusers:
+    parameters:
+    - $ref: parameters/directory_id-path.yaml
+    post:
+      operationId: post-users-reinvite
+      summary: Re-invite user to a cloud directory group
+      tags:
+      - User administration
+      description: |
+        Re-invite users for a cloud directory.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/reinvite-directory-users-body.json
+            schema:
+              $ref: schemas/users-reinvite-bulk.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/reinvite-directory-users-200.json
+              schema:
+                $ref: schemas/cmdid.yaml
+  /mgmt-pop/directories/{directory_id}/sync:
+    parameters:
+    - $ref: parameters/directory_id-path.yaml
+    post:
+      operationId: post-sync
+      summary: Sync a directory
+      tags:
+      - Directory administration
+      description: |
+        Synchronizes the external directory with EAA. Directories synchronize automatically every 6 hours.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/sync-directory-200.json
+              schema:
+                $ref: schemas/need-schema-here.yaml
+  /mgmt-pop/directories/{directory_id}/users:
+    parameters:
+    - $ref: parameters/directory_id-path.yaml
+    post:
+      operationId: post-directory-user
+      summary: Invite an user to a directory group
+      tags:
+      - User administration
+      description: |
+        Invite an user to a cloud directory.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/invite-directory-users-body.json
+            schema:
+              $ref: schemas/need-schema-here.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/reinvite-directory-users-200.json
+              schema:
+                $ref: schemas/user.yaml
+    get:
+      operationId: get-directory-users
+      summary: List directory users
+      tags:
+      - User administration
+      description: |
+        Gets a list of users for a directory.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-directory-users-200.json
+              schema:
+                $ref: schemas/user.yaml
+  /mgmt-pop/directories/{directory_id}/users/autocomplete:
+    parameters:
+    - $ref: parameters/directory_id-path.yaml
+    get:
+      operationId: get-directory-users-autocomplete
+      summary: List users using autocomplete
+      tags:
+      - User administration
+      description: |
+        Lists user email addresses matching the given string.
+      parameters:
+      - $ref: parameters/q-query.yaml
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-directory-user-autocomplete-200.json
+              schema:
+                $ref: schemas/usersAutocomplete.yaml
+  /mgmt-pop/directories/{directory_id}/users/byname/{user_id}:
+    parameters:
+    - $ref: parameters/user_id-path.yaml
+    - $ref: parameters/directory_id-path.yaml
+    get:
+      operationId: get-directory-user-details
+      summary: Get a directory user
+      tags:
+      - User administration
+      description: |
+        Gets details of a user.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-directory-user-byname-200.json
+              schema:
+                $ref: schemas/user.yaml
+  /mgmt-pop/groupmembership:
+    post:
+      operationId: post-group-membership
+      summary: Create a directory group membership
+      tags:
+      - Directory group membership
+      description: |
+        Creates a new directory group membership.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-group-membership-request.json
+            schema:
+              $ref: schemas/groupmembership.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/post-group-membership-200.json
+              schema:
+                $ref: schemas/groupmembership.yaml
+    get:
+      operationId: get-group-memberships
+      summary: List directory group memberships
+      tags:
+      - Directory group membership
+      description: |
+        Lists directory group memberships.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/expand-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/pageable_offset.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-group-membership-200.json
+              schema:
+                $ref: schemas/groupmembership.yaml
+  /mgmt-pop/groupmembership/{groupmembership_id}:
+    parameters:
+    - $ref: parameters/groupmembership_id-path.yaml
+    get:
+      operationId: get-group-membership
+      summary: Get a directory group membership
+      tags:
+      - Directory group membership
+      description: |
+        Gets a single group membership.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-single-group-membership-200.json
+              schema:
+                $ref: schemas/groupmembership.yaml
+    delete:
+      operationId: delete-group-membership
+      summary: Delete a directory group membership
+      tags:
+      - Directory group membership
+      description: |
+        Deletes an existing group membership.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/delete-group-membership-response.json
+              schema:
+                $ref: schemas/groupmembership.yaml
+  /mgmt-pop/tenant/mfa/reset:
+    post:
+      operationId: post-tenant-mfa-reset
+      summary: Reset MFA user password
+      tags:
+      - User administration
+      description: |
+        Resets the one time password (OTP) of a user.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/reset-otp-mfauser-post-request.json
+            schema:
+              $ref: schemas/mfauser-reset.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/reset-otp-mfauser-post-response.json
+              schema:
+                $ref: schemas/mfauser-reset.yaml

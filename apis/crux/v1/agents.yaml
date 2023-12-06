@@ -1,0 +1,194 @@
+openapi: 3.0.0
+info:
+  title: Connectors
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/crux/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: agents.yaml
+paths:
+  /mgmt-pop/agents:
+    post:
+      operationId: post-connector
+      summary: Create a connector
+      tags:
+      - Connectors
+      description: |
+        Creates a new connector.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-agent-body.json
+            schema:
+              $ref: schemas/agent-create.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/agent-get-create-200.json
+              schema:
+                $ref: schemas/agent.yaml
+    get:
+      operationId: get-connectors
+      summary: List connectors
+      tags:
+      - Connectors
+      description: |
+        Lists connectors.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/pageable_offset.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/agent-get-list-200.json
+              schema:
+                $ref: schemas/agent.yaml
+  /mgmt-pop/agents/{agentId}:
+    parameters:
+    - $ref: parameters/agentId-path.yaml
+    get:
+      operationId: get-connector
+      summary: Get a connector
+      tags:
+      - Connectors
+      description: |
+        Retrieves a single connector by ID.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/agent-get-create-200.json
+              schema:
+                $ref: schemas/agent.yaml
+    put:
+      operationId: put-connector
+      summary: Modify a connector
+      tags:
+      - Connectors
+      description: |
+        Updates an existing connector.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/update-agent-body.json
+            schema:
+              $ref: schemas/agent.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/update-agent-200.json
+              schema:
+                $ref: schemas/agent.yaml
+    delete:
+      operationId: delete-connector
+      summary: Delete a connector
+      tags:
+      - Connectors
+      description: |
+        Deletes an existing connector.
+      responses:
+        204:
+          description: |
+            Successful response.
+  /mgmt-pop/agents/{agentId}/approve:
+    parameters:
+    - $ref: parameters/agentId-path.yaml
+    post:
+      operationId: post-connector-approve
+      summary: Approve a connector
+      tags:
+      - Connectors
+      description: |
+        Approves a connector.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/approve-agent-200.json
+              schema:
+                $ref: schemas/agent.yaml
+  /mgmt-pop/agents/{agentId}/system-metrics:
+    parameters:
+    - $ref: parameters/agentId-path.yaml
+    get:
+      operationId: get-connector-system-metrics
+      summary: List connector system metrics
+      tags:
+      - System metrics
+      description: |
+        Lists system metrics for the specified connector.
+      parameters:
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/agent-system-metrics-200.json
+              schema:
+                $ref: schemas/agentsystemmetrics.yaml
+  /mgmt-pop/agents/{agentId}/upgrade-os-pkgs:
+    parameters:
+    - $ref: parameters/agentId-path.yaml
+    post:
+      operationId: post-upgrade-connector
+      summary: Upgrade OS packages on a connector.
+      tags:
+      - Connectors
+      description: |
+        Upgrades an existing connector.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/upgrade-agent-body.json
+            schema:
+              $ref: schemas/upgrade-agent-request.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/upgrade-agent-200.json
+              schema:
+                $ref: schemas/upgrade-agent-response.yaml

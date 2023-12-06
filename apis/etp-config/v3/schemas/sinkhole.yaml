@@ -1,0 +1,160 @@
+type: object
+description: |-
+  Sinkhole details.
+  
+x-akamai:
+  file-path: schemas/sinkhole.yaml
+additionalProperties: false
+required:
+- name
+- aliases
+- IPv4Addrs
+- policies
+properties:
+  id:
+    type: integer
+    description: |
+      A unique identifier for each security connector.
+    minimum: 1
+  name:
+    type: string
+    description: |
+      The name of the security connector.
+    minLength: 1
+  description:
+    type: string
+    description: |
+      The description of the security connector.
+    minLength: 1
+  version:
+    type: string
+    description: |
+      The version number of the security connector.
+    minLength: 1
+  IPv4Addrs:
+    type: array
+    description: |
+      IP address in IPv4 format.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  IPv6Addr:
+    type: array
+    description: |
+      IP address in IPv6 format.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  activationCode:
+    type: string
+    description: |
+      Activation code for the security connector.
+    minLength: 1
+  activationCodeExpiry:
+    type: integer
+    description: |
+      Time in seconds the `activationCode` is valid.
+    minimum: 0
+  aliases:
+    type: array
+    description: |
+      Aliased name of the security connector.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  createdBy:
+    type: string
+    description: |
+      The user who created the security connector.
+    minLength: 1
+  createdDate:
+    type: string
+    description: |
+      Date of security connector creation.
+    readOnly: true
+    format: date-time
+  deleted:
+    type: boolean
+    description: |
+      Deletes the security connector.
+  lastCommunication:
+    type: integer
+    description: |
+      Number of seconds since last communication with the security connector occurred.
+    minimum: 0
+  modifiedBy:
+    type: string
+    description: |
+      User that modified the security connector.
+    minLength: 1
+  modifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp marking the security connector's last modification.
+    readOnly: true
+    format: date-time
+  policies:
+    type: array
+    description: |
+      The security connector's policy details.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - id
+      properties:
+        id:
+          type: integer
+          description: |
+            Unique identifier of the policy.
+          minimum: 1
+        name:
+          type: string
+          description: |
+            Name of the policy.
+          minLength: 1
+  status:
+    type: object
+    description: |
+      Status info of the security connector.
+    additionalProperties: false
+    required:
+    - connectionStatus
+    - status
+    properties:
+      availableSoftwareVersion:
+        type: string
+        description: |
+          The software version of the security connector.
+        minLength: 1
+      connectionStatus:
+        type: string
+        description: |
+          Connection status of the security connector, either `DISCONNECTED` or `CONNECTED`.
+        enum:
+        - DISCONNECTED
+        - CONNECTED
+        minLength: 1
+      status:
+        type: string
+        description: |
+          The activation status of the security connector, either `ACTIVE`, `INACTIVE`, or `ACTIVATION_IN_PROGRESS`.
+        enum:
+        - ACTIVE
+        - INACTIVE
+        - ACTIVATION_IN_PROGRESS
+  supportedUntil:
+    type: integer
+    description: |
+      Number of seconds remaining in a security connector's support period.
+    minimum: 0
+  uuid:
+    type: string
+    description: |
+      Unique identifier for the security connector.
+    minLength: 1

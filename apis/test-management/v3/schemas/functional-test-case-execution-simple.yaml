@@ -1,0 +1,39 @@
+type: object
+description: |-
+  Specifies functional test cases included in the test suite. If you provide `testCaseExecutions`, the API considers only those test cases under the current test run. If you omit `testCaseExecutions`, then all test cases execute within this test suite.
+  
+x-akamai:
+  file-path: schemas/functional-test-case-execution-simple.yaml
+additionalProperties: false
+required:
+- testRequest
+- clientProfile
+- condition
+- status
+- testCaseExecutionId
+properties:
+  clientProfile:
+    $ref: test-run-get-client-profile.yaml
+  condition:
+    $ref: condition.yaml
+  conditionEvaluationResult:
+    $ref: condition-evaluation-result.yaml
+  errors:
+    $ref: error.yaml
+  status:
+    type: string
+    description: |
+      Test case objects' execution status. Possible values are: `IN_PROGRESS`, `COMPLETED`, `SKIPPED`, or `FAILED`.
+    enum:
+    - IN_PROGRESS
+    - COMPLETED
+    - FAILED
+    - SKIPPED
+  testCaseExecutionId:
+    type: integer
+    description: |
+      Identifies the functional test case execution.
+    readOnly: true
+    minimum: 1
+  testRequest:
+    $ref: test-request.yaml

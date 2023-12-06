@@ -1,0 +1,50 @@
+type: object
+x-akamai:
+  file-path: schemas/property-hostname-provision-state-changes-post-response.yaml
+additionalProperties: true
+required:
+- hostname
+- targetState
+properties:
+  id:
+    type: integer
+    description: |
+      A unique identifier for the provision state change.
+  completedDate:
+    type: string
+    description: |
+      The date when the provision state change completed, in ISO 8601 format.
+    nullable: true
+  createdDate:
+    type: string
+    description: |
+      The date when the provision state change was created, in ISO 8601 format.
+    format: date-time
+  currentStatus:
+    type: string
+    description: |
+      The current status of the provision state change, either `COMPLETED` indicating your property hostname's deployment was successful, `PENDING` indicating your property hostname is awaiting deployment, `CANCELED` indicating your property hostname's deployment was terminated by the China partner, `REJECTED` indicating your property hostname's deployment was denied by the China partner, or `FAILED` indicating your property hostname's deployment was unsuccessful. This typically occurs if you [create a new provision state change](ref:post-property-hostname-provision-state-change) for a property `hostname` that has a `targetState` change in progress.
+  edgeHostname:
+    type: string
+    description: |
+      The provided edge hostname used to map to your property `hostname` for deployment in China. Use this value only when the `targetState` is `PROVISIONED`. A `null` value means the edge hostname isn't needed for the provision state change. For example, if you're only whitelisting your property hostname.
+  hostname:
+    type: string
+    description: |
+      The hostname that this provision state change affects.
+  partnerStatuses:
+    type: object
+    description: |
+      Specifies the provision statuses for each partner based on the provision state change.
+  previousState:
+    type: string
+    description: |
+      The state of the property `hostname` before this change, either `WHITELISTED` indicating you're waiting for approval from the China partner to enable your property `hostname` in China, `PROVISIONED` indicating your property `hostname` is whitelisted and mapped to the provided edge hostname on China CDN, or `DEPROVISIONED` indicating your property `hostname` was removed from the whitelist and unmapped from the edge hostname.
+  sendEmail:
+    type: boolean
+    description: |
+      Specifies whether email updates are sent for status changes on this provision state change.
+  targetState:
+    type: string
+    description: |
+      Specifies how you want your property `hostname` deployed in China. Specify `WHITELISTED` to enabled your traffic in China and get approval from the China partner. Specify `PROVISIONED` to whitelist and map your property `hostname` to the provided edge hostname on China CDN. This optimizes your website or application's performance in China. Specify `DEPROVISIONED` to unmap and remove your property `hostname` from the whitelist. If you mapped a property `hostname` to a shared edge hostname, deprovisioning it doesn't unmap the edge hostname from it. It only removes the property `hostname` from the whitelist. This might result in denial of service if your DNS configuration still assigns the property `hostname` to the shared edge hostname.

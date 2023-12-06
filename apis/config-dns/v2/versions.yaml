@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: Zone Versions
+  version: v2
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/config-dns/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: versions.yaml
+paths:
+  /zones/{zone}/versions:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-zone-versions
+      summary: List zone's versions
+      tags:
+      - Versions
+      description: |
+        Shows the settings for current and prior versions of this Zone, in reverse chronological order of modification. Many versions in this list may look very similar because a new version is created every time the zone's settings or record sets are changed. This operation is [paginated](ref:use-pagination).
+      parameters:
+      - $ref: parameters/pageable_page.yaml
+      - $ref: parameters/pageable_pageSize.yaml
+      - $ref: parameters/pageable_showAll.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/version-report.json
+              schema:
+                $ref: schemas/get-zones-zone-versions-response.yaml
+  /zones/{zone}/versions/diff:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-zone-versions-diff
+      summary: Show differences
+      tags:
+      - Differences
+      description: |
+        Displays the [difference](ref:get-zone-versions-diff) between any two versions of a zone, as specified in the query parameters.
+      parameters:
+      - $ref: parameters/from-query.yaml
+      - $ref: parameters/to-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/diff-report.json
+              schema:
+                $ref: schemas/diff-report.yaml
+  /zones/{zone}/versions/{uuid}:
+    parameters:
+    - $ref: parameters/uuid-path.yaml
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-zone-versions-uuid
+      summary: Get zone version
+      tags:
+      - Versions
+      description: |
+        Returns an image of the Zone from a previous version. Shows only zone settings, not record sets.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/zone-get-primary.json
+              schema:
+                $ref: schemas/zone-get.yaml
+  /zones/{zone}/versions/{uuid}/recordsets:
+    parameters:
+    - $ref: parameters/uuid-path.yaml
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-zone-versions-recordsets
+      summary: Get version's record sets
+      tags:
+      - Record sets
+      description: |
+        Lists all record sets for this version of this zone. This operation is [paginated](ref:use-pagination).
+      parameters:
+      - $ref: parameters/sortBy-query-name-type.yaml
+      - $ref: parameters/types-query-record-sets.yaml
+      - $ref: parameters/search-query-rdata.yaml
+      - $ref: parameters/pageable_page.yaml
+      - $ref: parameters/pageable_pageSize.yaml
+      - $ref: parameters/pageable_showAll.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/recordsets-report.json
+              schema:
+                $ref: schemas/get-zones-zone-versions-uuid-recordsets-response.yaml
+  /zones/{zone}/versions/{uuid}/recordsets/activate:
+    parameters:
+    - $ref: parameters/uuid-path.yaml
+    - $ref: parameters/zone-path.yaml
+    post:
+      operationId: post-zones-zone-versions-uuid-recordsets-activate
+      summary: Reactivate version
+      tags:
+      - Activations
+      description: |
+        Create and activate a new version of the zone by copying the record sets from a prior version of this zone and reapplying them to the current version. The new version has a new, auto-incremented SOA serial number, and the zone's modification data is set to the current time and user. All other zone settings remain the same as the current version.
+      parameters:
+      - $ref: parameters/comment-query.yaml
+      responses:
+        204:
+          description: |
+            The operation was successful. No response data is returned.
+  /zones/{zone}/versions/{uuid}/zone-file:
+    parameters:
+    - $ref: parameters/uuid-path.yaml
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-zones-zone-versions-uuid-zone-file
+      summary: Get version's master zone file
+      tags:
+      - Zone file
+      description: |
+        Downloads the record sets from a prior zone version in [master zone file](ref:get-zone-file) format. This applies to primary zones and secondary zones.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            text/dns:
+              example:
+                $ref: examples/db.example.com
+              schema:
+                type: string

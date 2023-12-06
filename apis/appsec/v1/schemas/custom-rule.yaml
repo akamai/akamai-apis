@@ -1,0 +1,197 @@
+type: object
+description: |-
+  Contains settings for a custom rule.
+  
+x-akamai:
+  file-path: schemas/custom-rule.yaml
+additionalProperties: false
+required:
+- name
+- operation
+- structured
+properties:
+  id:
+    type: integer
+    description: |
+      Uniquely identifies the rule.
+  name:
+    type: string
+    description: |
+      The custom rule name.
+  description:
+    type: string
+    description: |
+      The custom rule description.
+  version:
+    type: integer
+    description: |
+      The custom rule version.
+  conditions:
+    type: array
+    description: |
+      Contains the details about the condition that triggers the custom rule.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      - positiveMatch
+      properties:
+        name:
+          description: |
+            The name you assign to the custom rule.
+          oneOf:
+          - items:
+              type: string
+            type: array
+            title: Array
+          - title: String
+            type: string
+        type:
+          type: string
+          description: |
+            The type of condition. See [CustomRule condition type values](ref:condition-type-values).
+          enum:
+          - cookieMatch
+          - extensionMatch
+          - filenameMatch
+          - ipMatch
+          - pathMatch
+          - requestHeaderMatch
+          - requestMethodMatch
+          - requestProtocolVersionMatch
+          - uriQueryMatch
+          - headerOrderMatch
+          - argsPostMatch
+          - argsPostNamesMatch
+          - clientCertPresentMatch
+          - clientCertValidMatch
+          - clientTlsFingerprintMatch
+          - hostMatch
+          - ipAddressMatch
+          - geoMatch
+          - asNumberMatch
+          - clientListMatch
+        value:
+          type: string
+          description: |
+            The value that triggers the condition when matched or not matched. Specify a string for the `requestProtocolVersionMatch`, `clientCertPresentMatch`, `clientCertValidMatch`, and `headerOrderMatch` conditions. For all other conditions, specify an array of strings.
+          oneOf:
+          - items:
+              type: string
+            type: array
+            title: Array
+          - title: String
+            type: string
+        nameCase:
+          type: boolean
+          description: |
+            Whether to consider the case-sensitivity of the provided query parameter `name`. This only applies to the `uriQueryMatch` condition `type`.
+        nameWildcard:
+          type: boolean
+          description: |
+            Whether the provided header `name` is a wildcard. This only applies to the `requestHeaderMatch` condition `type`.
+        positiveMatch:
+          type: boolean
+          description: |
+            Whether the condition should trigger on a match (`true`) or a lack of match (`false`).
+        useXForwardForHeaders:
+          type: boolean
+          description: |
+            Whether the condition should include `X-Forwarded-For` (XFF) header. This only applies when the `type` is `ipAddressMatch`, `geoMatch`, `asNumberMatch`, or `clientListMatch`.
+        valueCase:
+          type: boolean
+          description: |
+            Whether to consider the case-sensitivity of the provided header `value`. This only applies to the `requestHeaderMatch` condition `type`.
+        valueExactMatch:
+          type: boolean
+          description: |
+            Whether to consider only exact matches of the header `value`.
+        valueIgnoreSegment:
+          type: boolean
+          description: |
+            Whether to ignore path segments when matching. This only applies when the `type` is `pathMatch`.
+        valueNormalize:
+          type: boolean
+          description: |
+            Whether to normalize the value of the header when matching. This only applies to type values of `extensionMatch` and `pathMatch`.
+        valueRecursive:
+          type: boolean
+          description: |
+            Whether to use recursion when matching. When `false`, you can only match on the filename in the root folder. This only applies when the condition `type` is `filenameMatch`.
+        valueWildcard:
+          type: boolean
+          description: |
+            Whether the provided header `value` is a wildcard. This only applies when the condition `type` is `requestHeaderMatch`.
+  effectiveTimePeriod:
+    type: object
+    description: |
+      The time period during which the custom rule is active.
+    additionalProperties: false
+    required:
+    - endDate
+    - startDate
+    properties:
+      endDate:
+        type: string
+        description: |
+          An ISO 8601 timestamp that sets when the rule expires or deactivates.
+      startDate:
+        type: string
+        description: |
+          An ISO 8601 timestamp that sets when the rule activates.
+        format: date-time
+      status:
+        type: string
+        description: |
+          The current status of the rule based on its `startDate` and `endDate`. By default, rules are active for 30 days. When `ACTIVE`, the rule triggers when conditions are met. When `INACTIVE`, the rule doesn't trigger. When `EXPIRING`, the rule still triggers because it's still active until its specified expiration date. When the rule's status is `EXPIRED`, the rule is inactive and doesn't trigger. If your rule expires and you want to use it again, make a PUT request to [Modify a custom rule](ref:put-config-custom-rule) with the new dates you'd like the rule to be active.
+        enum:
+        - active
+        - inactive
+        - expiring
+        - expired
+  inspectRequest:
+    type: boolean
+    description: |
+      Whether to inspect the HTTP request for unstructured custom rules.
+  inspectResponse:
+    type: boolean
+    description: |
+      Whether to inspect the HTTP response for unstructured custom rules.
+  loggingOptions:
+    type: array
+    description: |
+      The specific conditions to be logged.
+    items:
+      $ref: logging-option.yaml
+  metadata:
+    type: string
+    description: |
+      The metadata you provided for unstructured custom rules.
+  operation:
+    type: string
+    description: |
+      Specify `AND` logic to require all conditions, or `OR` logic to require at least one condition to match.
+    enum:
+    - AND
+    - OR
+  ruleActivated:
+    type: boolean
+    description: |
+      Whether the rule is active in the configuration.
+  samplingRate:
+    type: integer
+    description: |
+      The portion of traffic to sample, expressed as a percent.
+    minimum: 0
+    maximum: 100
+  structured:
+    type: boolean
+    description: |
+      Whether you created the rule with the structured custom rule builder or free-form XML. This needs to be `true`.
+  tag:
+    type: array
+    description: |
+      The list of labels you assigned to the custom rule.
+    items:
+      type: string

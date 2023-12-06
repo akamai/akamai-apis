@@ -1,0 +1,53 @@
+x-akamai:
+  file-path: paths/policy-custom-rule.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/custom-rules/{ruleId}
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/policyId-path.yaml
+- $ref: ../parameters/ruleId-path.yaml
+put:
+  operationId: put-custom-rule
+  summary: Modify a custom rule action
+  tags:
+  - Custom rule actions
+  description: |
+    Updates the action of a custom rule. _Products:_ All.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/custom-rule-action-put.json
+        schema:
+          $ref: ../schemas/custom-rule-action-put.yaml
+  responses:
+    200:
+      description: |
+        Updated action.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/custom-rule-action-put.json
+          schema:
+            $ref: ../schemas/custom-rule-action-put.yaml
+    400:
+      $ref: ../errors/400.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have edit permissions for this config.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/403.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    404:
+      description: |
+        [Not found](ref:404). The config doesn't exist or you don't have access to it.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/404.json
+          schema:
+            $ref: ../schemas/problem-details.yaml

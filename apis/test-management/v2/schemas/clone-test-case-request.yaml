@@ -1,0 +1,199 @@
+type: object
+description: |-
+  Object containing data for cloning a new test case.
+  
+x-akamai:
+  file-path: schemas/clone-test-case-request.yaml
+additionalProperties: false
+properties:
+  comparisonSettings:
+    type: object
+    description: |
+      Attributes to compare on different environments. By default the test case includes all comparison settings.
+    additionalProperties: false
+    required:
+    - responseCode
+    - responseHeaders
+    - cpcode
+    - cachingOption
+    - cacheKey
+    - metadataVariables
+    - originServer
+    properties:
+      cacheKey:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      cachingOption:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      cpcode:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      metadataVariables:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        - compareOnly
+        - compareAllExcept
+        properties:
+          compareAllExcept:
+            type: array
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          compareOnly:
+            type: array
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      originServer:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      responseCode:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        properties:
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+      responseHeaders:
+        type: object
+        additionalProperties: false
+        required:
+        - isEnabled
+        - includeEmbeddedObjects
+        - compareOnly
+        - compareAllExcept
+        properties:
+          compareAllExcept:
+            type: array
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          compareOnly:
+            type: array
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          includeEmbeddedObjects:
+            type: boolean
+            default: true
+          isEnabled:
+            type: boolean
+            default: true
+  requestHeaders:
+    type: array
+    description: |
+      Add specific request headers to the test case's set of requests. Modify or filter out existing request headers.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - headerName
+      - headerValues
+      - headerAction
+      properties:
+        headerAction:
+          type: string
+          enum:
+          - add
+          - modify
+          - filter
+        headerName:
+          type: string
+          description: |
+            Name of the request header.
+          minLength: 1
+        headerValues:
+          type: string
+          description: |
+            Value of the request header.
+          minLength: 1
+  testCaseDescription:
+    type: string
+    description: |
+      Description you provide for the test case. Max length is 4000 characters.
+    minLength: 1
+    maxLength: 4000
+  testCaseId:
+    type: string
+    description: |
+      Unique identifier for each comparative test case.
+    readOnly: true
+    minLength: 1
+  testCaseName:
+    type: string
+    description: |
+      Name you provide for the test case. Max length is 100 characters.
+    minLength: 1
+    maxLength: 100
+  testDefinitionId:
+    type: string
+    description: |
+      Unique identifier for each test definition.
+    readOnly: true
+    minLength: 1
+  url:
+    type: string
+    description: |
+      URL of the specific web page you want to test.
+    format: uri

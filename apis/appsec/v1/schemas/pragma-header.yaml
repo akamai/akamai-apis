@@ -1,0 +1,74 @@
+type: object
+description: |-
+  Describes which headers you can exclude from inspection when you pass a `Pragma` debug header.
+  
+x-akamai:
+  file-path: schemas/pragma-header.yaml
+additionalProperties: false
+required:
+- action
+properties:
+  action:
+    type: string
+    description: |
+      The action to perform when a user passes a `Pragma` header. The only action currently supported is `REMOVE`.
+    enum:
+    - REMOVE
+  conditionOperator:
+    type: string
+    description: |
+      Use `OR` to match any condition, or `AND` to match on all conditions.
+    enum:
+    - AND
+    - OR
+  excludeCondition:
+    type: array
+    description: |
+      The conditions to exclude from the default `remove` action. Any condition you set in this object appears in the `Pragma` header debug response object.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      - positiveMatch
+      - value
+      properties:
+        name:
+          type: string
+          description: |
+            The name of the request header to ignore from inspection. In the example, `type`.
+        type:
+          type: string
+          description: |
+            The header value you want to appear in the response. You can choose from `requestHeaderValueMatch`, `ipMatch`, `networkList`, or `queryParamNameValueMatch`.
+          enum:
+          - requestHeaderValueMatch
+          - ipMatch
+          - networkList
+          - queryParamNameValueMatch
+        value:
+          type: array
+          description: |
+            List of header values, query parameter values, IP addresses, or names of network lists. To manage networks lists, use the [Network Lists API](https://techdocs.akamai.com/network-lists/reference/api).
+          items:
+            type: string
+        header:
+          type: string
+          description: |
+            The name of the request header. In the example, `accept`.
+        positiveMatch:
+          type: boolean
+          description: |
+            When `true`, matches the selected values. When `false`, matches on anything outside the selected values.
+        useHeaders:
+          type: boolean
+          description: |
+            Whether the condition should include  the `X-Forwarded-For` header (XFF) header. This only applies when the condition `type` is `IP_MATCH` or `NETWORK_LIST`.
+        valueCase:
+          type: boolean
+          description: |
+            Whether to consider the case-sensitivity of the provided header value. This only applies when the condition `type` is `REQUEST_HEADER_VALUE_MATCH`.
+        valueWildcard:
+          type: boolean
+          description: |
+            Whether the provided header value includes wildcards, such as `*` or `?`. This only applies to the `REQUEST_HEADER_VALUE_MATCH` condition type.

@@ -1,0 +1,113 @@
+openapi: 3.0.0
+info:
+  title: Messages
+  version: 1.0.0
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/api/v1
+x-akamai:
+  auth-type: JWT
+  file-path: stream-buffer.yaml
+paths:
+  /buffer/retained/{topic}:
+    parameters:
+    - $ref: parameters/topic-path.yaml
+    get:
+      operationId: get-retained-topic
+      summary: Get a retained message
+      tags:
+      - Messages
+      description: |
+        Reads the latest retained message from a single topic.
+      responses:
+        200:
+          description: |
+            Retained message string as byte array.
+          content:
+            application/octet-stream:
+              example: VderKUx2VMqaASsbloD4AWYnnMz3ASDrQhQ
+        400:
+          description: |
+            Missing or invalid parameters.
+          content:
+            text/plain:
+              example: Bad Request Header `X-Akamai-DCP-Namespace` is mandatory
+        401:
+          description: |
+            Client authentication error (Certificate CN or client name provided in header is not allowed to access the API).
+        403:
+          description: |
+            Client is unauthorized to access requested topic.
+  /buffer/topics/{topic}:
+    parameters:
+    - $ref: parameters/topic-path.yaml
+    get:
+      operationId: get-topic
+      summary: Get messages
+      tags:
+      - Messages
+      description: |
+        Reads a set of messages from a single topic.
+      parameters:
+      - $ref: parameters/offset-query.yaml
+      - $ref: parameters/limit-query.yaml
+      responses:
+        200:
+          description: |
+            Message block containing messages and metadata.
+          content:
+            application/json:
+              example:
+                $ref: examples/stream-buffer-topics-get.json
+              schema:
+                $ref: schemas/messageBlock.yaml
+        400:
+          description: |
+            Missing or invalid parameters.
+          content:
+            text/plain:
+              example: Bad Request Header `X-Akamai-DCP-Namespace` is mandatory
+        401:
+          description: |
+            Client authentication error (Certificate CN or client name provided in header is not allowed to access the API).
+        403:
+          description: |
+            Client is unauthorized to access requested topic.
+  /buffer/topics/{topic}/groups/{groupId}:
+    parameters:
+    - $ref: parameters/groupId-path.yaml
+    - $ref: parameters/topic-path.yaml
+    get:
+      operationId: get-topic-group
+      summary: Get messages for groups
+      tags:
+      - Messages
+      description: |
+        Reads a set of messages from a single topic for the provided consumer group.
+      parameters:
+      - $ref: parameters/limit-query.yaml
+      - $ref: parameters/ack-query.yaml
+      responses:
+        200:
+          description: |
+            Message block containing messages and metadata.
+          content:
+            application/json:
+              example:
+                $ref: examples/stream-buffer-topics-get-groups.json
+              schema:
+                $ref: schemas/messageBlock.yaml
+        400:
+          description: |
+            Missing or invalid parameters.
+          content:
+            text/plain:
+              example: Bad Request Header `X-Akamai-DCP-Namespace` is mandatory
+        401:
+          description: |
+            Client authentication error (Certificate CN or client name provided in header is not allowed to access the API).
+        403:
+          description: |
+            Client is unauthorized to access requested topic.

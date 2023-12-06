@@ -1,0 +1,109 @@
+type: object
+description: |-
+  After you create an enrollment, you can have CPS halt deployment when the certificate becomes available, so that you can test and view the certificate on a staging server prior to deployment in the production network. If you do not want CPS to automatically deploy the certificate to the production network after it receives the signed certificate from the CA, you can turn change management on for the enrollment. This stops CPS from deploying the certificate to the network until you acknowledge that you are ready to deploy the certificate. A version label indicates this member is introduced in that version. A pre-version label indicates this member is removed in that version. No version label indicates this member is present in all versions.
+  
+x-akamai:
+  file-path: schemas/change-management-info.v1.yaml
+additionalProperties: false
+required:
+- pendingState
+- validationResultHash
+properties:
+  acknowledgementDeadline:
+    type: string
+    nullable: true
+  pendingState:
+    type: object
+    description: |
+      The snapshot of the pending state for the enrollment when this change takes effect.
+    additionalProperties: false
+    required:
+    - pendingNetworkConfiguration
+    properties:
+      pendingCertificate:
+        type: object
+        description: |
+          The snapshot of the pending certificate for the enrollment when this change takes effect.
+        additionalProperties: false
+        required:
+        - certificateType
+        - fullCertificate
+        - signatureAlgorithm
+        properties:
+          certificateType:
+            type: string
+          fullCertificate:
+            type: string
+          signatureAlgorithm:
+            type: string
+            nullable: true
+      pendingNetworkConfiguration:
+        type: object
+        description: |
+          The snapshot of the pending network configuration for the enrollment when this change takes effect.
+        additionalProperties: false
+        required:
+        - mustHaveCiphers
+        - preferredCiphers
+        properties:
+          mustHaveCiphers:
+            type: string
+          networkType:
+            type: string
+            nullable: true
+          preferredCiphers:
+            type: string
+          sni:
+            type: object
+            description: |
+              Server Name Indication (SNI) setting for this Enrollment.
+            additionalProperties: false
+            required:
+            - cloneDnsNames
+            nullable: true
+            properties:
+              cloneDnsNames:
+                type: boolean
+              dnsNames:
+                type: array
+                items:
+                  type: string
+  validationResult:
+    type: object
+    description: |
+      The hash of `validationResult`. It always has a value, even when `validationResult` is `null`. The hash result of the validation result as of the time of the most recent validation check. It is used in the `change-management-ack` API call to further specify the state of the change that is being acknowledged. We recommend you use the `change-management-info` API call, review the `validationResult` with its hash, and then acknowledge change-management using the same hash retrieved when running the Change Management Acknowledgment operation.
+    additionalProperties: false
+    properties:
+      errors:
+        type: array
+        description: |
+          Validation errors of the current job state. Errors prevent a change from proceeding until you resolve them. They are optional and only appear if there are any errors.
+        nullable: true
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - message
+          - messageCode
+          properties:
+            message:
+              type: string
+            messageCode:
+              type: string
+      warnings:
+        type: array
+        description: |
+          Validation warnings of the current job state. Warnings suspend the execution of a change. You can acknowledge or deny warnings. If you acknowledge them, the change proceeds with its operation. They are optional and only appear if there are any warnings.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - message
+          - messageCode
+          properties:
+            message:
+              type: string
+            messageCode:
+              type: string
+  validationResultHash:
+    type: string

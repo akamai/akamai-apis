@@ -1,0 +1,101 @@
+x-akamai:
+  file-path: paths/include-versions.yaml
+  path-for-file: /includes/{includeId}/versions
+parameters:
+- $ref: ../parameters/includeId-path.yaml
+post:
+  operationId: post-include-versions
+  summary: Create a new include version
+  tags:
+  - Include versions
+  description: |
+    Create a new include version based on any previous version. All data from the `createFromVersion` populates the new version. Specify `createFromVersionEtag` if you want to ensure you're creating from a version that hasn't changed since you fetched it.
+  x-akamai:
+    status: LA
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/include-version-create-request.json
+        schema:
+          $ref: ../schemas/include-version-create-request.yaml
+  responses:
+    201:
+      description: |
+        The response provides a URL link to the newly created include version.
+      headers:
+        Location:
+          $ref: ../headers/Location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/include-version-create-response.json
+          schema:
+            $ref: ../schemas/include-version-create-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+get:
+  operationId: get-include-versions
+  summary: List include versions
+  tags:
+  - Include versions
+  description: |
+    Lists the include's versions, with results limited to the 500 most recent versions. Optionally paginate the results. Each include version indicates an activation status on different networks, and an `etag` digest useful when [cloning the include](ref:post-includes).
+  x-akamai:
+    status: LA
+  parameters:
+  - $ref: ../parameters/offset-query.yaml
+  - $ref: ../parameters/limit-optional.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  responses:
+    200:
+      description: |
+        The response lists include versions for the requested include.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/include-version-list-response.json
+          schema:
+            $ref: ../schemas/include-version-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: includeVersions
+  group: Include versions

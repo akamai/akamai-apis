@@ -1,0 +1,67 @@
+type: object
+description: |-
+  Response for creating functional test cases.
+  
+x-akamai:
+  file-path: schemas/createTestCaseResponse.yaml
+additionalProperties: false
+required:
+- failures
+- successes
+properties:
+  failures:
+    type: array
+    description: |
+      Contains a list of [HTTP Problem Details](https://tools.ietf.org/html/rfc7807) objects and indicates errors together with unique identifiers of items for which the operation failed.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      - title
+      properties:
+        type:
+          type: string
+          description: |
+            Type of error.
+          minLength: 1
+        title:
+          type: string
+          description: |
+            Title of the error.
+          minLength: 1
+        existingEntities:
+          type: array
+          description: |
+            Functional test cases that already exist.
+          minItems: 1
+          items:
+            $ref: get-functional-test-case-response.yaml
+        requestField:
+          type: string
+          description: |
+            Request field name. It can be a URL path or query parameter or any request payload field name.
+          minLength: 1
+        requestObjects:
+          type: array
+          description: |
+            Request objects that were invalid.
+          minItems: 1
+          items:
+            $ref: create-functional-test-case-request.yaml
+        requestValues:
+          type: array
+          description: |
+            Request field values.
+          minItems: 1
+          items:
+            type: integer
+            minimum: 0
+  successes:
+    type: array
+    description: |
+      Contains a list of unique identifiers of functional test cases created successfully together with details about included objects.
+    minItems: 0
+    items:
+      $ref: get-functional-test-case-response.yaml

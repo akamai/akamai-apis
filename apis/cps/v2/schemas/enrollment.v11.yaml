@@ -1,0 +1,502 @@
+type: object
+description: |-
+  An enrollment displays all the information about the process that your certificate goes through from the time you request it, through renewal, and as you obtain subsequent versions. CPS is a certificate life cycle management tool. Once you obtain a certificate, you use it until it expires, in most cases a year from the date the CA issued the certificate. CPS automatically starts the renewal process 90 days before the old certificate expires. It then automatically deploys the renewed certificate when it receives it from the CA.
+  
+x-akamai:
+  file-path: schemas/enrollment.v11.yaml
+additionalProperties: false
+required:
+- certificateType
+- changeManagement
+- csr
+- enableMultiStackedCertificates
+- networkConfiguration
+- ra
+- validationType
+properties:
+  id:
+    type: string
+    description: |
+      The unique identifier of the enrollment.
+    nullable: true
+  adminContact:
+    type: object
+    description: |
+      Contact information for the certificate administrator that you want to use as a contact at your company.
+    additionalProperties: false
+    nullable: true
+    properties:
+      title:
+        type: string
+        description: |
+          The title of the administrator who you want to use as a contact at your company.
+        nullable: true
+      addressLineOne:
+        type: string
+        description: |
+          The address of your organization.
+        nullable: true
+      addressLineTwo:
+        type: string
+        description: |
+          The address of your organization.
+        nullable: true
+      city:
+        type: string
+        description: |
+          The city where your organization resides.
+        nullable: true
+      country:
+        type: string
+        description: |
+          The country where your organization resides.
+        nullable: true
+      email:
+        type: string
+        description: |
+          The email address of the administrator who you want to use as a contact at your company.
+        nullable: true
+      firstName:
+        type: string
+        description: |
+          The first name of the administrator who you want to use as a contact at your company.
+        nullable: true
+      lastName:
+        type: string
+        description: |
+          The last name of the administrator who you want to use as a contact at your company.
+        nullable: true
+      organizationName:
+        type: string
+        description: |
+          The name of your organization.
+        nullable: true
+      phone:
+        type: string
+        description: |
+          The phone number of your organization.
+        nullable: true
+      postalCode:
+        type: string
+        description: |
+          The postal code of your organization.
+        nullable: true
+      region:
+        type: string
+        description: |
+          The region of your organization, typically a state or province.
+        nullable: true
+  assignedSlots:
+    type: array
+    description: |
+      Slots where the certificate either will be deployed or is already deployed.
+    nullable: true
+    items:
+      type: integer
+  autoRenewalStartTime:
+    type: string
+    description: |
+      The specific date on which the renewal automatically starts for the enrollment.
+    nullable: true
+  certificateChainType:
+    type: string
+    description: |
+      Certificate trust chain type.
+    nullable: true
+    enum:
+    - default
+    - symantec1kroot
+  certificateType:
+    type: string
+    description: |
+      Either `san`, `single`, `wildcard`, `wildcard-san`, or `third-party`. See [Enrollment.validationType Values](#validationtype) for details.
+    enum:
+    - san
+    - single
+    - wildcard
+    - wildcard-san
+    - third-party
+  changeManagement:
+    type: boolean
+    description: |
+      If you turn change management on for an enrollment, it stops CPS from deploying the certificate to the network until you acknowledge that you are ready to deploy the certificate. You can test the certificate outside of CPS, on the Edge Staging Network (ESN), to make sure it works in your environment and then deploy the certificate. The ESN is a small network of Akamai edge servers built to simulate Akamai's production network to test most of your site or application functionality with current production version configuration options and functions. For more information on the ESN, see the [Edge Staging Network User Guide](https://control.akamai.com/dl/customers/other/EDGESERV/ESN-User-Guide.pdf). You can also contact your account representative with questions or issues with your service on the ESN.
+  csr:
+    type: object
+    description: |
+      When you create an enrollment, you also generate a certificate signing request (CSR) using CPS. CPS signs the CSR with the private key. The CSR contains all the information the CA needs to issue your certificate.
+    additionalProperties: false
+    required:
+    - cn
+    properties:
+      c:
+        type: string
+        description: |
+          The country code for the country where your organization is located.
+        nullable: true
+      cn:
+        type: string
+        description: |
+          The common name (CN) you want to use for the certificate in the Common Name field. The domain name you specify here must be owned or have legal rights to use the domain by the company you enter in the Organization field in this tab. The company that owns the domain name must be a legally incorporated entity and be active and in good standing.
+      l:
+        type: string
+        description: |
+          Your city in the locality (city).
+        nullable: true
+      o:
+        type: string
+        description: |
+          The name of your company or organization. Enter the name as it appears in all legal documents and as it appears in the legal entity filing.
+        nullable: true
+      ou:
+        type: string
+        description: |
+          Your organizational unit.
+        nullable: true
+      preferredTrustChain:
+        type: string
+        description: |
+          For the Let's Encrypt Domain Validated (DV) SAN certificates, the customer may select one of the trust chain options supported by Let's Encrypt, or not fill out this field. The preferred trust chain will be included by CPS with the leaf certificate in the TLS handshake. If the field does not have a value, whichever trust chain Akamai chooses will be used by default.
+        nullable: true
+      sans:
+        type: array
+        description: |
+          Additional common names (CN) to create a Subject Alternative Names (SAN) list.
+        nullable: true
+        items:
+          type: string
+      st:
+        type: string
+        description: |
+          Your state or province.
+        nullable: true
+  enableMultiStackedCertificates:
+    type: boolean
+    description: |
+      Enable Dual-Stacked certificate deployment for this enrollment.
+  location:
+    type: string
+    description: |
+      The URI path to the enrollment. The last segment of the URI path serves as a unique identifier for the enrollment.
+    nullable: true
+  maxAllowedSanNames:
+    type: integer
+    description: |
+      Maximum number of SAN names supported for this enrollment type.
+    nullable: true
+  maxAllowedWildcardSanNames:
+    type: integer
+    description: |
+      Maximum number of Wildcard SAN names supported for this enrollment type.
+    nullable: true
+  networkConfiguration:
+    type: object
+    description: |
+      Settings that specify any network information and TLS Metadata you want CPS to use to push the completed certificate to the network.
+    additionalProperties: false
+    required:
+    - geography
+    - quicEnabled
+    - secureNetwork
+    - sniOnly
+    properties:
+      clientMutualAuthentication:
+        type: object
+        description: |
+          The configuration for client mutual authentication. Specifies  the trust chain that is used to verify client certificates and some configuration  options.
+        additionalProperties: false
+        nullable: true
+        properties:
+          authenticationOptions:
+            type: object
+            description: |
+              Contains the configuration options for the selected trust chain.
+            additionalProperties: false
+            nullable: true
+            properties:
+              ocsp:
+                type: object
+                description: |
+                  Whether you want to enable OCSP stapling for client certificates.
+                additionalProperties: false
+                nullable: true
+                properties:
+                  enabled:
+                    type: boolean
+                    description: |
+                      Whether the OCSP stapling is enabled.
+                    nullable: true
+              sendCaListToClient:
+                type: boolean
+                description: |
+                  Whether you want to enable the server to send the certificate authority (CA) list to the client.
+                nullable: true
+          setId:
+            type: string
+            description: |
+              The identifier of the set of trust chains, created in the Trust Chain Manager.
+            nullable: true
+      disallowedTlsVersions:
+        type: array
+        description: |
+          Specify the TLS protocol versions you want to disallow.
+        nullable: true
+        items:
+          type: string
+      dnsNameSettings:
+        type: object
+        description: |
+          DNS name settings.
+        additionalProperties: false
+        required:
+        - cloneDnsNames
+        nullable: true
+        properties:
+          cloneDnsNames:
+            type: boolean
+            description: |
+              Enable if you want CPS to direct traffic using all the SANs listed in the SANs parameter when you created your enrollment.
+          dnsNames:
+            type: array
+            description: |
+              Names served by SNI-only enabled enrollments.
+            nullable: true
+            items:
+              type: string
+      geography:
+        type: string
+        description: |
+          Use `core` to specify worldwide (includes China and Russia), `china+core` to specify worldwide and  China, and 'russia+core` to specify worldwide and Russia. You can only use this setting to include China and Russia if your Akamai contract specifies your ability to do so and you have approval from the Chinese and Russian government.
+        enum:
+        - core
+        - china+core
+        - russia+core
+      mustHaveCiphers:
+        type: string
+        description: |
+          Ciphers that you definitely want to include for your enrollment while deploying it on the network. Defaults to `ak-akamai-default` when it is not set.
+        nullable: true
+      ocspStapling:
+        type: string
+        description: |
+          Enable OCSP stapling for the enrollment. OCSP Stapling improves performance by including a valid OCSP response in every TLS handshake. Specify OCSP Stapling if you want to improve performance by allowing the visitors to your site to query the Online Certificate Status Protocol (OCSP) server at regular intervals to obtain a signed time-stamped OCSP response. This response must be signed by the CA, not the server, therefore ensuring security. Disable OSCP Stapling if you want visitors to your site to contact the CA directly for an OSCP response. OCSP allows you to obtain the revocation status of a certificate. We recommend all customers enable this feature. Use `on`, `off` or `not-set`.
+        nullable: true
+        enum:
+        - on
+        - off
+        - not-set
+      preferredCiphers:
+        type: string
+        description: |
+          Ciphers that you preferably want to include for your enrollment while deploying it on the network. Defaults to `ak-akamai-default` when it is not set.
+        nullable: true
+      quicEnabled:
+        type: boolean
+        description: |
+          Set to true to enable QUIC protocol.
+      secureNetwork:
+        type: string
+        description: |
+          Set the type of deployment network you want to use. Set Standard TLS to deploy your certificate to Akamai's standard secure network. It is not PCI compliant. Set Enhanced TLS to deploy your certificate to Akamai's more secure network with PCI compliance capability.
+        enum:
+        - enhanced-tls
+        - standard-tls
+      sniOnly:
+        type: boolean
+        description: |
+          SNI settings for your enrollment. Set to `true` to enable SNI-only for the enrollment. This setting cannot be changed once an enrollment is created.
+  org:
+    type: object
+    description: |
+      Your organization information.
+    additionalProperties: false
+    nullable: true
+    properties:
+      name:
+        type: string
+        description: |
+          The name of your organization.
+        nullable: true
+      addressLineOne:
+        type: string
+        description: |
+          The address of your organization.
+        nullable: true
+      addressLineTwo:
+        type: string
+        description: |
+          The address of your organization.
+        nullable: true
+      city:
+        type: string
+        description: |
+          The city where your organization resides.
+        nullable: true
+      country:
+        type: string
+        description: |
+          The country where your organization resides.
+        nullable: true
+      phone:
+        type: string
+        description: |
+          The phone number of the administrator who you want to use as a contact at your company.
+        nullable: true
+      postalCode:
+        type: string
+        description: |
+          The postal code of your organization.
+        nullable: true
+      region:
+        type: string
+        description: |
+          The region where your organization resides.
+        nullable: true
+  orgId:
+    type: integer
+    description: |
+      The Digicert unique identifier for the organization. If an orgId value is provided in a PUT or POST request, it is recommended to leave the org, techContact, and adminContact fields null.
+    nullable: true
+  pendingChanges:
+    type: array
+    description: |
+      Returns the Changes currently pending in CPS. The last item in the array is the most recent change.
+    nullable: true
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - location
+      properties:
+        changeType:
+          type: string
+          description: |
+            Pending change action.
+          nullable: true
+          enum:
+          - new-certificate
+          - modify-certificate
+          - modify-san
+          - renewal
+        location:
+          type: string
+          description: |
+            Location to fetch related change information.
+  productionSlots:
+    type: array
+    description: |
+      Slots where the certificate is deployed on the production network.
+    nullable: true
+    items:
+      type: integer
+  ra:
+    type: string
+    description: |
+      The registration authority or certificate authority (CA) you want to use to obtain a certificate. A CA is a trusted entity that signs certificates and can vouch for the identity of a website. Either `symantec`,  `lets-encrypt`, or `third-party`.
+    enum:
+    - symantec
+    - lets-encrypt
+    - third-party
+  signatureAlgorithm:
+    type: string
+    description: |
+      The SHA (Secure Hash Algorithm) function. NSA designed this function to produce a hash of certificate contents, which is used in a digital signature.  Specify either `SHA-1` or `SHA-256`. We recommend you use SHA-256.
+    nullable: true
+    enum:
+    - SHA-1
+    - SHA-256
+  stagingSlots:
+    type: array
+    description: |
+      Slots where the certificate is deployed on the staging network.
+    nullable: true
+    items:
+      type: integer
+  techContact:
+    type: object
+    description: |
+      Contact information for an administrator at Akamai.
+    additionalProperties: false
+    nullable: true
+    properties:
+      title:
+        type: string
+        description: |
+          The title for an administrator at Akamai.
+        nullable: true
+      addressLineOne:
+        type: string
+        description: |
+          The address for an administrator at Akamai.
+        nullable: true
+      addressLineTwo:
+        type: string
+        description: |
+          The address for an administrator at Akamai.
+        nullable: true
+      city:
+        type: string
+        description: |
+          The city for an administrator at Akamai.
+        nullable: true
+      country:
+        type: string
+        description: |
+          The country for an administrator at Akamai.
+        nullable: true
+      email:
+        type: string
+        description: |
+          The email address of the administrator who you want to use as a contact at your company.
+        nullable: true
+      firstName:
+        type: string
+        description: |
+          The first name of the technical contact who you want to use within Akamai. This is the person you work closest with at Akamai who can verify the certificate request. This is the person the CA calls if there are any issues with the certificate and they cannot reach the administrator.
+        nullable: true
+      lastName:
+        type: string
+        description: |
+          The last name of the technical contact who you want to use within Akamai.
+        nullable: true
+      organizationName:
+        type: string
+        description: |
+          The name of your organization in Akamai where your technical contact works.
+        nullable: true
+      phone:
+        type: string
+        description: |
+          The phone number of the technical contact who you want to use within Akamai.
+        nullable: true
+      postalCode:
+        type: string
+        description: |
+          The postal code for an administrator at Akamai.
+        nullable: true
+      region:
+        type: string
+        description: |
+          The region for an administrator at Akamai.
+        nullable: true
+  thirdParty:
+    type: object
+    description: |
+      Specifies that you want to use a third party certificate. This is any certificate that is not issued through CPS.
+    additionalProperties: false
+    required:
+    - excludeSans
+    nullable: true
+    properties:
+      excludeSans:
+        type: boolean
+        description: |
+          If this is true, then the SANs in the enrollment do not appear in the CSR that CPS submits to the CA.
+  validationType:
+    type: string
+    description: |
+      There are three types of validation. Domain Validation (DV), which is the lowest level of validation. The CA validates that you have control of the domain. CPS supports DV certificates issued by Let's Encrypt, a free, automated, and open CA, run for public benefit. Organization Validation (OV), which is the next level of validation. The CA validates that you have control of the domain. Extended Validation (EV), which is the highest level of validation in which you must have signed letters and notaries sent to the CA before signing. You can also specify third party as a type of validation, if you want to use a signed certificate obtained by you from a CA not supported by CPS.  Either `dv`, `ev`, `ov`, or `third-party`.
+    enum:
+    - dv
+    - ev
+    - ov
+    - third-party

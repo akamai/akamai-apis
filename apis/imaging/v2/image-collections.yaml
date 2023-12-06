@@ -1,0 +1,176 @@
+openapi: 3.0.0
+info:
+  title: Image Collections
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/imaging/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: image-collections.yaml
+paths:
+  /imagecollections:
+    parameters:
+    - $ref: parameters/contractId-header.yaml
+    - $ref: parameters/policySetId-header.yaml
+    get:
+      operationId: get-image-collections
+      summary: List image collections
+      tags:
+      - Image collections
+      description: |
+        Lists all image collections, unless you set a limit.
+      parameters:
+      - $ref: parameters/limit-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/imagecollection-array.json
+              schema:
+                $ref: schemas/imagecollection-array.yaml
+    put:
+      operationId: put-root
+      summary: Create a new image collection
+      tags:
+      - Image collections
+      description: |
+        Create a new image collection.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/imagecollection-create.json
+            schema:
+              $ref: schemas/imagecollection.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/imagecollection-created-200.json
+              schema:
+                $ref: schemas/operation-performed.yaml
+        400:
+          description: |
+            Invalid image collection.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/imagecollection-put-400.json
+              schema:
+                $ref: schemas/error.yaml
+  /imagecollections/history/{imageCollectionId}:
+    parameters:
+    - $ref: parameters/contractId-header.yaml
+    - $ref: parameters/policySetId-header.yaml
+    - $ref: parameters/imageCollectionId-path.yaml
+    get:
+      operationId: get-image-collection-history
+      summary: Get image collection history
+      tags:
+      - Image collection hitory
+      description: |
+        Get a history of a specific image collection and all updates to it over the last three months.
+      parameters:
+      - $ref: parameters/limit-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/imagecollection-history.json
+              schema:
+                $ref: schemas/imagecollection-history-array.yaml
+  /imagecollections/{imageCollectionId}:
+    parameters:
+    - $ref: parameters/contractId-header.yaml
+    - $ref: parameters/policySetId-header.yaml
+    - $ref: parameters/imageCollectionId-path.yaml
+    post:
+      operationId: post-image-collection
+      summary: Update an image collection
+      tags:
+      - Image collections
+      description: |
+        Update an image collection.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/imagecollection-update.json
+            schema:
+              $ref: schemas/imagecollection.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/imagecollection-updated-200.json
+              schema:
+                $ref: schemas/operation-performed.yaml
+        404:
+          description: |
+            Not found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/imagecollection-post-400.json
+              schema:
+                $ref: schemas/error.yaml
+    get:
+      operationId: get-image-collection
+      summary: Get an image collection
+      tags:
+      - Image collections
+      description: |
+        Returns the values for the image collection you specify.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/imagecollection.json
+              schema:
+                $ref: schemas/imagecollection.yaml
+        404:
+          description: |
+            Not found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/imagecollection-get-404.json
+              schema:
+                $ref: schemas/error.yaml
+    delete:
+      operationId: delete-image-collection
+      summary: Remove an image collection
+      tags:
+      - Image collections
+      description: |
+        Delete a specific image collection.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/imagecollection-deleted-200.json
+              schema:
+                $ref: schemas/operation-performed.yaml

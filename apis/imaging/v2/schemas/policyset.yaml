@@ -1,0 +1,50 @@
+type: object
+description: |-
+  Specifies details of a policy set, such as the type of media its policies optimize and the region for which their delivery is best optimized.
+  
+x-akamai:
+  file-path: schemas/policyset.yaml
+title: Policy set
+additionalProperties: false
+required:
+- type
+- region
+properties:
+  id:
+    type: string
+    description: |
+      Unique identifier of the policy set.
+    readOnly: true
+  name:
+    type: string
+    description: |
+      A friendly name for the policy set.
+  type:
+    $ref: policyset-type.yaml
+  properties:
+    type: array
+    description: |
+      The names of Property Manager properties using this policy set.
+    readOnly: true
+    items:
+      type: string
+  defaultPolicy:
+    description: |
+      The default policy to deploy this policy set with. If unspecified the policy set will use the system default.
+    oneOf:
+    - $ref: policy-image.yaml
+    - $ref: policy-video.yaml
+    writeOnly: true
+  lastModified:
+    type: string
+    description: |
+      Date this policy set was last modified in ISO 8601 extended notation format.
+    readOnly: true
+    format: date-time
+  region:
+    $ref: policyset-region.yaml
+  user:
+    type: string
+    description: |
+      Username of the person who most recently updated the policy set.
+    readOnly: true

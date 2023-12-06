@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: Tags
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/apikey-manager-api/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: TagsResource.yaml
+paths:
+  /tags:
+    get:
+      operationId: get-tags
+      summary: List tags
+      tags:
+      - Tags
+      description: |
+        Returns all existing tags. You can add new tags during the key creation. See either the [Create keys](ref:post-keys) or [Generate keys](ref:post-keys-generate) operation.
+      responses:
+        200:
+          description: |
+            The tags have been returned.
+          content:
+            application/json:
+              example:
+                $ref: examples/tagsList-example.json
+              schema:
+                $ref: schemas/TagList.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to get tags.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The requested tags could not be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml

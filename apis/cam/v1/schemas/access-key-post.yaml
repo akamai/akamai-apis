@@ -1,0 +1,47 @@
+type: object
+description: |-
+  Contains information that you need to provide when posting a new access key.
+  
+x-akamai:
+  file-path: schemas/access-key-post.yaml
+additionalProperties: false
+required:
+- authenticationMethod
+- contractId
+- credentials
+- groupId
+- accessKeyName
+- networkConfiguration
+properties:
+  accessKeyName:
+    type: string
+    description: |
+      The descriptive name for an access key. This value needs to be unique for each access key.
+    minLength: 1
+    maxLength: 50
+  authenticationMethod:
+    type: string
+    description: |
+      The type of cloud provider signing process used to authenticate API requests. Use `AWS4_HMAC_SHA256` for Amazon Web Services or `GOOG4_HMAC_SHA256` for Google Cloud Services in interoperability mode.
+    enum:
+    - AWS4_HMAC_SHA256
+    - GOOG4_HMAC_SHA256
+  contractId:
+    type: string
+    description: |
+      The unique identifier for the contract assigned to the access key.
+    minLength: 1
+    maxLength: 20
+  credentials:
+    description: |
+      The combination of a `cloudAccessKeyId` and a `cloudSecretAccessKey` used to sign API requests.
+    $ref: access-key-credentials-post.yaml
+  groupId:
+    type: integer
+    description: |
+      The unique identifier assigned to the access control [group](doc:concepts) assigned to the access key.
+  networkConfiguration:
+    description: |-
+      The secure networks that you assigned the access key to during creation.
+      
+    $ref: network-configuration-request.yaml

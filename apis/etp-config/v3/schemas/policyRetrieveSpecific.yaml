@@ -1,0 +1,1144 @@
+type: object
+description: |-
+  The security policy to assign to a site. Configure the accepted use policy and set responses for known and suspected threats under the specified categories.
+  
+x-akamai:
+  file-path: schemas/policyRetrieveSpecific.yaml
+additionalProperties: false
+required:
+- description
+- name
+- aupSettings
+- securitySettings
+properties:
+  id:
+    type: integer
+    description: |
+      A unique identifier for each policy. Use this value for a `policyId` parameter in subsequent operations.
+    readOnly: true
+    minimum: 1
+  name:
+    type: string
+    description: |
+      The name of the policy.
+    minLength: 1
+  description:
+    type: string
+    description: |
+      A description of the policy that you provide.
+    minLength: 1
+  accessConfig:
+    type: object
+    description: |
+      Provides access configuration details.
+    additionalProperties: false
+    required:
+    - configurable
+    - delegatedAdmins
+    - readable
+    properties:
+      configurable:
+        type: boolean
+        description: |
+          Marks a policy as configurable.
+      delegatedAdmins:
+        type: array
+        description: |
+          A list of delegated administrators for the policy.
+        minItems: 0
+        items:
+          type: string
+          minLength: 1
+      readable:
+        type: boolean
+        description: |
+          Marks a policy as readable.
+  akamaiDefined:
+    type: boolean
+    description: |
+      Marks a policy as Akamai-defined.
+  aupSettings:
+    type: array
+    description: |
+      Contains the acceptable use policy settings.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - responseId
+      - categoryId
+      properties:
+        description:
+          type: string
+          description: |
+            Describes the AUP setting.
+          minLength: 1
+        categoryId:
+          type: integer
+          description: |
+            A unique identifier for the category.
+          readOnly: true
+          minimum: 1
+        categoryInfo:
+          type: array
+          description: |
+            Contains data for a category.
+          minItems: 0
+          items:
+            $ref: aup-categories.yaml
+        groups:
+          type: array
+          description: |
+            List of groups users belong to.
+          minItems: 0
+          items:
+            type: string
+            minLength: 1
+        operationSettings:
+          type: array
+          description: |
+            Describes the operation settings on the AUP setting.
+          minItems: 0
+          items:
+            $ref: avc-typeInfo.yaml
+        response:
+          type: object
+          description: |
+            Contains data for the response.
+          additionalProperties: false
+          required:
+          - name
+          - id
+          properties:
+            id:
+              type: integer
+              description: |
+                A unique identifier for the response.
+              readOnly: true
+              minimum: 1
+            name:
+              type: string
+              description: |
+                The name of the response.
+              minLength: 1
+        responseId:
+          type: integer
+          description: |
+            A unique identifier for the response.
+          readOnly: true
+          minimum: 1
+        responseOverrides:
+          type: array
+          description: |
+            A list of response overrides.
+          minItems: 0
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - name
+            - id
+            properties:
+              id:
+                type: integer
+                description: |
+                  A unique identifier for the response.
+                readOnly: true
+                minimum: 1
+              name:
+                type: string
+                description: |
+                  The name of a response.
+                minLength: 1
+        users:
+          type: array
+          description: |
+            Lists user emails assigned to the policy.
+          minItems: 0
+          items:
+            type: string
+            minLength: 1
+  aupSource:
+    type: string
+    description: |
+      Name of acceptable use policy source for the policy.
+    minLength: 1
+  authPolicy:
+    type: object
+    description: |
+      Details of the authorization policy adopted for the policy.
+    additionalProperties: false
+    required:
+    - Oidc
+    - enabled
+    - id
+    - idpPreAuthConsent
+    - allowUnauthenticated
+    - retryAuthForUnauthenticatedSessions
+    - sessionTtl
+    - userInfoRefreshTime
+    properties:
+      id:
+        type: integer
+        description: |
+          A unique identifier for the authorization policy.
+        readOnly: true
+        minimum: 1
+      Oidc:
+        type: object
+        description: |
+          Provides OpenID Connect (OIDC) provider and client details.
+        additionalProperties: false
+        required:
+        - client
+        - provider
+        properties:
+          client:
+            type: object
+            description: |
+              Provides information about a client.
+            additionalProperties: false
+            required:
+            - authUri
+            - checkSessionUri
+            - clientId
+            - clientName
+            - endSessionUri
+            - frontChannelLogoutUrl
+            - grantTypes
+            - idpId
+            - javascriptOrigins
+            - postLogoutUris
+            - redirectUris
+            - tokenUri
+            - userUri
+            properties:
+              authUri:
+                type: string
+                description: |
+                  URL for authorization.
+                format: uri
+              checkSessionUri:
+                type: string
+                description: |
+                  URL to check if session is alive.
+                format: uri
+              clientId:
+                type: integer
+                description: |
+                  A unique identifier for the client.
+                readOnly: true
+                minimum: 1
+              clientName:
+                type: string
+                description: |
+                  Name of the client.
+                minLength: 1
+              endSessionUri:
+                type: string
+                description: |
+                  URL for ending session.
+                format: uri
+              frontChannelLogoutUrl:
+                type: array
+                description: |
+                  List of URLs for logout from front channel.
+                minItems: 0
+                items:
+                  type: string
+                  format: uri
+              grantTypes:
+                type: array
+                description: |
+                  List of grant types for the client.
+                minItems: 0
+                items:
+                  type: string
+                  minLength: 1
+              idpId:
+                type: string
+                description: |
+                  A unique identifier for the IDP for the OIDC.
+                readOnly: true
+                minLength: 1
+              javascriptOrigins:
+                type: array
+                description: |
+                  List of JavaScript origin locations.
+                minItems: 0
+                items:
+                  type: string
+                  minLength: 1
+              postLogoutUris:
+                type: array
+                description: |
+                  List of URIs for post logout from client.
+                minItems: 0
+                items:
+                  type: string
+                  minLength: 1
+              redirectUris:
+                type: array
+                description: |
+                  List of URLs for redirection.
+                minItems: 0
+                items:
+                  type: string
+                  format: uri
+              tokenUri:
+                type: string
+                description: |
+                  URL for token.
+                format: uri
+              userUri:
+                type: string
+                description: |
+                  URL for user information.
+                format: uri
+          provider:
+            type: object
+            description: |
+              Mapping of authorization policy URLs to OpenID Connect (OIDC) URLs.
+            additionalProperties: false
+            required:
+            - authPolicyUrl
+            - oidcUrl
+            properties:
+              authPolicyUrl:
+                type: string
+                description: |
+                  The URL from the authorization policy.
+                format: uri
+              oidcUrl:
+                type: string
+                description: |
+                  The URL for the OpenID Connect (OIDC).
+                format: uri
+      allowUnauthenticated:
+        type: boolean
+        description: |
+          Allows unauthenticated users.
+      enabled:
+        type: boolean
+        description: |
+          Enables an authorization policy.
+      idpPreAuthConsent:
+        type: boolean
+        description: |
+          Indicates IDP pre-authorization consent.
+      retryAuthForUnauthenticatedSessions:
+        type: integer
+        description: |
+          The number of retries for an unauthenticated session.
+        minimum: 0
+      sessionTtl:
+        type: integer
+        description: |
+          The duration of a session.
+        minimum: 0
+      userInfoRefreshTime:
+        type: string
+        description: |
+          ISO 8601 timestamp marking the last user authentication refresh.
+        readOnly: true
+        format: date-time
+  authenticationMode:
+    type: string
+    description: |
+      Specifies the authentication mode. Either `REQUIRED`, `OPTIONAL`, or `NONE`.
+    enum:
+    - NONE
+    - OPTIONAL
+    - REQUIRED
+  avcSettings:
+    type: object
+    description: |
+      Contains the AVC setting properties.
+    additionalProperties: false
+    required:
+    - applicationSettings
+    - categorySettings
+    - riskSettings
+    properties:
+      applicationSettings:
+        type: array
+        description: |
+          Policy metadata with details.
+        minItems: 0
+        items:
+          $ref: avc-typeInfo.yaml
+      categorySettings:
+        type: array
+        description: |
+          Lists the AVC category setting properties.
+        minItems: 0
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - description
+          - categoryId
+          - categoryInfo
+          - groups
+          - operationSettings
+          - response
+          - responseId
+          - responseOverrides
+          - users
+          properties:
+            description:
+              type: string
+              description: |
+                Description for the category settings.
+              minLength: 1
+            categoryId:
+              type: integer
+              description: |
+                A unique identifier for the category.
+              readOnly: true
+              minimum: 1
+            categoryInfo:
+              type: object
+              description: |
+                Contains data for a category.
+              additionalProperties: false
+              required:
+              - name
+              - code
+              - defaultActionId
+              - deprecated
+              - id
+              properties:
+                id:
+                  type: integer
+                  description: |
+                    A unique identifier for the category.
+                  readOnly: true
+                  minimum: 1
+                name:
+                  type: string
+                  description: |
+                    The name of the category.
+                  minLength: 1
+                code:
+                  type: string
+                  description: |
+                    The acceptable use policy categorization code.
+                  minLength: 1
+                defaultActionId:
+                  type: integer
+                  description: |
+                    The selected default action for the category.
+                  readOnly: true
+                  minimum: 1
+                deprecated:
+                  type: boolean
+                  description: |
+                    Deprecates the category.
+            groups:
+              type: array
+              description: |
+                List of groups that users belong to.
+              minItems: 0
+              items:
+                type: string
+                minLength: 1
+            operationSettings:
+              type: array
+              description: |
+                Policy metadata with details.
+              minItems: 0
+              items:
+                $ref: avc-typeInfo.yaml
+            response:
+              type: object
+              description: |
+                Contains response data.
+              additionalProperties: false
+              required:
+              - name
+              - id
+              properties:
+                id:
+                  type: integer
+                  description: |
+                    A unique identifier for the response.
+                  readOnly: true
+                  minimum: 1
+                name:
+                  type: string
+                  description: |
+                    The name of the response.
+                  minLength: 1
+            responseId:
+              type: integer
+              description: |
+                A unique identifier for the response.
+              readOnly: true
+              minimum: 1
+            responseOverrides:
+              type: array
+              description: |
+                A list of response overrides.
+              minItems: 0
+              items:
+                type: object
+                additionalProperties: false
+                required:
+                - name
+                - id
+                properties:
+                  id:
+                    type: integer
+                    description: |
+                      A unique identifier for the response.
+                    readOnly: true
+                    minimum: 1
+                  name:
+                    type: string
+                    description: |
+                      The name of a response.
+                    minLength: 1
+            users:
+              type: array
+              description: |
+                Specifies user emails assigned to the policy.
+              minItems: 0
+              items:
+                type: string
+                minLength: 1
+      riskSettings:
+        type: array
+        description: |
+          Policy metadata with details.
+        minItems: 0
+        items:
+          $ref: avc-typeInfo.yaml
+  basicSettings:
+    type: object
+    description: |
+      Contains the basic policy settings.
+    additionalProperties: false
+    required:
+    - dnssec
+    - edns0ecs
+    properties:
+      dnssec:
+        type: boolean
+        description: |
+          When enabled, provides DNS security.
+      edns0ecs:
+        type: boolean
+        description: |
+          When enabled, optimizes CDN traffic using the `EDNS-Client-Subnet` extension.
+      forwardProxyEnabled:
+        type: boolean
+        description: |
+          Enables the forward proxy.
+      proxyEnabled:
+        type: boolean
+        description: |
+          Enables the proxy.
+      safesearch:
+        type: boolean
+        description: |
+          Enables the safe search feature.
+      trustXFF:
+        type: boolean
+        description: |
+          Enables trust of `X-Forwarded-For` headers.
+  classifiers:
+    type: object
+    description: |
+      Contains classifier details for a policy.
+    additionalProperties: false
+    required:
+    - name
+    - dynamicAnalysisEnabled
+    - enabled
+    - sizeExceedingAction
+    - zdpEnabled
+    properties:
+      name:
+        type: string
+        description: |
+          Name of the classifier.
+        minLength: 1
+      dynamicAnalysisEnabled:
+        type: boolean
+        description: |
+          Enables dynamic analysis for a classifier.
+      enabled:
+        type: boolean
+        description: |
+          Enables the classifier.
+      sizeExceedingAction:
+        type: integer
+        description: |
+          The size exceeded action.
+        minimum: 0
+      zdpEnabled:
+        type: boolean
+        description: |
+          Enables Zero-Day Phishing (ZDP) protection for a classifier.
+  createdBy:
+    type: string
+    description: |
+      Name of the user who created this policy.
+    minLength: 1
+  createdDate:
+    type: string
+    description: |
+      ISO 8601 timestamp marking this policy's creation.
+    readOnly: true
+    format: date-time
+  customHeaders:
+    type: array
+    description: |
+      Lists the policy custom header settings.
+    minItems: 0
+    items:
+      $ref: policy-custom-header.yaml
+  customRequestHeaders:
+    type: object
+    description: |
+      Lists the policy custom request header settings.
+    additionalProperties: false
+    required:
+    - args
+    - id
+    - target_domain
+    properties:
+      id:
+        type: integer
+        description: |
+          The custom request header ID.
+        readOnly: true
+        minimum: 1
+      args:
+        type: array
+        description: |
+          Lists custom request header arguments.
+        minItems: 0
+        items:
+          type: array
+          minItems: 0
+          items:
+            type: string
+            minLength: 1
+      target_domain:
+        type: string
+        description: |
+          The target domain for the custom request headers.
+        minLength: 1
+  dlpExceptions:
+    type: object
+    description: |
+      Lists the DLP exceptions for the policy.
+    additionalProperties: false
+    required:
+    - groups
+    - users
+    properties:
+      groups:
+        type: array
+        description: |
+          List of groups that users belong to.
+        minItems: 0
+        items:
+          type: string
+          minLength: 1
+      users:
+        type: array
+        description: |
+          Specifies user emails assigned to the policy.
+        minItems: 0
+        items:
+          type: string
+          minLength: 1
+  dlpSettings:
+    type: array
+    description: |
+      List of data loss prevention (DLP) actions and details.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - action
+      - dictionaryId
+      - dictionaryName
+      - dictionarySource
+      - patterns
+      - threshold
+      properties:
+        action:
+          type: integer
+          description: |
+            Action ID for the data loss prevention (DLP) dictionary.
+          minimum: 0
+        dictionaryId:
+          type: integer
+          description: |
+            A unique identifier for the DLP dictionary.
+          readOnly: true
+          minimum: 1
+        dictionaryName:
+          type: string
+          description: |
+            Name of the DLP dictionary.
+          minLength: 1
+        dictionarySource:
+          type: string
+          description: |
+            Name of the DLP dictionary source.
+          minLength: 1
+        patterns:
+          type: array
+          description: |
+            List of data loss prevention (DLP) patterns to match.
+          minItems: 0
+          items:
+            type: integer
+            minimum: 0
+        threshold:
+          type: integer
+          description: |
+            The maximum number of DLP patterns to consider.
+          minimum: 0
+  fWaasSettings:
+    type: array
+    description: |
+      Lists firewall as a service settings.
+    minItems: 0
+    items:
+      $ref: fwassSettings.yaml
+  farmId:
+    type: integer
+    description: |
+      A unique identifier for policy's farm.
+    readOnly: true
+    minimum: 1
+  fileTypeSettings:
+    type: array
+    description: |
+      Lists the filetype settings for the policy.
+    minItems: 0
+    items:
+      $ref: file-type-settings.yaml
+  idpId:
+    type: string
+    description: |
+      A unique identifier for the associated identity provider.
+    readOnly: true
+    minLength: 1
+  ipaSettings:
+    type: object
+    description: |
+      Contains IPA settings.
+    additionalProperties: false
+    required:
+    - enabled
+    - randomCheck
+    - zdp
+    - blockUnscannableFiles
+    - blockOnUploadScanTimeout
+    properties:
+      blockOnUploadScanTimeout:
+        type: boolean
+        description: |
+          Blocks on upload scan timeout.
+      blockUnscannableFiles:
+        type: boolean
+        description: |
+          Blocks unscannable files.
+      enabled:
+        type: boolean
+        description: |
+          Enables IPA.
+      randomCheck:
+        type: boolean
+        description: |
+          Enables random check for `ipaSettings`.
+      zdp:
+        type: boolean
+        description: |
+          Enables Zero-Day Phishing (ZDP) protection.
+  modifiedBy:
+    type: string
+    description: |
+      Name of the user who most recently modified this policy.
+    minLength: 1
+  modifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp marking this policy's last modification.
+    readOnly: true
+    format: date-time
+  originPorts:
+    type: array
+    description: |
+      Lists origin ports for a policy.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  originValidationFailActionId:
+    type: integer
+    description: |
+      A unique identifier for a validation fail action.
+    readOnly: true
+    minimum: 1
+  policyGeneralSettings:
+    type: object
+    description: |
+      Specifies the policy's general settings.
+    additionalProperties: false
+    required:
+    - aupMigrated
+    - blockBrokenTLS
+    - bypassO365
+    - dotConfig
+    - httpProxyOverride
+    - proxyAuthEnabled
+    - avcEnabled
+    - localBreakoutForBypass
+    - disableClient
+    - wgExceptions
+    - ignoreLocalDNSResolvers
+    - etpClientMultiUserEnabled
+    - disableInsecureCiphers
+    - iOSDefaultAction
+    - androidDefaultAction
+    - chromeOSDefaultAction
+    - classifyMigrated
+    - idpUserInfoRetryInterval
+    - enableIPIntelligence
+    - fwaasEnabled
+    properties:
+      androidDefaultAction:
+        type: integer
+        description: |
+          Specifies the default action on Android devices.
+        minimum: 0
+      aupMigrated:
+        type: boolean
+        description: |
+          Migrates acceptable use policy.
+      avcEnabled:
+        type: boolean
+        description: |
+          Enables the AVC.
+      blockBrokenTLS:
+        type: boolean
+        description: |
+          Blocks broken TLS traffic.
+      bypassO365:
+        type: boolean
+        description: |
+          Bypasses Microsoft Office 365 traffic.
+      chromeOSDefaultAction:
+        type: integer
+        description: |
+          Specifies the default action on Android devices.
+        minimum: 0
+      classifyMigrated:
+        type: boolean
+        description: |
+          Migrates classify information.
+      disableClient:
+        type: boolean
+        description: |
+          Disables the SIA client.
+      disableInsecureCiphers:
+        type: boolean
+        description: |
+          Disables insecure ciphers.
+      dotConfig:
+        type: object
+        description: |
+          Contains DNS over TLS configuration.
+        additionalProperties: false
+        required:
+        - mode
+        - port
+        properties:
+          mode:
+            type: string
+            description: |
+              The DNS over TLS mode: - `ATTEMPT` always tries to use DOT and falls back to standard DNS when unavailable. - `REQUIRED` requires DOT and informs the client the device isn't protected. - `DISABLED` doesn't apply DOT to secure DNS traffic.
+            enum:
+            - ATTEMPT
+            - REQUIRED
+            - DISABLED
+          port:
+            type: integer
+            description: |
+              The assigned port for `dotConfig`.
+            minimum: 0
+      enableIPIntelligence:
+        type: boolean
+        description: |
+          Enables IP intelligence.
+      etpClientMultiUserEnabled:
+        type: boolean
+        description: |
+          Enables multi-user on the SIA client.
+      fwaasEnabled:
+        type: boolean
+        description: |
+          Enables Firewall as a Service.
+      httpProxyOverride:
+        type: integer
+        description: |
+          Represents HTTP proxy override priority.
+        minimum: 0
+      iOSDefaultAction:
+        type: integer
+        description: |
+          Specifies the default action on iOS devices.
+        minimum: 0
+      idpUserInfoRetryInterval:
+        type: integer
+        description: |
+          Specifies the retry interval value for IDP users.
+        minimum: 0
+      ignoreLocalDNSResolvers:
+        type: boolean
+        description: |
+          Ignores local DNS resolution.
+      localBreakoutForBypass:
+        type: boolean
+        description: |
+          Enables local breakout for bypass.
+      proxyAuthEnabled:
+        type: boolean
+        description: |
+          Enables proxy authentication.
+      wgExceptions:
+        type: boolean
+        description: |
+          Enables walled-garden exceptions.
+  proxyHostname:
+    type: string
+    description: |
+      Name of proxy host machine.
+    format: hostname
+  riskyFileHandlingSettings:
+    type: object
+    description: |
+      Describes file handling settings.
+    additionalProperties: false
+    required:
+    - hugeRiskyFileResponse
+    - largeRiskyFileResponse
+    - dynamicAnalysisEnabled
+    properties:
+      dynamicAnalysisEnabled:
+        type: boolean
+        description: |
+          Enables dynamic analysis.
+      hugeRiskyFileResponse:
+        type: object
+        description: |
+          Specifies the file response for huge risky files.
+        additionalProperties: false
+        required:
+        - name
+        - id
+        properties:
+          id:
+            type: integer
+            description: |
+              A unique identifier for the response.
+            readOnly: true
+            minimum: 1
+          name:
+            type: string
+            description: |
+              The name of the response.
+            minLength: 1
+      largeRiskyFileResponse:
+        type: object
+        description: |
+          Specifies the file response for large risky files.
+        additionalProperties: false
+        required:
+        - name
+        - id
+        properties:
+          id:
+            type: integer
+            description: |
+              A unique identifier for the response.
+            readOnly: true
+            minimum: 1
+          name:
+            type: string
+            description: |
+              The name of the response.
+            minLength: 1
+  safeSearchSettings:
+    type: object
+    description: |
+      Contains safe search settings.
+    additionalProperties: false
+    required:
+    - youtube
+    properties:
+      youtube:
+        type: string
+        description: |
+          Specifies the Youtube access policy, either `open`, `moderate`, or `strict`.
+        enum:
+        - open
+        - moderate
+        - strict
+  securitySettings:
+    type: array
+    description: |
+      Contains the policy security settings.
+    minItems: 0
+    items:
+      $ref: securitySettingsInfo.yaml
+  sites:
+    type: array
+    description: |
+      Contains associated site IDs.
+    minItems: 0
+    items:
+      type: integer
+      minimum: 1
+  sitesInfo:
+    type: array
+    description: |
+      Contains data about associated sites.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - id
+      properties:
+        id:
+          type: integer
+          description: |
+            A unique identifier for the site.
+          readOnly: true
+          minimum: 1
+        name:
+          type: string
+          description: |
+            The name of the site.
+          minLength: 1
+  sublocationInfo:
+    type: array
+    description: |
+      Lists sublocation info.
+    minItems: 0
+    items:
+      $ref: identifierIdName.yaml
+  sublocations:
+    type: array
+    description: |
+      Lists the sublocations configured for this policy.
+    minItems: 0
+    items:
+      type: integer
+      minimum: 0
+  trafficLogging:
+    type: object
+    description: |
+      Provides details of traffic logging in different modes.
+    additionalProperties: false
+    required:
+    - headers
+    - mode
+    - url
+    properties:
+      headers:
+        type: object
+        description: |
+          Contains header information for traffic.
+        additionalProperties: false
+        required:
+        - request
+        - response
+        properties:
+          request:
+            type: object
+            description: |
+              The request details in the header.
+            additionalProperties: false
+            required:
+            - mode
+            - whiteList
+            properties:
+              mode:
+                type: string
+                description: |
+                  Request mode in headers. Either `FULL`, `FILTER`, or `CLEAR`.
+                enum:
+                - FULL
+                - FILTER
+                - CLEAR
+              whiteList:
+                type: array
+                description: |
+                  Lists allowed header values.
+                minItems: 0
+                items:
+                  type: string
+                  minLength: 1
+          response:
+            type: object
+            description: |
+              The response details in the header.
+            additionalProperties: false
+            required:
+            - mode
+            - whiteList
+            properties:
+              mode:
+                type: string
+                description: |
+                  Response mode in headers. Either `FULL`, `FILTER`, or `CLEAR`.
+                enum:
+                - FULL
+                - FILTER
+                - CLEAR
+              whiteList:
+                type: array
+                description: |
+                  Lists allowed header values.
+                minItems: 0
+                items:
+                  type: string
+                  minLength: 1
+      mode:
+        type: string
+        description: |
+          The traffic logging mode. Either `full`, `url`, `path`, or `host`.
+        enum:
+        - full
+        - url
+        - path
+        - host
+      url:
+        type: object
+        description: |
+          URL details of the traffic.
+        additionalProperties: false
+        required:
+        - mode
+        properties:
+          mode:
+            type: string
+            description: |
+              The URL mode used for traffic logging. Either `FULL`, `PATH`, or `HOST`.
+            enum:
+            - FULL
+            - PATH
+            - HOST

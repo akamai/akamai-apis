@@ -1,0 +1,335 @@
+type: object
+description: |-
+  This object encapsulates each security event. Each line of response body output represents one of these objects, except for the last, which is a [ResponseContext](ref:responsecontext-1) object.
+  
+x-akamai:
+  file-path: schemas/siem-event-200.yaml
+additionalProperties: false
+required:
+- attackData
+- format
+- type
+- version
+- httpMessage
+- geo
+properties:
+  type:
+    type: string
+    description: |
+      Characterizes the source of this report data. Value is always `akamai_siem`.
+    enum:
+    - akamai_siem
+  version:
+    type: string
+    description: |
+      The version number for this report's JSON data format — for example, `1.0`.
+  format:
+    type: string
+    description: |
+      The format of the data representing this security event, `json` in this context.
+    enum:
+    - json
+  attackData:
+    type: object
+    description: |
+      Characterizes the nature of each attack and provides details on the set of configuration rules that intercepted it. Each rule-related member encodes a conceptual array of faceted data for more than one rule. See [Configuration rule data](ref:configuration-rule-data-1) for details.
+    additionalProperties: false
+    required:
+    - ruleMessages
+    - ruleSelectors
+    - rules
+    - ruleActions
+    - ruleVersions
+    - ruleData
+    - policyId
+    - configId
+    - clientIP
+    - ruleTags
+    properties:
+      apiId:
+        type: string
+        description: |
+          For attacks on API services, this is a unique identifier under which the API is protected. It corresponds to the `apiEndPointId` value in the [API Endpoint Definition API](https://techdocs.akamai.com/api-gateway/reference/api) — for example, `API_41`.
+      apiKey:
+        type: string
+        description: |
+          For attacks on API services, this is the security you specify. It corresponds to the `apiKeyName` value in the [API Endpoint Definition API](https://techdocs.akamai.com/api-gateway/reference/api) — for example, `bkayZOMvuy8aZOhIgxq94K9Oe7Y70Hw55`.
+      clientIP:
+        type: string
+        description: |
+          The IP address of the client making the request — for example, `72.229.28.185`.
+      clientReputation:
+        type: string
+        description: |
+          For Client Reputation customers, provides information on the client IP's reputation — for example, `ID=172.19.185.64;WEBATCK=9;DOSATCK=9`. See the [Client Reputation Integration Guide](https://control.akamai.com/dl/customers/KONA/ClientReputation/ClientRep_IntegrationGuide.pdf) for details.
+      configId:
+        type: string
+        description: |
+          Unique identifier for the security configuration that applied to this request — for example, `6724`.
+      policyId:
+        type: string
+        description: |
+          Unique identifier for the firewall policy applied to this request — for example, `scoe_5426`. Each security configuration may contain more than one policy.
+      ruleActions:
+        type: string
+        description: |
+          Identifies whether the request was aborted (`deny`) or allowed to pass with a warning logged (`alert`) — for example, `QUxFUlQ;REVOWQ==`. See [Configuration rule data](ref:configuration-rule-data-1) for information on decoding this value.
+      ruleData:
+        type: string
+        description: |
+          User-supplied values that led each rule to trigger, typically suspect text that appears somewhere in the request, or a specified Client Reputation score — for example, `YWxlcnQo;Y3VybA==`. See [Configuration rule data](ref:configuration-rule-data-1) for information on decoding this value.
+      ruleMessages:
+        type: string
+        description: |
+          The message reported by each triggered rule — for example, `Q3Jvc3Mtc2l0ZSBTY3Jp<wbr>cHRpbmcgKFhTUykgQXR0YWNr<wbr>;UmVxdWVzdCBJbmRp<wbr>Y2F0ZXMgYW4gYXV0b21hdGVk<wbr>IHByb2dyYW0gZXhw<wbr>bG9yZWQgdGhlIHNpdGU=`. See [Configuration rule data](ref:configuration-rule-data-1) for information on decoding this value.
+      ruleSelectors:
+        type: string
+        description: |
+          Identifies the location in the request that triggered each rule, such as the name of an HTTP header — for example, `QVJHUzph;UkVRV<wbr>UVTVF9IRUFERVJTO<wbr>lVzZXItQWdlbnQ=`. See [Configuration rule data](ref:configuration-rule-data-1) for information on decoding this value.
+      ruleTags:
+        type: string
+        description: |
+          Represents a set of categories for the triggered rule — for example, `V0VCX0FU<wbr>VEFDSy9YU1M=;QVVUT01B<wbr>VElPTi9NSVND`. See [Configuration rule data](ref:configuration-rule-data-1) for information on decoding this value.
+      ruleVersions:
+        type: string
+        description: |
+          The version of each triggered rule — for example, `4,4,4,4,4,1`. See [Configuration rule data](ref:configuration-rule-data-1) for information on decoding this value.
+      rules:
+        type: string
+        description: |
+          A series of identifiers for rules within the configuration that triggered for this request — for example, `OTUwMDA0;OTkwMDEx`. See [Configuration rule data](ref:configuration-rule-data-1) for information on decoding this value.
+      slowPostAction:
+        type: string
+        description: |
+          For any detected slow POST attack, indicate the resulting action, either `W` for a warning, or `A` for abort (deny). This member appears only when slow POST protection triggers.
+        enum:
+        - W
+        - A
+      slowPostRate:
+        type: string
+        description: |
+          For any detected slow POST attack, indicates the recorded rate of the attack in bytes per second — for example, `10`. This member appears only when slow POST protection triggers.
+  botData:
+    type: object
+    description: |
+      An optional object that contains Bot Score data. This object is only available to Bot Manager customers and only on endpoints with Bot Score enabled.
+    additionalProperties: false
+    required:
+    - botScore
+    - responseSegment
+    properties:
+      botScore:
+        type: string
+        description: |
+          Numerical Bot Score for protected requests. Range 0:100.
+      responseSegment:
+        type: string
+        description: |
+          Response Segment indicator: `0` - Human, `1` - Cautious response, `2` - Strict response, `3` - Aggressive response, `4` - Safeguard.
+        enum:
+        - '0'
+        - '1'
+        - '2'
+        - '3'
+        - '4'
+  clientData:
+    type: object
+    description: |
+      An optional object that contains client information. This object is only available to Bot Manager customers and only on endpoints configured for bot endpoint protection.
+    additionalProperties: false
+    required:
+    - telemetryType
+    properties:
+      appBundleId:
+        type: string
+        description: |
+          App bundle id. This will be present only if telemetry type is native app sdk telemetry.
+      appVersion:
+        type: string
+        description: |
+          App version. This will be present only if telemetry type is native app sdk telemetry.
+      sdkVersion:
+        type: string
+        description: |
+          Native App Traffic Protection SDK Version. This will be present only if telemetry type is native app sdk telemetry.
+      telemetryType:
+        type: string
+        description: |
+          The telemetry type for this client request: `0` for webclient standard telemetry, `1` for webclient inline telemetry, or `2` for native app SDK telemetry.
+        enum:
+        - '0'
+        - '1'
+        - '2'
+  custom:
+    type: string
+    description: |
+      A value you can customize to distinguish subsets of content. Contact Akamai Professional Services for help configuring the custom field. Size limit is 2KB. See [Configuration rule data](ref:configuration-rule-data-1) for information on decoding this value.
+  geo:
+    type: object
+    description: |
+      Encapsulates location data for the attack's source.
+    additionalProperties: false
+    required:
+    - country
+    - asn
+    - regionCode
+    - continent
+    - city
+    properties:
+      asn:
+        type: string
+        description: |
+          The AS number or numbers that the IP belongs to — for example, `12271`.
+      city:
+        type: string
+        description: |
+          The city to which the IP address maps — for example, `NEWYORK`.
+      continent:
+        type: string
+        description: |
+          A two-letter code for the continent to which the IP address maps — for example, `NA`.
+      country:
+        type: string
+        description: |
+          A two-letter ISO 3166 code for the country to which the IP address maps — for example, `US`.
+      regionCode:
+        type: string
+        description: |
+          A two-letter ISO 3166 code representing the state, province, or region to which the IP address maps — for example, `NY`.
+  httpMessage:
+    type: object
+    description: |
+      Provides context on each attack's HTTP request.
+    additionalProperties: false
+    required:
+    - status
+    - protocol
+    - requestHeaders
+    - bytes
+    - method
+    - start
+    - host
+    - requestId
+    - query
+    - path
+    - responseHeaders
+    - port
+    properties:
+      bytes:
+        type: string
+        description: |
+          The number of bytes served in the response, represented as an integer string — for example, `34523`.
+      host:
+        type: string
+        description: |
+          The incoming client request's `Host` header — for example, `www.example.com`.
+      method:
+        type: string
+        description: |
+          The request's HTTP method, either `GET`, `POST`, `PUT`, `DELETE`, `HEAD`, or `OPTIONS`.
+        enum:
+        - GET
+        - POST
+        - DELETE
+        - PUT
+        - HEAD
+        - OPTIONS
+      path:
+        type: string
+        description: |
+          The server path from the client's requested URL, excluding query strings — for example, `/examples/1/`.
+      port:
+        type: string
+        description: |
+          The port number for the incoming request, either `80` or `443`.
+        enum:
+        - '80'
+        - '443'
+      protocol:
+        type: string
+        description: |
+          The request protocol — for example, `http/2`.
+      query:
+        type: string
+        description: |
+          The client request's full query string — for example, `option=com_jce%20telnet.exe`.
+      requestHeaders:
+        type: string
+        description: |
+          The full set of request headers, URL-encoded.
+      requestId:
+        type: string
+        description: |
+          A unique identifier for each request — for example, `2ab418ac8515f33`.
+      responseHeaders:
+        type: string
+        description: |
+          The full set of response headers, URL-encoded.
+      start:
+        type: string
+        description: |
+          A string representation of the epoch time when the edge server initiated the connection for the request — for example, `1497291979`.
+      status:
+        type: string
+        description: |
+          The HTTP response status code sent to the client — for example, `301`.
+      tls:
+        type: string
+        description: |
+          TLS version if applicable. Should be equal to `AK_TLS_VERSION` — for example, `TLSv1.2`.
+  userRiskData:
+    type: object
+    description: |
+      An optional object that contains user risk information. This object is only available to Identity Protector customers and only on endpoints configured for identity protection.
+    additionalProperties: false
+    required:
+    - status
+    properties:
+      allow:
+        type: string
+        description: |
+          A `0` means the user was not on the allow list. A `1` means the user was on the allow list.
+        enum:
+        - '0'
+        - '1'
+      general:
+        type: string
+        description: |
+          Indicators (users per device, IPs per user, etc) of general behavior observed for relevant attributes.
+      originUserId:
+        type: string
+        description: |
+          The unencrypted user ID, provided by the origin.
+      risk:
+        type: string
+        description: |
+          Indicators (e.g. device, geo, asn, tod) that increased the calculated risk score.
+      score:
+        type: string
+        description: |
+          Score ranging from 0 to 100. A `0` means no risk and `100` is the highest possible risk.
+      status:
+        type: string
+        description: |
+          Status code describing any errors that occurred during risk scoring: `0` - no error, `1` - unknown error, `2` - user profile not found, `3` - user profile insufficient for accurate score, `4` - no telemetry received for Bot Manager cookie presented in this request, `5` - calculation timeout, `6` - username not found in client request, `7` - can't identify user on this non-login request.
+        enum:
+        - '0'
+        - '1'
+        - '2'
+        - '3'
+        - '4'
+        - '5'
+        - '6'
+        - '7'
+      trust:
+        type: string
+        description: |
+          Indicators (e.g. device, geo, asn, tod) that were trusted.
+      username:
+        type: string
+        description: |
+          The unencrypted username, provided at login by the user.
+      uuid:
+        type: string
+        description: |
+          Unique identifier for the user whose user risk data is provided here.

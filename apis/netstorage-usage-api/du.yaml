@@ -1,0 +1,50 @@
+openapi: 3.0.0
+info:
+  title: du
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: http://{apiKey}-nsu.akamaihd.net
+x-akamai:
+  file-path: du.yaml
+paths:
+  /{cpCode}/{path}/{filename}:
+    parameters:
+    - $ref: parameters/X-Akamai-ACS-Action-du.yaml
+    - $ref: parameters/X-Akamai-ACS-Auth-Data.yaml
+    - $ref: parameters/X-Akamai-ACS-Auth-Sign.yaml
+    - $ref: parameters/Host.yaml
+    - $ref: parameters/cpCode.yaml
+    - $ref: parameters/path.yaml
+    - $ref: parameters/filename.yaml
+    get:
+      operationId: get-du
+      summary: du action
+      tags:
+      - API actions
+      description: |
+        Use this action to return disk usage information for a specified directory in a NetStorage storage group.
+      responses:
+        200:
+          description: |
+            Response data indicates a successful action.
+          content:
+            application/xml:
+              example:
+                $ref: examples/du-200.xml
+              schema:
+                $ref: schemas/du-200.yaml
+        400:
+          description: |
+            Malformed request, such as unsupported encoding= value in `X-Akamai-ACS-Action` request header. There may be more information in the response body.
+        403:
+          description: |
+            Forbidden operation, such as action=du in HTTP PUT request, or authentication or authorization error. There may be more information in the response body.
+        404:
+          description: |
+            The object which is the subject of action=stat does not exist.
+        500:
+          description: |
+            Internal error in the server. There will be more information in the response body.

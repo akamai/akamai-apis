@@ -1,0 +1,102 @@
+type: object
+description: |-
+  Differences found between the source URL and target URL, under a specific IP version, within a specific geolocation and on a specific browser, as configured in the test cases of the test definition that was run.
+  
+x-akamai:
+  file-path: schemas/getDifferenceResponse.yaml
+additionalProperties: false
+required:
+- differenceId
+- testCaseId
+- sourceUrl
+- targetUrl
+- ipVersion
+- geoLocation
+- browser
+- comparisonAttribute
+- parameterNames
+- sourceValue
+- targetValue
+- isAccepted
+properties:
+  browser:
+    type: object
+    description: |
+      An object containing browser info.
+    additionalProperties: false
+    required:
+    - name
+    - version
+    properties:
+      name:
+        type: string
+        description: |
+          Name of the browser. Must be `chrome`.
+        enum:
+        - chrome
+      version:
+        type: string
+        description: |
+          Version of the browser.
+  comparisonAttribute:
+    type: string
+    description: |
+      The comparison setting which the difference object addresses. Can be any comparison setting: `cacheKey`, `cachingOption`, `cpcode`, `metadataVariables`, `originServer`, `responseCode`, `responseHeaders`.
+    enum:
+    - responseCode
+    - responseHeaders
+    - cpcode
+    - cachingOption
+    - originServer
+    - metadataVariables
+    - cacheKey
+  differenceId:
+    type: string
+    description: |
+      Unique identifier for the difference.
+  geoLocation:
+    type: string
+    description: |
+      Identifier of the geolocation.
+  ipVersion:
+    type: string
+    description: |
+      The IP version used for this execution. Can be either `ipv4` or `ipv6`.
+    enum:
+    - ipv4
+    - ipv6
+  isAccepted:
+    type: boolean
+    description: |
+      A boolean value indicating whether the difference has been resolved by the user.
+    default: false
+  parameterNames:
+    type: array
+    description: |
+      A list of strings which represents a hierarchy of keys deduced from the response header value.
+    items:
+      type: string
+      description: |
+        A string that represents the parsed response header value.
+  sourceUrl:
+    type: string
+    description: |
+      URL of the object in source environment.
+    format: uri
+  sourceValue:
+    type: string
+    description: |
+      Value of the comparison attribute for the parameter names in source environment.
+  targetUrl:
+    type: string
+    description: |
+      URL of the object in target environment.
+    format: uri
+  targetValue:
+    type: string
+    description: |
+      Value of the comparison attribute for the parameter names in target environment.
+  testCaseId:
+    type: integer
+    description: |
+      Identifier of the test case the difference belongs to.

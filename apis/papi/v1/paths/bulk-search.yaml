@@ -1,0 +1,45 @@
+x-akamai:
+  file-path: paths/bulk-search.yaml
+  path-for-file: /bulk/rules-search-requests/{bulkSearchId}
+parameters:
+- $ref: ../parameters/bulkSearchId-path.yaml
+get:
+  operationId: get-bulk-search
+  summary: List bulk search results
+  tags:
+  - Bulk search
+  description: |
+    List all property or include versions that result from a [bulk search request](ref:post-bulk-search). Run this operation to poll the asynchronous process's status. Once the `searchTargetStatus` is `COMPLETE`, you can feed the `results` into a [bulk versioning](ref:post-bulk-version) operation. Also use the JSON path `matchLocations` to run a [bulk patch](ref:post-bulk-patch) operation over the rule trees. See [Bulk Search and Update](ref:bulk-search-and-update) for guidance.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional-bulk.yaml
+  - $ref: ../parameters/groupId-optional-bulk.yaml
+  responses:
+    200:
+      description: |
+        The response shows the bulk search job, which proceeds until the `searchTargetStatus` is `COMPLETE`.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/search-bulk-get-response.json
+          schema:
+            $ref: ../schemas/bulk-search-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: bulkSearch
+  group: Bulk searches

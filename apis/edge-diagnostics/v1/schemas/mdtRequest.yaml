@@ -1,0 +1,60 @@
+type: object
+description: |-
+  Collects data to use in the metadata tracer request.
+  
+x-akamai:
+  file-path: schemas/mdtRequest.yaml
+additionalProperties: false
+required:
+- url
+properties:
+  edgeIp:
+    type: string
+    description: |
+      IP of the edge server you want to run the operation from. If you don't know if an IP is the edge IP, run the [Verify an IP](ref:post-verify-edge-ip) operation. Provide either this value or `mdtLocationId`.
+    minLength: 1
+  httpBody:
+    type: string
+    description: |
+      The POST call's request body.
+    minLength: 1
+    maxLength: 4096
+  httpMethod:
+    type: string
+    description: |
+      HTTP method you want to use to run the operation, either `HEAD`, `POST`, or the default `GET` method.
+    default: GET
+    enum:
+    - HEAD
+    - GET
+    - POST
+  mdtLocationId:
+    type: string
+    description: |
+      Unique identifier for an available location closest to your end users. To get this value, run the [List available locations for metadata tracing](ref:get-mdt-locations) operation first. For `GET` and `HEAD`, provide either this value or `edgeIp`.
+    minLength: 1
+  requestHeaders:
+    type: array
+    description: |
+      Customized headers for metadata tracer request in the format `header: value`. Check [Pragma headers](doc:pragma-headers) for the list of Akamized Pragma headers you can use here.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  sensitiveRequestHeaderKeys:
+    type: array
+    description: |
+      Sensitive `requestHeaders` you don't want to store in the database after running the request. Check [Sensitive headers](ref:sensitive-headers) to see the list of request headers treated as sensitive by default.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  url:
+    type: string
+    description: |
+      URL configured in Property Manager you want to get the metadata trace for.
+    format: uri
+  useStaging:
+    type: boolean
+    description: |
+      Runs the request on the staging environment, `false` by default. 

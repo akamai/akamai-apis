@@ -1,0 +1,205 @@
+type: object
+description: |-
+  Describes properties for APIs discovered on your account.
+  
+x-akamai:
+  file-path: schemas/api-discovery-details-200.yaml
+additionalProperties: false
+properties:
+  apiEndpointIds:
+    type: array
+    description: |
+      The unique identifiers for APIs you're matching. This is available only for the `RESOURCE` discovery type.
+    items:
+      type: integer
+  basePath:
+    type: string
+    description: |
+      The base path where the API serves content.
+  discoveryType:
+    type: string
+    description: |
+      Use `API` when you create a new API. Use `RESOURCE` to add a new resource to an existing API.
+    enum:
+    - API
+    - RESOURCE
+  enrichment:
+    type: object
+    description: |
+      Summarizes the discovered API metrics.
+    additionalProperties: false
+    properties:
+      paths:
+        type: object
+        description: |
+          The resource paths detected for resources that include wildcards.
+        additionalProperties: false
+        properties:
+          options:
+            type: integer
+            description: |
+              The number of detected OPTIONS requests the API received.
+          deletes:
+            type: integer
+            description: |
+              The number of detected DELETE requests the API received.
+          gets:
+            type: integer
+            description: |
+              The number of detected GET requests the API received.
+          posts:
+            type: integer
+            description: |
+              The number of detected POST requests the API received.
+          puts:
+            type: integer
+            description: |
+              The number of detected PUT requests the API received.
+          samples:
+            type: array
+            description: |
+              Sample resource paths detected for resources that include wildcards. For non-wildcards, this shows the full path.
+            items:
+              type: string
+          template:
+            type: string
+            description: |
+              The templatized paths for resources that include a wildcard.
+      options:
+        type: integer
+        description: |
+          The number of detected OPTION requests the API received.
+      browsers:
+        type: integer
+        description: |
+          The number of detected requests the API received through a browser.
+      clientErrors:
+        type: integer
+        description: |
+          The number of detected client error responses (4xx status codes) the API returned.
+      clientReputation:
+        type: number
+        description: |
+          The percentage of clients with bad reputations.
+      dateFirstSeen:
+        type: string
+        description: |
+          When the API was first detected in the Akamai network.
+      dateLastModified:
+        type: string
+        description: |
+          When the API was last updated.
+      dateLastSeen:
+        type: string
+        description: |
+          When the API last served traffic in the Akamai network.
+      deletes:
+        type: integer
+        description: |
+          The number of detected DELETE requests the API received.
+      dosAttackers:
+        type: number
+        description: |
+          The percentage of detected DoS attackers among the clients with bad reputation.
+      formats:
+        type: array
+        description: |
+          Data formats the API returns.
+        items:
+          type: string
+      gets:
+        type: integer
+        description: |
+          The number of detected GET requests the API received.
+      hostSamples:
+        type: array
+        description: |
+          The set of sample hostnames if a hostname includes a wildcard. For non-wildcard hostnames, this shows the hostname.
+        items:
+          type: string
+      mobiles:
+        type: integer
+        description: |
+          The number of detected requests the API received through a mobile device.
+      newlyDiscovered:
+        type: boolean
+        description: |
+          Indicates whether this is a newly discovered API or and API not yet included in your API protections.
+      posts:
+        type: integer
+        description: |
+          The number of detected POST requests the API received.
+      puts:
+        type: integer
+        description: |
+          The number of detected PUT requests the API received.
+      redirects:
+        type: integer
+        description: |
+          The number of detected redirect responses (3xx status codes) the API returned.
+      requests:
+        type: integer
+        description: |
+          The number of detected requests sent to the API.
+      requestsBadReputation:
+        type: number
+        description: |
+          The percentage of detected requests sent to the API by clients with the reputation score greater than five.
+      requestsLastDay:
+        type: integer
+        description: |
+          The number of detected requests sent to the API during the previous day.
+      scanningTools:
+        type: number
+        description: |
+          The percentage of detected scanners among the clients with bad reputations.
+      serverErrors:
+        type: integer
+        description: |
+          The number of detected server error responses (5xx status codes) the API returned.
+      successes:
+        type: integer
+        description: |
+          The number of detected success responses (2xx status codes) the API returned.
+      totalDailyRequests:
+        type: array
+        description: |
+          The number of detected requests in the last 30 days.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            date:
+              type: integer
+              description: |
+                The number of detected requests on each day.
+      totalErrors:
+        type: integer
+        description: |
+          The number of detected error responses.
+      trend:
+        type: string
+        description: |
+          The trend of the current day's detected requests versus the average number of detected requests in the last 30 days, either `UP` or `DOWN`.
+        enum:
+        - UP
+        - DOWN
+      webAttackers:
+        type: number
+        description: |
+          The percentage of detected web attackers among the clients with bad reputations.
+      webScrapers:
+        type: number
+        description: |
+          The percentage of detected web scrapers among the clients with bad reputations.
+  host:
+    type: string
+    description: |
+      The hostname where the API resides. If you haven't configured the hostname in Property Manager, you won't be able to register the API that uses the hostname.
+  visibility:
+    type: string
+    description: |
+      When `HIDDEN`, the API is omitted from future responses for the person who runs this operation. When `VISIBLE`, the API is included in those responses. This operation is per-user. APIs you hide under your credentials still appear unhidden for other users making the same call under their credentials.
+    enum:
+    - VISIBLE
+    - HIDDEN

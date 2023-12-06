@@ -1,0 +1,57 @@
+openapi: 3.0.0
+info:
+  title: Reports
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edgeworkers/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: reports.yaml
+paths:
+  /reports:
+    get:
+      operationId: get-reports
+      summary: List reports
+      tags:
+      - Reports
+      description: |
+        View a list of available reports. The data in these reports is also available in the [EdgeWorkers Management application](doc:manage-report-data).
+      responses:
+        200:
+          description: |
+            Describes a list of EdgeWorker reports.
+          content:
+            application/json:
+              example:
+                $ref: examples/reports-get-200.json
+              schema:
+                $ref: schemas/reports-get-200.yaml
+  /reports/{reportId}:
+    parameters:
+    - $ref: parameters/reportId-path.yaml
+    get:
+      operationId: get-report
+      summary: Get an EdgeWorker report
+      tags:
+      - Reports
+      description: |
+        View details for a specific EdgeWorker.
+      parameters:
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      - $ref: parameters/edgeWorker-query.yaml
+      - $ref: parameters/status-query.yaml
+      - $ref: parameters/eventHandler-query.yaml
+      responses:
+        200:
+          description: |
+            This section describes attributes of an EdgeWorker report.
+          content:
+            application/json:
+              example:
+                $ref: examples/report-5-get-200.json
+              schema:
+                $ref: schemas/report-get-200.yaml

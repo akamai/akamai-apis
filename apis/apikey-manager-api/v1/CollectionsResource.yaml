@@ -1,0 +1,374 @@
+openapi: 3.0.0
+info:
+  title: Collections
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/apikey-manager-api/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: CollectionsResource.yaml
+paths:
+  /collections:
+    post:
+      operationId: post-collection
+      summary: Create a key collection
+      tags:
+      - Key collections
+      description: |
+        Creates an empty collection under the selected contract and group.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/keyCollectionDto-postrequest-example.json
+            schema:
+              $ref: schemas/keyCollectionDto.yaml
+      responses:
+        201:
+          description: |
+            The collection has been created.
+          headers:
+            Location:
+              description: |
+                A URI that points to the location of the newly created collection.
+              schema:
+                type: string
+          content:
+            application/json:
+              example:
+                $ref: examples/keyCollectionDto-postresponse-example.json
+              schema:
+                $ref: schemas/keyCollectionDto.yaml
+        400:
+          description: |
+            [Validation error](ref:400). The request contains invalid data.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/400.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to create a collection.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The collection could not be created.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    get:
+      operationId: get-collections
+      summary: List key collections
+      tags:
+      - Key collections
+      description: |
+        Returns information about all collections available for the current contract and group.
+      responses:
+        200:
+          description: |
+            The collections have been returned.
+          content:
+            application/json:
+              example:
+                $ref: examples/keyCollectionListDto-get-example.json
+              schema:
+                $ref: schemas/keyCollectionListDto.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to get the collections.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The collections list is empty.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /collections/{collectionId}:
+    parameters:
+    - $ref: parameters/collectionId-path.yaml
+    get:
+      operationId: get-collection
+      summary: Get a key collection
+      tags:
+      - Key collections
+      description: |
+        Returns information about a collection.
+      responses:
+        200:
+          description: |
+            The collection has been returned.
+          content:
+            application/json:
+              example:
+                $ref: examples/keyCollectionDto-get-example.json
+              schema:
+                $ref: schemas/keyCollectionDto.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to get the collection.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The collection could not be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    put:
+      operationId: put-collection
+      summary: Edit a key collection
+      tags:
+      - Key collections
+      description: |
+        Updates the name and description of a collection.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/keyCollectionDto-get-example.json
+            schema:
+              $ref: schemas/keyCollectionDto.yaml
+      responses:
+        200:
+          description: |
+            The collection has been updated.
+          content:
+            application/json:
+              example:
+                $ref: examples/keyCollectionDto-get-example.json
+              schema:
+                $ref: schemas/keyCollectionDto.yaml
+        400:
+          description: |
+            [Validation error](ref:400). The request contains invalid data.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/400.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to update the collection.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The collection could not be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+    delete:
+      operationId: delete-collection
+      summary: Delete a key collection
+      tags:
+      - Key collections
+      description: |
+        Deletes a collection and all keys included in the collection.
+      responses:
+        204:
+          description: |
+            The collection has been deleted.
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to delete the collection.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The collection could not be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /collections/{collectionId}/acl:
+    parameters:
+    - $ref: parameters/collectionId-path.yaml
+    put:
+      operationId: put-collection-acl
+      summary: Edit an ACL
+      tags:
+      - ACLs
+      description: |
+        Updates the access control list of a collection by adding or removing endpoint, resource, and HTTP method information from the ACL.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/aclList-example.json
+            schema:
+              $ref: schemas/aclList.yaml
+      responses:
+        200:
+          description: |
+            The ACL has been updated.
+          content:
+            application/json:
+              example:
+                $ref: examples/keyCollectionDto-get-example.json
+              schema:
+                $ref: schemas/keyCollectionDto.yaml
+        400:
+          description: |
+            [Validation error](ref:400). The request contains invalid data.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/400.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to update an ACL.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The requested ACL could not be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /collections/{collectionId}/endpoints:
+    parameters:
+    - $ref: parameters/collectionId-path.yaml
+    get:
+      operationId: get-collection-endpoints
+      summary: List collection endpoints
+      tags:
+      - Collection endpoints
+      description: |
+        Returns information about all endpoints assigned to the contract and group under which you created the collection. The format of the response data for this operation is managed by the [API Endpoints API](https://techdocs.akamai.com/api-gateway/reference/api).
+      responses:
+        200:
+          description: |
+            The endpoints have been returned.
+          content:
+            application/json:
+              example:
+                $ref: examples/apiEndpointDto-example.json
+              schema:
+                $ref: schemas/endpoints.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to list endpoints.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The requested endpoints could not be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+  /collections/{collectionId}/quota:
+    parameters:
+    - $ref: parameters/collectionId-path.yaml
+    put:
+      operationId: put-collection-quota
+      summary: Edit quota settings
+      tags:
+      - Quota settings
+      description: |
+        Updates the quota settings in a collection.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/quotaCommand-example.json
+            schema:
+              $ref: schemas/quotaCommand.yaml
+      responses:
+        200:
+          description: |
+            The quota has been updated.
+          content:
+            application/json:
+              example:
+                $ref: examples/keyCollectionDto-get-example.json
+              schema:
+                $ref: schemas/keyCollectionDto.yaml
+        400:
+          description: |
+            [Validation error](ref:400). The request contains invalid data.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/400.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have the required permissions to update quota.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/403.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml
+        404:
+          description: |
+            [Resource not found](ref:404). The requested quota settings could not be found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/404.json
+              schema:
+                $ref: schemas/httpProblemDetails.yaml

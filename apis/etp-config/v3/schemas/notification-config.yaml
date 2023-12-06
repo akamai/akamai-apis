@@ -1,0 +1,124 @@
+type: object
+description: |-
+  Specifies notification configuration details.
+  
+x-akamai:
+  file-path: schemas/notification-config.yaml
+additionalProperties: false
+required:
+- type
+- value
+- id
+- createdBy
+- createdDate
+- siteSelectionStrategy
+- siteMappings
+- attributes
+properties:
+  id:
+    type: integer
+    description: |
+      A unique identifier for notification config.
+    minimum: 1
+  type:
+    type: string
+    description: |
+      The subscriber notification method. Either `alert`, `upgrade`, `vmUpgrade`, `scheduledReport`, or `system`.
+    enum:
+    - alert
+    - upgrade
+    - vmUpgrade
+    - scheduledReport
+    - system
+  value:
+    type: string
+    description: |
+      The email of the subscriber.
+    format: email
+  attributes:
+    type: array
+    description: |
+      List of attributes for the notifications.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - category
+      - contentType
+      - enabled
+      properties:
+        category:
+          type: string
+          description: |
+            The category of notification. Either `alert`, `upgrade`, `vmUpgrade`, `scheduledReport`, or `system`.
+          enum:
+          - alert
+          - upgrade
+          - vmUpgrade
+          - scheduledReport
+          - system
+          minLength: 1
+        contentType:
+          type: string
+          description: |
+            The notification's MIME type, either `text/html` or `text/plain`.
+          enum:
+          - text/html
+          - text/plain
+          minLength: 1
+        enabled:
+          type: boolean
+          description: |
+            Enables the notification.
+  createdBy:
+    type: string
+    description: |
+      Name of the user who created this notification config.
+    minLength: 1
+  createdDate:
+    type: string
+    description: |
+      ISO 8601 timestamp marking this notification config's creation.
+    readOnly: true
+    format: date-time
+  modifiedBy:
+    type: string
+    description: |
+      Name of the user who most recently modified this notification config.
+    minLength: 1
+  modifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp marking this notification config's last modification.
+    readOnly: true
+    format: date-time
+  siteMappings:
+    type: array
+    description: |
+      List of site mappings for the notification config.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - siteId
+      - siteName
+      properties:
+        siteId:
+          type: integer
+          description: |
+            Unique identifier of site for the notifications.
+          minimum: 1
+        siteName:
+          type: string
+          description: |
+            Name of site for the notifications.
+          minLength: 1
+  siteSelectionStrategy:
+    type: string
+    description: |
+      The location strategy adopted for notification, either `ALL` or `PARTIAL`.
+    enum:
+    - ALL
+    - PARTIAL

@@ -1,0 +1,33 @@
+type: object
+description: |-
+  The response to a request for an asynchronous property lookup job.
+  
+x-akamai:
+  file-path: schemas/property-lookup-get-200.yaml
+additionalProperties: false
+required:
+- lookupId
+- lookupStatus
+- properties
+properties:
+  properties:
+    type: array
+    description: |
+      Property lookup results, one for each property.
+    minItems: 0
+    items:
+      $ref: property-info.yaml
+  lookupId:
+    type: integer
+    description: |
+      Identifies each property lookup process.
+  lookupStatus:
+    type: string
+    description: |
+      The status of the property lookup process. The values come from the Property Manager API. `SUBMITTED` indicates the lookup request was sent.  `PENDING` indicates the request is in a queue to process.  `IN_PROGRESS` indicates Akamai received the lookup request and it's being processed. `COMPLETE` indicates the lookup is finished and the response includes property-specific data.  For any `ERROR`, try the [property lookup request](ref:get-property-lookup) again.
+    enum:
+    - COMPLETE
+    - ERROR
+    - IN_PROGRESS
+    - PENDING
+    - SUBMITTED

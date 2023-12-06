@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: Images
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/imaging/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: images.yaml
+paths:
+  /network/{network}/images:
+    parameters:
+    - $ref: parameters/network-path.yaml
+    - $ref: parameters/contractId-header.yaml
+    - $ref: parameters/policySetId-header.yaml
+    - $ref: parameters/limit-query.yaml
+    - $ref: parameters/url-query.yaml
+    - $ref: parameters/policyId-query.yaml
+    get:
+      operationId: get-images
+      summary: List images
+      tags:
+      - Images
+      description: |
+        List a policy's images.
+      responses:
+        200:
+          description: |
+            The request was successful.
+          content:
+            application/json:
+              example:
+                $ref: examples/images-array.json
+              schema:
+                $ref: schemas/images-array.yaml
+  /network/{network}/images/{imageId}:
+    parameters:
+    - $ref: parameters/network-path.yaml
+    - $ref: parameters/contractId-header.yaml
+    - $ref: parameters/policySetId-header.yaml
+    - $ref: parameters/imageId-path.yaml
+    get:
+      operationId: get-image
+      summary: Get an image
+      tags:
+      - Images
+      description: |
+        Returns a specific image.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/images-image.json
+              schema:
+                $ref: schemas/images-image.yaml

@@ -1,0 +1,118 @@
+type: object
+description: |-
+  Provides a list of Indicators of Compromise changes.
+  
+x-akamai:
+  file-path: schemas/changes.yaml
+additionalProperties: false
+required:
+- recordType
+- date
+- state
+- description
+properties:
+  description:
+    type: string
+    description: |
+      A description of the change made.
+    minLength: 1
+  date:
+    type: string
+    description: |
+      The date of the change in ISO 8601 format.
+    format: date-time
+  key:
+    type: string
+    description: |
+      The name of the key that changed.
+    minLength: 1
+  listId:
+    type: string
+    description: |
+      A unique identifier for the list assigned to the domain.
+    minLength: 1
+  listName:
+    type: string
+    description: |
+      The name of the list assigned to the domain.
+    minLength: 1
+  newDetails:
+    type: array
+    description: |
+      IOC new change detail.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - id
+      properties:
+        id:
+          type: integer
+          description: |
+            Unique identifier for new IOC change detail.
+          minimum: 0
+        name:
+          type: string
+          description: |
+            Name of the new IOC change detail.
+          minLength: 1
+  newValue:
+    type: string
+    description: |
+      The new value of the key.
+    minLength: 1
+  oldDetails:
+    type: array
+    description: |
+      IOC old change details.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - id
+      properties:
+        id:
+          type: integer
+          description: |
+            Unique identifier for old IOC change detail.
+          minimum: 0
+        name:
+          type: string
+          description: |
+            Name of the old IOC change detail.
+          minLength: 1
+  oldValue:
+    type: string
+    description: |
+      The previous value of the key.
+    minLength: 1
+  order:
+    type: string
+    description: |
+      Order of IOC change detail.
+    minLength: 1
+  path:
+    type: string
+    description: |
+      Path information.
+    minLength: 1
+  recordType:
+    type: string
+    description: |
+      Specifies the type of record. Either `DOMAIN` or `IP`.
+    enum:
+    - DOMAIN
+    - IP
+  state:
+    type: string
+    description: |
+      The state of the change made. Possible values are `ADDED`, `CHANGED`, `REMOVED`, or `DELETED`.
+    enum:
+    - ADDED
+    - CHANGED
+    - REMOVED
+    - DELETED

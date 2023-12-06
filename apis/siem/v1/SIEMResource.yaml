@@ -1,0 +1,102 @@
+openapi: 3.0.0
+info:
+  title: Security Events
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/siem/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: SIEMResource.yaml
+paths:
+  /configs/{configId}:
+    get:
+      operationId: get-config
+      summary: Fetch security events
+      tags:
+      - Events
+      description: |
+        Get security events data from your security configurations. Get data in one of two modes: offset or time-based. Both modes order event logs based on their storage time in the database, not the time when the events actually occurred. This may result in delayed event logs in subsequent offset requests, or older event logs in time-based requests. If the connection is disrupted, use time-based mode to go back and replay security events within the last 12 hours. Use `offset` and `limit` parameters in offset mode. Use `from`, `to` and `limit` parameters in time-based mode. The potentially large response contains a series of JSON objects, each separated with a line break and each corresponding to a security event. The last line of the response is a [ResponseContext] (ref:responsecontext-1) object that provides `total` records fetched, an `offset` to use a starting point for the next batch of data, and `limit` which shows if the fetch operation reached the limit you set. Run this operation continuously as long as it returns new logs to ensure you don't miss any. The API may return a maximum of 600,000 logs per request, while your configurations might generate many more in periods of high traffic.
+      x-akamai:
+        supports-account-switch-key: false
+      parameters:
+      - $ref: parameters/offset-query.yaml
+      - $ref: parameters/limit-query.yaml
+      - $ref: parameters/from-query.yaml
+      - $ref: parameters/to-query.yaml
+      - $ref: parameters/configId-path.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/siem-event-200.json
+              schema:
+                $ref: schemas/siem-event-200.yaml
+        400:
+          description: |
+            [Bad request](ref:400). Invalid request body or URL parameter input.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/siem-400.json
+              schema:
+                $ref: schemas/problem.yaml
+        403:
+          description: |
+            [Forbidden](ref:403). You don't have permission to view the resource.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/siem-403.json
+              schema:
+                $ref: schemas/problem.yaml
+        404:
+          description: |
+            [Not found](ref:404). The resource wasn't found.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/siem-404.json
+              schema:
+                $ref: schemas/problem.yaml
+        416:
+          description: |
+            [Expired offset parameter in the request](ref:416).
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/siem-416.json
+              schema:
+                $ref: schemas/problem.yaml
+        429:
+          description: |
+            [Exceeded rate limit](ref:429). Too many requests.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/siem-429.json
+              schema:
+                $ref: schemas/problem.yaml
+        500:
+          description: |
+            [Any other server error](ref:500).
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/siem-500.json
+              schema:
+                $ref: schemas/problem.yaml
+        503:
+          description: |
+            [Service unavailable](ref:503).
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/siem-503.json
+              schema:
+                $ref: schemas/problem.yaml

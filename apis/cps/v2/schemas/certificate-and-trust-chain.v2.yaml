@@ -1,0 +1,38 @@
+type: object
+description: |-
+  A digital certificate contains an electronic document that includes a company's identification information (such as the name of the company and address), a public key, and the digital signature of a certification authority (CA) based on that certification authority's private key. Digital certificates are verified using a chain of trust, which is a certificate hierarchy that allows individuals to verify the validity of a certificate's issuer. The latest BETA version allows for multiple certificates and trust chains submission (Dual-Stack enrollment).
+  
+x-akamai:
+  file-path: schemas/certificate-and-trust-chain.v2.yaml
+additionalProperties: false
+required:
+- certificatesAndTrustChains
+properties:
+  certificatesAndTrustChains:
+    type: array
+    description: |
+      Certificate and trust chains.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - certificate
+      - keyAlgorithm
+      properties:
+        certificate:
+          type: string
+          description: |
+            The certificate text.
+          nullable: true
+        keyAlgorithm:
+          type: string
+          description: |
+            The key algorithm of the certificate , either `ECDSA` or `RSA`.
+          enum:
+          - ECDSA
+          - RSA
+        trustChain:
+          type: string
+          description: |
+            The trust chain text. You may have no trust chains or multiple trust chains.
+          nullable: true

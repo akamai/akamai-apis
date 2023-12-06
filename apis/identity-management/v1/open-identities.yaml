@@ -1,0 +1,152 @@
+openapi: 3.0.0
+info:
+  title: Credentials
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/identity-management/v1
+x-akamai:
+  file-path: open-identities.yaml
+paths:
+  /open-identities/tokens/{accessToken}:
+    parameters:
+    - $ref: parameters/accessToken-path.yaml
+    get:
+      operationId: get-identity-access-token
+      summary: Get a client by its access token
+      description: |
+        View an API client's details. This operation lets you get a specific API client by passing the client's token in the request.
+      parameters:
+      - $ref: parameters/actions-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/open-identity-by-access-token-200.json
+              schema:
+                $ref: schemas/identity.yaml
+  /open-identities/{openIdentityId}/account-switch-keys:
+    parameters:
+    - $ref: parameters/openIdentityId-path.yaml
+    get:
+      operationId: get-account-switch-keys
+      summary: List account switch keys
+      description: |
+        The response object contains the `accountSwitchKeys` and account names you can access based on the permissions of your API client. Once you have the `accountSwitchKeys` you need, [you can make an API call to another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client).
+      parameters:
+      - $ref: parameters/search-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/account-switch-keys-200.json
+              schema:
+                $ref: schemas/get-open-identities-openidentityid-account-switch-keys-response.yaml
+  /open-identities/{openIdentityId}/credentials:
+    parameters:
+    - $ref: parameters/openIdentityId-path.yaml
+    post:
+      operationId: post-identity-credential
+      summary: Create a credential
+      description: |
+        Create a new credential for an API client. Only the owner of an identity can create credentials for it.  Credentials are in `active` status at creation, and by  default expire two years from their creation date.  However, credentials expire differently when the API client is based on Control Center user permissions, and follow the same rotation schedule  listed for user passwords on those accounts. Run the [Update a credential](ref:put-identity-credential) operation to change the expiration date, description or status.  Save information from the response information like the `credentialID` for future use.  This is the only time you will see the client secret. If you do not save it at this time, you will need to create a new credential.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/post-credentials-200.json
+              schema:
+                $ref: schemas/credential.yaml
+    get:
+      operationId: get-identity-credentials
+      summary: List credentials
+      description: |
+        Get an API client's credentials.
+      parameters:
+      - $ref: parameters/actions-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-credentials-200.json
+              schema:
+                $ref: schemas/credentials.yaml
+  /open-identities/{openIdentityId}/credentials/deactivate:
+    parameters:
+    - $ref: parameters/openIdentityId-path.yaml
+    post:
+      operationId: post-identity-credential-deactivate
+      summary: Deactivate all credentials
+      description: |
+        Deactivate all credentials for an API client. This does not delete the OPEN identity or the credentials. To deactivate a single credential, run the [Update a credential](ref:put-identity-credential) operation and set the status to `INACTIVE`.
+      responses:
+        200:
+          description: |
+            Successful response.
+  /open-identities/{openIdentityId}/credentials/{credentialId}:
+    parameters:
+    - $ref: parameters/credentialId-path.yaml
+    - $ref: parameters/openIdentityId-path.yaml
+    get:
+      operationId: get-identity-credential
+      summary: Get a credential
+      description: |
+        Get details for a single credential. Use [Update a credential](ref:put-identity-credential) to change the credential's expiration date, or toggle the credential's activation status.
+      parameters:
+      - $ref: parameters/actions-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-credential-200.json
+              schema:
+                $ref: schemas/credential-nosecret.yaml
+    put:
+      operationId: put-identity-credential
+      summary: Update a credential
+      description: |
+        Edit credential details. You can change the expiration date, description, or toggle the activation status. This is not the same as rotating a credential. For credential rotation, see [Rotate credentials](ref:rotate-credentials).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-credential.json
+            schema:
+              $ref: schemas/update-credential.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-credential-200.json
+              schema:
+                $ref: schemas/credential-nosecret.yaml
+    delete:
+      operationId: delete-identity-credential
+      summary: Remove a credential
+      description: |
+        Delete a credential. You can only delete inactive credentials.
+      responses:
+        200:
+          description: |
+            Successful response.

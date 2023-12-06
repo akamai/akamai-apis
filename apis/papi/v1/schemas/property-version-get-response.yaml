@@ -1,0 +1,110 @@
+id: resource:/descriptors/papi/v1/schemas/GetVersionResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array.
+  
+x-akamai:
+  file-path: schemas/property-version-get-response.yaml
+additionalProperties: false
+properties:
+  accountId:
+    type: string
+    description: |
+      Identifies the prevailing account under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+  assetId:
+    type: string
+    description: |
+      An alternative identifier for the property. Use this value to key the property in the Identity and Access Management API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+  contractId:
+    type: string
+    description: |
+      Identifies the prevailing contract under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ctr_` prefix.
+  groupId:
+    type: string
+    description: |
+      Identifies the prevailing group under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+  propertyId:
+    type: string
+    description: |
+      Identifies this version's property, or its component rules or hostnames. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+  propertyName:
+    type: string
+    description: |
+      A descriptive name for the property for this version.
+  versions:
+    type: object
+    description: |
+      The set of requested property versions, available within an `items` array.
+    additionalProperties: false
+    properties:
+      items:
+        type: array
+        description: |
+          Specifies the version of a property. Relevant response objects appear within the outer envelope's `versions.items` array.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - etag
+          - note
+          - productId
+          - productionStatus
+          - propertyVersion
+          - stagingStatus
+          - updatedByUser
+          - updatedDate
+          properties:
+            etag:
+              type: string
+              description: |
+                A digest with which to check the data's integrity. See [Concurrency control](ref:concurrency-control) for guidance.
+            note:
+              type: string
+              description: |
+                A descriptive log comment.
+            productId:
+              type: string
+              description: |
+                The product assigned to the property when versioned. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prd_` prefix.
+            productionStatus:
+              type: string
+              description: |
+                Whether the version has been activated to the production network. If `ACTIVE`, the version is read-only and currently serving traffic. It's `INACTIVE` if another version has superseded this one. It's `PENDING` if the [activation request](ref:post-property-activations) is in progress. It's `PENDING_CANCELLATION` or `ABORTED` if the client [cancelled a pending activation](ref:delete-property-activation) in time. It's `PENDING_DEACTIVATION` or `DEACTIVATED` when set to no longer serve traffic.
+              enum:
+              - ACTIVE
+              - INACTIVE
+              - PENDING
+              - ABORTED
+              - DEACTIVATED
+              - PENDING_DEACTIVATION
+              - PENDING_CANCELLATION
+            propertyVersion:
+              type: integer
+              description: |
+                A positive integer identifying the incremental version.
+              minimum: 1
+            ruleFormat:
+              type: string
+              description: |
+                Identifies the rule format currently assigned to the property version's rule tree.
+            stagingStatus:
+              type: string
+              description: |
+                Whether the version has been activated to the test network. If `ACTIVE`, the version is read-only and currently serving traffic. It's `INACTIVE` if another version has superseded this one. It's `PENDING` if the [activation request](ref:post-property-activations) is in progress. It's `PENDING_CANCELLATION` or `ABORTED` if the client [cancelled a pending activation](ref:delete-property-activation) in time. It's `PENDING_DEACTIVATION` or `DEACTIVATED` when set to no longer serve traffic.
+              enum:
+              - ACTIVE
+              - INACTIVE
+              - PENDING
+              - ABORTED
+              - DEACTIVATED
+              - PENDING_DEACTIVATION
+              - PENDING_CANCELLATION
+            updatedByUser:
+              type: string
+              description: |
+                The username who last updated the version.
+            updatedDate:
+              type: string
+              description: |
+                The date stamp of the version's latest update.
+$schema: http://json-schema.org/draft-04/schema#

@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  title: Traffic
+  version: '1.0'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/gtm-api/v1/reports
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: traffic.yaml
+paths:
+  /traffic/domains/{domain}/datacenters/{datacenterId}:
+    parameters:
+    - $ref: parameters/datacenterId-path.yaml
+    - $ref: parameters/domain-path.yaml
+    get:
+      operationId: get-traffic-datacenter
+      summary: Report traffic per data center
+      tags:
+      - Traffic
+      description: |
+        This report shows, for a given domain and data center, the DNS requests received in each five-minute period.  Requests are broken down by property.
+      parameters:
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-traffic-for-a-datacenter-200.json
+              schema:
+                $ref: schemas/traffic-datacenter.yaml
+            text/csv:
+              example:
+                $ref: examples/get-traffic-for-a-datacenter-200.csv
+  /traffic/domains/{domain}/properties/{property}:
+    parameters:
+    - $ref: parameters/property-path.yaml
+    - $ref: parameters/domain-path.yaml
+    get:
+      operationId: get-traffic-property
+      summary: Report traffic per property
+      tags:
+      - Traffic
+      description: |
+        This report shows, for a given domain and property, the DNS requests received in each five-minute period.  Requests are broken down by data center.
+      parameters:
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-traffic-for-a-property-200.json
+              schema:
+                $ref: schemas/traffic-property.yaml
+            text/csv:
+              example:
+                $ref: examples/get-traffic-for-a-property-200.csv

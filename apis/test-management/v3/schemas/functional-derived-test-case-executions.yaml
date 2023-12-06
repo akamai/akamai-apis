@@ -1,0 +1,48 @@
+type: array
+description: |-
+  Lists functional derived test cases executed during a test run.
+  
+x-akamai:
+  file-path: schemas/functional-derived-test-case-executions.yaml
+minItems: 0
+items:
+  type: object
+  additionalProperties: false
+  required:
+  - status
+  - testCaseId
+  properties:
+    completedDate:
+      type: string
+      description: |
+        ISO 8601 timestamp indicating when the test run completed.
+      format: date-time
+    conditionEvaluationResult:
+      $ref: condition-evaluation-result.yaml
+    errors:
+      $ref: error.yaml
+    resolvedSetVariables:
+      type: object
+      description: |
+        Contains information about variables that resolved as part of test case execution. It appears only for executions of functional test cases with the `COMPLETED` status.
+    status:
+      type: string
+      description: |
+        Test case objects' execution status. Possible values are: `IN_PROGRESS`, `COMPLETED`, `SKIPPED`, or `FAILED`.
+      enum:
+      - IN_PROGRESS
+      - COMPLETED
+      - FAILED
+      - SKIPPED
+    testCaseContext:
+      $ref: functional-test-case.yaml
+    testCaseExecutionId:
+      type: integer
+      description: |
+        Identifies the functional test case execution.
+      minimum: 1
+    testCaseId:
+      type: integer
+      description: |
+        Identifies the functional test case.
+      minimum: 1

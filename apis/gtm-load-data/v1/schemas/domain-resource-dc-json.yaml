@@ -1,0 +1,44 @@
+type: object
+description: |-
+  Provides information that you need to specify when submitting load data for a GTM domain.
+  
+x-akamai:
+  file-path: schemas/domain-resource-dc-json.yaml
+additionalProperties: false
+required:
+- domain
+- datacenterId
+- resource
+- current-load
+- target-load
+- max-load
+- timestamp
+properties:
+  current-load:
+    type: integer
+    description: |
+      The current load on the resource in the given datacenter. For example, if the resource is database connections, and you have 50 connections, you would report 50 for this value.
+  datacenterId:
+    type: integer
+    description: |
+      The number of the datacenter (traffic target) being updated. This number comes from the Akamai code field in Control Center. To support legacy clients, we accept `region` as an alias for `datacenterId`.
+  domain:
+    type: string
+    description: |
+      The name of the domain being updated, such as `example.akadns.net`.
+  max-load:
+    type: integer
+    description: |
+      If the load in every datacenter exceeds its target, GTM raises targets proportional to the difference between `max-load` and `target-load`. Set `max-load` higher in data centers that can handle more traffic when the whole system is overloaded.
+  resource:
+    type: string
+    description: |
+      The name of the resource that is being used to balance load. This can be any quantity you define. For example, a resource can represent connections to a database, bandwidth, hits, or anything else.
+  target-load:
+    type: integer
+    description: |
+      GTM's load balancer begins to shift traffic away from a traffic target when the `current-load` exceeds the `target-load`. For example, if you want traffic to begin shifting away from a database location when it has 100 connections, you would set the `target-load` to 100.
+  timestamp:
+    type: string
+    description: |
+      This should be the time at which the load was recorded, in XSD date format.

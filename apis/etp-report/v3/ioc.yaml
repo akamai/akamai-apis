@@ -1,0 +1,221 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Indicators of Compromise (IOC) reports
+  version: v3
+servers:
+- url: https://{hostname}/etp-report/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: ioc.yaml
+paths:
+  /configs/{configId}/ioc/time-series:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-time-series
+      summary: Get IOC time series report
+      tags:
+      - IOC reports
+      description: |
+        Lists the DNS activities of a configuration for a given domain or IP, aggregated by day. Omit `startTimeSec` and `endTimeSec` from the request URL to return all available historical information.
+      parameters:
+      - $ref: parameters/startTimeSec-query.yaml
+      - $ref: parameters/endTimeSec-query.yaml
+      - $ref: parameters/record-query.yaml
+      - $ref: parameters/recordType-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/ioc-time-series-200.json
+              schema:
+                $ref: schemas/iocTimeSeries.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /ioc/changes:
+    get:
+      operationId: get-ioc-changes
+      summary: Get IOC change report
+      tags:
+      - IOC reports
+      description: |
+        Lists historical change information for a given record and record type. Omit `startTimeSec` and `endTimeSec` from the request URL to return all available historical information.
+      parameters:
+      - $ref: parameters/startTimeSec-query.yaml
+      - $ref: parameters/endTimeSec-query.yaml
+      - $ref: parameters/record-query.yaml
+      - $ref: parameters/recordType-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/ioc-changes-200.json
+              schema:
+                $ref: schemas/iocRecordChanges.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+  /ioc/details:
+    get:
+      operationId: get-ioc-details
+      summary: Get IOC details report
+      tags:
+      - IOC detail reports
+      description: |
+        Lists the IOC details for a given domain or IP.
+      parameters:
+      - $ref: parameters/recordType-query.yaml
+      - $ref: parameters/record-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/ioc-details-200.json
+              schema:
+                $ref: schemas/iocDetails.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+  /ioc/details/aup:
+    get:
+      operationId: get-ioc-details-aup
+      summary: Get IOC AUP detail report
+      tags:
+      - IOC detail reports
+      description: |
+        Lists the AUP details for a given domain or IP.
+      parameters:
+      - $ref: parameters/recordType-query.yaml
+      - $ref: parameters/record-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/ioc-details-aup-200.json
+              schema:
+                $ref: schemas/iocDetails.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+  /ioc/details/avc:
+    get:
+      operationId: get-ioc-details-avc
+      summary: Get IOC AVC details report
+      tags:
+      - IOC reports
+      description: |
+        Lists the AVC details for a given domain or IP.
+      parameters:
+      - $ref: parameters/recordType-query.yaml
+      - $ref: parameters/record-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/ioc-details-avc.json
+              schema:
+                $ref: schemas/iocDetails.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+  /ioc/details/cidr:
+    get:
+      operationId: get-ioc-details-cidr
+      summary: Get IOC CIDR details report
+      tags:
+      - IOC reports
+      description: |
+        Lists the CIDR details for a given domain or IP.
+      parameters:
+      - $ref: parameters/recordType-query.yaml
+      - $ref: parameters/record-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/ioc-details-cidr-200.json
+              schema:
+                $ref: schemas/iocDetails.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+  /ioc/domain-tree:
+    get:
+      operationId: get-ioc-domain-tree
+      summary: Get IOC domain tree report
+      tags:
+      - IOC reports
+      description: |
+        Lists the blocklisted domains matching a given record. Returns an empty list if no domains match.
+      parameters:
+      - $ref: parameters/recordType-query.yaml
+      - $ref: parameters/record-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/ioc-domain-tree-200.json
+              schema:
+                $ref: schemas/iocDomainTree.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+  /ioc/information:
+    get:
+      operationId: get-ioc-information
+      summary: Get IOC information report
+      tags:
+      - IOC reports
+      description: |
+        Lists the IOC information for a given domain or IP.
+      parameters:
+      - $ref: parameters/recordType-query.yaml
+      - $ref: parameters/record-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/ioc-information-200.json
+              schema:
+                $ref: schemas/iocInformation.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml

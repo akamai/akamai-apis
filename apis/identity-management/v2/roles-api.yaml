@@ -1,0 +1,139 @@
+openapi: 3.0.0
+info:
+  title: Roles
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/identity-management/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: roles-api.yaml
+paths:
+  /user-admin/roles:
+    post:
+      operationId: post-role
+      summary: Create a role
+      tags:
+      - Roles
+      description: |
+        Create a custom role. Roles exist at the account level regardless of group, but are constrained by contract type. If you create a role under one contract type, you cannot apply that role to groups belonging to a different contract type, even if they're in the same account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-request-create-custom-role.json
+            schema:
+              $ref: schemas/RoleRequestPost.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/post-response-create-custom-role.json
+              schema:
+                $ref: schemas/RoleWithGrantedRoles.yaml
+    get:
+      operationId: get-roles
+      summary: List roles
+      tags:
+      - Roles
+      description: |
+        List roles for the current account and contract type. The account and contract type are determined by the access tokens in your API client.
+      parameters:
+      - $ref: parameters/rolesFilterParamsActions_actions.yaml
+      - $ref: parameters/rolesFilterParamsGroup_groupId.yaml
+      - $ref: parameters/rolesFilterParamsUsers_users.yaml
+      - $ref: parameters/rolesFilterParamsContext_ignoreContext.yaml
+      responses:
+        200:
+          description: |
+            List all roles in an account.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-roles.json
+              schema:
+                $ref: schemas/ListOfRoleListItem.yaml
+  /user-admin/roles/grantable-roles:
+    get:
+      operationId: get-grantable-roles
+      summary: List grantable roles
+      tags:
+      - Grantable roles
+      description: |
+        List which grantable roles you can include in a new custom role or add to an existing custom role.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-grantable-roles.json
+              schema:
+                $ref: schemas/ListOfGrantedRole.yaml
+  /user-admin/roles/{roleId}:
+    parameters:
+    - $ref: parameters/roleId-path.yaml
+    get:
+      operationId: get-role
+      summary: Get a role
+      tags:
+      - Roles
+      description: |
+        Get details for a specific role.
+      parameters:
+      - $ref: parameters/rolesFilterParamsActions_actions.yaml
+      - $ref: parameters/grantedRoles_grantedRoles.yaml
+      - $ref: parameters/rolesFilterParamsUsers_users.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-role-details.json
+              schema:
+                $ref: schemas/RoleWithGrantedRoles.yaml
+    put:
+      operationId: put-role
+      summary: Edit a role
+      tags:
+      - Roles
+      description: |
+        Add or remove permissions from a role. Additionally, edit the name, description, and so on.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-request-update-custom-role.json
+            schema:
+              $ref: schemas/RoleRequestPut.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-response-update-custom-role.json
+              schema:
+                $ref: schemas/Role.yaml
+    delete:
+      operationId: delete-role
+      summary: Delete a role
+      tags:
+      - Roles
+      description: |
+        This operation is only allowed if the role isn't assigned to any users.
+      responses:
+        204:
+          description: |
+            Successful response.

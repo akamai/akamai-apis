@@ -1,0 +1,125 @@
+openapi: 3.0.0
+info:
+  title: Upload accounts
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/storage/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: upload-accounts.yaml
+paths:
+  /upload-accounts:
+    post:
+      operationId: post-upload-accounts
+      summary: Create a new upload account
+      tags:
+      - Accounts
+      description: |
+        Create an upload account for a storage group.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/PostUploadAccountSample.json
+            schema:
+              $ref: schemas/upload-account-post.yaml
+      responses:
+        201:
+          description: |
+            Successfully created.
+          content:
+            application/json:
+              example:
+                $ref: examples/GetUploadAccountSample.json
+              schema:
+                $ref: schemas/upload-account-get.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        429:
+          $ref: errors/429.yaml
+    get:
+      operationId: get-upload-accounts
+      summary: List upload accounts
+      tags:
+      - Accounts
+      description: |
+        Get a list of upload accounts for all storage groups in your NetStorage instance.
+      responses:
+        200:
+          description: |
+            Request OK.
+          content:
+            application/json:
+              example:
+                $ref: examples/GetUploadAccountsSample.json
+              schema:
+                $ref: schemas/pageable-get-upload-account.yaml
+  /upload-accounts/{uploadAccountId}:
+    parameters:
+    - $ref: parameters/uploadAccountId-path.yaml
+    get:
+      operationId: get-upload-account
+      summary: Get an upload account
+      tags:
+      - Accounts
+      description: |
+        Get a specific upload account based on its unique ID value.
+      responses:
+        200:
+          description: |
+            Request OK.
+          content:
+            application/json:
+              example:
+                $ref: examples/GetUploadAccountSample.json
+              schema:
+                $ref: schemas/upload-account-get.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        429:
+          $ref: errors/429.yaml
+    put:
+      operationId: put-upload-account
+      summary: Edit an upload account
+      tags:
+      - Accounts
+      description: |
+        Update an upload account based on its `uploadAccountId`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/PutUploadAccountSample.json
+            schema:
+              $ref: schemas/upload-account-put.yaml
+      responses:
+        200:
+          description: |
+            Request OK.
+          content:
+            application/json:
+              example:
+                $ref: examples/GetUploadAccountSample.json
+              schema:
+                $ref: schemas/upload-account-get.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        429:
+          $ref: errors/429.yaml

@@ -1,0 +1,355 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's Adaptive Acceleration API",
+    "url": "https://techdocs.akamai.com/adaptive-acceleration/reference"
+  },
+  "info": {
+    "title": "Akamai: Adaptive Acceleration API",
+    "version": "v1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/properties/{propertyId}": {
+      "get": {
+        "description": "Get the current Adaptive Acceleration report for a specific Ion property.",
+        "operationId": "get-property",
+        "summary": "Report on a property",
+        "tags": [
+          "Properties"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Adaptive Acceleration API",
+          "url": "https://techdocs.akamai.com/adaptive-acceleration/reference/get-property"
+        },
+        "responses": {
+          "200": {
+            "description": "The operation returns the report.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "creationDate": "2016-08-25T16:45:02Z",
+                  "isAbTesting": true,
+                  "isActive": true,
+                  "lastModifiedDate": "2016-08-25T16:45:02Z",
+                  "lastReset": "2016-08-25T16:45:02Z",
+                  "version": 123,
+                  "zoneDeployDate": "2017-01-26T18:07:01Z",
+                  "commonPreconnectHeader": [
+                    "https://www.example0.com"
+                  ],
+                  "commonPushedResources": [
+                    "https://www.example.com/66dc044c-c886-4eb5-8ff2-d9721ec27fc3.js",
+                    "https://www.example.com/3e940cc8-8170-4e02-8ba4-5d967a997518.js",
+                    "https://www.example.com/1f682d27-2afa-4e3a-ac1a-2616629152e7.js",
+                    "https://www.example.com/12345678-c886-4eb5-8ff2-d9721ec27fc3.js"
+                  ],
+                  "domainSpecificResources": [
+                    {
+                      "domain": "www.example.com",
+                      "domainSpecificCommonPushedResource": [
+                        "https://www.example.com/66dc044c-c886-4eb5-8ff2-d9721ec27fc3.js",
+                        "https://www.example.com/66dc044c-c886-4eb5-8ff2-d9721ec27fc4.js",
+                        "https://www.example.com/66dc044c-c886-4eb5-8ff2-d9721ec27fc5.js"
+                      ],
+                      "domainSpecificFontPreloads": [
+                        "https://www.example.com/416/img/fonts/internalappicons.woff",
+                        "https://www.example.com/4b6ef820-aec0-4007-aac5-bb059e19e399.ttf"
+                      ]
+                    }
+                  ],
+                  "pageSpecificRules": [
+                    {
+                      "basePageURL": "https://qa.www.example.com/checkout/receipt.jsp",
+                      "experience": "cookieValue",
+                      "isMobile": true,
+                      "pageSpecificFontPreloads": [
+                        "https://www.grainger.com/416/img/fonts/internalappicons.woff",
+                        "https://www.example2.com/4b6ef820-aec0-4007-aac5-bb059e19e399.ttf"
+                      ],
+                      "pageSpecificPreconnectHeader": [
+                        "https://www.example3.com"
+                      ],
+                      "pageSpecificPushedResources": [
+                        "https://qa.www.example.com/css/13455/all.css",
+                        "https://qa.www.example.com/css/13455/checkout/checkout.css",
+                        "https://qa.www.example.com/css/13455/checkout/receipt.css",
+                        "https://qa.www.example.com/js/13455/checkout/checkout.js",
+                        "https://qa.www.example.com/js/13455/be/ee522b75/scripts/lite-578e4f4264746d53-staging.js",
+                        "https://qa.www.example.com/js/13455/be/30ea2b75/scripts/lite-554041283961326d-staging.js",
+                        "https://qa.www.example.com/js/13455/be/b8eeeab7/scripts/lite-561eaa6565363300-staging.js"
+                      ]
+                    }
+                  ]
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates Adaptive Acceleration report that targets a specific Ion property.",
+                  "type": "object",
+                  "required": [
+                    "commonPreconnectHeader",
+                    "commonPushedResources",
+                    "isActive",
+                    "pageSpecificRules",
+                    "version",
+                    "domainSpecificResources"
+                  ],
+                  "properties": {
+                    "commonPreconnectHeader": {
+                      "description": "As Adaptive Acceleration gathers real-user monitoring data, it identifies commonly loaded headers. These headers are targeted for preconnecting.",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/preconnectHeader.yaml"
+                      }
+                    },
+                    "commonPushedResources": {
+                      "description": "List of URLs for which Adaptive Acceleration currently performs a server push.",
+                      "type": "array",
+                      "items": {
+                        "format": "uri",
+                        "type": "string"
+                      },
+                      "x-akamai": {
+                        "file-path": "schemas/pushedResources.yaml"
+                      }
+                    },
+                    "creationDate": {
+                      "description": "An ISO 8601 timestamp representing when the system created the Adaptive Acceleration report.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "domainSpecificResources": {
+                      "description": "Encapsulates Adaptive Acceleration report rules targeted to a specific domain.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "domain": {
+                            "description": "This is the domain name.",
+                            "format": "uri",
+                            "type": "string"
+                          },
+                          "domainSpecificCommonPushedResource": {
+                            "description": "List of URLs for which Adaptive Acceleration currently performs a server push.",
+                            "type": "array",
+                            "items": {
+                              "format": "uri",
+                              "type": "string"
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/pushedResources.yaml"
+                            }
+                          },
+                          "domainSpecificFontPreloads": {
+                            "description": "List of your site or app's URLs where Adaptive Acceleration is actively preloading fonts.",
+                            "type": "array",
+                            "items": {
+                              "format": "uri",
+                              "type": "string"
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/fontPreloads.yaml"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "isActive": {
+                      "description": "Indicates whether you've enabled Adaptive Acceleration in your Ion property.",
+                      "type": "boolean"
+                    },
+                    "lastModifiedDate": {
+                      "description": "An ISO 8601 timestamp representing when the system last modified the Adaptive Acceleration report.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "lastReset": {
+                      "description": "An ISO 8601 timestamp that shows when you [last reset](https://techdocs.akamai.com/adaptive-acceleration/reference/post-property-reset) the Adaptive Acceleration data-gathering report.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "pageSpecificRules": {
+                      "description": "Encapsulates Adaptive Acceleration property rules targeted to a specific page.",
+                      "type": "array",
+                      "items": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "basePageURL": {
+                            "description": "This is the URL in question.",
+                            "format": "uri",
+                            "type": "string"
+                          },
+                          "pageSpecificPreconnectHeader": {
+                            "description": "As Adaptive Acceleration gathers real-user monitoring data, it identifies commonly loaded headers. These headers are targeted for preconnecting.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/preconnectHeader.yaml"
+                            }
+                          },
+                          "pageSpecificPushedResources": {
+                            "description": "List of URLs for which Adaptive Acceleration currently performs a server push.",
+                            "type": "array",
+                            "items": {
+                              "format": "uri",
+                              "type": "string"
+                            },
+                            "x-akamai": {
+                              "file-path": "schemas/pushedResources.yaml"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "version": {
+                      "description": "Version of the Adaptive Acceleration rules.",
+                      "type": "integer"
+                    },
+                    "zoneDeployDate": {
+                      "description": "An ISO 8601 timestamp representing when the Adaptive Acceleration report were last updated.",
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/property.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "[Unauthorized](https://techdocs.akamai.com/adaptive-acceleration/reference/403). Your credential is incorrect.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": null,
+                  "httpStatus": 403,
+                  "instance": "12abc3de-f45g-6h7i-8901-2jk3l4567mno",
+                  "title": "Forbidden.",
+                  "type": "https://problems.luna.akamaiapis.net/adaptive-acceleration/v1/forbidden"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The unique identifier Akamai set for your Ion property.",
+          "example": "{{propertyId}}",
+          "in": "path",
+          "name": "propertyId",
+          "required": true,
+          "schema": {
+            "example": 175780,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/propertyId-path.yaml"
+          }
+        }
+      ]
+    },
+    "/properties/{propertyId}/reset": {
+      "post": {
+        "description": "Reset the report Adaptive Acceleration uses to define server push and preconnect assets. Adaptive Acceleration reviews current real-user monitoring data to reestablish this report.",
+        "operationId": "post-property-reset",
+        "summary": "Reset a property report",
+        "tags": [
+          "Properties"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Adaptive Acceleration API",
+          "url": "https://techdocs.akamai.com/adaptive-acceleration/reference/post-property-reset"
+        },
+        "responses": {
+          "204": {
+            "description": "The operation reset the report.",
+            "content": {
+              "*/*": {}
+            }
+          },
+          "403": {
+            "description": "[Unauthorized](https://techdocs.akamai.com/adaptive-acceleration/reference/403). Your credential is incorrect or your API client doesn't have read/write access for this operation.",
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": null,
+                  "httpStatus": 403,
+                  "instance": "12abc3de-f45g-6h7i-8901-2jk3l4567mno",
+                  "title": "Forbidden.",
+                  "type": "https://problems.luna.akamaiapis.net/adaptive-acceleration/v1/forbidden"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "example": "{{accountSwitchKey}}",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "description": "The unique identifier Akamai set for your Ion property.",
+          "example": "{{propertyId}}",
+          "in": "path",
+          "name": "propertyId",
+          "required": true,
+          "schema": {
+            "example": 175780,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/propertyId-path.yaml"
+          }
+        }
+      ]
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/adaptive-acceleration/v1"
+    }
+  ]
+}

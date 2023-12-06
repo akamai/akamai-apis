@@ -1,0 +1,141 @@
+type: object
+description: |-
+  Contains details about a URL protection policy.
+  
+x-akamai:
+  file-path: schemas/url-protection-policy.yaml
+additionalProperties: false
+required:
+- intelligentLoadShedding
+- rateThreshold
+- name
+properties:
+  name:
+    type: string
+    description: |
+      The rate policy's unique name.
+  description:
+    type: string
+    description: |
+      A description of the rate policy.
+  apiDefinitions:
+    type: array
+    description: |
+      The API endpoints to match on in incoming requests. This only applies to the `api` `matchType`.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - apiDefinitionId
+      properties:
+        apiDefinitionId:
+          type: integer
+          description: |
+            Uniquely identifies each API endpoint.
+          format: int64
+        definedResources:
+          type: boolean
+          description: |
+            When `true`, match on any resource explicitly added to your API definition without including a `resourceId`. When `false`, you'll need to pass a `resourceId`.
+        resourceIds:
+          type: array
+          description: |
+            The unique identifiers of the endpoint's resources.
+          items:
+            type: integer
+            format: int64
+        undefinedResources:
+          type: boolean
+          description: |
+            When `true`, match on any resource you have not explicitly added to your API definition without including a `resourceId`.  When `false`, you'll need to pass a `resourceId`.
+  bypassCondition:
+    type: object
+    description: |
+      Exempts specific clients from being processed by the URL protection policy.
+    additionalProperties: false
+    properties:
+      atomicConditions:
+        type: array
+        description: |
+          Specify one or more types of conditions to match on. You can match on client lists, request headers, or both.
+        minItems: 1
+        items:
+          oneOf:
+          - $ref: url-protection-bypass-request-header-condition.yaml
+          - $ref: url-protection-bypass-client-list-condition.yaml
+  categories:
+    type: array
+    description: |
+      The traffic categories to perform load shedding on when the origin traffic rate exceeds the load shedding threshold. If `intelligentLoadShedding` is set to `true`, specify one or more categories.
+    items:
+      oneOf:
+      - $ref: url-protection-client-list-category.yaml
+      - $ref: url-protection-category.yaml
+  configId:
+    type: integer
+    description: |
+      Uniquely identifies the security configuration.
+    format: int64
+  configVersion:
+    type: integer
+    description: |
+      The security configuration version.
+  createDate:
+    type: string
+    description: |
+      The timestamp when you created the URL protection policy.
+    readOnly: true
+    format: date-time
+  createdBy:
+    type: string
+    description: |
+      The username of the person who created the URL protection policy.
+    readOnly: true
+  hostnamePaths:
+    type: array
+    description: |
+      The hostname and path combinations to match on.
+    minItems: 1
+    items:
+      $ref: url-protection-policy-hostpath.yaml
+  intelligentLoadShedding:
+    type: boolean
+    description: |
+      Enable or disable intelligent load shedding. If enabled, traffic that matches the load shedding categories is eligible for shedding if the origin rate exceeds the load shedding threshold.
+  policyId:
+    type: integer
+    description: |
+      Uniquely identifies the URL protection policy.
+    readOnly: true
+    format: int64
+  protectionType:
+    type: string
+    description: |
+      If matching on `hostnamePaths`, specify `SINGLE` to match on a hostname and path, or `MULTIPLE` to match on hostname and path combinations.
+    enum:
+    - SINGLE
+    - MULTIPLE
+  rateThreshold:
+    type: integer
+    description: |
+      The allowed hits per second during any five-second interval.
+  sheddingThresholdHitsPerSec:
+    type: integer
+    description: |
+      Specify the threshold value, in hits per second, after which traffic can be shed. The `sheddingThresholdHitsPerSec` value must be between 70%-90% of the `rateThreshold` value. If you enabled `intelligentLoadShedding`, this value is required.
+  updateDate:
+    type: string
+    description: |
+      The ISO 8601 timestamp when you last updated the URL protection policy.
+    readOnly: true
+    format: date-time
+  updatedBy:
+    type: string
+    description: |
+      Username who last updated the URL protection policy.
+    readOnly: true
+  used:
+    type: boolean
+    description: |
+      Whether you're currently using the URL protection policy.
+    readOnly: true

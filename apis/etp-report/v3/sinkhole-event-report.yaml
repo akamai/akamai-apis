@@ -1,0 +1,110 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Security Connector event reports
+  version: v3
+servers:
+- url: https://{hostname}/etp-report/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: sinkhole-event-report.yaml
+paths:
+  /configs/{configId}/sinkhole-events/aggregate:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-sinkhole-events
+      summary: Report security connector event totals
+      tags:
+      - Security Connector event reports
+      description: |
+        Lists the count of Security Connector events, grouped by the chosen query aggregation.
+      parameters:
+      - $ref: parameters/dimension-sc-query.yaml
+      - $ref: parameters/cardinality-query.yaml
+      - $ref: parameters/startTimeSec-query.yaml
+      - $ref: parameters/endTimeSec-query.yaml
+      - $ref: parameters/filters-sc-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/sinkhole-events-aggregate-internalip-200.json
+              schema:
+                $ref: schemas/sinkholeEventsAggregate.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /configs/{configId}/sinkhole-events/details:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-sinkhole-event-details
+      summary: Report security connector event details
+      tags:
+      - Security Connector event reports
+      description: |
+        Lists Security Connector events for a given time period.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/events-details-postRequest.json
+            schema:
+              $ref: schemas/sinkholeEventsDetailsRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/sinkhole-events-details-postResponse-200.json
+              schema:
+                $ref: schemas/sinkholeEventsDetailsResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+  /configs/{configId}/sinkhole-events/time-series:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-sinkhole-events-time-series
+      summary: Report security connector event time series
+      tags:
+      - Security Connector event reports
+      description: |
+        Lists Security Connector event totals, aggregated by hour.
+      parameters:
+      - $ref: parameters/dimension-sc-query.yaml
+      - $ref: parameters/startTimeSec-query.yaml
+      - $ref: parameters/endTimeSec-query.yaml
+      - $ref: parameters/filters-sc-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/sinkhole-events-time-series-200.json
+              schema:
+                $ref: schemas/sinkholeEventsTimeSeries.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml

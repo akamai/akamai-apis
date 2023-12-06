@@ -1,0 +1,115 @@
+openapi: 3.0.0
+info:
+  title: HTTP Content Delivery
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/media-delivery-reports/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: Delivery-Content-Delivery.yaml
+paths:
+  /delivery/httpcd/data:
+    get:
+      operationId: get-httpcd-data
+      summary: Get HTTP Content Delivery historical data
+      tags:
+      - HTTP Content Delivery
+      description: |
+        This lets you get all HTTP Content Delivery data for a specified range of time.
+      parameters:
+      - $ref: parameters/dimensions-leg-query.yaml
+      - $ref: parameters/metrics-leg-query.yaml
+      - $ref: parameters/startDate-query.yaml
+      - $ref: parameters/endDate-query.yaml
+      - $ref: parameters/cpcodes-query.yaml
+      - $ref: parameters/aggWithKeywordParamOp_aggregation.yaml
+      - $ref: parameters/filterParams-query.yaml
+      - $ref: parameters/sortParams-query.yaml
+      - $ref: parameters/enableCPCodeName-query.yaml
+      responses:
+        200:
+          description: |
+            OK. Empty rows are returned in the response body when there's no available data.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-delivery-contentDelivery-data-200.json
+              schema:
+                $ref: schemas/contentDelivery.yaml
+  /delivery/httpcd/data-stores:
+    get:
+      operationId: get-delivery-httpcd-data-stores
+      summary: List HTTP Content Delivery Downloads data stores
+      tags:
+      - HTTP Content Delivery
+      description: |
+        Data stores are collections of reporting dimensions and the individual metrics supported for use with those dimensions. Each data store is unique to its delivery product. For example, you can't combine HTTP Content Delivery's dimensions and metrics with those from another product in this API. This operation's response can be very long, so the example here is truncated.
+      responses:
+        200:
+          description: |
+            OK. Empty rows are returned in the response body when there's no available data.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-data-stores-httpcd-200-trunc.json
+              schema:
+                $ref: schemas/get-delivery-httpcd-data-stores-response.yaml
+  /delivery/httpcd/data-stores/{dataStoreId}:
+    parameters:
+    - $ref: parameters/dataStoreId-path.yaml
+    get:
+      operationId: get-httpcd-data-store
+      summary: Get an HTTP Content Delivery Downloads data store
+      tags:
+      - HTTP Content Delivery
+      description: |
+        Specify a data store to fetch a list of the dimensions and metrics used with delivery of your content. This also includes the aggregation interval, purge interval, maximum allowed query interval, and other details.
+      responses:
+        200:
+          description: |
+            OK. Empty rows are returned in the response body when there's no available data.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-data-store-httpcd-200.json
+              schema:
+                $ref: schemas/get-delivery-httpcd-data-stores-datastoreid-response.yaml
+  /delivery/httpcd/dimensions:
+    get:
+      operationId: get-httpcd-dimensions
+      summary: List HTTP Content Delivery dimensions
+      tags:
+      - HTTP Content Delivery
+      description: |
+        Retrieves all available dimensions for HTTP Content Delivery.
+      responses:
+        200:
+          description: |
+            OK. Empty rows are returned in the response body when there's no available data.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-delivery-contentDelivery-dimensions-200.json
+              schema:
+                $ref: schemas/dimensions.yaml
+  /delivery/httpcd/metrics:
+    get:
+      operationId: get-httpcd-metrics
+      summary: List HTTP Content Delivery metrics
+      tags:
+      - HTTP Content Delivery
+      description: |
+        Retrieves all available metrics for HTTP Content Delivery.
+      responses:
+        200:
+          description: |
+            OK. Empty rows are returned in the response body when there's no available data.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-delivery-contentDelivery-metrics-200.json
+              schema:
+                $ref: schemas/metrics.yaml

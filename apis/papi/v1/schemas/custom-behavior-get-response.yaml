@@ -1,0 +1,71 @@
+id: resource:/descriptors/papi/v1/schemas/GetCustomBehaviorResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array.
+  
+x-akamai:
+  file-path: schemas/custom-behavior-get-response.yaml
+additionalProperties: false
+properties:
+  accountId:
+    type: string
+    description: |
+      The account under which this custom behavior is available.
+    minLength: 1
+  customBehaviors:
+    type: object
+    description: |
+      The set of requested custom behaviors, available within an `items` array.
+    additionalProperties: false
+    properties:
+      items:
+        type: array
+        description: |
+          Represents a customized XML metadata Akamai sets up on your behalf. You can invoke it in a [`customBehavior`](ref:latest-custom-behavior) within a rule tree. Relevant response objects appear within the outer envelope's `customBehaviors.items` array. See [Custom behaviors and overrides](ref:custom-behaviors-and-overrides) for guidance.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - behaviorId
+          - description
+          - displayName
+          - name
+          - status
+          - updatedByUser
+          - updatedDate
+          properties:
+            name:
+              type: string
+              description: |
+                A name for the custom metadata.
+            description:
+              type: string
+              description: |
+                Descriptive text for the custom metadata.
+            behaviorId:
+              type: string
+              description: |
+                The unique identifier for the custom XML metadata that you reference from a [`customBehavior`](ref:latest-custom-behavior) to insert it in a rule tree. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `cbe_` prefix.
+            displayName:
+              type: string
+              description: |
+                A display label for the custom metadata.
+            status:
+              type: string
+              description: |
+                Current deployment status for the custom metadata. By the time it's available to customers, the only possible value is `ACTIVE`.
+              enum:
+              - ACTIVE
+            updatedByUser:
+              type: string
+              description: |
+                The name of the Akamai representative who last updated the custom metadata.
+            updatedDate:
+              type: string
+              description: |
+                The date stamp of the custom metadata's latest update.
+            xml:
+              type: string
+              description: |
+                The customized XML metadata to inject within the rule.
+$schema: http://json-schema.org/draft-04/schema#

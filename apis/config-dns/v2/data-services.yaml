@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: Data Services
+  version: v2
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/config-dns/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: data-services.yaml
+paths:
+  /data/authorities:
+    get:
+      operationId: get-data-authorities
+      summary: List authoritative nameservers
+      tags:
+      - Authorities
+      description: |
+        Retrieves the currently assigned Akamai authoritative nameservers for one or more contracts.
+      parameters:
+      - $ref: parameters/contractIds-query-nameservers.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/authorities-list.json
+              schema:
+                $ref: schemas/authorities-list.yaml
+  /data/contracts:
+    get:
+      operationId: get-data-contracts
+      summary: List contracts
+      tags:
+      - Contracts
+      description: |
+        Lists the contracts accessible to the current user. Each Contract object includes the list of features and permissions that are available to you on that contract.
+      parameters:
+      - $ref: parameters/groupAware_gid.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/contract-list.json
+              schema:
+                $ref: schemas/contract-list.yaml
+  /data/dns-sec-algorithms:
+    get:
+      operationId: get-data-dns-sec-algorithms
+      summary: List DNSSEC algorithms
+      tags:
+      - DNSSEC algorithms
+      description: |
+        Retrieves a list of DNSSEC algorithm names.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/dns-sec-algorithm-list.json
+              schema:
+                $ref: schemas/algorithm-list.yaml
+  /data/edgehostnames:
+    get:
+      operationId: get-data-edgehostnames
+      summary: List edge hostnames
+      tags:
+      - Edge hostnames
+      description: |
+        Displays a list of Edge Hostnames that have been configured for the current customer.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/edge-hostname-list.json
+              schema:
+                $ref: schemas/edge-hostname-list.yaml
+  /data/groups:
+    get:
+      operationId: get-data-groups
+      summary: List groups
+      tags:
+      - Groups
+      description: |
+        Lists the groups accessible to the current user. Each Group object includes the list of contracts related to that group, as well as your permissions of `READ`, `WRITE`, `ADD`, or `DELETE` zone on that group.
+      parameters:
+      - $ref: parameters/groupAware_gid.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/group-list.json
+              schema:
+                $ref: schemas/group-list.yaml
+  /data/recordset-types:
+    get:
+      operationId: get-record-set-types
+      summary: List record types
+      tags:
+      - Record types
+      description: |
+        Retrieves a list of record types you can add to the requested zone. Record types depend on both the zone type and the available contract features.
+      parameters:
+      - $ref: parameters/zone-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/recordtype-list.json
+              schema:
+                $ref: schemas/recordtype-list.yaml
+  /data/tsig-algorithms:
+    get:
+      operationId: get-data-tsig-algorithms
+      summary: List TSIG key algorithms
+      tags:
+      - TSIG key algorithms
+      description: |
+        Retrieves a list of TSIG algorithm names.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/tsig-algorithm-list.json
+              schema:
+                $ref: schemas/algorithm-list.yaml

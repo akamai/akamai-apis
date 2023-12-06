@@ -1,0 +1,127 @@
+openapi: 3.0.0
+info:
+  title: NetStorage CP codes
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/storage/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: cpcodes.yaml
+paths:
+  /cpcodes:
+    post:
+      operationId: post-cpcodes
+      summary: Create a CP code
+      tags:
+      - CP codes
+      description: |
+        This operation creates a CP code for use with NetStorage.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/PostCPcodeSample.json
+            schema:
+              $ref: schemas/cpcode-post.yaml
+      responses:
+        200:
+          description: |
+            Successful Response.
+          content:
+            application/json:
+              example:
+                $ref: examples/PostCPcodeSample.json
+              schema:
+                $ref: schemas/cpcode-post.yaml
+  /cpcodes/unused:
+    get:
+      operationId: get-cpcodes-unused
+      summary: List unused CP Codes
+      tags:
+      - CP codes
+      description: |
+        Get a list of CP codes that aren't assigned to a storage group.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful Response.
+  /cpcodes/used:
+    get:
+      operationId: get-cpcodes-used
+      summary: List CP codes in use
+      tags:
+      - CP codes
+      description: |
+        Get a list of all CP codes that are assigned to a storage group.
+      responses:
+        200:
+          description: |
+            Successful Response.
+  /cpcodes/{cpcodeId}/age-deletions:
+    parameters:
+    - $ref: parameters/cpcodeId-path.yaml
+    get:
+      operationId: get-cpcode-age-deletions
+      summary: View the automatic purge routine
+      tags:
+      - CP codes
+      description: |
+        View the automatic purge routines for a `cpcodeId`. You can optionally include a URL-encoded `ageDeletionDirectoryPrefix` to filter an individual purge routine.
+      parameters:
+      - $ref: parameters/ageDeletionDirectoryPrefix-query.yaml
+      responses:
+        200:
+          description: |
+            Successful Response.
+          content:
+            application/json:
+              example:
+                $ref: examples/GetAgeDeletionsSample.json
+              schema:
+                $ref: schemas/age-deletions-get.yaml
+    put:
+      operationId: put-cpcode-age-deletions
+      summary: Modify a purge routine
+      tags:
+      - CP codes
+      description: |
+        Make changes to an automatic purge routine for a specific CP code.
+      parameters:
+      - $ref: parameters/ageDeletionDirectoryPrefix-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/PutAgeDeleteSample.json
+            schema:
+              $ref: schemas/automatic-purge-put.yaml
+      responses:
+        200:
+          description: |
+            Successful Response.
+    delete:
+      operationId: delete-cpcode-age-deletions
+      summary: Delete an automatic purge routine
+      tags:
+      - CP codes
+      description: |
+        Delete the automatic purge routine for a specific CP code.
+      parameters:
+      - $ref: parameters/ageDeletionDirectoryPrefix-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: schemas/delete-cpcode-age-deletions.yaml
+      responses:
+        200:
+          description: |
+            Successful Response.

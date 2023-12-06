@@ -1,0 +1,251 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Configurations
+  version: v3
+servers:
+- url: https://{hostname}/etp-config/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: configs.yaml
+paths:
+  /configs/all:
+    get:
+      operationId: get-configs
+      summary: List configurations
+      tags:
+      - Configurations
+      description: |
+        Returns a list of  configuration IDs. Use this value for a `configId` parameter in subsequent operations.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/etp-configs-all-200.json
+              schema:
+                $ref: schemas/etpConfigurationContainer.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+  /configs/onboard:
+    post:
+      operationId: post-config
+      summary: Onboard a contract
+      tags:
+      - Configurations
+      description: |
+        Onboards the specified contract.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/configs-onboard-post-request-200.json
+            schema:
+              $ref: schemas/OnboardRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        406:
+          $ref: errors/already-onboarded-406.yaml
+  /configs/{configId}/acknowledgment:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-config-acknowledgment
+      summary: Create acknowledgment info
+      tags:
+      - Acknowledgments
+      description: |
+        Create an acknowledgment number for the configuration.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/acknowledgment-postResponse-200.json
+            schema:
+              $ref: schemas/acknowledgment.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    get:
+      operationId: get-config-acknowledgment
+      summary: Get acknowledgment info
+      tags:
+      - Acknowledgments
+      description: |
+        Returns a list of SIA keys.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/acknowledgment-getResponse-200.json
+              schema:
+                $ref: schemas/acknowledgmentResponse.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/custom-error-page:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-custom-error-page
+      summary: Get a custom error page
+      tags:
+      - Custom error pages
+      description: |
+        Gets the custom error page for the configuration.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/custom-error-page-200.json
+              schema:
+                $ref: schemas/customErrorPage.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    put:
+      operationId: put-custom-error-page
+      summary: Update the custom error page
+      tags:
+      - Custom error pages
+      description: |
+        Updates the custom error page details.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/custom-error-page-put-body-200.json
+            schema:
+              $ref: schemas/customErrorPageUpdate.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+  /configs/{configId}/firstTimeWizard:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-firsttimewizard
+      summary: Get the first time wizard state
+      tags:
+      - Configuration wizard
+      description: |
+        Provides the first time wizard status.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/first-time-wizard-state-get-state-200.json
+              schema:
+                $ref: schemas/firstTimeWizardGetState.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    put:
+      operationId: put-firsttimewizard
+      summary: Update first time wizard
+      tags:
+      - Configuration wizard
+      description: |
+        Updates the status of the first time wizard.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/first-time-wizard-state-body.json
+            schema:
+              $ref: schemas/firstTimeWizardUpdateState.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/first-time-wizard-update-response-200.json
+              schema:
+                $ref: schemas/firstTimeWizardGetState.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml

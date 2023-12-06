@@ -1,0 +1,45 @@
+openapi: 3.0.0
+info:
+  title: IP availability
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/gtm-api/v1/reports
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: ip-availability.yaml
+paths:
+  /ip-availability/domains/{domain}/properties/{property}:
+    parameters:
+    - $ref: parameters/property-path.yaml
+    - $ref: parameters/domain-path.yaml
+    get:
+      operationId: get-ip-availability-property
+      summary: List IP availability per property
+      tags:
+      - IP availability
+      description: |
+        GTM combines scores (based on Liveness Tests) from all Web agents to calculate Server Scores and makes liveness decisions. A cutoff value is computed for each property from the median scores for all the servers in the property. Any property server with a score over the cutoff value is considered dead and it won't be handed out. The request should have either start and end time or mostRecent, and not both.  In the response, `handedOut` in JSON or `handOut` in CSV indicates whether the server was handed out and alive indicates whether GTM considered the server as alive or not.
+      parameters:
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      - $ref: parameters/ip-query.yaml
+      - $ref: parameters/mostRecent-query.yaml
+      - $ref: parameters/datacenterId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-ip-availability-for-a-property-200.json
+              schema:
+                $ref: schemas/ip-status.yaml
+            text/csv:
+              example:
+                $ref: examples/list-ip-availability-for-a-property-200.csv
+              schema:
+                type: string

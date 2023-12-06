@@ -1,0 +1,350 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Lists
+  version: v3
+servers:
+- url: https://{hostname}/etp-config/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: lists.yaml
+paths:
+  /akamai-lists:
+    parameters:
+    - $ref: parameters/includeNonConfigurable.yaml
+    get:
+      operationId: get-akamai-lists
+      summary: List all Akamai built-in security lists
+      tags:
+      - Akamai built-in security lists
+      description: |
+        Returns a list of all available Akamai built-in Lists.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/akamai-security-lists-200.json
+              schema:
+                $ref: schemas/akamaiSecurityLists.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/clear-dns-cache:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-dns-cache
+      summary: Clear the DNS cache
+      tags:
+      - DNS cache
+      description: |
+        Clears the DNS cache for the specified domain.
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/clear-dns-cache-200.json
+            schema:
+              $ref: schemas/clearDnsCache.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/lists:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    - $ref: parameters/includeDeleted.yaml
+    - $ref: parameters/includeSpecialEntities.yaml
+    - $ref: parameters/onlyWithGrantedAccess.yaml
+    post:
+      operationId: post-list
+      summary: Create a list
+      tags:
+      - Lists
+      description: |
+        Creates a new list.
+      parameters:
+      - $ref: parameters/configId-path.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-list-body.json
+            schema:
+              $ref: schemas/listCreate.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        409:
+          $ref: errors/conflict-409.yaml
+    get:
+      operationId: get-lists
+      summary: List all lists
+      tags:
+      - Lists
+      description: |
+        Returns a list of all available custom security lists.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-retrieve-all-200.json
+              schema:
+                $ref: schemas/listRetrieveAll.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/lists/quota:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-lists-quota
+      summary: List global list quotas
+      tags:
+      - Lists
+      description: |
+        Returns the remaining list item quota for all lists globally.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-get-global-quota-200.json
+              schema:
+                $ref: schemas/listGetGlobalQuota.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/lists/{listId}:
+    parameters:
+    - $ref: parameters/listId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    - $ref: parameters/includeDeleted.yaml
+    get:
+      operationId: get-list
+      summary: Get details of a list
+      tags:
+      - Lists
+      description: |
+        Returns the details of a specific list.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/list-retrieve-specific-200.json
+              schema:
+                $ref: schemas/listRetrieveSpecific.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    put:
+      operationId: put-config-list
+      summary: Update a list
+      tags:
+      - Lists
+      description: |
+        Modifies list properties and all items for a specific list. Full update only.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/list-retrieve-specific-200.json
+            schema:
+              $ref: schemas/listRetrieveSpecific.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+    delete:
+      operationId: delete-config-list
+      summary: Remove a list
+      tags:
+      - Lists
+      description: |
+        Deletes a specific list.
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        409:
+          $ref: errors/conflict-409.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+  /configs/{configId}/lists/{listId}/items:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    - $ref: parameters/listId-path.yaml
+    get:
+      operationId: get-config-lists-items
+      summary: Search in a list
+      tags:
+      - Lists
+      description: |
+        Filters items in a list by search parameters.
+      parameters:
+      - $ref: parameters/confidence.yaml
+      - $ref: parameters/numItemsPerPage.yaml
+      - $ref: parameters/page.yaml
+      - $ref: parameters/search.yaml
+      - $ref: parameters/type.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/list-retrieve-by-search-200.json
+              schema:
+                $ref: schemas/listRetrieveBySearch.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    put:
+      operationId: put-config-lists-items
+      summary: Modify list items
+      tags:
+      - Lists
+      description: |
+        Updates list items (overwrite).
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/set-list-items-content-body.json
+            schema:
+              $ref: schemas/listSetItemsAll.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+    patch:
+      operationId: patch-config-list
+      summary: Patch a list
+      tags:
+      - Lists
+      description: |
+        Modifies individual list items entries. Add or delete only.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/list-modify-items-body.json
+            schema:
+              $ref: schemas/listModifyItemsContent.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        409:
+          $ref: errors/conflict-409.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml

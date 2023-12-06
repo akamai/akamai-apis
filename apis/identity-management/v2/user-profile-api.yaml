@@ -1,0 +1,121 @@
+openapi: 3.0.0
+info:
+  title: Your user profile
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/identity-management/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: user-profile-api.yaml
+paths:
+  /user-profile:
+    get:
+      operationId: get-user-profile
+      summary: View your profile
+      tags:
+      - Profile
+      description: |
+        Return your own profile information. To make changes to your profile, run the [Edit your profile](ref:put-user-profile-info) operation.
+      parameters:
+      - $ref: parameters/authGrants-query.yaml
+      - $ref: parameters/notifications-query.yaml
+      - $ref: parameters/QParamsActions_actions.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-uiidentity.json
+              schema:
+                $ref: schemas/UserResponse.yaml
+  /user-profile/basic-info:
+    put:
+      operationId: put-user-profile-info
+      summary: Edit your profile
+      tags:
+      - Profile
+      description: |
+        Update your basic profile information. You can update simple items like your name or phone number, but you cannot update your group or role assignments through this operation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-request-basic-info.json
+            schema:
+              $ref: schemas/UpdateUserBasicInfoRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-response-basic-info.json
+              schema:
+                $ref: schemas/UserResponse.yaml
+  /user-profile/change-password:
+    post:
+      operationId: post-profile-change-password
+      summary: Rotate your password
+      tags:
+      - Access
+      description: |
+        To update or change your password, include your old password and your new password in the request body. Run the [View password policy](ref:get-common-password-policy) operation before you create your new password to ensure it adheres to your policy. If you pass your existing password incorrectly and make too many login attempts, your account locks.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-request-change-password.json
+            schema:
+              $ref: schemas/ChangePasswordRequest.yaml
+      responses:
+        204:
+          description: |
+            Successful response.
+  /user-profile/notifications:
+    put:
+      operationId: put-user-profile-notifications
+      summary: Update notifications
+      tags:
+      - Notifications
+      description: |
+        Subscribe to notifications emails for password expiration reminders, proactive maintenance emails, and upgrade notification emails. Make a PUT request with a notification object.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-request-update-notifications.json
+            schema:
+              $ref: schemas/NotificationsRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-request-update-notifications.json
+              schema:
+                $ref: schemas/NotificationsResponse.yaml
+  /user-profile/tfa:
+    put:
+      operationId: put-user-profile-tfa
+      summary: Set two-factor authentication
+      tags:
+      - Access
+      description: |
+        Enable or disable TFA on your  profile. An account administrator must disable TFA for you if the account is set to `enable`. If the account doesn't specify a TFA setting, you can `disable` TFA on your profile yourself. You can always set TFA to `enable` regardless of account-level settings. If you have TFA enabled, `reset` TFA clears your TFA settings and you'll be asked to set up TFA the next time you log in to Control Center.
+      parameters:
+      - $ref: parameters/action-query.yaml
+      responses:
+        204:
+          description: |
+            Successful response.

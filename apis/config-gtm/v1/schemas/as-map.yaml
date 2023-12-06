@@ -1,0 +1,73 @@
+type: object
+description: |-
+  Contains information about the AS map configured for the property.
+  
+x-akamai:
+  file-path: schemas/as-map.yaml
+additionalProperties: false
+required:
+- assignments
+- defaultDatacenter
+- name
+properties:
+  name:
+    type: string
+    description: |
+      A descriptive label for the AS map. Properties set up for asmapping can use this as reference.
+    minLength: 1
+    maxLength: 128
+  assignments:
+    type: array
+    description: |
+      Contains information about the AS zone groupings of AS IDs.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - asNumbers
+      - datacenterId
+      - nickname
+      properties:
+        asNumbers:
+          type: array
+          description: |
+            Specifies an array of AS numbers.
+          items:
+            type: integer
+            minimum: 1
+            maximum: 4294967295
+        datacenterId:
+          type: integer
+          description: |
+            A unique identifier for an existing data center in the domain.
+        nickname:
+          type: string
+          description: |
+            A descriptive label for the group.
+          minLength: 1
+          maxLength: 128
+  defaultDatacenter:
+    type: object
+    description: |
+      A placeholder for all other AS zones, AS IDs not found in these AS zones. Note that an AS map can't have the same AS ID in multiple AS zones.
+    additionalProperties: false
+    required:
+    - datacenterId
+    - nickname
+    properties:
+      datacenterId:
+        type: integer
+        description: |
+          For each property, an identifier for all other AS zones' CNAME. For example, 5400.
+      nickname:
+        type: string
+        description: |
+          A descriptive label for all other AS zones, up to 128 characters. If the value is empty or `null`, the default is `Default Mapping`.
+        minLength: 1
+        maxLength: 128
+  links:
+    type: array
+    description: |
+      Specifies the URL path that allows direct navigation to the As map.
+    items:
+      $ref: link.yaml

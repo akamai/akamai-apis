@@ -1,0 +1,75 @@
+id: resource:/descriptors/papi/v1/schemas/CreateNewBulkActivationOrDeactivationRequestV0.json#
+javaType: com.akamai.devops.model.BulkPropertyActivationCreateRequest
+type: object
+description: |-
+  Encapsulates each batch of bulk activations. While essentially a wrapper for an activation object array, this specifies additional settings to apply to all activations within the batch.
+  
+x-akamai:
+  file-path: schemas/bulk-property-activation-create-request.yaml
+required:
+- activatePropertyVersions
+properties:
+  activatePropertyVersions:
+    type: array
+    description: |
+      Specifies each property version to include in the bulk activation. Following bulk activation, this reflects the activation state for each property.
+    items:
+      type: object
+      required:
+      - propertyId
+      - propertyVersion
+      - network
+      properties:
+        acknowledgeWarnings:
+          type: array
+          description: |
+            Lists property warning `messageId` values to acknowledge, unnecessary when `acknowledgeAllWarnings` is enabled.
+          items:
+            type: string
+        network:
+          type: string
+          description: |
+            The network on which to activate this property, either `STAGING` or `PRODUCTION`.
+          enum:
+          - STAGING
+          - PRODUCTION
+        note:
+          type: string
+          description: |
+            An optional log message for this property's activation.
+        propertyId:
+          type: string
+          description: |
+            Identifies each property targeted for activation. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+          pattern: ^(prp_|PRP_)?[0-9]+$
+        propertyVersion:
+          type: integer
+          description: |
+            The property version targeted for activation. Once activated, you can no longer modify that version of the property.
+          minimum: 1
+  defaultActivationSettings:
+    type: object
+    description: |
+      Specifies activation settings to apply to all properties.
+    properties:
+      acknowledgeAllWarnings:
+        type: boolean
+        description: |
+          For all activations, skip acknowledging any warnings for all properties within the bulk activation job. Unless this is enabled, you need to specify `acknowledgeWarnings` arrays with `messageId` warning values for each activation.
+      fastPush:
+        type: boolean
+        description: |
+          Enable fast metadata push when bulk activating properties, `true` by default.
+        default: true
+      notifyEmails:
+        type: array
+        description: |
+          Email addresses to notify when the activation status changes for any property within the bulk activation. Note that you can supplement additional email addresses for each property you activate.
+        minItems: 0
+        items:
+          type: string
+      useFastFallback:
+        type: boolean
+        description: |
+          When enabled, rolls back to the previous activation of each property included in the bulk activation job. If you [bulk activate a set of properties](ref:post-bulk-activations), and then within one hour discover a serious problem you didn't previously detect, enabling this in a follow-up bulk activation request effectively cancels all the activations. See [Revert a property activation](ref:property-activation-error-handling) for guidance. Note that while the fast fallback option ordinarily doesn't apply to activations that affect a different set of hostnames, this scenario is unlikely when bulk-modifying properties.
+$schema: http://json-schema.org/draft-04/schema#

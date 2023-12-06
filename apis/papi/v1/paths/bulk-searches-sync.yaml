@@ -1,0 +1,53 @@
+x-akamai:
+  file-path: paths/bulk-searches-sync.yaml
+  path-for-file: /bulk/rules-search-requests-synch
+post:
+  operationId: post-bulk-search-synch
+  summary: Synchronously bulk search a set of properties or includes
+  tags:
+  - Bulk search
+  description: |
+    Provides an alternative to the asynchronous [Bulk search a set of properties or includes](ref:post-bulk-search) operation. It yields completed bulk search results directly, but with possibly high latency, making it more appropriate to target for small-batch searches. POST a bulk search object to search across all active property or include versions, specifying a [JSONPath](http://goessner.net/articles/JsonPath/) expression to match their rule trees. After gathering results, you can create new property versions, bulk patch the rule trees, then activate them. See [Bulk Search and Update](ref:bulk-search-and-update) for guidance on this feature. To perform simpler searches for an include's name or property's name or hostnames to which it applies, run the [Search properties and includes](ref:post-search-find-by-value) operation instead.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional-bulk.yaml
+  - $ref: ../parameters/groupId-optional-bulk.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/search-bulk-create-request.json
+        schema:
+          $ref: ../schemas/bulk-search-create-request.yaml
+  responses:
+    202:
+      description: |
+        This delayed response shows the completed bulk search job. Unlike the asynchronous [Bulk search a set of properties or includes](ref:post-bulk-search) operation, this response's `searchTargetStatus` is always `COMPLETE`.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/search-bulk-get-response.json
+          schema:
+            $ref: ../schemas/bulk-search-get-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: bulkSearchesSynchronus
+  group: Bulk searches synchronus

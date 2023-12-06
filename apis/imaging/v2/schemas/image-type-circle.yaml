@@ -1,0 +1,46 @@
+type: object
+description: |-
+  A simple, solid, monochrome circle of a specified diameter on a transparent background.
+  
+x-akamai:
+  file-path: schemas/image-type-circle.yaml
+title: Circle image
+additionalProperties: false
+required:
+- type
+properties:
+  type:
+    type: string
+    description: |
+      Identifies the type of image, `Circle` in this case.
+    default: Circle
+    enum:
+    - Circle
+  color:
+    description: |
+      The fill color of the circle. The API supports hexadecimal representation and CSS hexadecimal color values.
+    oneOf:
+    - default: '#000'
+      type: string
+      title: String
+      pattern: ^#[0-9a-fA-Z]{3,8}$
+    - $ref: variable-inline.yaml
+  diameter:
+    description: |
+      The diameter of the circle. The diameter will be the width and the height of the image in pixels.
+    oneOf:
+    - default: 1
+      type: integer
+      title: Integer
+      minimum: 0
+    - $ref: variable-inline.yaml
+  transformation:
+    $ref: transformation-nested.yaml
+  width:
+    description: |
+      The width of the box in pixels.
+    oneOf:
+    - default: 1
+      type: integer
+      title: Integer
+    - $ref: variable-inline.yaml

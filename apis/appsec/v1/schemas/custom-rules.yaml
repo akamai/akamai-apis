@@ -1,0 +1,56 @@
+type: object
+description: |-
+  Describes the custom rule's basic information.
+  
+x-akamai:
+  file-path: schemas/custom-rules.yaml
+additionalProperties: false
+required:
+- customRules
+properties:
+  customRules:
+    type: array
+    description: |
+      Describes basic information about a custom rule, such as activation status or time the rule is active.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - link
+      - name
+      - status
+      - version
+      properties:
+        id:
+          type: integer
+          description: |
+            Uniquely identifies the custom rule.
+        name:
+          type: string
+          description: |
+            The name you assign to the custom rule.
+        version:
+          type: integer
+          description: |
+            The custom rule version.
+        effectiveTimePeriod:
+          $ref: custom-rule.yaml#/properties/effectiveTimePeriod
+        link:
+          type: string
+          description: |
+            The link to the full custom rule definition. This member is only available when you run the [List custom rules](ref:get-configs-custom-rules) operation.
+        samplingRate:
+          type: integer
+          description: |
+            The portion of traffic to sample, expressed as a percent.
+          minimum: 0
+          maximum: 100
+        status:
+          type: string
+          description: |
+            The custom rule deployment status. Either `activated` if a rule is enabled in at least one security policy within a security configuration currently active in production, `published` if a rule is associated with at least one security policy in an inactive security configuration, or `unused` if a rule exists as a shared resource, but isn't associated with any security policy. This member is only available when you run the [List custom rules](ref:get-configs-custom-rules) operation.
+          enum:
+          - activated
+          - published
+          - unused

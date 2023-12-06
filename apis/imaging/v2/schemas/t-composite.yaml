@@ -1,0 +1,79 @@
+type: object
+description: |-
+  Applies another image to the source image, either as an overlay or an underlay. The image that's underneath is visible in areas that are beyond the edges of the top image or that are less than 100% opaque. A common use of an overlay composite is to add a watermark.
+  
+x-akamai:
+  file-path: schemas/t-composite.yaml
+title: Composite
+additionalProperties: false
+required:
+- transformation
+- image
+properties:
+  gravity:
+    description: |
+      Compass direction indicating the corner or edge of the base image to place the applied image. Use Horizontal and Vertical Offset to adjust the applied image's gravity position.
+    default: NorthWest
+    oneOf:
+    - $ref: gravity.yaml
+    - $ref: variable-inline.yaml
+  image:
+    $ref: image-type.yaml
+  placement:
+    description: |
+      Where to place the specified image, either `Over` or `Under` the existing image. Watermarks are usually applied over. Backgrounds are usually applied under.
+    oneOf:
+    - default: Over
+      type: string
+      title: String enum
+      enum:
+      - Over
+      - Under
+      - Mask
+      - Stencil
+    - $ref: variable-inline.yaml
+  scale:
+    description: |
+      A multiplier to resize the applied image relative to the source image and preserve aspect ratio, 1 by default. Set the `scaleDimension` to calculate the `scale` from the source image's width or height.
+    oneOf:
+    - exclusiveMinimum: true
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+    - $ref: variable-inline.yaml
+  scaleDimension:
+    description: |
+      The dimension, either `width` or `height`, of the source image to scale.
+    oneOf:
+    - default: width
+      type: string
+      title: String enum
+      enum:
+      - width
+      - height
+    - $ref: variable-inline.yaml
+  transformation:
+    type: string
+    description: |
+      Identifies the type of transformation, `Composite` in this case.
+    default: Composite
+    enum:
+    - Composite
+  xPosition:
+    description: |
+      The x-axis position of the image to apply.
+    oneOf:
+    - default: 0
+      type: integer
+      title: Integer
+    - $ref: variable-inline.yaml
+  yPosition:
+    description: |
+      The y-axis position of the image to apply.
+    default: 0
+    oneOf:
+    - default: 0
+      type: integer
+      title: Integer
+    - $ref: variable-inline.yaml

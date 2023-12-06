@@ -1,0 +1,484 @@
+openapi: 3.0.0
+info:
+  title: Enrollments
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cps/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: enrollments.yaml
+paths:
+  /enrollments:
+    post:
+      operationId: post-enrollment
+      summary: Create an enrollment
+      tags:
+      - Enrollments
+      description: |
+        Creates an enrollment that contains all the information about the process that your certificate goes through from the time you request it, through renewal, and as you obtain subsequent versions.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/deploy-not-after-query.yaml
+      - $ref: parameters/deploy-not-before-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/vnd.akamai.cps.enrollment.v11+json:
+            example:
+              $ref: examples/enrollment.v11.json
+            schema:
+              $ref: schemas/enrollment.v11.yaml
+      responses:
+        202:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.enrollment-status.v1+json:
+              example:
+                $ref: examples/enrollment-status.v1.json
+              schema:
+                $ref: schemas/enrollment-status.v1.yaml
+    get:
+      operationId: get-enrollments
+      summary: List enrollments
+      tags:
+      - Enrollments
+      description: |
+        A list of the names of each enrollment.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Success.
+          content:
+            application/vnd.akamai.cps.enrollments.v11+json:
+              example:
+                $ref: examples/enrollments.v11.json
+              schema:
+                $ref: schemas/enrollments.v11.yaml
+  /enrollments/{enrollmentId}:
+    parameters:
+    - $ref: parameters/enrollmentId-path.yaml
+    get:
+      operationId: get-enrollment
+      summary: Get an enrollment
+      tags:
+      - Enrollments
+      description: |
+        Gets an enrollment.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.enrollment.v11+json:
+              example:
+                $ref: examples/enrollment.v11.json
+              schema:
+                $ref: schemas/enrollment.v11.yaml
+    put:
+      operationId: put-enrollment
+      summary: Update an enrollment
+      tags:
+      - Enrollments
+      description: |
+        Updates an enrollment with changes. Response type will vary depending on the type and impact of change. For example, changing SANs list may return HTTP 202 Accepted since the operation require a new certificate and network deployment operations, and thus cannot be completed without a change. On the contrary, for example a Technical Contact name change may return HTTP 200 OK assuming there are no active change and when the operation does not require a new certificate.
+      parameters:
+      - $ref: parameters/allow-cancel-pending-changes-query.yaml
+      - $ref: parameters/allow-staging-bypass-query.yaml
+      - $ref: parameters/deploy-not-after-query.yaml
+      - $ref: parameters/deploy-not-before-query.yaml
+      - $ref: parameters/force-renewal-query.yaml
+      - $ref: parameters/renewal-date-check-override-query.yaml
+      - $ref: parameters/allow-missing-certificate-addition-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/vnd.akamai.cps.enrollment.v11+json:
+            example:
+              $ref: examples/enrollment.v11.json
+            schema:
+              $ref: schemas/enrollment.v11.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.enrollment-status.v1+json:
+              example:
+                $ref: examples/enrollment-status.v1.json
+              schema:
+                $ref: schemas/enrollment-status.v1.yaml
+        202:
+          description: |
+            Resource successfully accepted.
+          content:
+            application/vnd.akamai.cps.enrollment-status.v1+json:
+              example:
+                $ref: examples/enrollment-status.v1.json
+              schema:
+                $ref: schemas/enrollment-status.v1.yaml
+    delete:
+      operationId: delete-enrollment
+      summary: Remove an enrollment
+      tags:
+      - Enrollments
+      description: |
+        Removes an enrollment from CPS. Response type will vary depending on the state of the enrollment. Deleting an enrollment in the future or deleting when the enrollment has a certificate deployed to the network may return HTTP 202 Accepted. Deleting an enrollment which has not yet deployed certificate to the network will complete immediately and return HTTP 200 OK.
+      parameters:
+      - $ref: parameters/allow-cancel-pending-changes-query.yaml
+      - $ref: parameters/deploy-not-after-query.yaml
+      - $ref: parameters/deploy-not-before-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.enrollment-status.v1+json:
+              example:
+                $ref: examples/enrollment-status.v1.json
+              schema:
+                $ref: schemas/enrollment-status.v1.yaml
+        202:
+          description: |
+            Resource successfully accepted.
+          content:
+            application/vnd.akamai.cps.enrollment-status.v1+json:
+              example:
+                $ref: examples/enrollment-status.v1.json
+              schema:
+                $ref: schemas/enrollment-status.v1.yaml
+  /enrollments/{enrollmentId}/changes/{changeId}:
+    parameters:
+    - $ref: parameters/changeId-path.yaml
+    - $ref: parameters/enrollmentId-path.yaml
+    get:
+      operationId: get-enrollment-change
+      summary: Get change status
+      tags:
+      - Changes
+      description: |
+        Gets the status of a pending change.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.change.v2+json:
+              example:
+                $ref: examples/change.v1-no-error-allowed-input-3p.json
+              schema:
+                $ref: schemas/change.v2.yaml
+    delete:
+      operationId: delete-enrollment-change
+      summary: Cancel a change
+      tags:
+      - Changes
+      description: |
+        Cancels a pending change.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.change-id.v1+json:
+              example:
+                $ref: examples/change-id.v1.json
+              schema:
+                $ref: schemas/change-id.v1.yaml
+  /enrollments/{enrollmentId}/changes/{changeId}/deployment-schedule:
+    parameters:
+    - $ref: parameters/changeId-path.yaml
+    - $ref: parameters/enrollmentId-path.yaml
+    get:
+      operationId: get-change-deployment-schedule
+      summary: Get a deployment schedule
+      tags:
+      - Changes
+      description: |
+        Gets the current deployment schedule settings describing when a change deploys to the network.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.deployment-schedule.v1+json:
+              example:
+                $ref: examples/deployment-schedule.v1.json
+              schema:
+                $ref: schemas/deployment-schedule.v1.yaml
+    put:
+      operationId: put-change-deployment-schedule
+      summary: Update a deployment schedule
+      tags:
+      - Deployments
+      description: |
+        Updates the current deployment schedule.
+      requestBody:
+        required: true
+        content:
+          application/vnd.akamai.cps.deployment-schedule.v1+json:
+            example:
+              $ref: examples/deployment-schedule.v1.json
+            schema:
+              $ref: schemas/deployment-schedule.v1.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.change-id.v1+json:
+              example:
+                $ref: examples/change-id.v1.json
+              schema:
+                $ref: schemas/change-id.v1.yaml
+  /enrollments/{enrollmentId}/changes/{changeId}/input/info/{allowedInputTypeParam}:
+    parameters:
+    - $ref: parameters/allowedInputTypeParam-path.yaml
+    - $ref: parameters/changeId-path.yaml
+    - $ref: parameters/enrollmentId-path.yaml
+    get:
+      operationId: get-change-allowed-input-param
+      summary: Get a change
+      tags:
+      - Changes
+      description: |
+        Get detailed information of a pending change. Below is a sample where `allowedInput[].type` has the value `third-party-csr`. The acceptable `Accept` header depends on the value of the `allowedInput.type` for the Change instance. See [Change Input Content Type Mapping](ref:change-input-content-type-mapping) for details.
+      parameters:
+      - $ref: headers/Accept-header-change.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.change-management-info.v1+json:
+              example:
+                $ref: examples/change-management-info.v1-3p.json
+              schema:
+                $ref: schemas/change-management-info.v1.yaml
+            application/vnd.akamai.cps.change-management-info.v2+json:
+              example:
+                $ref: examples/change-management-info.v2-3p.json
+              schema:
+                $ref: schemas/change-management-info.v2.yaml
+            application/vnd.akamai.cps.change-management-info.v4+json:
+              example:
+                $ref: examples/change-management-info.v4-3p.json
+              schema:
+                $ref: schemas/change-management-info.v4.yaml
+            application/vnd.akamai.cps.change-management-info.v5+json:
+              example:
+                $ref: examples/change-management-info.v5-3p.json
+              schema:
+                $ref: schemas/change-management-info.v5.yaml
+            application/vnd.akamai.cps.csr.v1+json:
+              example:
+                $ref: examples/csr.v1.json
+              schema:
+                $ref: schemas/csr.v1.yaml
+            application/vnd.akamai.cps.csr.v2+json:
+              example:
+                $ref: examples/csr.v2.json
+              schema:
+                $ref: schemas/csr.v2.yaml
+            application/vnd.akamai.cps.deployment.v3+json:
+              example:
+                $ref: examples/deployment.v3-3p-production.json
+              schema:
+                $ref: schemas/deployment.v3.yaml
+            application/vnd.akamai.cps.deployment.v6+json:
+              example:
+                $ref: examples/deployment.v6-network.json
+              schema:
+                $ref: schemas/deployment.v6.yaml
+            application/vnd.akamai.cps.deployment.v7+json:
+              example:
+                $ref: examples/deployment.v7.json
+              schema:
+                $ref: schemas/deployment.v7.yaml
+            application/vnd.akamai.cps.dv-challenges.v1+json:
+              example:
+                $ref: examples/dv-challenges.v1-sample.json
+              schema:
+                $ref: schemas/dv-challenges.v1.yaml
+            application/vnd.akamai.cps.dv-challenges.v2+json:
+              example:
+                $ref: examples/dv-challenges.v2-sample.json
+              schema:
+                $ref: schemas/dv-challenges.v2.yaml
+            application/vnd.akamai.cps.warnings.v1+json:
+              example:
+                $ref: examples/warnings.v1-auto-pre-verification.json
+              schema:
+                $ref: schemas/warnings.v1.yaml
+  /enrollments/{enrollmentId}/changes/{changeId}/input/update/{allowedInputTypeParam}:
+    parameters:
+    - $ref: parameters/allowedInputUpdateTypeParam-path.yaml
+    - $ref: parameters/changeId-path.yaml
+    - $ref: parameters/enrollmentId-path.yaml
+    post:
+      operationId: post-change-allowed-input-param
+      summary: Update a change
+      tags:
+      - Changes
+      description: |
+        Updates a pending change. Below is a sample where `allowedInput[].type` has the value `third-party-cert-and-trust-chain`. The acceptable `Content-Type` and `Accept` headers depends on the value of the `allowedInput.type` for the Change instance. See [Change Input Content Type Mapping](ref:change-input-content-type-mapping) for details.
+      parameters:
+      - $ref: headers/content-type-header-change.yaml
+      - $ref: headers/Accept-header-changeId.yaml
+      requestBody:
+        content:
+          application/vnd.akamai.cps.acknowledgement-with-hash.v1+json:
+            example:
+              $ref: examples/acknowledgement-with-hash.v1-acknowledge.json
+            schema:
+              $ref: schemas/acknowledgement-with-hash.v1.yaml
+          application/vnd.akamai.cps.acknowledgement.v1+json:
+            example:
+              $ref: examples/acknowledgement.v1-acknowledge.json
+            schema:
+              $ref: schemas/acknowledgement.v1.yaml
+          application/vnd.akamai.cps.certificate-and-trust-chain.v1+json:
+            example:
+              $ref: examples/certificate-and-trust-chain.v1-3p.json
+            schema:
+              $ref: schemas/certificate-and-trust-chain.v1.yaml
+          application/vnd.akamai.cps.certificate-and-trust-chain.v2+json:
+            example:
+              $ref: examples/certificate-and-trust-chain.v2-3p.json
+            schema:
+              $ref: schemas/certificate-and-trust-chain.v2.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.change-id.v1+json:
+              example:
+                $ref: examples/change-id.v1.json
+              schema:
+                $ref: schemas/change-id.v1.yaml
+  /enrollments/{enrollmentId}/deployments:
+    parameters:
+    - $ref: parameters/enrollmentId-path.yaml
+    get:
+      operationId: get-deployments
+      summary: List deployments
+      tags:
+      - Deployments
+      description: |
+        Lists the deployments for an enrollment.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.deployments.v7+json:
+              example:
+                $ref: examples/deployments.v7-3p.json
+              schema:
+                $ref: schemas/deployments.v7.yaml
+  /enrollments/{enrollmentId}/deployments/production:
+    parameters:
+    - $ref: parameters/enrollmentId-path.yaml
+    get:
+      operationId: get-deployments-production
+      summary: Get production deployment
+      tags:
+      - Deployments
+      description: |
+        Gets the enrollments deployed on the production network.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.deployment.v7+json:
+              example:
+                $ref: examples/deployment.v7.json
+              schema:
+                $ref: schemas/deployment.v7.yaml
+  /enrollments/{enrollmentId}/deployments/staging:
+    parameters:
+    - $ref: parameters/enrollmentId-path.yaml
+    get:
+      operationId: get-deployment-staging
+      summary: Get staging deployment
+      tags:
+      - Deployments
+      description: |
+        Gets the enrollments deployed on the staging network.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.deployment.v7+json:
+              example:
+                $ref: examples/deployment.v7.json
+              schema:
+                $ref: schemas/deployment.v7.yaml
+  /enrollments/{enrollmentId}/dv-history:
+    parameters:
+    - $ref: parameters/enrollmentId-path.yaml
+    get:
+      operationId: get-dv-history
+      summary: Get DV history
+      tags:
+      - Enrollments
+      description: |
+        Domain name Validation history for the enrollment.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.dv-history.v1+json:
+              example:
+                $ref: examples/dv-history.v1.json
+              schema:
+                $ref: schemas/dv-history.v1.yaml
+  /enrollments/{enrollmentId}/history/certificates:
+    parameters:
+    - $ref: parameters/enrollmentId-path.yaml
+    get:
+      operationId: get-history-certificates
+      summary: Get certificate history
+      tags:
+      - Enrollments
+      description: |
+        View the certificate history.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.certificate-history.v2+json:
+              example:
+                $ref: examples/certificate-history.v2.json
+              schema:
+                $ref: schemas/certificate-history.v2.yaml
+  /enrollments/{enrollmentId}/history/changes:
+    parameters:
+    - $ref: parameters/enrollmentId-path.yaml
+    get:
+      operationId: get-history-changes
+      summary: Get change history
+      tags:
+      - Changes
+      description: |
+        Change history of an enrollment.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/vnd.akamai.cps.change-history.v5+json:
+              example:
+                $ref: examples/change-history.v5.json
+              schema:
+                $ref: schemas/change-history.v5.yaml

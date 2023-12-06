@@ -1,0 +1,321 @@
+openapi: 3.0.0
+info:
+  title: Change Lists
+  version: v2
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/config-dns/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: change-lists.yaml
+paths:
+  /changelists:
+    post:
+      operationId: post-changelists
+      summary: Create a change list
+      tags:
+      - Change lists
+      description: |
+        Creates a new Change List based on the most recent version of a zone. No POST body is needed, since the object is read-only.
+      parameters:
+      - $ref: parameters/zone-query.yaml
+      - $ref: parameters/overwrite-query.yaml
+      responses:
+        201:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/changelist-get.json
+              schema:
+                $ref: schemas/changelist-get.yaml
+    get:
+      operationId: get-changelists
+      summary: List user's change lists
+      tags:
+      - Change lists
+      description: |
+        Retrieves the Change Lists that you created. Otherwise, displays both stale change lists and change lists for zones you can no longer access.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/changelists-get.json
+              schema:
+                $ref: schemas/get-changelists-response.yaml
+  /changelists/search:
+    post:
+      operationId: post-changelists-search
+      summary: Search for change lists
+      tags:
+      - Change lists
+      description: |
+        Given a list of zone names, this operation lists the Change Lists that you have created on those zones. If the input list is empty, the response does not return any change lists. Note that it is possible to own a change list on a zone that you are no longer allowed to access.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/changelists-search.json
+            schema:
+              $ref: schemas/zone-name-list.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/changelists-get.json
+              schema:
+                $ref: schemas/get-changelists-response.yaml
+  /changelists/{zone}:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-changelists-zone
+      summary: Get change list
+      tags:
+      - Change lists
+      description: |
+        Describes a Change List, showing its base zone version, last modified time, and current change tag.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/changelist-get.json
+              schema:
+                $ref: schemas/changelist-get.yaml
+        304:
+          description: |
+            Redirect.
+    delete:
+      operationId: delete-changelists-zone
+      summary: Delete change list
+      tags:
+      - Change lists
+      description: |
+        Removes an unneeded Change List.
+      responses:
+        204:
+          description: |
+            Successful response.
+  /changelists/{zone}/diff:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-changelists-zone-diff
+      summary: Show changes
+      tags:
+      - Change lists
+      description: |
+        Show [differences](ref:get-zone-versions-diff) between this change list and its base version.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/diff-report.json
+              schema:
+                $ref: schemas/diff-report.yaml
+  /changelists/{zone}/names:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-changelists-zone-names
+      summary: Get record set names for change list
+      tags:
+      - Change lists
+      description: |
+        Retrieves a list of record names that exist on this zone, based on the change list. If a record is deleted in the change list, it doesn't appear on the list of records returned. If no record sets exist within the change list, this operation returns an empty list.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/recordname-list.json
+              schema:
+                $ref: schemas/recordset-name-list.yaml
+  /changelists/{zone}/names/{name}/types:
+    parameters:
+    - $ref: parameters/name-path.yaml
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-changelists-zone-names-name-types
+      summary: Get record set types for name and change list
+      tags:
+      - Types
+      description: |
+        Retrieves a list of record set types that exist at a given name based on the selected change list. The list of record sets returned reflect the changes added to the change list. Records deleted in this change list do not appear. If the name does not exist within the change list, returns an empty list.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/recordtype-list.json
+              schema:
+                $ref: schemas/recordset-type-list.yaml
+  /changelists/{zone}/names/{name}/types/{type}:
+    parameters:
+    - $ref: parameters/type-path.yaml
+    - $ref: parameters/name-path.yaml
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-changelists-zone-names-name-types-type
+      summary: Get a record set for change list
+      tags:
+      - Types
+      description: |
+        Returns an individual record set based on the selected change list. The list of record sets returned reflects any changes added to this change list. Record sets are annotated with the related change as clean, modified, new, or deleted. This call works even if the change list is stale.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/changelist-recordset-get.json
+              schema:
+                $ref: schemas/changelist-recordset-get.yaml
+  /changelists/{zone}/recordsets:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    post:
+      operationId: post-changelists-zone-recordsets
+      summary: Upload master zone file to change list
+      tags:
+      - Record sets
+      description: |
+        Replaces your change list's record sets with the contents of a master zone file.
+      requestBody:
+        required: true
+        content:
+          text/dns:
+            example:
+              $ref: examples/db.example.com
+            schema:
+              type: string
+      responses:
+        204:
+          description: |
+            Successful response.
+    get:
+      operationId: get-changelists-zone-recordsets
+      summary: Get record sets for change list
+      tags:
+      - Record sets
+      description: |
+        Retrieves the current list of record sets based on the selected change list. The record sets returned reflect any Changes added to this change list. This call works even if the change list is stale. This operation is (paginated](ref:use-pagination).
+      parameters:
+      - $ref: parameters/sortBy-query-name-type.yaml
+      - $ref: parameters/types-query-record-sets.yaml
+      - $ref: parameters/search-query-name-rdata.yaml
+      - $ref: parameters/pageable_page.yaml
+      - $ref: parameters/pageable_pageSize.yaml
+      - $ref: parameters/pageable_showAll.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/changelist-recordsets-report.json
+              schema:
+                $ref: schemas/get-changelists-zone-recordsets-response.yaml
+  /changelists/{zone}/recordsets/add-change:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    post:
+      operationId: post-changelists-zone-recordsets-add-change
+      summary: Modify record set for change list
+      tags:
+      - Record sets
+      description: |
+        Adds a Record Set Change to this change list. Each change is an operation that affects a single record set: `ADD`, `EDIT`, or `DELETE`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/changelist-patch.json
+            schema:
+              $ref: schemas/changelist-recordset-patch.yaml
+      responses:
+        204:
+          description: |
+            Successful response.
+  /changelists/{zone}/settings:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    get:
+      operationId: get-changelists-zone-settings
+      summary: Get change list settings
+      tags:
+      - Change list settings
+      description: |
+        Retrieves the zone's settings based on the selected change list. Zone settings include metadata about the zone, but not the record sets. The data returned reflects the zone setting changes included in the change list. This call works even if the change list is stale.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/zone-get-primary.json
+              schema:
+                $ref: schemas/zone-get.yaml
+    put:
+      operationId: put-changelists-zone-settings
+      summary: Update change list settings
+      tags:
+      - Change list settings
+      description: |
+        Updates the change list with new Zone settings. The entire Zone object is needed no matter how many fields you're updating.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/zone-post-request.json
+            schema:
+              $ref: schemas/put-zones-zone-request.yaml
+      responses:
+        204:
+          description: |
+            Successful response.
+  /changelists/{zone}/submit:
+    parameters:
+    - $ref: parameters/zone-path.yaml
+    post:
+      operationId: post-changelists-zone-submit
+      summary: Submit change list
+      tags:
+      - Change lists
+      description: |
+        Applies all of the changes in this change list to the current zone. This operation fails if the change list has become stale.
+      parameters:
+      - $ref: parameters/skipSignAndServeSafetyCheck-query.yaml
+      - $ref: parameters/comment-query.yaml
+      responses:
+        204:
+          description: |
+            Successful response.

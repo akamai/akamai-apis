@@ -1,0 +1,36 @@
+type: object
+x-akamai:
+  file-path: schemas/ConfigCdn.yaml
+additionalProperties: false
+required:
+- cdnCode
+- enabled
+properties:
+  cdnAuthKeys:
+    type: array
+    description: |
+      List of auth keys configured for the CDN.
+    minItems: 0
+    items:
+      oneOf:
+      - $ref: ../schemas/AuthKey.yaml
+      - $ref: ../schemas/NewAuthKey.yaml
+  cdnCode:
+    type: string
+    description: |
+      Unique identifier for the CDN. [List CDN providers](ref:get-providers) for a list of available CDNs.
+  enabled:
+    type: boolean
+    description: |
+      Enable CDN.
+  httpsOnly:
+    type: boolean
+    description: |
+      Specify whether CDN communication is HTTPS only.
+  ipAclCidrs:
+    type: array
+    description: |
+      Configure an access control list using IP addresses in CIDR notation. You get a denial of service error if your CDN makes requests from IPs that aren't part of the list configured here. You need to maintain the IP/CIDR list in this configuration to ensure it's up-to-date with your CDN's list. Cloud Wrapper can receive traffic from your downstream CDN using both IPv4 and IPv6 addresses. Include both IPv4 and IPv6 CDN addresses in your ACLs. View the [FAQ](doc:faq-and-considerations) for information about setting up auth alerts.
+    minItems: 0
+    items:
+      type: string

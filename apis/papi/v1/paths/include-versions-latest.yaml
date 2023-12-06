@@ -1,0 +1,51 @@
+x-akamai:
+  file-path: paths/include-versions-latest.yaml
+  path-for-file: /includes/{includeId}/versions/latest
+parameters:
+- $ref: ../parameters/includeId-path.yaml
+get:
+  operationId: get-latest-include-version
+  summary: Get the latest include version
+  tags:
+  - Include versions
+  description: |
+    This operation provides either the latest include version overall, or the latest one active on the production or staging networks. By default, the response yields the include version with the highest number. Specifying an `activatedOn` of `STAGING` or `PRODUCTION` yields the version that's currently active on either network.
+  x-akamai:
+    status: LA
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/activatedOn-query.yaml
+  - $ref: ../parameters/contractId-optional.yaml
+  - $ref: ../parameters/groupId-optional.yaml
+  responses:
+    302:
+      description: |
+        The response provides a redirect URL link to the latest version of the requested include.
+      headers:
+        Location:
+          $ref: ../headers/Location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/include-version-latest-response.json
+          schema:
+            $ref: ../schemas/include-version-create-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: latestIncludeVersion
+  group: Include versions

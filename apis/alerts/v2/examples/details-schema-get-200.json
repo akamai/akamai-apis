@@ -1,0 +1,286 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Configuration details used together for presentation purposes.",
+  "title": "Alert Details Helper Object",
+  "type": "object",
+  "required": [
+    "definitionId",
+    "definition",
+    "alerts",
+    "links"
+  ],
+  "properties": {
+    "activity": {
+      "type": "array",
+      "required": [
+        "time",
+        "messageKey"
+      ],
+      "items": {
+        "messageArgs": {
+          "description": "Json object with additional information that may be useful in adding detail to the message.",
+          "type": "object"
+        },
+        "messageKey": {
+          "description": "internationalization token or message to present to user",
+          "type": "string"
+        },
+        "time": {
+          "description": "ISO-8601 date-time value",
+          "format": "date-time",
+          "type": "string"
+        }
+      }
+    },
+    "alerts": {
+      "type": "array",
+      "items": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "description": "Alert whose criteria were met with information on the state when the alert was activated.",
+        "minItems": 0,
+        "title": "List of fired alerts",
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "type": "object",
+          "required": [
+            "firingId",
+            "definitionId",
+            "name",
+            "startTime",
+            "endTime",
+            "service",
+            "fieldMap"
+          ],
+          "properties": {
+            "definitionId": {
+              "type": "string"
+            },
+            "endTime": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "fieldMap": {
+              "type": "object"
+            },
+            "firingId": {
+              "type": "string"
+            },
+            "links": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "description": "Link relations to schemas and rest endpoints",
+              "minItems": 2,
+              "title": "Json link relations",
+              "type": "array",
+              "uniqueItems": true,
+              "required": [
+                "rel",
+                "href"
+              ],
+              "items": {
+                "href": {
+                  "description": "link to resource of type described by rel",
+                  "type": "string"
+                },
+                "rel": {
+                  "description": "Describes type of link",
+                  "type": "string"
+                }
+              }
+            },
+            "name": {
+              "type": "string"
+            },
+            "service": {
+              "type": "string"
+            },
+            "startTime": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "definition": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "description": "Alert configured with thresholds for monitoring.",
+      "title": "AlertDefinition",
+      "type": "object",
+      "required": [
+        "fields"
+      ],
+      "links": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "description": "Link relations to schemas and rest endpoints",
+        "minItems": 2,
+        "title": "Json link relations",
+        "type": "array",
+        "uniqueItems": true,
+        "required": [
+          "rel",
+          "href"
+        ],
+        "items": {
+          "href": {
+            "description": "link to resource of type described by rel",
+            "type": "string"
+          },
+          "rel": {
+            "description": "Describes type of link",
+            "type": "string"
+          }
+        }
+      },
+      "properties": {
+        "accountId": {
+          "type": "string"
+        },
+        "definitionId": {
+          "type": "string"
+        },
+        "editInfo": {
+          "type": "object",
+          "required": [
+            "createdAt",
+            "createdBy",
+            "editAt",
+            "editBy",
+            "active"
+          ],
+          "properties": {
+            "active": {
+              "type": "boolean"
+            },
+            "createdAt": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "createdBy": {
+              "type": "string"
+            },
+            "editAt": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "editBy": {
+              "type": "string"
+            }
+          }
+        },
+        "fields": {
+          "type": "object"
+        },
+        "origin": {
+          "description": "name of system of record",
+          "enum": [
+            "STATIC",
+            "ADAPTIVE"
+          ]
+        }
+      }
+    },
+    "definitionId": {
+      "type": "string"
+    },
+    "links": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "description": "Link relations to schemas and rest endpoints",
+      "minItems": 2,
+      "title": "Json link relations",
+      "type": "array",
+      "uniqueItems": true,
+      "required": [
+        "rel",
+        "href"
+      ],
+      "items": {
+        "href": {
+          "description": "link to resource of type described by rel",
+          "type": "string"
+        },
+        "rel": {
+          "description": "Describes type of link",
+          "type": "string"
+        }
+      }
+    },
+    "sparkline": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "description": "JSON used to represent graph data.  Amount of data varies with parameters supplied.",
+      "title": "Sparkline",
+      "type": "object",
+      "required": [
+        "definitionId",
+        "points",
+        "anomalies"
+      ],
+      "properties": {
+        "anomalies": {
+          "description": "Array of alert data associated with graph period",
+          "type": "array",
+          "items": {
+            "title": "Alert instances",
+            "type": "object",
+            "required": [
+              "start",
+              "firingId"
+            ],
+            "properties": {
+              "end": {
+                "description": "End time of the anomaly.  If zero use the current time.",
+                "format": "date-time",
+                "type": "string"
+              },
+              "firingId": {
+                "description": "Alert firing id associated with this anomaly",
+                "type": "string"
+              },
+              "start": {
+                "description": "start time of the anomaly",
+                "format": "date-time",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "definitionId": {
+          "description": "a unique identifier for the associated alert definition",
+          "type": "string"
+        },
+        "points": {
+          "description": "Array of graph data for rendering traffic information.  Not always available.",
+          "type": "array",
+          "items": {
+            "title": "Datapoint",
+            "type": "object",
+            "required": [
+              "x",
+              "y"
+            ],
+            "properties": {
+              "high": {
+                "description": "upper estimate",
+                "type": "number"
+              },
+              "low": {
+                "description": "lower estimate",
+                "type": "number"
+              },
+              "x": {
+                "description": "timestamp in ISO 8601 format",
+                "format": "date-time",
+                "type": "string"
+              },
+              "y": {
+                "description": "observed value",
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

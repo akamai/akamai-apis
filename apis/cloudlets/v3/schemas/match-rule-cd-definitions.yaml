@@ -1,0 +1,179 @@
+x-akamai:
+  file-path: schemas/match-rule-cd-definitions.yaml
+definitions:
+  matchCriteriaType:
+    type: object
+    description: |
+      The match rule criteria.
+    additionalProperties: false
+    oneOf:
+    - required:
+      - matchType
+      - matchValue
+      title: matchType and matchValue required
+    - required:
+      - matchType
+      - objectMatchValue
+      title: matchType and objectMatchValue required
+    properties:
+      caseSensitive:
+        type: boolean
+        description: |
+          If `true`, the match is case sensitive.
+      checkIPs:
+        type: string
+        description: |
+          For `clientip`, `continent`, `countrycode`, `proxy`, and `regioncode` match types, the part of the request that determines the IP address to use. Values include the connecting IP address (`CONNECTING_IP`) and the `X-Forwarded-For` header (`XFF_HEADERS`). To select both, enter the two values separated by a space delimiter. When you include both values, the connecting IP address evaluates first.
+        nullable: true
+        enum:
+        - CONNECTING_IP
+        - XFF_HEADERS
+        - CONNECTING_IP XFF_HEADERS
+      matchOperator:
+        type: string
+        description: |
+          This checks the incoming request to see if it `contains` or `equals` the `matchValue`, or if the request `header` you want to match on `exists`. With the exception of `hostname`, when using a wildcard, you need to set `matchOperator` to `contains`. For `hostname`, you don't need `contains`. Asterisks (`*`) in the `hostname` behave as wildcards. For example, `*.example.com` can match many subdomains.
+        enum:
+        - contains
+        - exists
+        - equals
+      matchType:
+        type: string
+        description: |
+          The type of match used.
+        enum:
+        - header
+        - hostname
+        - path
+        - extension
+        - query
+        - cookie
+        - deviceCharacteristics
+        - clientip
+        - continent
+        - countrycode
+        - regioncode
+        - protocol
+        - method
+        - proxy
+      matchValue:
+        type: string
+        description: |
+          The `matchValue` depends on the `matchType`. For example if the `matchType` is `hostname`, then `matchValue` is the fully qualified domain name, like `www.akamai.com`.
+        minLength: 1
+        maxLength: 8192
+      negate:
+        type: boolean
+        description: |
+          Whether the match should be ignored (`negate` is `true`) or if the match should be acted on (`negate` is `false`).
+      objectMatchValue:
+        $ref: '#/definitions/objectMatchValueType'
+  objectMatchValueObjectSubtype:
+    type: object
+    description: |
+      Use the `objectMatchValueObjectSubtype` for more complex match criteria.
+    title: Object
+    additionalProperties: false
+    required:
+    - name
+    - type
+    properties:
+      name:
+        type: string
+        description: |
+          If matching any name, specify the value in the incoming request to match on. The following match types support this: `cookie`, `header`, `parameter`, and `query`.
+        minLength: 1
+        maxLength: 8192
+      type:
+        type: string
+        description: |
+          The array type, which is `object`.
+        enum:
+        - object
+      options:
+        type: object
+        description: |
+          If using the `object` type, use this array to list the values to match on.
+        additionalProperties: false
+        properties:
+          value:
+            type: array
+            description: |
+              The value attributes in the incoming request to match on. Valid entries vary by match type. For example, `GET` and `POST` are valid entries for the `method` match type, and an integer is valid for the `numberOfFields` match type.
+            nullable: true
+            items:
+              type: string
+          valueCaseSensitive:
+            type: boolean
+            description: |
+              Set to `true` if the entries for the value property should be evaluated based on case sensitivity.
+          valueEscaped:
+            type: boolean
+            description: |
+              Set to `true` if the entries for the value property includes escaped characters.
+          valueHasWildcard:
+            type: boolean
+            description: |
+              Set to `true` if the entries for the value property includes wildcards.
+      nameCaseSensitive:
+        type: boolean
+        description: |
+          When set to `true`, the `name` match is case-sensitive.
+      nameHasWildcard:
+        type: boolean
+        description: |
+          When set to `true`, `name` matches can include `*` and `?` wildcards.
+  objectMatchValueRangeSubtype:
+    type: object
+    description: |
+      If the value assigned to an incoming request falls within an inclusive range of two intergers, the match is true. When setting up a range match, enter the two integers that comprise the range.
+    title: Range
+    additionalProperties: false
+    required:
+    - type
+    - value
+    properties:
+      type:
+        type: string
+        description: |
+          The object type, which is `range`.
+        enum:
+        - range
+      value:
+        type: array
+        description: |
+          An inclusive range comprised of two numbers to match on.
+        nullable: true
+        items:
+          type: integer
+  objectMatchValueSimpleSubtype:
+    type: object
+    description: |
+      Use the `simple` array option when adding an array of string-based values.
+    title: Simple
+    additionalProperties: false
+    required:
+    - type
+    - value
+    properties:
+      type:
+        type: string
+        description: |
+          The object type, which is `simple`.
+        enum:
+        - simple
+      value:
+        type: array
+        description: |
+          The `simple` array values for incoming request to match on. For example, if the match type is `method`, the array values could be `GET` and `POST`.
+        nullable: true
+        items:
+          type: string
+  objectMatchValueType:
+    type: object
+    description: |
+      The match rule value to match on. The object match value subtypes include `simple`, `range`, and `object` arrays. Use `object` for more complex match criteria. Use the `simple` array option when adding an array of string-based values to match on. Use `range` when the match is true for incoming requests within an inclusive range of two numbers.
+    oneOf:
+    - $ref: '#/definitions/objectMatchValueRangeSubtype'
+    - $ref: '#/definitions/objectMatchValueSimpleSubtype'
+    - $ref: '#/definitions/objectMatchValueObjectSubtype'

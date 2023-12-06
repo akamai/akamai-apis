@@ -1,0 +1,56 @@
+x-akamai:
+  file-path: paths/config-version.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+get:
+  operationId: get-version-number
+  summary: Get configuration version details
+  tags:
+  - General configuration settings
+  description: |
+    Returns basic details about a configuration version. To get a more extensive object with detailed information about a version's security policies, rate policies, rules, and other additional settings, run the [Export a configuration version](ref:get-export-config-version) operation. _Products:_ All.
+  responses:
+    200:
+      description: |
+        Successfully retrieved resource.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/waf-config-version-200.json
+          schema:
+            $ref: ../schemas/waf-config-version.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+delete:
+  operationId: delete-version-number
+  summary: Remove a configuration version
+  tags:
+  - General configuration settings
+  description: |
+    Delete the specified configuration version. You can't delete a version that is actively in use. _Products:_ All.
+  responses:
+    204:
+      description: |
+        Successfully deleted the configuration version.
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to this security configuration.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/403.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    404:
+      description: |
+        [Not found](ref:404). Security configuration version wasn't found.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/404.json
+          schema:
+            $ref: ../schemas/problem-details.yaml

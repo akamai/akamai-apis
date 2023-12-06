@@ -1,0 +1,45 @@
+openapi: 3.0.1
+info:
+  title: CloudWrapper Capacity
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cloud-wrapper/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: capacity.yaml
+paths:
+  /capacity:
+    get:
+      operationId: get-capacity-inventory
+      summary: List capacity
+      tags:
+      - Capacity
+      description: |
+        View the capacities available for a given `contractId`.
+      parameters:
+      - $ref: parameters/contractIds-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides the list of capacities.
+          content:
+            application/json:
+              example:
+                $ref: examples/ContractCapacityExample.json
+              schema:
+                $ref: schemas/Capacities.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml

@@ -1,0 +1,628 @@
+type: object
+description: |-
+  Collects diagnostic data collected with a diagnostic link and details about the group.
+  
+x-akamai:
+  file-path: schemas/userDiagnosticDataRecordGetResponse.yaml
+additionalProperties: false
+oneOf:
+- required:
+  - url
+  - groupId
+  - createdTime
+  - expiryTime
+  - diagnosticLink
+  - diagnosticLinkStatus
+  - createdBy
+  - submissionsRemaining
+  title: URL request
+- required:
+  - ipaHostname
+  - groupId
+  - createdTime
+  - expiryTime
+  - diagnosticLink
+  - diagnosticLinkStatus
+  - createdBy
+  - submissionsRemaining
+  title: IPA hostname request
+properties:
+  createdBy:
+    type: string
+    description: |
+      Username who generated `diagnosticLink`.
+    minLength: 1
+  createdTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when `diagnosticLink` was generated.
+    format: date-time
+  diagnosticLink:
+    type: string
+    description: |
+      Diagnostic link generated to share with end users to collect diagnostic data. Each link is valid for 7 days or 50 submissions.
+    minLength: 1
+  diagnosticLinkStatus:
+    type: string
+    description: |
+      Status of `diagnosticLink`. The possible values are either `ACTIVE` or `EXPIRED`. The `ACTIVE` link can be send to end users to collect diagnostic data. The `EXPIRED` link is older than 7 days or has reached the limit of 50 submission. You can't collect more data with the `EXPIRED` link.
+    enum:
+    - ACTIVE
+    - EXPIRED
+  expiryTime:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when `diagnosticLink` expires.
+    format: date-time
+  groupId:
+    type: string
+    description: |
+      Unique identifier for the group.
+    minLength: 1
+  ipaHostname:
+    type: string
+    description: |
+      IP acceleration hostname you collect the diagnostic data for. Depending on the group settings, either this value or `url` occurs.
+    format: hostname
+  note:
+    type: string
+    description: |
+      Notes about the group or issues experienced by group's end users.
+    minLength: 1
+  records:
+    type: array
+    description: |
+      Lists diagnostics data collected from the group's end users.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - cipher
+      - cookie
+      - protocol
+      - userAgent
+      - createdTime
+      - createdEpoch
+      - uniqueId
+      properties:
+        cipher:
+          type: string
+          description: |
+            Cryptographic algorithm used between the client and `www.t1info.net`.
+          minLength: 1
+        clientDnsIpv4:
+          type: object
+          description: |
+            Specifies the IP address of the DNS server which the client uses to connect to the edge IPv4 address.
+          additionalProperties: false
+          required:
+          - id
+          - ip
+          - ipType
+          - ipLocation
+          - ecs
+          properties:
+            id:
+              type: integer
+              description: |
+                Unique identifier for the IPv4 DNS server.
+              minimum: 0
+            ecs:
+              type: string
+              description: |
+                Client subnet information provided by the recursive DNS service.
+              minLength: 1
+            ip:
+              type: string
+              description: |
+                DNS IPv4 value.
+              minLength: 1
+            ipLocation:
+              description: |
+                Collects data about the location of the DNS IPv4 server.
+              $ref: edgeIpLocation.yaml
+            ipType:
+              type: string
+              description: |
+                Type of the IP.
+              minLength: 1
+        clientDnsIpv6:
+          type: object
+          description: |
+            Specifies the IP address of the DNS server which the client uses to connect to the edge IPv6 address.
+          additionalProperties: false
+          required:
+          - id
+          - ip
+          - ipType
+          - ipLocation
+          - ecs
+          properties:
+            id:
+              type: integer
+              description: |
+                Unique identifier for the IPv6 DNS server.
+              minimum: 0
+            ecs:
+              type: string
+              description: |
+                Client subnet information provided by the recursive DNS service.
+              minLength: 1
+            ip:
+              type: string
+              description: |
+                DNS IPv6 value.
+              minLength: 1
+            ipLocation:
+              description: |
+                Collects data about the location of the DNS IPv6 server.
+              $ref: edgeIpLocation.yaml
+            ipType:
+              type: string
+              description: |
+                Type of the IP.
+              minLength: 1
+        clientIpv4:
+          type: object
+          description: |
+            Specifies the client IPv4 address used to connect to the edge server.
+          additionalProperties: false
+          required:
+          - id
+          - ip
+          - ipType
+          - associatedDnsId
+          - ipLocation
+          properties:
+            id:
+              type: integer
+              description: |
+                Unique identifier for the client IP.
+              minimum: 0
+            associatedDnsId:
+              type: integer
+              description: |
+                DNS IP assigned to the client IP.
+              minimum: 0
+            ip:
+              type: string
+              description: |
+                Client IPv4 value.
+              minLength: 1
+            ipLocation:
+              description: |
+                Collects data about the location of the client IPv4 address.
+              $ref: edgeIpLocation.yaml
+            ipType:
+              type: string
+              description: |
+                Type of the IP.
+              minLength: 1
+        clientIpv6:
+          type: object
+          description: |
+            Specifies the client IPv6 address used to connect to the edge server.
+          additionalProperties: false
+          required:
+          - id
+          - ip
+          - ipType
+          - associatedDnsId
+          - ipLocation
+          properties:
+            id:
+              type: integer
+              description: |
+                Unique identifier for the client IP.
+              minimum: 0
+            associatedDnsId:
+              type: integer
+              description: |
+                DNS IP assigned to the client IP.
+              minimum: 0
+            ip:
+              type: string
+              description: |
+                Client IPv6 value.
+              minLength: 1
+            ipLocation:
+              description: |
+                Collects data about the location of the client IPv6 address.
+              $ref: edgeIpLocation.yaml
+            ipType:
+              type: string
+              description: |
+                Type of the IP.
+              minLength: 1
+        cookie:
+          type: boolean
+          description: |
+            Stores cookie values for the `www.t1info.net` website on the client's machine.
+        createdEpoch:
+          type: integer
+          description: |
+            When the data was collected, in epoch seconds.
+          minimum: 0
+        createdTime:
+          type: string
+          description: |
+            ISO 8601 timestamp indicating when the diagnostic data was collected.
+          format: date-time
+        curlResults:
+          type: array
+          description: |
+            Collects cURL data and details about the request. It shows only for the `includeCurl` query parameter of the request set to `true` and fetched `edgeIps` details.
+          minItems: 0
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - request
+            - executionStatus
+            - createdBy
+            - createdTime
+            - internalIp
+            - regionId
+            - result
+            properties:
+              createdBy:
+                type: string
+                description: |
+                  Username who has submitted the cURL request.
+                minLength: 1
+              createdTime:
+                type: string
+                description: |
+                  ISO 8601 timestamp indicating when the cURL request was submitted.
+                format: date-time
+              executionStatus:
+                type: string
+                description: |
+                  The cURL request status. Possible values are `SUCCESS`, `IN_PROGRESS`, or `FAILURE`.
+                enum:
+                - SUCCESS
+                - IN_PROGRESS
+                - FAILURE
+              internalIp:
+                type: string
+                description: |
+                  Real machine IP behind `edgeIds`.
+                minLength: 1
+              regionId:
+                type: integer
+                description: |
+                  Unique identifiers for `edgeIds` regions.
+                minimum: 1
+              request:
+                type: object
+                description: |
+                  Collects request data for cURL.
+                additionalProperties: false
+                required:
+                - requestHeaders
+                - ipVersion
+                - url
+                - edgeIds
+                properties:
+                  edgeIds:
+                    type: array
+                    description: |
+                      Unique identifiers for edge IPs for the cURL request.
+                    minItems: 0
+                    items:
+                      type: integer
+                      minimum: 0
+                  ipVersion:
+                    type: string
+                    description: |
+                      IP version used to run the operation, either `IPV4` or `IPV6`.
+                    enum:
+                    - IPV4
+                    - IPV6
+                  requestHeaders:
+                    type: array
+                    description: |
+                      Customized headers for `curl` request in the format `header: value`.
+                    minItems: 0
+                    items:
+                      type: string
+                      minLength: 1
+                  url:
+                    type: string
+                    description: |
+                      URL for the cURL request.
+                    format: uri
+              result:
+                description: |
+                  Collects the cURL response.
+                $ref: curlResults.yaml
+        digResults:
+          type: array
+          description: |
+            Lists the DIG response and details about the request. It shows only for the `includeDig` query parameter of the request set to `true` and fetched `edgeIps` details.
+          minItems: 0
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - request
+            - executionStatus
+            - createdBy
+            - createdTime
+            - internalIp
+            - regionId
+            - result
+            properties:
+              createdBy:
+                type: string
+                description: |
+                  Username who submitted the DIG request.
+                minLength: 1
+              createdTime:
+                type: string
+                description: |
+                  ISO 8601 timestamp indicating when the DIG request was submitted.
+                format: date-time
+              executionStatus:
+                type: string
+                description: |
+                  Dig request status. Possible values are `SUCCESS`, `IN_PROGRESS`, or `FAILURE`.
+                enum:
+                - SUCCESS
+                - IN_PROGRESS
+                - FAILURE
+              internalIp:
+                type: string
+                description: |
+                  Real machine IP behind `edgeIds`.
+                minLength: 1
+              regionId:
+                type: integer
+                description: |
+                  Unique identifiers for `edgeIds` regions.
+                minimum: 1
+              request:
+                type: object
+                description: |
+                  Collects request data for dig.
+                additionalProperties: false
+                required:
+                - hostname
+                - queryType
+                - edgeIds
+                properties:
+                  edgeIds:
+                    type: array
+                    description: |
+                      Unique identifiers for edge IPs for the DIG request.
+                    minItems: 0
+                    items:
+                      type: integer
+                      minimum: 0
+                  hostname:
+                    type: string
+                    description: |
+                      Hostname or a domain name you want to get the data for.
+                    format: hostname
+                  queryType:
+                    type: string
+                    description: |
+                      DNS record type you want to get. Possible values are: `A`, `AAAA`, `SOA`, `CNAME`, `PTR`, `MX`, `NS`, `TXT`, `SRV`, `CAA`, and `ANY`. To learn more about them, check [Supported DNS record types](doc:domain-details-dig#supported-dns-record-types).
+                    enum:
+                    - A
+                    - SOA
+                    - CNAME
+                    - PTR
+                    - MX
+                    - AAAA
+                    - NS
+                    - TXT
+                    - SRV
+                    - CAA
+                    - ANY
+              result:
+                description: |
+                  Collects DIG results.
+                $ref: digInfo.yaml
+        edgeIps:
+          type: array
+          description: |
+            Lists data about edge servers hosting `url` or `ipaHostname`. If it doesn't occur, it's either because of a system error or the client DNS has an EDNS Client Subnet (ECS).
+          minItems: 0
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - id
+            - ip
+            - ipType
+            - associatedDnsId
+            - ipLocation
+            - regionId
+            properties:
+              id:
+                type: integer
+                description: |
+                  Unique identifier for the edge server.
+                minimum: 0
+              associatedDnsId:
+                type: integer
+                description: |
+                  DNS IP assigned to the edge server.
+                minimum: 0
+              ip:
+                type: string
+                description: |
+                  Edge server IP.
+                minLength: 1
+              ipLocation:
+                description: |
+                  Collects data about the location of edge servers hosting the URL.
+                $ref: edgeIpLocation.yaml
+              ipType:
+                type: string
+                description: |
+                  Type of the IP.
+                minLength: 1
+              regionId:
+                type: integer
+                description: |
+                  Unique identifier for the edge server region.
+                minimum: 1
+        mtrResults:
+          type: array
+          description: |
+            Lists MTR results and details about the request. It shows only for the `includeMtr` query parameter of the request set to `true` and fetched `edgeIps` details.
+          minItems: 0
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - request
+            - executionStatus
+            - createdBy
+            - createdTime
+            - sourceInternalIp
+            - regionId
+            - result
+            properties:
+              createdBy:
+                type: string
+                description: |
+                  Username who submitted the MTR request.
+                minLength: 1
+              createdTime:
+                type: string
+                description: |
+                  ISO 8601 timestamp indicating when the MTR request was submitted.
+                format: date-time
+              executionStatus:
+                type: string
+                description: |
+                  MTR request status. Possible values are `SUCCESS`, `IN_PROGRESS`, or `FAILURE`.
+                enum:
+                - SUCCESS
+                - IN_PROGRESS
+                - FAILURE
+              regionId:
+                type: integer
+                description: |
+                  Unique identifiers for `sourceIds` regions.
+                minimum: 1
+              request:
+                type: object
+                description: |
+                  Collects request data for MTR.
+                additionalProperties: false
+                required:
+                - ipVersion
+                - port
+                - packetType
+                - sourceIds
+                - destinationId
+                properties:
+                  destinationId:
+                    type: integer
+                    description: |
+                      Unique identifier for the IP address being the destination of the MTR.
+                    minimum: 0
+                  ipVersion:
+                    type: string
+                    description: |
+                      IP version used by MTR. Possible values are either `IPV4` or `IPV6`.
+                    enum:
+                    - IPV4
+                    - IPV6
+                  packetType:
+                    type: string
+                    description: |
+                      Packet type used by MTR. Possible values are either `TCP` or `ICMP`.
+                    enum:
+                    - TCP
+                    - ICMP
+                  port:
+                    type: integer
+                    description: |
+                      Port number used by MTR, either `80` or `443`.
+                    enum:
+                    - 80
+                    - 443
+                  sourceIds:
+                    type: array
+                    description: |
+                      Unique identifier for the IP address being the source of the MTR.
+                    minItems: 0
+                    items:
+                      type: integer
+                      minimum: 0
+              result:
+                description: |
+                  Standard MTR results.
+                $ref: mtrData.yaml
+              sourceInternalIp:
+                type: integer
+                description: |
+                  Real machine IP behind `sourceIds`.
+                minimum: 0
+        preferredClientIp:
+          type: object
+          description: |
+            Specifies IP address preferred by the end user to connect to the server.
+          additionalProperties: false
+          required:
+          - id
+          - ip
+          - ipType
+          - associatedDnsId
+          - ipLocation
+          properties:
+            id:
+              type: integer
+              description: |
+                Unique identifier for the server of the preferred IP.
+              minimum: 0
+            associatedDnsId:
+              type: integer
+              description: |
+                DNS IP assigned to the server.
+              minimum: 0
+            ip:
+              type: string
+              description: |
+                IP address preferred by the end user.
+              minLength: 1
+            ipLocation:
+              description: |
+                Specifies the server location. 
+              $ref: edgeIpLocation.yaml
+            ipType:
+              type: string
+              description: |
+                Type of the IP.
+              minLength: 1
+        protocol:
+          type: string
+          description: |
+            HTTP protocol used to connect the client and `www.t1info.net`.
+          minLength: 1
+        uniqueId:
+          type: integer
+          description: |
+            Unique identifier for the collected data. You can share it with the technical support to identify the submitted data.
+          minimum: 0
+        userAgent:
+          type: string
+          description: |
+            Application, operating system, vendor, and optionally the version of the requesting user agent.
+          minLength: 1
+  submissionsRemaining:
+    type: integer
+    description: |
+      Number of submissions remaining with `diagnosticLink`. Each link can collect up to 50 submissions.
+    minimum: 0
+  url:
+    type: string
+    description: |
+      URL you collect the diagnostic data for. Depending on the group settings, either this value or `ipaHostname` occurs.
+    format: uri

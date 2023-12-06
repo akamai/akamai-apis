@@ -1,0 +1,84 @@
+type: object
+description: |-
+  Configures a Media Services Live origin for the stream and lets you share the origin with partner accounts within Akamai using 'MSL_MULTI_ACCOUNT' as well as third-party delivery providers using 'MSL_MULTI_CDN'.
+  
+x-akamai:
+  file-path: schemas/OriginDetailDTOV2Put.yaml
+additionalProperties: false
+properties:
+  id:
+    type: integer
+    description: |
+      Enter a unique identifier for the origin. The identifier must be unique, regardless of encoder locations and customers. The primary hostname and backup hostname are automatically derived from the origin identifier you specify.
+  emailIds:
+    type: array
+    description: |
+      Specify the email addresses to receive details and status notifications for the live stream origin.
+    items:
+      type: string
+  sharedKeys:
+    type: array
+    description: |
+      Shared keys enable you to share your MSL origin with partner accounts within Akamai (Multi-Account) or third-party delivery providers (Multi-CDN).
+    items:
+      type: object
+      description: |
+        Shared keys enable you to share your MSL origin with partner accounts within Akamai or third-party delivery providers.
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: |
+            Name to identify the CDN.
+        type:
+          type: string
+          description: |
+            Specify `AKAMAI` if you are using an Akamai CDN or `THIRD_PARTY` if you are using some other CDN.
+          enum:
+          - AKAMAI
+          - THIRD_PARTY
+        authMethod:
+          type: string
+          description: |
+            Specify the authentication method as `SIMPLE_AKAMAI_HEADER_VERIFICATION` for Akamai partner accounts or `MSL_MULTI_ACCOUNT` for third-party CDN accounts.
+          enum:
+          - SIMPLE_AKAMAI_HEADER_VERIFICATION
+          - MSL_MULTI_ACCOUNT
+        backupHostName:
+          type: string
+          description: |
+            Specify a backup hostname for the CDN.
+        cdnCode:
+          type: string
+          description: |
+            Automatically generated code for the CDN.
+        enabled:
+          type: boolean
+          description: |
+            Specify `enabled` or `disabled` to activate or deactivate the CDN.
+        expiryDate:
+          type: string
+          description: |
+            Specify a future date and time up to which the CDN provider configuration is valid. The time zone is the current time zone where you configure your settings.
+          format: date-time
+        guid:
+          type: string
+          description: |
+            Automatically generated GUI ID for the CDN.
+        hostName:
+          type: string
+          description: |
+            Specify the hostname for the origin.
+        key:
+          type: string
+          description: |
+            Automatically generated key to access the CDN.
+        previousKey:
+          type: string
+          description: |
+            Displays the previously configured key to access the CDN.
+        previousKeyExpiryDate:
+          type: string
+          description: |
+            Displays the expiration date for the previous key.
+          format: date-time

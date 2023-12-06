@@ -1,0 +1,60 @@
+type: object
+description: |-
+  Provides additional details about an activation, as the response to the [Get activation details](ref:get-activation) operation.
+  
+x-akamai:
+  file-path: schemas/activation-request.yaml
+additionalProperties: false
+required:
+- activationId
+- environment
+- networkList
+- createDate
+- createdBy
+properties:
+  activationId:
+    type: integer
+    description: |
+      Unique identifier for the activation.
+  createDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the network list was first created.
+    example: '2017-06-01T15:13:40.36Z'
+  createdBy:
+    type: string
+    description: |
+      Username of this list's creator.
+  environment:
+    type: string
+    description: |
+      The Akamai network on which this activation was requested, either `STAGING` or `PRODUCTION`.
+    enum:
+    - PRODUCTION
+    - STAGING
+  estimate:
+    type: string
+    description: |
+      Estimated time remaining to complete the activation, in ISO 8601 duration format, relative to when this response generated. This member may be omitted under standard activation when `fast` indicates `false`, or during the early processing stages of some fast activations when the activation path is still being determined.
+  initial:
+    type: boolean
+    description: |
+      Indicates if this is the network list's first activation on this network. Initial activation typically takes about 25 minutes, whereas updates typically take 5 to 10 minutes.
+  networkList:
+    description: |
+      Provides details on the activated network list ordinarily available from the [Get activation status](ref:get-network-list-status) operation.
+    $ref: ../schemas/status.yaml
+  status:
+    type: string
+    description: |
+      Reflects lower-level fast activation status. See [Activation States](ref:activation-states) for details on possible status values. This member may be omitted under standard activation when `fast` indicates `false`, or after activation has completed.
+    enum:
+    - RECEIVED
+    - LIVE
+    - DEPLOYED
+    - ACTIVATED
+    - ROLLBACK
+    - FAILED
+    - CANCELING
+    - STOPPED
+    - DEACTIVATED

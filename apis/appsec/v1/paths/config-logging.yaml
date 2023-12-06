@@ -1,0 +1,62 @@
+x-akamai:
+  file-path: paths/config-logging.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/advanced-settings/logging
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+get:
+  operationId: get-advanced-settings-logging
+  summary: Get the HTTP header log settings for a configuration
+  tags:
+  - HTTP header logs
+  description: |
+    Lists HTTP header logging controls for a configuration. HTTP header logging is on by default, and in most cases you should leave it enabled. You can filter requests by header type, including or excluding requests with a specific header, or by cookie. This operation applies at the configuration level, and therefore applies to all policies within a configuration. If you want to view these settings for a specific policy, run [Get HTTP header log settings](ref:get-policies-logging). _Products:_ All.
+  responses:
+    200:
+      description: |
+        Successfully retrieved the HTTP Header Logging settings.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/http-header-logging-get-200.json
+          schema:
+            $ref: ../schemas/header-logging-get-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-advanced-settings-logging
+  summary: Modify HTTP header log settings for a configuration
+  tags:
+  - HTTP header logs
+  description: |
+    Enable, disable, or update HTTP header Logging settings for a configuration. This operation applies at the configuration level, and therefore applies to all policies within a configuration. If you want to override these settings for a specific policy, run [Modify HTTP header log settings](ref:put-policies-logging). _Products:_ All.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/http-header-logging-get-200.json
+        schema:
+          $ref: ../schemas/header-logging-put.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the HTTP Header Logging settings:.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/http-header-logging-get-200.json
+          schema:
+            $ref: ../schemas/header-logging-put-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

@@ -1,0 +1,49 @@
+type: object
+description: |-
+  Deploys your certificate to a network. A version label indicates this member is introduced in that version. A pre-version label indicates this member is removed in that version. No version label indicates this member is present in all versions.
+  
+x-akamai:
+  file-path: schemas/deployment.v1.yaml
+additionalProperties: false
+required:
+- certificate
+- networkConfiguration
+- trustChain
+properties:
+  certificate:
+    type: string
+    nullable: true
+  networkConfiguration:
+    type: object
+    description: |
+      Network configuration properties.
+    additionalProperties: false
+    properties:
+      mustHaveCiphers:
+        type: string
+      networkType:
+        type: string
+        nullable: true
+      preferredCiphers:
+        type: string
+      sni:
+        type: object
+        description: |
+          SNI settings for your enrollment. When set to null, the enrollment becomes non-SNI. When it is non-null, enrollment is SNI-only. This setting cannot be changed once an enrollment is created.
+        additionalProperties: false
+        required:
+        - cloneDnsNames
+        nullable: true
+        properties:
+          cloneDnsNames:
+            type: boolean
+          dnsNames:
+            type: array
+            items:
+              type: string
+  signatureAlgorithm:
+    type: string
+    nullable: true
+  trustChain:
+    type: string
+    nullable: true

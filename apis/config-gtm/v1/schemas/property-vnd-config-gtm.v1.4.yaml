@@ -1,0 +1,503 @@
+type: object
+description: |-
+  Contains information about the entire GTM property configuration.
+  
+x-akamai:
+  file-path: schemas/property-vnd-config-gtm.v1.4.yaml
+additionalProperties: false
+required:
+- backupCName
+- backupIp
+- balanceByDownloadScore
+- cname
+- dynamicTTL
+- failbackDelay
+- failoverDelay
+- handoutLimit
+- handoutMode
+- healthMax
+- healthMultiplier
+- healthThreshold
+- ipv6
+- livenessTests
+- loadImbalancePercentage
+- mapName
+- maxUnreachablePenalty
+- minLiveFraction
+- mxRecords
+- name
+- scoreAggregationType
+- staticTTL
+- stickinessBonusPercentage
+- stickinessBonusConstant
+- trafficTargets
+- type
+- unreachableThreshold
+- useComputedTargets
+- lastModified
+properties:
+  name:
+    type: string
+    description: |
+      The value, together with the GTM `domainName`, forms the property's hostname. The value should not begin or end with a dot character and needs to be a valid [RFC 1123](https://tools.ietf.org/html/rfc1123) hostname. Set the name to `@` if the property is to be located at the apex of the domain.
+    maxLength: 256
+    pattern: ^(@|[\w-]+(\.[\w-]+)*)$
+  type:
+    type: string
+    description: |
+      Specifies the load balancing behavior for the property. Either `failover`, `geographic`, `cidrmapping`, `weighted-round-robin`, `weighted-hashed`, `weighted-round-robin-load-feedback`, `qtr`, or `performance`. An additional value of `asmapping` requires the `application/vnd.config-gtm.v1.1+json` media type, or higher. A value of `static` allows solely standard DNS record types with no load balancing.  Requires the `application/vnd.config-gtm.v1.4+json` media type. See [API versioning](ref:api-versioning) for more information.
+    enum:
+    - static
+    - failover
+    - geographic
+    - cidrmapping
+    - asmapping
+    - weighted-round-robin
+    - weighted-hashed
+    - weighted-round-robin-load-feedback
+    - qtr
+    - performance
+  backupCName:
+    type: string
+    description: |
+      Specifies a `backupCName`. If GTM declares that all of the servers configured for your property are down, and you configured a `backupCName`, then queries for the property return the `backupCName`. If a `backupCName` is set, don't set a `backupIp`.
+    nullable: true
+  backupIp:
+    type: string
+    description: |
+      Specifies a backup IP. When GTM declares that all of the targets are down, it hands out the `backupIP`. The IP type coincides with the property's `iPv6` setting. If a `backupIp` is set, don't set a `backupCName`.
+    nullable: true
+  balanceByDownloadScore:
+    type: boolean
+    description: |
+      Indicates whether download score based load balancing is enabled. GTM estimates the load on your data centers based on how long they take to respond to GTM liveness tests. The advantage: you don't need to implement a load object. The disadvantage: it's a very crude measure of load, and usually highly nonlinear. As load increases, download times don't increase significantly, until there is too much load. When that happens, the download times skyrocket. This can easily cause erratic load balancing or load oscillations.
+  cname:
+    type: string
+    description: |
+      Indicates the fully qualified name aliased to a particular property. The public name of the property.
+    nullable: true
+  comments:
+    type: string
+    description: |
+      Provides information about the purpose of the property.
+    nullable: true
+  dynamicTTL:
+    type: integer
+    description: |
+      Indicates the TTL in seconds for records that might change dynamically based on liveness and load balancing such as A and AAAA records, and CNAMEs. The value ranges from `30` to `3600` and can change on request. The default is `60`.
+    minimum: 30
+    maximum: 3600
+  failbackDelay:
+    type: integer
+    description: |
+      Specifies the failback delay in seconds. The minimum value is `0`. If specified, when a server has been down and comes back up, (that is, its liveness test starts succeeding again), GTM only considers it up after the failback delay has elapsed and tests continue to succeed.
+    nullable: true
+    minimum: 0
+  failoverDelay:
+    type: integer
+    description: |
+      Specifies the failover delay in seconds. The minimum value is `0`. If specified, when a server begins failing its liveness test, GTM only considers it down after the failover delay has elapsed and the errors persist.
+    nullable: true
+    minimum: 0
+  handoutLimit:
+    type: integer
+    description: |
+      __v1.3__. Indicates the limit for the number of live IPs handed out to a DNS request. The `handoutLimit` applies only if `handoutMode` is set to either `normal` or `persistent` for the property. If applicable, the `handoutLimit` default value is `8` or `null` if not.
+    nullable: true
+    minimum: 1
+  handoutMode:
+    type: string
+    description: |
+      Specifies how IPs are returned when more than one IP is alive and available. Either `normal`, `persistent`, `one-ip`, `one-ip-hashed`, or `all-live-ips`. The default is `normal`. Handout mode is relevant only when you have more than one server IP in a data center.
+    enum:
+    - normal
+    - persistent
+    - one-ip
+    - one-ip-hashed
+    - all-live-ips
+  healthMax:
+    type: number
+    description: |
+      Defines the absolute limit beyond which IPs are declared unhealthy. If backup CNAMEs are provided for a property, then it is reasonable for all IPs to be declared unhealthy. The `healthMax` value is multiplied by the smaller of the `timeoutPenalty` and the `errorPenalty`. This check declares as down any server with a score greater than this product. The default value is `null`.
+    nullable: true
+  healthMultiplier:
+    type: number
+    description: |
+      Configures a cutoff value that is computed from the median scores. Any server with a score over the cutoff value is considered down, and load isn't sent to it. The cutoff is computed from the minimum score across all data centers, for a given property and two object members: `healthMultiplier` and `healthThreshold`. The cutoff is either `healthMultiplier` (default value: 1.5) times the minimum score, or the `healthThreshold` (default value: 4), whichever is greater. See also `healthThreshold` within this object. For more information on how to determine server liveness, see the [Global Traffic Management User Guide](https://techdocs.akamai.com/gtm/docs/welcome-to-global-traffic-management).
+    nullable: true
+  healthThreshold:
+    type: number
+    description: |
+      Configures a cutoff value that is computed from the median scores. Any server with a score over the cutoff value is considered down, and load isn't sent to it. See also `healthMultiplier` within this object. For more information on how to determine server liveness, see the [Global Traffic Management User Guide](https://techdocs.akamai.com/gtm/docs/welcome-to-global-traffic-management).
+    nullable: true
+  ipv6:
+    type: boolean
+    description: |
+      Indicates the type of IP address handed out by a property. A `true` value indicates that all IP addresses specified are IPv6, and all hostnames need to resolve to AAAA records. A `false` value indicates IPv4 addresses, and all hostnames need to resolve to A records.
+  lastModified:
+    type: string
+    description: |
+      An ISO 8601 timestamp that indicates when the property was last changed.
+    nullable: true
+    format: date-time
+  links:
+    type: array
+    description: |
+      Provides a URL path that allows direct navigation to the property.
+    items:
+      $ref: link.yaml
+  livenessTests:
+    type: array
+    description: |
+      Contains information about the liveness tests, which are run periodically to determine whether your servers respond to requests, as discussed in [API concepts](ref:api-concepts).
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - answersRequired
+      - disableNonstandardPortWarning
+      - errorPenalty
+      - hostHeader
+      - httpError3xx
+      - httpError4xx
+      - httpError5xx
+      - name
+      - peerCertificateVerification
+      - recursionRequested
+      - requestString
+      - resourceType
+      - responseString
+      - sslClientCertificate
+      - sslClientPrivateKey
+      - testInterval
+      - testObject
+      - testObjectPassword
+      - testObjectPort
+      - testObjectProtocol
+      - testObjectUsername
+      - testTimeout
+      - timeoutPenalty
+      properties:
+        name:
+          type: string
+          description: |
+            A descriptive name for the liveness test.
+          minLength: 1
+          maxLength: 128
+        answersRequired:
+          type: boolean
+          description: |
+            __v1.3__. If `testObjectProtocol` is `DNS`, `DOH` or `DOT`, requires an answer to the DNS query to be considered a success. The default is `false`.
+        disableNonstandardPortWarning:
+          type: boolean
+          description: |
+            Disables warnings when non-standard ports are used. For example, GTM doesn't emit a warning to specify port 1234 when the `testObjectProtocol` is `http`, as HTTP typically uses port 80. The default is `false`.
+        disabled:
+          type: boolean
+          description: |
+            __v1.4__. Disables the liveness test. When disabled, GTM stops running the test, treating it as if it no longer exists. The default is `false`.
+        errorPenalty:
+          type: number
+          description: |
+            __v1.2__. Specifies the score that's reported if the liveness test encounters an error other than timeout, such as connection refused, and 404. The default value is `75`.
+          minimum: 0
+        hostHeader:
+          type: string
+          description: |
+            Sent if the `testObjectProtocol` is `http` or `https`, up to 256 non-space, alphanumeric characters. Obsolete as of version 1.4 - recommended to use `hostHeaders` instead.
+          nullable: true
+          maxLength: 256
+        httpError3xx:
+          type: boolean
+          description: |
+            Treats a 3xx HTTP response as a failure if the `testObjectProtocol` is `http`, `https`, or `ftp`.
+        httpError4xx:
+          type: boolean
+          description: |
+            Treats a 4xx HTTP response as a failure if the `testObjectProtocol` is `http`, `https`, or `ftp`.
+        httpError5xx:
+          type: boolean
+          description: |
+            Treats a 5xx HTTP response as a failure if the `testObjectProtocol` is `http`, `https`, or `ftp`.
+        httpHeaders:
+          type: array
+          description: |
+            __v1.4__. Contains HTTP headers to send if the `testObjectProtocol` is `http` or `https`. This `hostHeader` member is deprecated as of version 1.4.
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - name
+            - value
+            properties:
+              name:
+                type: string
+                description: |
+                  Name of the HTTP header.
+                minLength: 1
+              value:
+                type: string
+                description: |
+                  Value of the HTTP header.
+        peerCertificateVerification:
+          type: boolean
+          description: |
+            __v1.3__. Validates the origin certificate. Applies only to tests with `testObjectProtocol` of `https`. The default is `false`.
+        recursionRequested:
+          type: boolean
+          description: |
+            __v1.3__. Indicates that if `testObjectProtocol` is `DNS`, `DOH` or `DOT`, the DNS query is recursive. The default is `false`.
+        requestString:
+          type: string
+          description: |
+            Specifies a request string. Required if `testObjectProtocol` is `tcp` or `tcps`. The value is a maximum of 4000 non-space, alphanumeric characters.
+          nullable: true
+          maxLength: 4000
+        resourceType:
+          type: string
+          description: |
+            __v1.3__. Specifies the query type, if `testObjectProtocol` is `DNS`. Types include: `A`, `AAAA`, `AFSDB`, `CNAME`, `HINFO`, `LOC`, `MX`, `NAPTR`, `NS`, `PTR`, `RP`, `SOA`, `SPF`, `SRV`, `SSHFP`, `TXT`, `DNSKEY`, `DS`, `NSEC3`, `NSEC3PARAM`, or `RRSIG`. Additional support for unknown types  `TYPENNNNN` where `NNNNN` is an integer from `1` through `65535`.
+          nullable: true
+          enum:
+          - A
+          - AAAA
+          - AFSDB
+          - CNAME
+          - HINFO
+          - LOC
+          - MX
+          - NAPTR
+          - NS
+          - PTR
+          - RP
+          - SOA
+          - SPF
+          - SRV
+          - SSHFP
+          - TXT
+          - DNSKEY
+          - DS
+          - NSEC3
+          - NSEC3PARAM
+          - RRSIG
+        responseString:
+          type: string
+          description: |
+            Specifies a response string. Required if `testObjectProtocol` is `tcp` or `tcps`. Maximum 4000 characters.
+          nullable: true
+          maxLength: 4000
+        sslClientCertificate:
+          type: string
+          description: |
+            Indicates a Base64-encoded certificate. SSL client certificates are available for `livenessTests` that use secure protocols.
+          nullable: true
+        sslClientPrivateKey:
+          type: string
+          description: |
+            Indicates a Base64-encoded private key. The private key used to generate or request a certificate for `livenessTests` can't have a passphrase nor be used for any other purpose.
+          nullable: true
+        testInterval:
+          type: integer
+          description: |
+            Indicates the interval at which the liveness test is run, in seconds. Requires a minimum of 10 seconds.
+          minimum: 10
+        testObject:
+          type: string
+          description: |
+            Specifies the static text that acts as a stand-in for the data that you're sending on the network.
+          nullable: true
+          maxLength: 256
+        testObjectPassword:
+          type: string
+          description: |
+            Specifies the test object's password. It is required if `testObjectProtocol` is `ftp`. Maximum is 128 characters.
+          nullable: true
+          maxLength: 128
+        testObjectPort:
+          type: integer
+          description: |
+            Specifies the port number for the `testObject`. Value from `1` to `65535`.
+          minimum: 1
+          maximum: 65535
+        testObjectProtocol:
+          type: string
+          description: |
+            Specifies the test protocol. Either `DNS`, `DOH`, `DOT`, `HTTP`, `HTTPS`, `FTP`, `POP`, `POPS`, `SMTP`, `SMTPS`, `TCP`, or `TCPS`. To enable `testObjectProtocol` for `DNS`, `DOH`, or `DOT` requires `application/vnd.config-gtm.v1.3+json`.
+          enum:
+          - DNS
+          - DOH
+          - DOH
+          - HTTP
+          - HTTPS
+          - FTP
+          - POP
+          - POPS
+          - SMTP
+          - SMTPS
+          - TCP
+          - TCPS
+        testObjectUsername:
+          type: string
+          description: |
+            A descriptive name for the `testObject`. If `testObjectProtocol` is `ftp`, then you need to specify a `testObjectUsername`. The value is a maximum of 256 non-space, alphanumeric characters.
+          nullable: true
+          maxLength: 512
+        testTimeout:
+          type: number
+          description: |
+            Specifies the duration of the liveness test before it fails. The range is from `0.001` to `60` seconds.
+          minimum: 0.001
+        timeoutPenalty:
+          type: number
+          description: |
+            __v1.2__. Specifies the score reported if the liveness test times out. This is independent of the liveness `testTimeout` value. The default value is `25` seconds.
+          minimum: 0
+  loadImbalancePercentage:
+    type: number
+    description: |
+      Indicates the percent of load imbalance factor (LIF) for the domain. It lets GTM exceed the value configured for traffic distribution. For example, if the data center's traffic allocation is 25 percent and the LIF is 1.5, the demand can grow to 37.5 percent (25% &times; 1.5) before the load balancer starts shifting load away from it. If the LIF is `0`, no load imbalance is allowed. However, internally, GTM adds one to the LIF to allow its use as a multiplier. The default LIF is 1.1, which is displayed as `10.0` percent. The value ranges from `0` to `1000000` percent.
+    nullable: true
+    minimum: 0
+    maximum: 1000000
+  mapName:
+    type: string
+    description: |
+      A descriptive label for a Geographic Map or a CIDR map that's required if the property is either  `geographic` or `cidrmapping`, in which case `mapName` needs to reference either an existing Geographic Map or CIDR map in the same domain.
+    nullable: true
+  maxUnreachablePenalty:
+    type: number
+    description: |
+      For `performance` domains, this specifies a penalty value that's added to liveness test scores when data centers show an aggregated loss fraction higher than the penalty value. The penalty value is either `maxUnreachablePenalty` (minimum value is `0` and the default is `null`) or `unreachableThreshold` (decimal between `0` and `1`. A value of 1.0 or `null` disables an unreachable penalty). See also `unreachableThreshold` within this object.
+    nullable: true
+    minimum: 0
+  minLiveFraction:
+    type: number
+    description: |
+      __v1.3__. Specifies what fraction of the servers need to respond to requests so GTM considers the data center up and able to receive traffic. For example, if your data center contains eight servers, and the `minLiveFraction` value is `0.5`, then at least four servers need to respond to requests.  Conversely, if five servers are down, and three servers are up, then GTM considers the entire data center down. Optional when a `minLiveFraction` value exists or not `null`.
+    nullable: true
+    minimum: 0
+    maximum: 1
+  mxRecords:
+    type: array
+    description: |
+      Specifies the MX records handed out to `MX` record type queries. Note that mapping and liveness testing aren't done. The same MX records are handed out for every request. Deprecated as of version 1.4, use `staticRRSets` instead.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - exchange
+      - preference
+      properties:
+        exchange:
+          type: string
+          description: |
+            MX record exchange member.
+        preference:
+          type: number
+          description: |
+            MX record preference field.
+  scoreAggregationType:
+    type: string
+    description: |
+      Specifies how GTM aggregates liveness test scores across different tests, when multiple tests are configured. Values are `mean`, `median`, `best`, or the default `worst`.
+    enum:
+    - mean
+    - median
+    - best
+    - worst
+  staticRRSets:
+    type: array
+    description: |
+      __v1.4__. Contains static recordsets. Use this member instead of `mxRecords` and `staticTTL`, which are deprecated in version 1.4.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      - ttl
+      - rdata
+      properties:
+        type:
+          type: string
+          description: |
+            The record type.
+        rdata:
+          type: array
+          description: |
+            An array of data strings, representing multiple records within a set. The format of the `rdata` strings are dependent on the `type` of this record.
+          items:
+            type: string
+        ttl:
+          type: integer
+          description: |
+            The number of seconds that this record should live in a resolver's cache before being refetched.
+  staticTTL:
+    type: integer
+    description: |
+      Specifies the TTL in seconds for static resource records that don't change based on the requesting name server IP. This includes MX, TXT, and SPF records.
+    nullable: true
+    minimum: 30
+    maximum: 3600
+  stickinessBonusConstant:
+    type: integer
+    description: |
+      Specifies a constant used to configure data center affinity. This only applies if the property `type` is `performance` and the domain `type` is `full`. The value ranges from `0` to `30000`. See also `stickinessBonusPercentage` within this object. To learn more about how these object members relate to each other, see [API concepts](ref:api-concepts).
+    nullable: true
+    minimum: 0
+    maximum: 30000
+  stickinessBonusPercentage:
+    type: integer
+    description: |
+      Specifies a percentage used to configure data center affinity. This only applies if the property `type` is `performance` and the domain `type` is `full`. The value ranges from `0` to `100`. See also `stickinessBonusConstant` within this object. To learn more about how these object members relate to each other, see [API concepts](ref:api-concepts).
+    nullable: true
+    minimum: 0
+    maximum: 100
+  trafficTargets:
+    type: array
+    description: |
+      Contains information about where to direct data center traffic. For geographic mapped properties, it is always a `cname`. For mirror failover properties, it can be any set of servers. For load balanced properties, this is a set of servers that are all within the same data center. You can assign multiple traffic targets to the same data center.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        servers:
+          type: array
+          description: |
+            Identifies the IP address or the hostnames of the servers. For hostnames that return IP addresses, tests all IP addresses for liveness.
+          items:
+            type: string
+        name:
+          type: string
+          description: |
+            An alternative label for the traffic target.
+          nullable: true
+        datacenterId:
+          type: integer
+          description: |
+            A unique identifier for an existing data center in the domain.
+        enabled:
+          type: boolean
+          description: |
+            Indicates whether the traffic target is used. You can also omit the traffic target, which has the same result as the `false` value. However, when the value is `false`, GTM continues to store the other traffic target fields in the database. There's no need to store them locally should you want to use the traffic target at a later time.
+        handoutCName:
+          type: string
+          description: |
+            Specifies an optional data center for the property. Uses the `handoutCName` when there are no servers configured for the property. Maximum 63 characters for the labels, 255 characters overall. May contain alphanumeric, hyphens, and underscores, but not literal IP addresses. Leading or trailing hyphens are not allowed.
+          nullable: true
+          maxLength: 255
+        weight:
+          type: number
+          description: |
+            Specifies the traffic weight for the target. This member is required when the enclosing property is `failover`, `weighted`, `weighted-with-load-feedback`, or `performance`. The sum of this value, for all enabled targets, can be any number, percentage, or ratio. For example, you can express a traffic split as 60/40, 120/80, or 3/2, all equivalent values. For `failover` properties, set this value to `1` for the traffic target you want to mark as _primary_.
+          minimum: 0
+  unreachableThreshold:
+    type: number
+    description: |
+      For `performance` domains, this specifies a penalty value that's added to liveness test scores when data centers have an aggregated loss fraction higher than this value. The value is a decimal between `0` and `1`. A value of `1.0` or `null` disables an unreachable penalty. See also `maxUnreachablePenalty` within this object.
+    nullable: true
+    minimum: 0
+    maximum: 1
+  useComputedTargets:
+    type: boolean
+    description: |
+      For `load-feedback` domains only, this specifies that you want GTM to automatically compute target load. Report only the current load objects, either by omission, or by using non-XML load objects.

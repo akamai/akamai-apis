@@ -1,0 +1,43 @@
+x-akamai:
+  file-path: paths/activations-status.yaml
+  path-info: /activations/status/{statusId}
+parameters:
+- $ref: ../parameters/statusId-path.yaml
+get:
+  operationId: get-activations-status
+  summary: Get an activation request status
+  tags:
+  - Activation status
+  description: |
+    Returns the status of a long-running activation request. Any errors that occur when generating the activation cause this API to respond with the underlying error status. _Products:_ All.
+  responses:
+    200:
+      description: |
+        Your activation request is still being created. Keep polling this API to get the latest status.
+      headers:
+        Retry-After:
+          description: |
+            The recommended wait time (in seconds) before calling this endpoint to check the status again.
+          schema:
+            type: string
+      content:
+        application/json:
+          example:
+            $ref: ../examples/activation-status-in-progress.json
+          schema:
+            $ref: ../schemas/activation-request-status-in-progress.yaml
+    303:
+      description: |
+        Your activation is ready. Follow the redirect to get the latest status.
+      headers:
+        Location:
+          description: |
+            The path at which the newly created activation can be found.
+          schema:
+            type: string
+      content:
+        application/json:
+          example:
+            $ref: ../examples/activation-status-complete.json
+          schema:
+            $ref: ../schemas/activation-request-status-complete.yaml

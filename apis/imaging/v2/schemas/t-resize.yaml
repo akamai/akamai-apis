@@ -1,0 +1,58 @@
+type: object
+description: |-
+  Resizes an image to a particular, absolute dimension. If you don't enter a `width` or a `height`, the image is resized with the `fit` aspect preservation mode, which selects a value for the missing dimension that preserves the image's aspect.
+  
+x-akamai:
+  file-path: schemas/t-resize.yaml
+title: Resize
+additionalProperties: false
+required:
+- transformation
+properties:
+  type:
+    description: |
+      Sets constraints for the image resize. Select `normal` to resize in all cases, either increasing or decreasing the dimensions. Select `downsize` to ignore this transformation if the result would be larger than the original. Select `upsize` to ignore this transformation if the result would be smaller.
+    oneOf:
+    - default: normal
+      type: string
+      title: String enum
+      enum:
+      - normal
+      - upsize
+      - downsize
+    - $ref: variable-inline.yaml
+  aspect:
+    description: |
+      Preserves the aspect ratio. Select `fit` to make the image fit entirely within the selected width and height. When using `fit`, the resulting image has the largest possible size for the specified dimensions. Select `fill` to size the image so it both completely fills the dimensions and has the smallest possible file size. Otherwise `ignore` changes the original aspect ratio to fit within an arbitrarily shaped rectangle.
+    oneOf:
+    - default: fit
+      type: string
+      title: String enum
+      enum:
+      - fit
+      - fill
+      - ignore
+    - $ref: variable-inline.yaml
+  height:
+    description: |
+      The height to resize the source image to. Must be set if `width` is not specified.
+    oneOf:
+    - minimum: 1
+      type: integer
+      title: Integer
+    - $ref: variable-inline.yaml
+  transformation:
+    type: string
+    description: |
+      Identifies the type of transformation, `Resize` in this case.
+    default: Resize
+    enum:
+    - Resize
+  width:
+    description: |
+      The width to resize the source image to. Must be set if  `height` is not specified.
+    oneOf:
+    - minimum: 1
+      type: integer
+      title: Integer
+    - $ref: variable-inline.yaml

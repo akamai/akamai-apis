@@ -1,0 +1,68 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Feedback reports
+  version: v3
+servers:
+- url: https://{hostname}/etp-report/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: feedbacks-report.yaml
+paths:
+  /configs/{configId}/feedbacks/details:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-feedback-details
+      summary: Report a threat
+      tags:
+      - Feedback reports
+      description: |
+        Reports the threat for a domain.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/feedback-request-200.json
+            schema:
+              $ref: schemas/feedbackResponse.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml
+    get:
+      operationId: get-feedbacks-details
+      summary: Get feedback event detail report
+      tags:
+      - Feedback reports
+      description: |
+        Returns feedback information about a domain based on the feedback type.
+      parameters:
+      - $ref: parameters/dimension-query.yaml
+      - $ref: parameters/dimensionValue-query.yaml
+      - $ref: parameters/feedbackType-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/feedback-response-200.json
+              schema:
+                $ref: schemas/feedbackResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml

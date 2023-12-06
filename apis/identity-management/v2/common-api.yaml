@@ -1,0 +1,159 @@
+openapi: 3.0.0
+info:
+  title: Common resources, for administrators
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/identity-management/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: common-api.yaml
+paths:
+  /user-admin/common/contact-types:
+    get:
+      operationId: get-common-contact-types
+      summary: View contact types
+      tags:
+      - Contact types
+      description: |
+        List all the possible contact types that Akamai supports. Use the values from this operation to add or update a user's `contactType`. Administrators use this operation to set a user's contact type. Users who modify it need to run [View contact types for a user profile](ref:get-user-contact-types).
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-contact-types.json
+              schema:
+                $ref: schemas/ListOfString.yaml
+  /user-admin/common/countries:
+    get:
+      operationId: get-common-countries
+      summary: View supported countries
+      tags:
+      - Locale
+      description: |
+        Return all the possible countries that Akamai supports. Use the values from this operation to add or update a user's country information. Administrators use this operation to set a user's country. Users who modify it need to run [View supported countries for a user profile](ref:get-user-countries).
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-countries.json
+              schema:
+                $ref: schemas/ListOfString.yaml
+  /user-admin/common/countries/{country}/states:
+    parameters:
+    - $ref: parameters/country-path.yaml
+    get:
+      operationId: get-common-states
+      summary: View states
+      tags:
+      - Locale
+      description: |
+        List U.S. states or Canadian provinces. If `country=USA` you may enter a value of `TBD` if you don't know a user's state. Administrators use this operation to set a user's state. Users who modify it need to run [View states for a user profile](ref:get-user-states).
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-states.json
+              schema:
+                $ref: schemas/ListOfString.yaml
+  /user-admin/common/notification-products:
+    get:
+      operationId: get-common-notification-products
+      summary: View products
+      tags:
+      - Products
+      description: |
+        Return all products a user can subscribe to and receive notifications for on the account. The account is determined by the tokens in your API client. Administrators use this operation to set the products for which users receive notifications. Users who modify this set need to run [View products for a user profile](ref:get-user-products).
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-notification-products.json
+              schema:
+                $ref: schemas/ListOfString.yaml
+  /user-admin/common/password-policy:
+    get:
+      operationId: get-common-password-policy
+      summary: View password policy
+      tags:
+      - Policies
+      description: |
+        Return the password policy for the current account. The current account is determined by the tokens in your API client. Administrators use this operation to set a user's password policy. Users who modify it need to run [View password policy for a user profile](ref:get-user-password-policy).
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-password-policy.json
+              schema:
+                $ref: schemas/PortalPasswordClass.yaml
+  /user-admin/common/supported-languages:
+    get:
+      operationId: get-common-languages
+      summary: View languages
+      tags:
+      - Locale
+      description: |
+        List all the possible languages Akamai supports. Use the values from this API to set the preferred `language` for a user. Users should see Control Center in the language you set for them. Administrators use this operation to set a user's preferred language. Users who modify it need to run [View languages for a user profile](ref:get-user-languages).
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-supported-languages.json
+              schema:
+                $ref: schemas/ListOfString.yaml
+  /user-admin/common/timeout-policies:
+    get:
+      operationId: get-common-timeout-policies
+      summary: View timeout policies
+      tags:
+      - Policies
+      description: |
+        Lists all the possible session timeout policies that Akamai supports. Use the values from this operation to set the `sessionTimeout` for a user. The `name` for each timeout period is in minutes, and the time `value` is in seconds. Administrators use this operation to set a user's timeout policy. Users who modify it need to run [View timeout policies for a user profile](ref:get-user-timeout-policies).
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-timeout-policies.json
+              schema:
+                $ref: schemas/ListOfSessionTimeoutPolicy.yaml
+  /user-admin/common/timezones:
+    get:
+      operationId: get-common-timezones
+      summary: View time zones
+      tags:
+      - Locale
+      description: |
+        List all time zones Akamai supports. Time zones are in ISO 8601 format. Use the values from this operation to set the `timeZone` for a user. Administrators use this operation to set a user's time zone. Users who modify it need to run [View time zones for a user profile](ref:get-user-timezones).
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-timezones.json
+              schema:
+                $ref: schemas/ListOfTimeZones.yaml

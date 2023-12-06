@@ -1,0 +1,367 @@
+openapi: 3.0.0
+info:
+  title: API clients administration
+  version: '3'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/identity-management/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: 09-api-clients-admin.yaml
+paths:
+  /api-clients:
+    post:
+      operationId: post-api-clients
+      summary: Create an API client
+      tags:
+      - API clients
+      description: |
+        This operation creates a new API client. Optionally, you can automatically assign a credential for the client when you create it. If you choose not to assign the credential automatically, see [Create authentication credentials](https://techdocs.akamai.com/developer/docs/set-up-authentication-credentials) for details.
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/post-request-api-client.json
+            schema:
+              $ref: schemas/api-client-post-request-v3.yaml
+      responses:
+        201:
+          description: |
+            The response provides the newly created API client.
+          headers:
+            Location:
+              $ref: headers/Location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/post-response-api-client.json
+              schema:
+                $ref: schemas/api-client-detail-v3.yaml
+    get:
+      operationId: get-api-clients
+      summary: List API clients
+      tags:
+      - API clients
+      description: |
+        This operation lists API clients an administrator can manage.
+      parameters:
+      - $ref: parameters/actions-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides a list of API clients an administrator can manage.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-list-api-clients.json
+              schema:
+                $ref: schemas/api-clients-v3.yaml
+  /api-clients/self:
+    get:
+      operationId: get-api-client-self
+      summary: Get your API client
+      tags:
+      - 'API client: self'
+      description: |
+        This operation provides details about your API client.
+      parameters:
+      - $ref: parameters/actions-query.yaml
+      - $ref: parameters/groupAccess-query.yaml
+      - $ref: parameters/apisAccess-query.yaml
+      - $ref: parameters/credentials-query.yaml
+      - $ref: parameters/ipAcl-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides the API client.
+          content:
+            application/json:
+              example:
+                $ref: examples/api-client-detail-v3.json
+              schema:
+                $ref: schemas/api-client-detail-v3.yaml
+    put:
+      operationId: put-api-clients-self
+      summary: Update your API client
+      tags:
+      - 'API client: self'
+      description: |
+        This operation updates your API client.
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/put-request-api-client.json
+            schema:
+              $ref: schemas/api-client-update-request-v3.yaml
+      responses:
+        200:
+          description: |
+            The response reflects the modified API client.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-response-api-client.json
+              schema:
+                $ref: schemas/api-client-detail-v3.yaml
+    delete:
+      operationId: delete-api-client-self
+      summary: Delete your API client
+      tags:
+      - 'API client: self'
+      description: |
+        This operation permanently deletes an API client you own, without active credentials. It also breaks any API connections with the client. Before deleting your API client, deactivate all credentials and make sure there aren't any API integrations or scripts using them.
+      responses:
+        204:
+          description: |
+            API client successfully deleted.
+  /api-clients/self/account-switch-keys:
+    get:
+      operationId: get-self-account-switch-keys
+      summary: List your account switch keys
+      tags:
+      - 'API client: self'
+      description: |
+        This operation lists your `accountSwitchKeys` and `accountNames`. Use the `accountSwitchKeys` [to make an API call to another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client).
+      parameters:
+      - $ref: parameters/accountSwitchKeys-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides your account switch keys and account names.
+          content:
+            application/json:
+              example:
+                $ref: examples/account-switch-keys-200.json
+              schema:
+                $ref: schemas/self-account-switch-keys.yaml
+  /api-clients/self/lock:
+    put:
+      operationId: put-lock-api-client-self
+      summary: Lock your API client
+      tags:
+      - 'API client: self'
+      description: |
+        This operation locks your API client. You can't use the API client while it's locked. To unlock your client, run the [Unlock an API client](ref:put-unlock-api-client) operation.
+      responses:
+        200:
+          description: |
+            The response provides the locked API client.
+          content:
+            application/json:
+              example:
+                $ref: examples/api-client-simple.json
+              schema:
+                $ref: schemas/api-client-simple-v3.yaml
+  /api-clients/{clientId}:
+    parameters:
+    - $ref: parameters/clientId-path.yaml
+    get:
+      operationId: get-api-client
+      summary: Get an API client
+      tags:
+      - API clients
+      description: |
+        This operation provides details about an API client.
+      parameters:
+      - $ref: parameters/actions-query.yaml
+      - $ref: parameters/groupAccess-query.yaml
+      - $ref: parameters/apisAccess-query.yaml
+      - $ref: parameters/credentials-query.yaml
+      - $ref: parameters/ipAcl-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides the API client.
+          content:
+            application/json:
+              example:
+                $ref: examples/api-client-detail-v3.json
+              schema:
+                $ref: schemas/api-client-detail-v3.yaml
+    put:
+      operationId: put-api-clients
+      summary: Update an API client
+      tags:
+      - API clients
+      description: |
+        This operation updates an API client.
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/put-request-api-client.json
+            schema:
+              $ref: schemas/api-client-update-request-v3.yaml
+      responses:
+        200:
+          description: |
+            The response reflects the modified API client.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-response-api-client.json
+              schema:
+                $ref: schemas/api-client-detail-v3.yaml
+    delete:
+      operationId: delete-api-client
+      summary: Delete an API client
+      tags:
+      - API clients
+      description: |
+        This operation permanently deletes the API client, breaking any API connections with the client. To delete a client, you need to own the client, or have admin access on a given group. Before deleting an API client, make sure there aren't any API integrations or scripts using it.
+      responses:
+        204:
+          description: |
+            API client successfully deleted.
+  /api-clients/{clientId}/account-switch-keys:
+    parameters:
+    - $ref: parameters/clientId-path.yaml
+    get:
+      operationId: get-client-account-switch-keys
+      summary: List account switch keys
+      tags:
+      - API clients
+      description: |
+        This operation lists the `accountSwitchKeys` and `accountNames` available to a given API client. Use the `accountSwitchKeys` [to make an API call to another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client).
+      parameters:
+      - $ref: parameters/accountSwitchKeys-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides account switch keys and account names available to you.
+          content:
+            application/json:
+              example:
+                $ref: examples/account-switch-keys-200.json
+              schema:
+                $ref: schemas/client-account-switch-keys.yaml
+  /api-clients/{clientId}/lock:
+    parameters:
+    - $ref: parameters/clientId-path.yaml
+    put:
+      operationId: put-lock-api-client
+      summary: Lock an API client
+      tags:
+      - API clients
+      description: |
+        This operation locks an API client. You can't use the API client while it's locked. To unlock a client, run the [Unlock an API client](ref:put-unlock-api-client) operation.
+      responses:
+        200:
+          description: |
+            The response provides the locked API client.
+          content:
+            application/json:
+              example:
+                $ref: examples/api-client-simple.json
+              schema:
+                $ref: schemas/api-client-simple-v3.yaml
+  /api-clients/{clientId}/unlock:
+    parameters:
+    - $ref: parameters/clientId-path.yaml
+    put:
+      operationId: put-unlock-api-client
+      summary: Unlock an API client
+      tags:
+      - API clients
+      description: |
+        This operation unlocks an API client.
+      responses:
+        200:
+          description: |
+            The response provides the unlocked API client.
+          content:
+            application/json:
+              example:
+                $ref: examples/api-client-simple.json
+              schema:
+                $ref: schemas/api-client-simple-v3.yaml
+  /users:
+    get:
+      operationId: get-api-clients-users
+      summary: List authorized users
+      tags:
+      - Helper
+      description: |
+        This operation lists authorized API client users.
+      responses:
+        200:
+          description: |
+            The response provides the authorized users.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-authorized-users.json
+              schema:
+                $ref: schemas/AuthorizedUsers.yaml
+  /users/{username}/allowed-apis:
+    parameters:
+    - $ref: parameters/username-path.yaml
+    - $ref: parameters/clientType-query.yaml
+    - $ref: parameters/allowAccountSwitch-query.yaml
+    get:
+      operationId: get-api-clients-users-allowed-apis
+      summary: List allowed APIs
+      tags:
+      - Helper
+      description: |
+        This operation lists available APIs for a user.
+      responses:
+        200:
+          description: |
+            The response provides APIs available to the user.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-api-clients-allowed-apis.json
+              schema:
+                $ref: schemas/AllowedApisResponse.yaml
+  /users/{username}/allowed-cpcodes:
+    parameters:
+    - $ref: parameters/username-path.yaml
+    post:
+      operationId: post-api-clients-users-allowed-cpcodes
+      summary: List allowed CP codes
+      tags:
+      - Helper
+      description: |
+        This operation lists available CP codes for a user.
+      requestBody:
+        content:
+          application/json:
+            example:
+              $ref: examples/post-request-api-clients-allowed-cpcodes.json
+            schema:
+              $ref: schemas/AllowedCpcodesRequest.yaml
+      responses:
+        200:
+          description: |
+            The response provides CP codes available to the user.
+          content:
+            application/json:
+              example:
+                $ref: examples/post-response-api-clients-allowed-cpcodes.json
+              schema:
+                $ref: schemas/AllowedCpcodesResponse.yaml
+  /users/{username}/group-access:
+    parameters:
+    - $ref: parameters/username-path.yaml
+    get:
+      operationId: get-api-clients-users-group-access
+      summary: List accessible groups
+      tags:
+      - Helper
+      description: |
+        This operation lists groups available to a user.
+      responses:
+        200:
+          description: |
+            The response provides groups available to the user.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-api-clients-group-access.json
+              schema:
+                $ref: schemas/GroupAccessResponse.yaml

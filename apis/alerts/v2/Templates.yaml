@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  title: Templates
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/alerts/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: Templates.yaml
+paths:
+  /alert-templates:
+    get:
+      operationId: get-templates
+      summary: List templates
+      tags:
+      - Templates
+      description: |
+        Lists templates for all supported alerts. Objects listed in the response provide only high-level information about each alert template, such as its `name` and whether its `origin` is `STATIC` or `ADAPTIVE`.  For a full definition that specifies all required `fields`, get a [specific template instance](ref:get-template).
+      responses:
+        200:
+          description: |
+            The response lists templates.
+          content:
+            application/json:
+              example:
+                $ref: examples/templates-get-200.json
+              schema:
+                $ref: schemas/templates.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml
+  /alert-templates/{templateId}:
+    parameters:
+    - $ref: parameters/templateId-path.yaml
+    get:
+      operationId: get-template
+      summary: Get a template
+      tags:
+      - Templates
+      description: |
+        Fetches a specific template. The response features a full set of `fields` on which to base a [new alert definition](ref:post-definition).
+      responses:
+        200:
+          description: |
+            The response provides the template.
+          content:
+            application/json:
+              example:
+                $ref: examples/template-get-200.json
+              schema:
+                $ref: schemas/template.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        500:
+          $ref: errors/500.yaml

@@ -1,0 +1,53 @@
+openapi: 3.0.0
+info:
+  title: Test catalog template
+  version: v3
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/test-management/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: functional-test-catalog.yaml
+paths:
+  /functional/test-catalog/conditions:
+    get:
+      operationId: get-test-conditions
+      summary: Get the test conditions
+      tags:
+      - Test conditions
+      description: |
+        Return all set of conditions used for creating test cases.
+      responses:
+        200:
+          description: |
+            The response returns the test catalog conditions.
+          content:
+            application/json:
+              example:
+                $ref: examples/test-condition-get-200.json
+              schema:
+                $ref: schemas/test-conditions.yaml
+        403:
+          $ref: errors/403.yaml
+  /functional/test-catalog/template:
+    get:
+      operationId: get-test-catalog-template
+      summary: Get the test catalog template
+      tags:
+      - Test catalog template
+      description: |
+        Returns the test catalog template used for creating conditions. To learn more, see [Test Center concepts](ref:test-center-concepts) and [Example: create a condition](ref:example-create-condition).
+      responses:
+        200:
+          description: |
+            The response returns the test catalog template.
+          content:
+            application/json:
+              example:
+                $ref: examples/test-catalog-template-get-200.json
+              schema:
+                $ref: schemas/test-catalog-template.yaml
+        403:
+          $ref: errors/403.yaml

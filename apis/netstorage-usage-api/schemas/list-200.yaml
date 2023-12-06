@@ -1,0 +1,82 @@
+type: object
+x-akamai:
+  file-path: schemas/list-200.yaml
+properties:
+  file:
+    type: array
+    items:
+      type: object
+      properties:
+        name:
+          type: string
+          description: |
+            Full name of the object, if it can be expressed in the encoding= parameter requested in the `X-Akamai-ACS-Action` HTTP request header. If type=`dir`, does include the trailing slash.
+          xml:
+            attribute: true
+        type:
+          type: string
+          description: |
+            What type of object this is.
+          enum:
+          - file
+          - dir
+          - symlink
+          xml:
+            attribute: true
+        md5:
+          type: string
+          description: |
+            If type=`file`, the MD5 hash of the file contents.
+          xml:
+            attribute: true
+        mtime:
+          type: integer
+          description: |
+            Modification time of the object, in seconds since January 1, 1970.
+          format: int32
+          xml:
+            attribute: true
+        name_base64:
+          type: string
+          description: |
+            The base64 encoded name of the object relative to the requested path, if it cannot be expressed in the encoding= parameter requested in the `X-Akamai-ACS-Action` HTTP request header. If present, `name` will not be present.
+          xml:
+            attribute: true
+        size:
+          type: integer
+          description: |
+            If type=`file`, the size of the object in bytes.
+          format: uint64
+          xml:
+            attribute: true
+        target:
+          type: string
+          description: |
+            If type=`symlink`, and the target of the symbolic link can be expressed in the requested character encoding, the target of the link.
+          xml:
+            attribute: true
+        target_base64:
+          type: string
+          description: |
+            If type=`symlink`, and the target of the symbolic link cannot be expressed in the requested character encoding, the target of the link encoded in base64.
+          xml:
+            attribute: true
+    xml:
+      wrapped: false
+  resume:
+    type: object
+    properties:
+      start:
+        type: string
+        description: |
+          The string to pass as the start= parameter of the `X-Akamai-ACS-Action` HTTP request header to resume this directory listing, if that string is legal in the encoding= parameter requested in the `X-Akamai-ACS-Action` HTTP request header.
+        xml:
+          attribute: true
+      start_base64:
+        type: string
+        description: |
+          The string to pass as the start= parameter of the `X-Akamai-ACS-Action` HTTP request header to resume this directory listing. This replaces `start` in cases where the value is not legal in the encoding= parameter requested in the `X-Akamai-ACS-Action` HTTP request header.
+        xml:
+          attribute: true
+xml:
+  name: list

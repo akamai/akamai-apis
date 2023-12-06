@@ -1,0 +1,40 @@
+type: object
+description: |-
+  Collects a URL or CP code for which you want to get the traffic's HTTP status codes distribution statistics and filters.
+  
+x-akamai:
+  file-path: schemas/estatsRequest.yaml
+additionalProperties: false
+minProperties: 1
+oneOf:
+- required:
+  - url
+  title: URL request
+- required:
+  - cpCode
+  title: CP code request
+properties:
+  cpCode:
+    type: integer
+    description: |
+      CP code you want to get the error statistics for. You need to provide either this value or `url`.
+    minimum: 0
+  delivery:
+    type: string
+    description: |
+      Type of network you want to get traffic data for, either `STANDARD_TLS` or `ENHANCED_TLS`. The `STANDARD_TLS` value provides HTTP traffic data for Standard TLS hostnames and `ENHANCED_TLS` provides HTTPS traffic data for Enhanced TLS hostnames. Without this filter, Edge Diagnostics checks on its own the type of delivery used by your resource and returns data for it. If your resource uses both delivery types, then Edge Diagnostics returns data for the type which got all data collected faster. If you choose the delivery type not used by your resource, then the results are empty. To verify the delivery type of you resource, run the [Get an edge hostname](https://techdocs.akamai.com/edge-hostnames/reference/get-edgehostnameid) operation in [Edge Hostnames API](https://techdocs.akamai.com/edge-hostnames/reference/api). It's the `securityType` value.
+    enum:
+    - STANDARD_TLS
+    - ENHANCED_TLS
+  errorType:
+    type: string
+    description: |
+      Type of traffic direction you want to get the data for, either `EDGE_ERRORS` or `ORIGIN_ERRORS`. The `EDGE_ERRORS` value returns data for the edge server response to a client and `ORIGIN_ERRORS` for the edge server forward request to an origin server. Without this filter, Edge Diagnostics returns data for both.
+    enum:
+    - EDGE_ERRORS
+    - ORIGIN_ERRORS
+  url:
+    type: string
+    description: |
+      Fully qualified URL you want to get the error statistics for. You need to provide either this value or `cpCode`.
+    minLength: 1

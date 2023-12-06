@@ -1,0 +1,59 @@
+type: object
+description: |-
+  When using certificates with domain validation, you prove that you have control over each of the domains listed in the certificate. When you create a new DV enrollment that generates a certificate signing request (CSR). CPS automatically sends it to Let's Encrypt for signing. Let's Encrypt sends back a challenge for each domain listed on your certificate. You prove that you have control over the domains listed in the CSR by redirecting your traffic to Akamai. This allows Akamai to complete the challenge process for you by detecting the redirect and answering Let's Encrypt's challenge. You must configure your web server to redirect your traffic to Akamai. If you do not have the ability to redirect traffic on your web server, you must instruct the person who can redirect traffic to do so. Let's Encrypt automatically verifies the domain after it receives an answer to the challenge, and marks the domain as validated. A version label indicates this member is introduced in that version. A pre-version label indicates this member is removed in that version. No version label indicates this member is present in all versions.
+  
+x-akamai:
+  file-path: schemas/dv-challenges.v1.yaml
+additionalProperties: false
+required:
+- challenges
+properties:
+  challenges:
+    type: array
+    description: |
+      Domains that need to be validated for this Enrollment. V1 only supports and displays http-01 challenge.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        domain:
+          type: string
+          description: |
+            Domain which is being validated.
+        error:
+          type: string
+          description: |
+            Current validation status for domains not yet validated.
+          nullable: true
+        expires:
+          type: string
+          description: |
+            Timestamp when this token or validation will expire. Sample 2014-08-12T18:57:07z.
+        fullPath:
+          type: string
+          description: |
+            URL where Let's Encrypt will request and expect to find 'token' as content.
+        redirectFullPath:
+          type: string
+          description: |
+            The URL where Akamai publishes `responseBody` for Let's Encrypt to validate. The client can configure a redirect at `fullPath` to redirect requests to this `redirectFullPath` URL, keeping in mind that the token may change over time.
+        requestTimestamp:
+          type: string
+          description: |
+            Timestamp Akamai received validation token from Let's Encrypt. Sample `2014-08-12T18:57:07z`.
+        responseBody:
+          type: string
+          description: |
+            The data Let's Encrypt expects to find served at `fullPath` URL.
+        status:
+          type: string
+          description: |
+            The domain validation status.
+        token:
+          type: string
+          description: |
+            The validation token issued by Let's Encrypt.
+        validatedTimestamp:
+          type: string
+          description: |
+            Timestamp when domain was successfully validated. Sample 2014-08-12T18:57:07z.

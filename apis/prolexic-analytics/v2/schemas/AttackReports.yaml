@@ -1,0 +1,189 @@
+type: object
+description: |-
+  Contains details about an attack, including location, time, and type of attack.
+  
+x-akamai:
+  file-path: schemas/AttackReports.yaml
+additionalProperties: false
+required:
+- currentContract
+- data
+- status
+- statusMsg
+properties:
+  currentContract:
+    type: string
+    description: |
+      The policy domain name of the data center or proxy.
+  data:
+    type: array
+    description: |
+      The list of recorded attacks, with details about each attack.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - attackId
+      - customerShortName
+      - eventEndTimeAsString
+      - eventId
+      - eventStartTime
+      - eventStartTimeAsString
+      - eventType
+      - eventTypes
+      - startTime
+      properties:
+        attackId:
+          type: integer
+          description: |
+            A unique identifier for the attack.
+        customerShortName:
+          type: string
+          description: |
+            A nickname for the customer.
+        destinationPort:
+          type: string
+          description: |
+            The targeted port of the attack, if applicable. Returns `null` when not applicable.
+        destinations:
+          type: array
+          description: |
+            The set of targeted IP addresses or Subnets for the attack.
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - ip
+            - netmask
+            properties:
+              ip:
+                type: string
+                description: |
+                  A targeted IP address.
+              netmask:
+                type: integer
+                description: |
+                  A targeted subnet.
+        endTime:
+          type: integer
+          description: |
+            The end time of the attack in UNIX epoch seconds (UTC).
+        eventEndTime:
+          type: integer
+          description: |
+            The end time of the event in UNIX epoch seconds (UTC).
+        eventEndTimeAsString:
+          type: string
+          description: |
+            The end time of the event in `yyyy-MM-dd HH:mm:ss` format.
+        eventId:
+          type: integer
+          description: |
+            A unique identifier for the event.
+        eventStartTime:
+          type: integer
+          description: |
+            The start time of the event in UNIX epoch seconds (UTC).
+        eventStartTimeAsString:
+          type: string
+          description: |
+            The start time of the event in `yyyy-MM-dd HH:mm:ss` format.
+        eventType:
+          type: string
+          description: |
+            The type of event. Valid values are `alert` and `attack`.
+          enum:
+          - alert
+          - attack
+        eventTypes:
+          type: array
+          description: |
+            The types of attacks, also referred to as `attackTypeName` or `attackType`. Valid values are `ACK Flood`, `CLDAP Reflection`, `CharGEN Attack`, `Connection Flood`, `DNS Flood`, `FIN Flood`, `FIN PUSH Flood`, `GET Flood`, `GRE Protocol Flood`, `HEAD Flood`, `ICMP Flood`, `IGMP Flood`, `mDNS Flood`, `NTP FLOOD`, `Netbios Flood`, `POST Flood`, `PUSH Flood`, `PUT Flood`, `RESET Flood`, `RIP Flood`, `RPC Flood`, `Reserved Protocol Flood`, `SNMP Flood`, `SQL Server Reflection`, `SSDP Flood`, `SSL GET Flood`, `SSL POST Flood`, `SYN Flood`, `SYN PUSH`, `Sentinel Flood`, `TCP Anomaly`, `TCP Fragment`, `TFTP Flood`, `UDP Flood`, `UDP Fragment`, or `XMAS`.
+          items:
+            type: string
+            enum:
+            - ACK Flood
+            - CLDAP Reflection
+            - CharGEN Attack
+            - Connection Flood
+            - DNS Flood
+            - FIN Flood
+            - FIN PUSH Flood
+            - GET Flood
+            - GRE Protocol Flood
+            - HEAD Flood
+            - ICMP Flood
+            - IGMP Flood
+            - mDNS Flood
+            - NTP FLOOD
+            - Netbios Flood
+            - POST Flood
+            - PUSH Flood
+            - PUT Flood
+            - RESET Flood
+            - RIP Flood
+            - RPC Flood
+            - Reserved Protocol Flood
+            - SNMP Flood
+            - SQL Server Reflection
+            - SSDP Flood
+            - SSL GET Flood
+            - SSL POST Flood
+            - SYN Flood
+            - SYN PUSH
+            - Sentinel Flood
+            - TCP Anomaly
+            - TCP Fragment
+            - TFTP Flood
+            - UDP Flood
+            - UDP Fragment
+            - XMAS
+        peaks:
+          type: array
+          description: |
+            Contains peak statistics from the attack data.
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - bandwidth
+            - location
+            - peakId
+            - pps
+            properties:
+              bandwidth:
+                type: integer
+                description: |
+                  The peak measurement of bandwidth.
+              connections:
+                type: integer
+                description: |
+                  The peak number of connections.
+              location:
+                type: string
+                description: |
+                  The peak value for location.
+              peakId:
+                type: integer
+                description: |
+                  The peak value for ID.
+              pps:
+                type: integer
+                description: |
+                  The peak measurement of packets per second.
+        startTime:
+          type: integer
+          description: |
+            The start time of the attack in UNIX epoch seconds (UTC).
+        ticketId:
+          type: string
+          description: |
+            A unique identifier for the ticket associated with this attack.
+  status:
+    type: boolean
+    description: |
+      Whether the request for the attack information was successful.
+  statusMsg:
+    type: string
+    description: |
+      A status message that indicates the successful or failed retrieval of the attack information.

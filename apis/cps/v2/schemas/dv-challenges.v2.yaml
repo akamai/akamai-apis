@@ -1,0 +1,141 @@
+type: object
+description: |-
+  When using certificates with domain validation, you prove that you have control over each of the domains listed in the certificate. When you create a new DV enrollment that generates a certificate signing request (CSR). CPS automatically sends it to Let's Encrypt for signing. Let's Encrypt sends back a challenge for each domain listed on your certificate. You prove that you have control over the domains listed in the CSR by redirecting your traffic to Akamai, or placing a token in the domain's DNS zone. This allows Akamai to complete the challenge process for you by detecting the redirect or DNS token, and answering Let's Encrypt's challenge. You must complete one of the challenges for each domain to validate the certificate. To validate a domain, only one challenge for each domain must be complete. Let's Encrypt automatically verifies the domain after it receives an answer to the challenge, and marks the domain as validated.
+  
+x-akamai:
+  file-path: schemas/dv-challenges.v2.yaml
+additionalProperties: false
+required:
+- dv
+properties:
+  dv:
+    type: array
+    description: |
+      Array of Domain Validation entities.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - challenges
+      properties:
+        challenges:
+          type: array
+          description: |
+            Domains that need to be validated for this Enrollment. V1 only supports and displays http-01 challenge. V2 allows HTTP and DNS challenge types. Each domain in the enrollment can have multiple challenges and can use a different challenge types. To validate a domain, only one challenge for each domain must be complete.
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - validationRecords
+            properties:
+              type:
+                type: string
+                description: |
+                  Validation type. Currently supported types include `dns-01` & `http-01`.
+                enum:
+                - dns-01
+                - http-01
+              error:
+                type: string
+                description: |
+                  Error message describing failure to validate domain control.
+                nullable: true
+              fullPath:
+                type: string
+                description: |
+                  URL where Let's Encrypt will request and expect to find 'token' as content.
+              redirectFullPath:
+                type: string
+                description: |
+                  The URL where Akamai publishes `responseBody` for Let's Encrypt to validate. The client can configure a redirect at `fullPath` to redirect requests to this `redirectFullPath` URL, keeping in mind that the token may change over time.
+              responseBody:
+                type: string
+                description: |
+                  The data Let's Encrypt expects to find served at `fullPath` URL.
+              status:
+                type: string
+                description: |
+                  The domain validation status. Current values include `Preparing`, `Pending`, `Awaiting user`, `Valid`, `Invalid`, `Error` & `Ready for Validation`.
+                enum:
+                - Preparing
+                - Pending
+                - Awaiting user
+                - Valid
+                - Invalid
+                - Error
+                - Ready for Validation
+              token:
+                type: string
+                description: |
+                  The validation token issued by Let's Encrypt.
+              validationRecords:
+                type: array
+                description: |
+                  Validation attempts and status.
+                items:
+                  type: object
+                  description: |
+                    Validation attempt.
+                  additionalProperties: false
+                  properties:
+                    authorities:
+                      type: array
+                      description: |
+                        Validation authorities.
+                      items:
+                        type: string
+                    hostname:
+                      type: string
+                      description: |
+                        Domain name being validated.
+                    port:
+                      type: string
+                      description: |
+                        Port used for validation.
+                    resolvedIp:
+                      type: array
+                      description: |
+                        IPs resolved for name being validated.
+                      items:
+                        type: string
+                    triedIp:
+                      type: string
+                      description: |
+                        IP from `resolvedIp` tried for this validation.
+                    url:
+                      type: string
+                      description: |
+                        URL attempted validated.
+                    usedIp:
+                      type: string
+                      description: |
+                        IP from `resolvedIp` used for this validation.
+        domain:
+          type: string
+          description: |
+            Domain which is being validated.
+        error:
+          type: string
+          description: |
+            Current validation status for domains not yet validated.
+          nullable: true
+        expires:
+          type: string
+          description: |
+            Timestamp when this token or validation will expire. Sample 2017-12-05T18:57:07z.
+        requestTimestamp:
+          type: string
+          description: |
+            Timestamp Akamai received validation token from Let's Encrypt. Sample `2017-12-12T18:57:07z`.
+        status:
+          type: string
+          description: |
+            Let's Encrypt validation status. Required `Valid` for certificate generation.
+        validatedTimestamp:
+          type: string
+          description: |
+            Timestamp when domain was successfully validated. Sample 2017-12-12T18:57:07z.
+        validationStatus:
+          type: string
+          description: |
+            Status of the domain validation process.

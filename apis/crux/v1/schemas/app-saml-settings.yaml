@@ -1,0 +1,269 @@
+type: array
+x-akamai:
+  file-path: schemas/app-saml-settings.yaml
+items:
+  type: object
+  description: |
+    SAML configuration for an application.
+  additionalProperties: false
+  required:
+  - sp
+  - attrmap
+  - idp
+  - subject
+  properties:
+    attrmap:
+      type: array
+      description: |
+        SAML attribute mapping details.
+      minItems: 1
+      uniqueItems: true
+      items:
+        type: object
+        description: |
+          Specifies mapped attributes for the SAML configuration.
+        additionalProperties: false
+        required:
+        - name
+        - fmt
+        - src
+        properties:
+          name:
+            type: string
+            description: |
+              The name of the attribute.
+            minLength: 1
+          fmt:
+            type: string
+            description: |
+              The name format of the attribute.
+            minLength: 1
+          fname:
+            type: string
+            description: |
+              The fname of the attribute.
+            minLength: 0
+          rule:
+            type: string
+            description: |
+              The custom rule language for the attribute. 
+            minLength: 1
+          src:
+            type: string
+            description: |
+              The source of the attribute.
+            minLength: 1
+          val:
+            type: string
+            description: |
+              The value of the attribute.
+            minLength: 1
+    idp:
+      type: object
+      description: |
+        Specifies identity provider (IDP) settings for the SAML configuration.
+      additionalProperties: false
+      required:
+      - self_signed
+      - ecp_resp_signature
+      - slo_url
+      - entity_id
+      - resp_bind
+      - sign_key
+      - sign_cert
+      - sign_algo
+      - ecp_enable
+      - metadata
+      properties:
+        ecp_enable:
+          type: boolean
+          description: |
+            Enables enhanced client or proxy (ECP).
+          default: false
+        ecp_resp_signature:
+          type: boolean
+          description: |
+            The ECP response signature.
+          default: false
+        entity_id:
+          type: string
+          description: |
+            The entity ID of the identity provider.
+          minLength: 1
+        metadata:
+          type: string
+          description: |
+            Additional metadata for the service provider configuration. Specify `null` if you want to provide this later.
+          nullable: true
+          minLength: 1
+        resp_bind:
+          type: string
+          description: |
+            The response binding. Set to `post`.
+          default: post
+          enum:
+          - post
+        self_signed:
+          type: boolean
+          description: |
+            Enables a self-signed certificate.
+          default: true
+        sign_algo:
+          type: string
+          description: |
+            The type of signing algorithm. Either `SHA256` or `SHA1`.
+          default: SHA256
+          enum:
+          - SHA256
+          - SHA1
+        sign_cert:
+          type: string
+          description: |
+            The signing certificate.
+          minLength: 1
+        sign_key:
+          type: string
+          description: |
+            The signing key.
+          minLength: 1
+        slo_url:
+          type: string
+          description: |
+            The single log-out URL.
+          minLength: 1
+    sp:
+      type: object
+      description: |
+        Specifies service provider (SP) settings for the SAML configuration.
+      additionalProperties: false
+      required:
+      - entity_id
+      - acs_url
+      - req_bind
+      - default_relay_state
+      - force_auth
+      - req_verify
+      - resp_encr
+      - encr_cert
+      - encr_algo
+      properties:
+        acs_url:
+          type: string
+          description: |
+            The single sign-on (ACS) URL.
+          minLength: 1
+        default_relay_state:
+          type: string
+          description: |
+            The default relay state. Specify `null` if you want to provide this later.
+          minLength: 0
+        dst_url:
+          type: string
+          description: |
+            The destination URL.
+          minLength: 0
+        encr_algo:
+          type: string
+          description: |
+            The response encryption algorithm. Either `aes256-cbc` or `aes128-cbc`.
+          default: aes256-cbc
+          enum:
+          - aes256-cbc
+          - aes128-cbc
+        encr_cert:
+          type: string
+          description: |
+            The response encryption certificate.
+          minLength: 1
+        entity_id:
+          type: string
+          description: |
+            The entity ID.
+          minLength: 1
+        force_auth:
+          type: boolean
+          description: |
+            Forces encryption using the `httponly` flag in the session cookie.
+          default: false
+        metadata:
+          type: string
+          description: |
+            Additional metadata for the IDP configuration. Specify `null` if you want to provide this later.
+          nullable: true
+          minLength: 1
+        req_bind:
+          type: string
+          description: |
+            The response binding. Either `redirect` or `post`.
+          default: redirect
+          enum:
+          - redirect
+          - post
+        req_verify:
+          type: boolean
+          description: |
+            Enables request verification.
+          default: false
+        resp_encr:
+          type: boolean
+          description: |
+            Enables encryption on the responses.
+          default: false
+        sign_cert:
+          type: string
+          description: |
+            The request signing certificate.
+          minLength: 1
+        slo_bind:
+          type: string
+          description: |
+            The single log-out binding. Either `post` or `redirect`.
+          default: post
+          enum:
+          - post
+          - redirect
+        slo_req_verify:
+          type: boolean
+          description: |
+            Enables single log-out request verification.
+          default: true
+        slo_url:
+          type: string
+          description: |
+            The single log-out URL.
+          minLength: 1
+    subject:
+      type: object
+      description: |
+        Specifies the subject settings for the SAML configuration.
+      additionalProperties: false
+      required:
+      - fmt
+      - src
+      properties:
+        fmt:
+          type: string
+          description: |
+            The format for the `NameID` element of the subject. Either `email`, `persistent`, `unspecified`, or `transient`.
+          enum:
+          - email
+          - persistent
+          - unspecified
+          - transient
+          minLength: 1
+        rule:
+          type: string
+          description: |
+            Processing rule for the subject. If omitted from requests, the API responds with a `null` value you can fill out later.
+          nullable: true
+          minLength: 1
+        src:
+          type: string
+          description: |
+            The source of the subject.
+          minLength: 1
+        val:
+          type: string
+          description: |
+            The value of the subject.
+          minLength: 1

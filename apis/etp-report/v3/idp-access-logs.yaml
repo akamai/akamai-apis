@@ -1,0 +1,45 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: IDP systems reports
+  version: v3
+servers:
+- url: https://{hostname}/etp-report/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: idp-access-logs.yaml
+paths:
+  /configs/{configId}/access-logs/details:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-access-logs-details
+      summary: Report IDP access log details
+      tags:
+      - IDP access logs
+      description: |
+        Lists the IDP access logs for a configuration for a given time period.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/idp-access-logs-postRequest.json
+            schema:
+              $ref: schemas/idpAccessLogPostRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            text/csv:
+              example:
+                $ref: examples/idp-access-logs-postResponse-200.csv
+        400:
+          $ref: errors/400.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/notFound-404.yaml

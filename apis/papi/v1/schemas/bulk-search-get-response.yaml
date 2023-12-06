@@ -1,0 +1,173 @@
+id: resource:/descriptors/papi/v1/schemas/GetBulkSearchResponse.json
+type: object
+description: |-
+  A bulk search job. The request specifies JSONPath search queries, and the response includes JSON path locations within matching rule trees. Check the `searchTargetStatus` of potentially long-running asynchronous jobs for when they're `COMPLETE`. See [Bulk Search and Update](ref:bulk-search-and-update) for guidance on how to use this object.
+  
+x-akamai:
+  file-path: schemas/bulk-search-get-response.yaml
+additionalProperties: false
+required:
+- bulkSearchId
+- searchTargetStatus
+- searchSubmitDate
+- bulkSearchQuery
+- results
+properties:
+  bulkSearchId:
+    type: integer
+    description: |
+      Identifies each bulk search process.
+    minimum: 1
+  bulkSearchQuery:
+    type: object
+    description: |
+      Reflects the bulk search request's `bulkSearchQuery` object.
+    additionalProperties: false
+    required:
+    - syntax
+    - match
+    properties:
+      bulkSearchQualifiers:
+        type: array
+        description: |
+          Additional JSON Path test expressions specified in the original bulk search request.
+        items:
+          type: string
+      match:
+        type: string
+        description: |
+          Reflects the bulk search request's original JSON Path `match` query.
+      syntax:
+        type: string
+        description: |
+          Reflects the bulk search request's original `syntax` value. The only currently supported query syntax is `JSONPATH`.
+        enum:
+        - JSONPATH
+  results:
+    type: array
+    description: |
+      Search results based on the original bulk search request's `bulkSearchQuery`, one for each property version.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - propertyId
+      - propertyVersion
+      properties:
+        accountId:
+          type: string
+          description: |
+            Identifies the prevailing account under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+        includeId:
+          type: string
+          description: |
+            Identifies the matching include. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `inc_` prefix.
+        includeName:
+          type: string
+          description: |
+            Identifies the specific include name whose rule tree matches the search query.
+        includeType:
+          type: string
+          description: |
+            The type of an include. `MICROSERVICES` specifies includes with a separate access control and activation flow, which allows different teams to work independently on different parts of a single site. In a parent property's rule tree, you add the `MICROSERVICE` includes to rules with mutually exclusive path matches. `COMMON_SETTINGS` specifies includes used across different properties that share a significant number of settings. In a parent property's rule tree, you add the `COMMON_SETTINGS` includes to the default rule or rules without any matches. By updating or activating a single `COMMON_SETTINGS` include, the changes take effect immediately across all sites that use this include. You can use this member for filtering and grouping similar includes together.
+          enum:
+          - MICROSERVICES
+          - COMMON_SETTINGS
+        includeVersion:
+          type: integer
+          description: |
+            Identifies the specific include version whose rule tree matches the search query.
+          minimum: 1
+        isLatest:
+          type: boolean
+          description: |
+            Indicates whether this property version is the most recently modified, regardless of whether it's active. The most recently modified version appears along with active versions in bulk search results.
+        isLocked:
+          type: boolean
+          description: |
+            Indicates whether the property version is editable. The value is `false` if it's active or has ever been activated.
+        isSecure:
+          type: boolean
+          description: |
+            Identifies the specific field whose rule tree matches the search result.
+        lastModifiedTime:
+          type: string
+          description: |
+            An ISO 8601 timestamp indicating when the matching property version was last modified.
+        matchLocations:
+          type: array
+          description: |
+            JSON path expressions for each matching node in the property version's rule tree.
+          items:
+            type: string
+        productionStatus:
+          type: string
+          description: |
+            The matching property version's activation status on the production network. Bulk search matches property versions currently active on production and staging networks. Values are the same as for individual activations: `ACTIVE`, `INACTIVE`, `NEW`, `PENDING`, `ZONE_1`, `ZONE_2`, `ZONE_3`, `ABORTED`, `FAILED`, `PENDING_DEACTIVATION` or `DEACTIVATED`.
+          enum:
+          - ACTIVE
+          - INACTIVE
+          - PENDING
+          - ZONE_1
+          - ZONE_2
+          - ZONE_3
+          - ABORTED
+          - FAILED
+          - DEACTIVATED
+          - PENDING_DEACTIVATION
+          - NEW
+        propertyId:
+          type: string
+          description: |
+            Identifies the matching property. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+        propertyName:
+          type: string
+          description: |
+            Identifies the specific property name whose rule tree matches the search query.
+        propertyType:
+          type: string
+          description: |
+            Whether the search query result is a traditional property or an include. You can reference includes in a property's rule tree with the [include](ref:ga-include) behavior. The results can show both traditional properties and includes, or you can narrow down your search to either type.
+          enum:
+          - TRADITIONAL
+          - INCLUDE
+        propertyVersion:
+          type: integer
+          description: |
+            Identifies the specific property version whose rule tree matches the search query.
+          minimum: 1
+        stagingStatus:
+          type: string
+          description: |
+            The matching property version's activation status on the staging network. Bulk search matches property versions currently active on production and staging networks. Values are the same as for individual activations: `ACTIVE`, `INACTIVE`, `NEW`, `PENDING`, `ZONE_1`, `ZONE_2`, `ZONE_3`, `ABORTED`, `FAILED`, `PENDING_DEACTIVATION` or `DEACTIVATED`.
+          enum:
+          - ACTIVE
+          - INACTIVE
+          - PENDING
+          - ZONE_1
+          - ZONE_2
+          - ZONE_3
+          - ABORTED
+          - FAILED
+          - DEACTIVATED
+          - PENDING_DEACTIVATION
+          - NEW
+  searchSubmitDate:
+    type: string
+    description: |
+      An ISO 8601 timestamp marking when the bulk search request occurred.
+  searchTargetStatus:
+    type: string
+    description: |
+      Indicates progress for the entire bulk search process, either `PENDING`, `SUBMITTED`, `IN_PROGRESS`, or finally `COMPLETE`. In some cases, progress may fail due to an `ERROR`.
+    enum:
+    - PENDING
+    - SUBMITTED
+    - COMPLETE
+    - IN_PROGRESS
+    - ERROR
+  searchUpdateDate:
+    type: string
+    description: |
+      An ISO 8601 timestamp marking when the `searchTargetStatus` for the bulk search process last changed.
+$schema: http://json-schema.org/draft-04/schema#

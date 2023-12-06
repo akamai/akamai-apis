@@ -1,0 +1,230 @@
+id: resource:/descriptors/papi/v1/schemas/GetPropertyHostnamesResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array, even individual items. See [ID prefixes](#prefixes) for more information.
+  
+x-akamai:
+  file-path: schemas/property-hostnames-get-response.yaml
+additionalProperties: false
+properties:
+  accountId:
+    type: string
+    description: |
+      Identifies the prevailing account under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+  availableSort:
+    type: array
+    description: |
+      Available sorting options: `hostname:a` for ascending, and `hostname:d` for descending.
+    minItems: 1
+    items:
+      type: string
+      enum:
+      - hostname:a
+      - hostname:d
+  contractId:
+    type: string
+    description: |
+      Identifies the prevailing contract under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ctr_` prefix.
+  currentSort:
+    type: string
+    description: |
+      The sorting criteria applied to the response, either `hostname:a` for ascending, or `hostname:d` for descending.
+    enum:
+    - hostname:a
+    - hostname:d
+  defaultSort:
+    type: string
+    description: |
+      If no query parameters were specified in the request, this shows the default `hostname:a` sorting criteria.
+    default: hostname:a
+  groupId:
+    type: string
+    description: |
+      Identifies the group under which you requested the data. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+  hostnames:
+    type: object
+    description: |
+      The set of requested property hostnames, available within an `items` array.
+    additionalProperties: false
+    required:
+    - items
+    - totalItems
+    - currentItemCount
+    properties:
+      items:
+        type: array
+        description: |
+          Each entry specifies an active property hostname.
+        items:
+          allOf:
+          - additionalProperties: false
+            type: object
+            description: |
+              Specifies a property hostname that's applied to a property. Writing data to this resource requires that you PUT an array of _all_ the hostname objects, each containing `edgeHostnameId`, `cnameFrom`, and `cnameTo` members. This request array matches the `hostnames.items` in the response.
+            required:
+            - cnameFrom
+            properties:
+              certStatus:
+                type: object
+                description: |
+                  __Limited availability__ With the `includeCertStatus` parameter set to `true`, determines whether a hostname is capable of serving secure content over the staging or production network.
+                x-akamai:
+                  status: LA
+                additionalProperties: false
+                properties:
+                  production:
+                    type: array
+                    description: |
+                      __Limited availability__ The certificate status for the hostname on the production network.
+                    x-akamai:
+                      status: LA
+                    minItems: 1
+                    items:
+                      oneOf:
+                      - additionalProperties: false
+                        type: object
+                        description: |
+                          __Limited availability__ The certificate status for the hostname on the production network.
+                        x-akamai:
+                          status: LA
+                        title: Certificate status
+                        properties:
+                          status:
+                            type: string
+                            description: |
+                              __Limited availability__ The status of the certificate deployment on the production network. <details> <summary> Expand for details on possible values. </summary> <ul> <li><code>DEPLOYING</code> indicates the deployment is in progress. <li><code>PENDING</code> indicates you need to add the validation challenge to your DNS and activate the property version on staging or production to deploy your certificate to that network. If you've done that already, run the operation again later to check if the deployment succeeded. <li><code>NEEDS_ACTIVATION</code> indicates the validation is complete and the status on the `production` network is either `DEPLOYING` or `DEPLOYED`. You need to activate the property version on staging to deploy the certificate to that network. <li><code>DEPLOYED</code> indicates the certificate is successfully validated on the network and ready to handle secure traffic. <li><code>STALLED</code> indicates a problem with validation or deployment of your certificate. To try again, <a href="https://techdocs.akamai.com/property-mgr/reference/re-launch-default-certificate-validation">re-launch a certificate validation</a> or contact Akamai Professional Services for help.</code> <li><code>PROHIBITED_DOMAIN_FAILURE</code> indicates the hostname isn't in the <code>Let's Encrypt</code></code> Certificate Authority domain allow list. Fix the underlying issue and <a href="https://techdocs.akamai.com/property-mgr/reference/re-launch-default-certificate-validation">re-launch a certificate validation</a>, or contact Akamai Professional Services for help.</code> <li><code>CAA_MISMATCH_RETRYING</code> or <code>CAA_MISMATCH_FAILURE</code> indicate you need to configure your Certification Authority Authorization (CAA) policy to allow <code>Let's Encrypt</code>. Fix the underlying issue and <a href="https://techdocs.akamai.com/property-mgr/reference/re-launch-default-certificate-validation">re-launch a certificate validation</a>, or contact Akamai Professional Services for help.</code> <li><code>EXPIRING_SOON_NEEDS_VALIDATION</code> indicates your certificate is due to expire or already expired, and you need to add the <code>_acme-challenge</code> validation CNAME record in your DNS again. <li><code>CNAME_MISSING_FAILURE</code> indicates you removed the validation record from your DNS. Add the CNAME record to your DNS again and <a href="https://techdocs.akamai.com/property-mgr/reference/re-launch-default-certificate-validation">re-launch a certificate validation</a>, or contact Akamai Professional Services for help. <li><code>UNKNOWN_FAILURE</code> To try again, <a href="https://techdocs.akamai.com/property-mgr/reference/re-launch-default-certificate-validation">re-launch a certificate validation</a> or contact Akamai Professional Services for help.<ul></details>
+                            x-akamai:
+                              status: LA
+                            enum:
+                            - DEPLOYING
+                            - PENDING
+                            - NEEDS_ACTIVATION
+                            - DEPLOYED
+                            - STALLED
+                            - PROHIBITED_DOMAIN_FAILURE
+                            - CAA_MISMATCH_RETRYING
+                            - CAA_MISMATCH_FAILURE
+                            - EXPIRING_SOON_NEEDS_VALIDATION
+                            - EXPIRED_NEEDS_VALIDATION
+                            - CNAME_MISSING_FAILURE
+                            - UNKNOWN_FAILURE
+                  staging:
+                    type: array
+                    description: |
+                      __Limited availability__ The certificate status for the hostname on the staging network.
+                    x-akamai:
+                      status: LA
+                    minItems: 1
+                    items:
+                      oneOf:
+                      - additionalProperties: false
+                        type: object
+                        description: |
+                          __Limited availability__ The certificate status for the hostname on the staging network.
+                        x-akamai:
+                          status: LA
+                        title: Certificate status
+                        properties:
+                          status:
+                            type: string
+                            description: |
+                              __Limited availability__ The status of the certificate deployment on the staging network. <details> <summary> Expand for details on possible values. </summary> <ul> <li><code>DEPLOYING</code> indicates the deployment is in progress. <li><code>PENDING</code> indicates you need to add the validation challenge to your DNS and activate the property version on staging or production to deploy your certificate to that network. If you've done that already, run the operation again later to check if the deployment succeeded. <li><code>NEEDS_ACTIVATION</code> indicates the validation is complete and the status on the `production` network is either `DEPLOYING` or `DEPLOYED`. You need to activate the property version on staging to deploy the certificate to that network. <li><code>DEPLOYED</code> indicates the certificate is successfully validated on the network and ready to handle secure traffic. <li><code>STALLED</code> indicates a problem with validation or deployment of your certificate. To try again, <a href="https://techdocs.akamai.com/property-mgr/reference/re-launch-default-certificate-validation">re-launch a certificate validation</a> or contact Akamai Professional Services for help.</code> <li><code>PROHIBITED_DOMAIN_FAILURE</code> indicates the hostname isn't in the <code>Let's Encrypt</code></code> Certificate Authority domain allow list. Fix the underlying issue and <a href="https://techdocs.akamai.com/property-mgr/reference/re-launch-default-certificate-validation">re-launch a certificate validation</a>, or contact Akamai Professional Services for help.</code> <li><code>CAA_MISMATCH_RETRYING</code> or <code>CAA_MISMATCH_FAILURE</code> indicate you need to configure your Certification Authority Authorization (CAA) policy to allow <code>Let's Encrypt</code>. Fix the underlying issue and <a href="https://techdocs.akamai.com/property-mgr/reference/re-launch-default-certificate-validation">re-launch a certificate validation</a>, or contact Akamai Professional Services for help.</code> <li><code>EXPIRING_SOON_NEEDS_VALIDATION</code> indicates your certificate is due to expire or already expired, and you need to add the <code>_acme-challenge</code> validation CNAME record in your DNS again. <li><code>CNAME_MISSING_FAILURE</code> indicates you removed the validation record from your DNS. Add the CNAME record to your DNS again and <a href="https://techdocs.akamai.com/property-mgr/reference/re-launch-default-certificate-validation">re-launch a certificate validation</a>, or contact Akamai Professional Services for help. <li><code>UNKNOWN_FAILURE</code> To try again, <a href="https://techdocs.akamai.com/property-mgr/reference/re-launch-default-certificate-validation">re-launch a certificate validation</a> or contact Akamai Professional Services for help.<ul></details>
+                            x-akamai:
+                              status: LA
+                            enum:
+                            - DEPLOYING
+                            - PENDING
+                            - NEEDS_ACTIVATION
+                            - DEPLOYED
+                            - STALLED
+                            - PROHIBITED_DOMAIN_FAILURE
+                            - CAA_MISMATCH_RETRYING
+                            - CAA_MISMATCH_FAILURE
+                            - EXPIRING_SOON_NEEDS_VALIDATION
+                            - EXPIRED_NEEDS_VALIDATION
+                            - CNAME_MISSING_FAILURE
+                            - UNKNOWN_FAILURE
+                  validationCname:
+                    type: object
+                    description: |
+                      __Limited availability__ The CNAME record used to validate the certificate's domain.
+                    x-akamai:
+                      status: LA
+                    additionalProperties: false
+                    required:
+                    - hostname
+                    - target
+                    properties:
+                      hostname:
+                        type: string
+                        description: |
+                          __Limited availability__ The hostname part of the CNAME record used to validate the certificate's domain.
+                        x-akamai:
+                          status: LA
+                      target:
+                        type: string
+                        description: |
+                          __Limited availability__ The destination part of the CNAME record used to validate the certificate's domain.
+                        x-akamai:
+                          status: LA
+              cnameFrom:
+                type: string
+                description: |
+                  The hostname that your end users see, indicated by the `Host` header in end user requests.
+              cnameType:
+                type: string
+                description: |
+                  Only one supported `EDGE_HOSTNAME` value.
+                enum:
+                - EDGE_HOSTNAME
+              productionCertType:
+                type: string
+                description: |
+                  Indicates the certificate's provisioning type. Either the `CPS_MANAGED` type for the custom certificates you create with the [Certificate Provisioning System API](https://developer.akamai.com/api/core_features/certificate_provisioning_system/v2.html) (CPS), or `DEFAULT` for certificates created automatically. Note that you can't specify the `DEFAULT` value if your property hostname uses the `akamaized.net` domain suffix.
+                enum:
+                - CPS_MANAGED
+                - DEFAULT
+              productionCnameTo:
+                type: string
+                description: |
+                  The edge hostname you point the property hostname to so that you can start serving traffic through Akamai servers. This member corresponds to the edge hostname object's `edgeHostnameDomain` member.
+              productionEdgeHostnameId:
+                type: string
+                description: |
+                  Identifies each edge hostname. See [ID prefixes](#prefixes) for details on how to omit the ID's `ehn_` prefix.
+              stagingCertType:
+                type: string
+                description: |
+                  Indicates the certificate's provisioning type. Either the `CPS_MANAGED` type for the custom certificates you create with the [Certificate Provisioning System API](https://developer.akamai.com/api/core_features/certificate_provisioning_system/v2.html) (CPS), or `DEFAULT` for certificates created automatically. Note that you can't specify the `DEFAULT` value if your property hostname uses the `akamaized.net` domain suffix.
+                enum:
+                - CPS_MANAGED
+                - DEFAULT
+              stagingCnameTo:
+                type: string
+                description: |
+                  The edge hostname you point the property hostname to so that you can start serving traffic through Akamai servers. This member corresponds to the edge hostname object's `edgeHostnameDomain` member.
+              stagingEdgeHostnameId:
+                type: string
+                description: |
+                  Identifies each edge hostname. See [ID prefixes](#prefixes) for details on how to omit the ID's `ehn_` prefix.
+      currentItemCount:
+        type: integer
+        description: |
+          The total count of items present in the current response body for requested criteria.
+      nextLink:
+        type: string
+        description: |
+          The link to next set of response items for paginated response.
+      previousLink:
+        type: string
+        description: |
+          The link to previous set of response items for paginated response.
+      totalItems:
+        type: integer
+        description: |
+          The total count of items for requested criteria.
+  propertyId:
+    type: string
+    description: |
+      Unique identifier for the property. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+$schema: http://json-schema.org/draft-04/schema#

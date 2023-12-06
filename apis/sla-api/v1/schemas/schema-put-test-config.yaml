@@ -1,0 +1,60 @@
+type: object
+description: |-
+  Represents a configuration of either an availability test or a performance test. You can use a test object to add a new test configuration, update an existing one, or get the settings of a specified configuration.
+  
+x-akamai:
+  file-path: schemas/schema-put-test-config.yaml
+additionalProperties: false
+required:
+- contractId
+- agentGroupId
+- name
+- type
+- performanceSlaTarget
+- testDetails
+properties:
+  name:
+    type: string
+    description: |
+      Name you create to identify test configurations and their associated reports.
+  type:
+    type: string
+    description: |
+      The test configuration type, either `PERFORMANCE` or `AVAILABILITY`.
+    enum:
+    - PERFORMANCE
+    - AVAILABILITY
+  agentGroupId:
+    type: integer
+    description: |
+      Code representing the agent group (also called a region or regional SLA) for the test configuration. See [agentGroupId values](ref:agentgroupid-values).
+  contractId:
+    type: string
+    description: |
+      The contract associated with the test configuration.
+  performanceSlaTarget:
+    type: number
+    description: |
+      The target performance as specified in the SLA, expressed as a decimal greater than or equal to 1.0. For a target performance improvement of 20%, specify 1.2.
+  testDetails:
+    type: object
+    description: |
+      Contains test object location and hostnames.
+    additionalProperties: false
+    required:
+    - originUrl
+    - akamaiUrl
+    - originDnsHostnameOverride
+    properties:
+      akamaiUrl:
+        type: string
+        description: |
+          The URL of the test object for the CDN portion of the test.
+      originDnsHostnameOverride:
+        type: string
+        description: |
+          Replaces the hostname in `originUrl` for the purposes of DNS lookup to obtain the IP address of the origin server. Use this if requests sent directly to your origin hostname redirect to the CDN.
+      originUrl:
+        type: string
+        description: |
+          The URL of the test object for the origin portion of the test. Use the outward-facing hostname if `originDnsHostnameOverride` is included, otherwise  use the origin hostname.

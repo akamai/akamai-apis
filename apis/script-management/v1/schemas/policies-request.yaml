@@ -1,0 +1,86 @@
+type: object
+description: |-
+  The policy object shows how you've configured Script Management to handle your website scripts.
+  
+x-akamai:
+  file-path: schemas/policies-request.yaml
+additionalProperties: false
+properties:
+  activationTime:
+    type: string
+    description: |
+      An ISO 8601 timestamp representing when the customer last modified the policy.
+    readOnly: true
+    format: date-time
+  policyNote:
+    type: string
+    description: |
+      Comments to aid in distinguishing policy versions.
+  scriptConfig:
+    type: array
+    description: |
+      A set of actions applied either to an individual script or a group of related scripts. Each policy needs at least one `scriptConfig` item or a `spofConfig`, but you can include both.
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - item
+      - type
+      - action
+      properties:
+        type:
+          type: string
+          description: |
+            Indicates that the `item` receiving the action is the `URL` for an individual script.
+          enum:
+          - URL
+        action:
+          type: string
+          description: |
+            How Script Management handles the specified script. `DEFER` executes the script after the page load event. `BLOCK` prevents the script from loading entirely. `NO_ACTION` loads the script normally.
+          enum:
+          - DEFER
+          - BLOCK
+          - NO_ACTION
+        item:
+          type: string
+          description: |
+            Specifies the fully qualified URL for the script on which to perform the `action`.
+  spofConfig:
+    type: object
+    description: |
+      Encapsulates settings for Single-Point-of-Failure (SPOF) Protection. This moves a call for a script to the background if it takes too long to load. The timeout value adjusts automatically in response to network conditions. Each policy needs a `spofConfig` or at least one `scriptConfig` array item, but you can include both.
+    additionalProperties: false
+    required:
+    - spofEnabled
+    - advancedSettings
+    properties:
+      advancedSettings:
+        type: object
+        description: |
+          Encapsulates settings that control the upper and lower limits of the timeout range.
+        additionalProperties: false
+        required:
+        - minSpofTimeoutInSecs
+        - maxSpofTimeoutInSecs
+        properties:
+          maxSpofTimeoutInSecs:
+            type: number
+            description: |
+              Upper limit of SPOF Protection timeout range in seconds.
+            maximum: 300
+          minSpofTimeoutInSecs:
+            type: number
+            description: |
+              Lower limit of SPOF Protection timeout range in seconds.
+            minimum: 1
+      spofEnabled:
+        type: boolean
+        description: |
+          Enables SPOF Protection.
+  versionId:
+    type: string
+    description: |
+      The current version of the policy. It increments each time you create a new policy for a specific `hostname`.
+    readOnly: true

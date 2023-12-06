@@ -1,0 +1,31 @@
+type: object
+x-akamai:
+  file-path: schemas/secure-token-post.yaml
+additionalProperties: false
+minProperties: 1
+properties:
+  expiry:
+    type: integer
+    description: |
+      Number of minutes before the authentication token expires, from 1 to 720 minutes, or 12 hours. The default is `480` for 8 hours.
+    default: 480
+    minimum: 1
+    maximum: 720
+  hostname:
+    description: |
+      __Deprecated__ Use  the  `hostnames` parameter instead. Hostname for a property. To create an authentication token, provide either the `hostname`, or the `propertyId`, but not both.
+    x-akamai:
+      status: DEPRECATED
+    $ref: common-definitions.yaml#/definitions/nonEmptyString
+  hostnames:
+    type: array
+    description: |
+      List of hostnames for a property. To create an authentication token, provide either the list of `hostnames`, or the `propertyId`, but not both. Specify `/*` to generate an authentication token valid for all hosts.
+    minItems: 1
+    items:
+      type: string
+  propertyId:
+    description: |-
+      Unique identifier for a property. To create an authentication token, provide either the `propertyId` or the `hostname`, but not both.
+      
+    $ref: common-definitions.yaml#/definitions/nonEmptyString

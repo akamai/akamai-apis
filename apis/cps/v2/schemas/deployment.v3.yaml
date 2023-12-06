@@ -1,0 +1,81 @@
+type: object
+description: |-
+  Deploys your certificate to a network.
+  
+x-akamai:
+  file-path: schemas/deployment.v3.yaml
+additionalProperties: false
+required:
+- certificate
+- networkConfiguration
+- trustChain
+properties:
+  certificate:
+    type: string
+    description: |
+      The certificate text.
+    nullable: true
+  networkConfiguration:
+    type: object
+    description: |
+      Information about how you want to deploy your certificate.
+    additionalProperties: false
+    properties:
+      disallowedTlsVersions:
+        type: array
+        description: |
+          Disallowed TLS versions.
+        items:
+          type: string
+      geography:
+        type: string
+        description: |
+          Type of the network that you want to deploy your certificate. `core` is worldwide (includes China and Russia). `china+core` is worldwide and China. `russia+core` is worldwide and Russia.
+        enum:
+        - core
+        - china+core
+        - russia+core
+      mustHaveCiphers:
+        type: string
+        description: |
+          Ciphers that you definitely want to include for your enrollment while deploying it on the network. Defaults to `ak-akamai-default` when it is not set.
+      preferredCiphers:
+        type: string
+        description: |
+          Ciphers that you preferably want to include for your enrollment while deploying it on the network. Defaults to `ak-akamai-default` when it is not set.
+      secureNetwork:
+        type: string
+        description: |
+          The type of deployment network you want to use. Specify Standard TLS as the enum `standard-tls` to deploy your certificate to Akamai's standard secure network. It is not PCI compliant. Specify Enhanced TLS as the enum `enhanced-tls` to deploy your certificate to Akamai's more secure network with PCI compliance capability.
+      sni:
+        type: object
+        description: |
+          SNI settings for your enrollment. When set to `null`, the enrollment becomes non-SNI. When it is non-null, enrollment is SNI-only. This setting cannot be changed once an enrollment is created.
+        additionalProperties: false
+        required:
+        - cloneDnsNames
+        nullable: true
+        properties:
+          cloneDnsNames:
+            type: boolean
+            description: |
+              Enable if you want CPS to direct traffic using all the SANs listed in the SANs parameter when you created your enrollment.
+          dnsNames:
+            type: array
+            description: |
+              Names served by SNI-only enabled enrollments.
+            items:
+              type: string
+  signatureAlgorithm:
+    type: string
+    description: |
+      The SHA (Secure Hash Algorithm) function. Current values include `SHA-1` & `SHA-256`.
+    nullable: true
+    enum:
+    - SHA-1
+    - SHA-256
+  trustChain:
+    type: string
+    description: |
+      The trust chain text. You may have any number of trust chains.
+    nullable: true

@@ -1,0 +1,96 @@
+type: object
+description: |-
+  Contains the test catalog template used for creating conditions. Conditions have a sentence-like structure. The template provides the list of available building blocks, `conditionNodes`, and combinations in which you can combine them, `triggerMappings`. See detailed descriptions of Conditions and Test catalog template in the [Test Center concepts](ref:test-center-concepts) section.
+  
+x-akamai:
+  file-path: schemas/get-test-catalog-template-response.yaml
+additionalProperties: false
+required:
+- conditionNodes
+- triggerMappings
+properties:
+  conditionNodes:
+    type: array
+    description: |
+      Contains the Akamai-provided list of available nodes which are the building blocks of the conditions together with their descriptions.
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - conditionNodeId
+      - conditionNodeDescription
+      - valueControls
+      properties:
+        conditionNodeDescription:
+          type: string
+          description: |
+            Summarizes the purpose of each condition node.
+          minLength: 1
+        conditionNodeId:
+          type: integer
+          description: |
+            Identifier of each condition node.
+          minimum: 1
+        valueControls:
+          type: object
+          description: |
+            Contains information about values supported by the condition node. It can be either a fixed list of values for you to choose from or information about supported input.
+          additionalProperties: false
+          required:
+          - valueDataType
+          - valueInputType
+          - newValueSupported
+          - availableValues
+          properties:
+            availableValues:
+              type: array
+              description: |
+                Contains predefined values available in the condition node. Depending on the node it can be either an array of strings or integers.
+              minItems: 0
+              items:
+                oneOf:
+                - title: String
+                  type: string
+                - title: Integer
+                  type: integer
+            newValueSupported:
+              type: boolean
+              description: |
+                Whether you can provide your own values, or if you need to select them from `availableValues`.
+            valueDataType:
+              type: string
+              description: |
+                Specifies whether `availableValues` are `string` or `integer` type.
+              enum:
+              - string
+              - integer
+            valueInputType:
+              type: string
+              description: |
+                Specifies whether the set of values you provide are `single_choice`, `multiple_choice`, or `free_text` that adheres to the condition's `valueDataType`.
+              enum:
+              - single_choice
+              - multiple_choice
+              - free_text
+  triggerMappings:
+    type: object
+    description: |
+      Contains the sequence of subsequently triggered condition nodes that you need to follow to create a valid condition.
+    additionalProperties: false
+    required:
+    - conditionNodeId
+    - triggers
+    properties:
+      conditionNodeId:
+        type: integer
+        description: |
+          Identifier of the condition node from which the construction of the condition starts.
+        minimum: 1
+      triggers:
+        type: array
+        description: |
+          Contains the sequence of subsequently triggered condition nodes that you need to follow to create a valid condition. Each value selected from the `conditionNodeId` of `1` in the `conditionNodes` array, triggers different order of combining the condition nodes. You need to follow the `triggerMappings` flow, until you construct the needed condition and the `validPath` for the last triggered conditionNode is `true`.
+        minItems: 1
+        items:
+          $ref: catalog-template-trigger.yaml

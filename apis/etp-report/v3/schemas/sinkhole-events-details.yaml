@@ -1,0 +1,182 @@
+type: object
+description: |-
+  Sinkhole event details and a list of matching events.
+  
+x-akamai:
+  file-path: schemas/sinkhole-events-details.yaml
+additionalProperties: false
+required:
+- sinkholeId
+- sinkholeName
+- configId
+- decryptedMachineName
+- encryptedMachineName
+- hostname
+- l4Protocol
+- redirectType
+properties:
+  description:
+    type: string
+    description: |
+      Describes the connector event.
+  configId:
+    type: string
+    description: |
+      The contract ID for the request.
+    minLength: 1
+  correlated:
+    type: boolean
+    description: |
+      Whether a related sinkhole event exists.
+  correlatedDnsEvent:
+    $ref: threat-event-details-nested.yaml
+  decryptedMachineName:
+    type: string
+    description: |
+      Decrypted name of the machine assigned to the request.
+    minLength: 1
+  decryptedSourceIP:
+    type: string
+    description: |
+      IP of the source machine in decrypted form for the event.
+  decryptedSourceIp:
+    type: string
+    description: |
+      Source IP address in decrypted format of the machine assigned with the request.
+    format: ipv4
+  destinationIp:
+    type: string
+    description: |
+      IP of the destination machine.
+    format: ipv4
+  destinationPort:
+    type: integer
+    description: |
+      Destination TCP/UDP Port.
+    minimum: 0
+  dropFlag:
+    type: boolean
+    description: |
+      Indicates if traffic was dropped by HTTP Forwarder. Either `true` or `false`. Set to `false` if the transaction is successful.
+  encryptedMachineName:
+    type: string
+    description: |
+      Encrypted name of the machine assigned to the request.
+    minLength: 1
+  encryptedSourceIP:
+    type: string
+    description: |
+      IP of the source machine in encrypted form for the event.
+  encryptedSourceIp:
+    type: string
+    description: |
+      Source IP address in encrypted format of the machine assigned with the request.
+    format: ipv4
+  eventId:
+    type: string
+    description: |
+      Unique ID of the event captured by the security connector.
+    minLength: 1
+  eventTime:
+    type: string
+    description: |
+      ISO 8601 timestamp marking the event detection time.
+    format: date-time
+  hfRedirectType:
+    type: string
+    description: |
+      The redirect type for the event.
+  hitCount:
+    type: integer
+    description: |
+      Number of repeated traffic requests made to security connector from a host, within a time frame.
+    minimum: 0
+  hostname:
+    type: string
+    description: |
+      Hostname header/SNI host of the destination host.
+    format: hostname
+  internalIP:
+    type: string
+    description: |
+      Affected or compromised machine IP.
+    format: ipv4
+  l4Protocol:
+    type: string
+    description: |
+      The L4 protocol.
+    minLength: 1
+  l7Protocol:
+    type: string
+    description: |
+      Application layer protocol used to communicate with the security connector. Either `DNS`, `HTTP`, or `HTTPS`.
+    enum:
+    - DNS
+    - HTTP
+    - HTTPS
+  machineNames:
+    type: array
+    description: |
+      Hostname of the infected machine.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  proxyMode:
+    type: string
+    description: |
+      The proxy type for HTTP forwarder. Possible values include `HTTP-Explicit` and `HTTP-Transparent`.
+    enum:
+    - HTTP-Explicit
+    - HTTP-Transparent
+  redirectType:
+    type: string
+    description: |
+      Indicates how a request was sent to the security connector. For example: `HTTP-Explicit`.
+    minLength: 1
+  requestId:
+    type: string
+    description: |
+      Unique identifier of the request for the event.
+  sinkholeIP:
+    type: string
+    description: |
+      IP of the security connector.
+    format: ipv4
+  sinkholeId:
+    type: string
+    description: |
+      Unique ID of the security connector.
+    minLength: 1
+  sinkholeName:
+    type: string
+    description: |
+      The unique security connector name.
+    minLength: 1
+  sourceIp:
+    type: string
+    description: |
+      IP address of the machine where the event originated.
+  sourcePort:
+    type: integer
+    description: |
+      Source TCP/UDP Port.
+    minimum: 0
+  status:
+    type: string
+    description: |
+      Indicates why traffic was dropped by HTTP Forwarder and any error that occurred. 
+  statusCode:
+    type: string
+    description: |
+      Response code for requests. Only applies to requests directed to HTTP Forwarder.
+  url:
+    type: string
+    description: |
+      URL when applicable.
+    minLength: 1
+  userAgent:
+    type: string
+    description: |
+      User-agent string for HTTP-based traffic with details about the end user's browser and system.
+    minLength: 1

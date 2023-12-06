@@ -1,0 +1,62 @@
+type: object
+description: |-
+  Contains information about the geographic map configured for the property.
+  
+x-akamai:
+  file-path: schemas/geographic-map.yaml
+additionalProperties: false
+properties:
+  name:
+    type: string
+    description: |
+      A descriptive label for the geographic map, up to 128 characters.
+    minLength: 1
+    maxLength: 128
+  assignments:
+    type: array
+    description: |
+      Contains information about the geographic zone groupings of countries.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        countries:
+          type: array
+          description: |
+            Specifies an array of two-letter ISO 3166 `country` codes, or for finer subdivisions, the two-letter `country` code and the two-letter `stateOrProvince` code separated by a forward slash. For example, `US/TX`.
+          items:
+            type: string
+            minLength: 1
+            maxLength: 10
+        datacenterId:
+          type: integer
+          description: |
+            A unique identifier for an existing data center in the domain.
+        nickname:
+          type: string
+          description: |
+            A descriptive label for the group.
+          minLength: 1
+          maxLength: 128
+  defaultDatacenter:
+    type: object
+    description: |
+      A placeholder for all other geographic zones, countries not found in these geographic zones. Note that a geographic map cannot have the same countries in multiple geographic zones.
+    additionalProperties: false
+    properties:
+      datacenterId:
+        type: integer
+        description: |
+          For each property, an identifier for all other geographic zones' CNAME. For example, 5400.
+      nickname:
+        type: string
+        description: |
+          A descriptive label for all other geographic zones. The value ranges from 1 to 128 characters. If omitted, defaults to `Default Mapping`.
+        minLength: 1
+        maxLength: 128
+  links:
+    type: array
+    description: |
+      Specifies the URL path that allows direct navigation to the geographic map.
+    items:
+      $ref: link.yaml

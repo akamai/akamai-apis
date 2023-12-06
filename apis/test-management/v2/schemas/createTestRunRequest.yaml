@@ -1,0 +1,238 @@
+type: object
+description: |-
+  Contains information about objects you want a test run to execute against an environment. You can test each of these objects separately in a request: a requirement, a config version, a test suite, a functional test case, and a test definition. You can also combine objects in a request based on the these constrains: config versions with test definitions, a requirement with test definitions, or a requirement with config versions and test definitions. See [Run a functional test](ref:run-a-functional-test) and [Run a comparative test](ref:run-a-comparative-test).
+  
+x-akamai:
+  file-path: schemas/createTestRunRequest.yaml
+additionalProperties: false
+required:
+- targetEnvironment
+properties:
+  comparative:
+    type: object
+    description: |
+      Specifies comparative testing objects you want the test run to execute. Provide this or the `functional` object or both, depending on what kind of test you want to run.
+    additionalProperties: false
+    required:
+    - testDefinitionExecutions
+    properties:
+      testDefinitionExecutions:
+        type: array
+        description: |
+          Contains information about test definitions you want to execute.
+        minItems: 1
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - testDefinitionId
+          - targetHostname
+          - ipVersions
+          - testCaseIds
+          properties:
+            ipVersions:
+              type: array
+              description: |
+                IP versions you want to execute the test run for. Possible values are: `ipv4`, `ipv6`, or both.
+              enum:
+              - ipv4
+              - ipv6
+              minItems: 1
+              maxItems: 2
+              uniqueItems: true
+              items:
+                type: string
+                minLength: 1
+            targetHostname:
+              type: string
+              description: |
+                Target environment hostname against which you want to execute the test definition.
+              maxLength: 100
+              format: hostname
+            testCaseIds:
+              type: array
+              description: |
+                List of unique identifiers of comparative test cases included in the test definitions. To get details of a test case, run the [Get a comparative test case](ref:get-test-definition-test-case) operation.
+              minItems: 0
+              items:
+                type: integer
+                minimum: 0
+            testDefinitionId:
+              type: integer
+              description: |
+                Unique identifier of each test definition you want to execute.
+              minimum: 0
+  functional:
+    type: object
+    description: |
+      Specifies functional testing objects you want the test run to execute. Depending on what you want to run the functional test for, it may include: `configVersionExecutions`, `requirementExecutions`, `testCaseExecutions`, or `testSuiteExecutions`. Provide this or the `comparative` object or both, depending on what kind of test you want to run.
+    additionalProperties: false
+    required:
+    - testCaseExecutions
+    properties:
+      configVersionExecutions:
+        type: array
+        description: |
+          Contains information about config versions you want to execute.
+        minItems: 0
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - configVersionId
+          - testSuiteExecutions
+          properties:
+            configVersionId:
+              type: integer
+              description: |
+                Unique identifier of the config version you want to execute.
+              minimum: 0
+            testSuiteExecutions:
+              type: array
+              description: |
+                Contains information about test suites associated with the config version.
+              minItems: 0
+              items:
+                type: object
+                additionalProperties: false
+                required:
+                - testSuiteId
+                - testCaseExecutions
+                properties:
+                  testCaseExecutions:
+                    type: array
+                    description: |
+                      Contains information about functional test cases included in the test suite you want to execute.
+                    minItems: 0
+                    items:
+                      type: object
+                      additionalProperties: false
+                      required:
+                      - testCaseId
+                      properties:
+                        testCaseId:
+                          type: integer
+                          description: |
+                            Unique identifier of the included functional test case.
+                          minimum: 0
+                  testSuiteId:
+                    type: integer
+                    description: |
+                      Unique identifier of the associated test suite you want to execute.
+                    minimum: 0
+      requirementExecutions:
+        type: array
+        description: |
+          Contains information about requirements you want to execute.
+        minItems: 0
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - requirementId
+          - testSuiteExecutions
+          properties:
+            requirementId:
+              type: integer
+              description: |
+                Unique identifier of the requirement you want to execute.
+              minimum: 0
+            testSuiteExecutions:
+              type: array
+              description: |
+                Contains information about test suites associated with the requirement.
+              minItems: 0
+              items:
+                type: object
+                additionalProperties: false
+                required:
+                - testSuiteId
+                - testCaseExecutions
+                properties:
+                  testCaseExecutions:
+                    type: array
+                    description: |
+                      Contains information about functional test cases included in the test suite.
+                    minItems: 0
+                    items:
+                      type: object
+                      additionalProperties: false
+                      required:
+                      - testCaseId
+                      properties:
+                        testCaseId:
+                          type: integer
+                          description: |
+                            Unique identifier of the included functional test case you want to execute.
+                          minimum: 0
+                  testSuiteId:
+                    type: integer
+                    description: |
+                      Unique identifier of the associated test suite you want to execute.
+                    minimum: 0
+      testCaseExecutions:
+        type: array
+        description: |
+          Contains information about functional test cases you want to execute.
+        minItems: 0
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - testCaseId
+          properties:
+            testCaseId:
+              type: integer
+              description: |
+                Unique identifier of the functional test case.
+              minimum: 0
+      testSuiteExecutions:
+        type: array
+        description: |
+          Contains information about test suites you want to execute.
+        minItems: 0
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - testSuiteId
+          - testCaseExecutions
+          properties:
+            testCaseExecutions:
+              type: array
+              description: |
+                Contains information about functional test cases included in the test suite.
+              minItems: 0
+              items:
+                type: object
+                additionalProperties: false
+                required:
+                - testCaseId
+                properties:
+                  testCaseId:
+                    type: integer
+                    description: |
+                      Unique identifier of the included functional test case.
+                    minimum: 0
+            testSuiteId:
+              type: integer
+              description: |
+                Unique identifier of the test suite.
+              minimum: 0
+  note:
+    type: string
+    description: |
+      Notes about the test run.
+    minLength: 0
+    maxLength: 200
+  sendEmailOnCompletion:
+    type: boolean
+    description: |
+      Whether you get a notification email after the test run is complete.
+  targetEnvironment:
+    type: string
+    description: |
+      Environment against which the test run executes the request, either `production` or `staging`.
+    enum:
+    - production
+    - staging

@@ -1,0 +1,235 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Policies
+  version: v3
+servers:
+- url: https://{hostname}/etp-config/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: policies.yaml
+paths:
+  /configs/{configId}/policies:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-policy
+      summary: Create a policy
+      tags:
+      - Policies
+      description: |
+        Creates a new policy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-policy-body.json
+            schema:
+              $ref: schemas/policyCreate.yaml
+      responses:
+        201:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    get:
+      operationId: get-policies
+      summary: List policies
+      tags:
+      - Policies
+      description: |
+        Returns a list of all policies.
+      responses:
+        200:
+          description: |
+            Policy metadata with details.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-retrieve-all-200.json
+              schema:
+                $ref: schemas/policyRetrieveAll.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/policies/{policyId}:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    - $ref: parameters/policyId-path.yaml
+    get:
+      operationId: get-policy
+      summary: Get a policy
+      tags:
+      - Policies
+      description: |
+        Returns the details of a policy.
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-retrieve-specific-200.json
+              schema:
+                $ref: schemas/policyRetrieveSpecific.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    put:
+      operationId: put-policy
+      summary: Update a policy
+      tags:
+      - Policies
+      description: |
+        Modifies the specified policy.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/update-policy-body.json
+            schema:
+              $ref: schemas/policyRetrieveSpecific.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+    delete:
+      operationId: delete-policy
+      summary: Remove a policy
+      tags:
+      - Policies
+      description: |
+        Deletes the specified policy.
+      responses:
+        204:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+  /configs/{configId}/policy-metadata:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-policy-metadata
+      summary: List policy metadata
+      tags:
+      - Policies
+      description: |
+        Returns the policy metadata details.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/policy-metadata-200.json
+              schema:
+                $ref: schemas/policyMetadata.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /responses:
+    get:
+      operationId: get-responses
+      summary: List built-in responses
+      tags:
+      - Policy built-in responses
+      description: |
+        Returns a list of all available Akamai built-in responses.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/akamai-responses-200.json
+              schema:
+                $ref: schemas/akamaiResponses.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /securityCategories:
+    get:
+      operationId: get-security-categories
+      summary: List security category predefined configurations
+      tags:
+      - Policy predefined security categories
+      description: |
+        Returns a list of all available predefined security categories.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/security-categories-200.json
+              schema:
+                $ref: schemas/securityCategories.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml

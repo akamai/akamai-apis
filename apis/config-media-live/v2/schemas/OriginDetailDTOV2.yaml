@@ -1,0 +1,176 @@
+type: object
+description: |-
+  Configures a Media Services Live origin for the stream. You can share the origin with partner accounts within Akamai using 'MSL_MULTI_ACCOUNT' as well as third-party delivery providers using 'MSL_MULTI_CDN'.
+  
+x-akamai:
+  file-path: schemas/OriginDetailDTOV2.yaml
+additionalProperties: false
+required:
+- id
+- contractId
+- cpcode
+- encoderZone
+- hostName
+- sharedKeys
+properties:
+  id:
+    type: integer
+    description: |
+      Enter a unique identifier for the origin. The identifier must be unique, regardless of encoder locations and customers. The primary hostname and backup hostname are automatically derived from the origin identifier you specify.
+  activeVersion:
+    type: integer
+    description: |
+      The version of the origin that is enabled.
+  amdProperties:
+    type: array
+    description: |
+      AMD properties assigned to this origin in the current account.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        assetId:
+          type: integer
+          description: |
+            Asset ID of AMD property.
+        propertyName:
+          type: string
+          description: |
+            Name of AMD property.
+  backupEncoderZone:
+    type: string
+    description: |
+      The backup encoder's geographical location.
+  backupHostName:
+    type: string
+    description: |
+      The hostname for the origin used for failover.
+  contractId:
+    type: integer
+    description: |
+      The contract ID associated with the origin. The CP code is filtered based on the contract ID that you specify. The system associates the NetStorage CP code, if there is one, with the same contract as the ingest CP code.
+  cpcode:
+    type: integer
+    description: |
+      The Media Services Live CP code. A CP code is a unique identifier for reporting, billing, and monitoring traffic served over the Akamai network.
+  encoderZone:
+    type: string
+    description: |
+      The primary encoder's geographical location. Choose a location that is close to your encoder.
+  hostName:
+    type: string
+    description: |
+      The hostname defined in your origin DNS.
+  isDedicatedOrigin:
+    type: boolean
+    description: |
+      Indicates whether or not the origin is a dedicated origin. When you use a dedicated origin, you must create a new stream. You can't edit an existing stream to make it dedicated. If you use a dedicated origin, the origin shield network has a new item called resource group to identify your company.
+  modifiedBy:
+    type: string
+    description: |
+      The username of the person who changed the origin.
+  modifiedDate:
+    type: string
+    description: |
+      The date on which the origin settings were modified.
+    format: date-time
+  sharedKeys:
+    type: array
+    description: |
+      Shared keys let you share your MSL origin with Akamai partner accounts and third-party delivery providers.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: |
+            Name to identify the CDN.
+        type:
+          type: string
+          description: |
+            Specify `AKAMAI` if you are using an Akamai CDN or `THIRD_PARTY` if you are using some other CDN.
+          enum:
+          - AKAMAI
+          - THIRD_PARTY
+        amdProperties:
+          type: array
+          description: |
+            AMD properties assigned to this key in other accounts. It is only applicable for `AKAMAI` type of keys.
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              accountId:
+                type: string
+                description: |
+                  Account ID where the AMD property was created using this shared key.
+              accountName:
+                type: string
+                description: |
+                  Account name where the AMD property was created using this shared key.
+              propertyName:
+                type: string
+                description: |
+                  Name of the AMD property created using this shared key.
+        authMethod:
+          type: string
+          description: |
+            Specify the authentication method as `SIMPLE_AKAMAI_HEADER_VERIFICATION` for Akamai partner accounts or `MSL_MULTI_ACCOUNT` for third-party CDN accounts.
+          enum:
+          - SIMPLE_AKAMAI_HEADER_VERIFICATION
+          - MSL_MULTI_ACCOUNT
+        backupHostName:
+          type: string
+          description: |
+            A backup hostname for the origin.
+        cdnCode:
+          type: string
+          description: |
+            Automatically generated code for the CDN.
+        data:
+          type: string
+          description: |
+            Automatically generated data field for the CDN.
+        enabled:
+          type: boolean
+          description: |
+            The activated status of the CDN.
+        expiryDate:
+          type: string
+          description: |
+            A date and time when the CDN settings will expire. The time zone is the current time zone where you configure your settings.
+          format: date-time
+        guid:
+          type: string
+          description: |
+            Automatically generated GUI ID for the CDN.
+        hostName:
+          type: string
+          description: |
+            The hostname for the CDN.
+        key:
+          type: string
+          description: |
+            Automatically generated key to access the CDN.
+        previousData:
+          type: string
+          description: |
+            Automatically generated previous data field for the CDN.
+        previousKey:
+          type: string
+          description: |
+            The previously configured key to access the CDN.
+        previousKeyExpiryDate:
+          type: string
+          description: |
+            The expiration date for the previous key.
+          format: date-time
+  status:
+    type: string
+    description: |
+      The origin creation status: `SUCCEEDED` or `FAILED`.
+  thirdPartyCdnCpcode:
+    type: integer
+    description: |
+      The CP code for the third-party CDN.

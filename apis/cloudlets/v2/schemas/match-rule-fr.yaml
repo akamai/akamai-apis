@@ -1,0 +1,89 @@
+type: object
+description: |-
+  Contains match rule information for Forward Rewrite.
+  
+x-akamai:
+  file-path: schemas/match-rule-fr.yaml
+title: Forward Rewrite
+additionalProperties: false
+required:
+- type
+- forwardSettings
+properties:
+  id:
+    type: integer
+    description: |
+      __Internal__ Akamai internal use only.
+    x-akamai:
+      status: INTERNAL
+    nullable: true
+  name:
+    type: string
+    description: |
+      The name of the rule.
+    nullable: true
+    maxLength: 8192
+  type:
+    type: string
+    description: |
+      The type of Cloudlet the rule is for. For example, the string for Forward Rewrite is `frMatchRule`.
+    enum:
+    - frMatchRule
+  akaRuleId:
+    type: string
+    description: |
+      The rule's unique identifier.
+  disabled:
+    type: boolean
+    description: |
+      If `true`, disables a rule so it's not evaluated against incoming requests. The default setting is `false`.
+    default: false
+  end:
+    type: integer
+    description: |
+      The end time for this match rule. When `matchesAlways` is `false`, enter the `end` value in epoch seconds.
+    minimum: 0
+  forwardSettings:
+    type: object
+    description: |
+      Defines data used to construct a new request URL. If all set conditions are true, the edge server returns an HTTP response from the rewritten URL. You can specify any of the following with this object: `originId`, `pathAndQS`, and `useIncomingQueryString`.
+    additionalProperties: false
+    properties:
+      originId:
+        type: string
+        description: |
+          The conditional origin's unique identifier.
+        nullable: true
+        maxLength: 8192
+      pathAndQS:
+        type: string
+        description: |
+          If a value is provided and match conditions are met, this is the URL path to rewrite the incoming request's URL. The URL may include additional query parameters.
+        minLength: 1
+        maxLength: 8192
+      useIncomingQueryString:
+        type: boolean
+        description: |
+          If set to `true`, the Cloudlet includes the requests' query string in the rewritten or forwarded URL.
+  matchURL:
+    type: string
+    description: |
+      The URL the Cloudlet uses to match the incoming request.
+    nullable: true
+    maxLength: 8192
+  matches:
+    type: array
+    description: |
+      The `matchType` and the `matchValue` or `objectMatchValue` used to conditionally pass through the request. Plus additional criteria to match on, like case sensitivity (`caseSensitive`).
+    nullable: true
+    items:
+      $ref: match-rule-fr-definitions.yaml#/definitions/matchCriteriaType
+  matchesAlways:
+    type: boolean
+    description: |
+      The match rule is always on when `true`. When `false`, the rule is applied according to the `start` and `end` times.
+  start:
+    type: integer
+    description: |
+      The start time for this match rule. When `matchesAlways` is `false`, enter the `start` value in epoch seconds.
+    minimum: 0

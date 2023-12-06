@@ -1,0 +1,79 @@
+type: object
+description: |-
+  Collects the rule tree for the summary report.
+  
+x-akamai:
+  file-path: schemas/papiRuleNode.yaml
+additionalProperties: false
+required:
+- name
+- options
+- uuid
+- children
+- behaviors
+- criteria
+- criteriaMustSatisfy
+- variables
+- comments
+properties:
+  name:
+    type: string
+    description: |
+      Name of the rule.
+    minLength: 1
+  options:
+    description: |
+      Flags that apply to the top-level rule object.
+    $ref: ../../../papi/v1/schemas/property-version-rules-get-response.yaml#/properties/rules/properties/options
+  behaviors:
+    type: array
+    description: |
+      Series of [behavior](https://techdocs.akamai.com/property-mgr/reference/latest-behaviors) objects, which execute after the set of `criteria` evaluates. Behavior and criteria objects are structured identically. Optional on nested rules.
+    minItems: 0
+    items:
+      allOf:
+      - $ref: ../../../papi/v1/schemas/property-version-rules-get-response.yaml#/properties/rules/properties/behaviors/items
+      - additionalProperties: false
+        properties:
+          executionStatus:
+            type: string
+            description: |
+              Status of the behavior's execution. Possible values are `SUCCESS`, `PARTIAL_SUCCESS`, `INDETERMINATE`, `FAILURE`, or `NOT_EXECUTED`. The `INDETERMINATE` status means that the summary for this behavior wasn’t generated and you need to refer to the XML to verify it.
+            enum:
+            - SUCCESS
+            - FAILURE
+            - NOT_EXECUTED
+            - PARTIAL_SUCCESS
+            - INDETERMINATE
+          lineRange:
+            description: |
+              Line range of the behavior.
+            $ref: lineRange.yaml
+  children:
+    description: |
+      Series of nested rules that execute after the current rule's `criteria` and `behaviors`.
+    $ref: ../../../papi/v1/schemas/property-version-rules-get-response.yaml#/properties/rules/properties/children
+  comments:
+    type: string
+    description: |
+      Comment that helps track the rule's function in Property Manager.
+    minLength: 1
+  criteria:
+    description: |
+      Series of [criteria](https://techdocs.akamai.com/property-mgr/reference/latest-criteria) objects, which form a set of logical tests that may prevent the rule's `behaviors` from executing. Behavior and criteria objects are structured identically.   
+    $ref: ../../../papi/v1/schemas/property-version-rules-get-response.yaml#/properties/rules/properties/criteria
+  criteriaMustSatisfy:
+    type: string
+    description: |
+      Collects the response headers in the format `header: value`.
+    minLength: 1
+  uuid:
+    type: string
+    description: |
+      Data hash that indicates the rule contains at least one _advanced_ behavior or criteria.
+    minLength: 1
+  variables:
+    description: |-
+      Specifies a variable. To learn more, see [Variables](https://techdocs.akamai.com/property-mgr/reference/variables).
+      
+    $ref: ../../../papi/v1/schemas/property-version-rules-get-response.yaml#/properties/rules/properties/variables

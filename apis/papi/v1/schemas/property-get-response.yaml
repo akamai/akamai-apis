@@ -1,0 +1,97 @@
+id: resource:/descriptors/papi/v1/schemas/GetPropertyResponse.json#
+type: object
+description: |-
+  A common outer wrapping object structure. It provides additional contextual details for a set of requested data. The data itself is available under various inner members' `items` array, even individual items.
+  
+x-akamai:
+  file-path: schemas/property-get-response.yaml
+additionalProperties: false
+properties:
+  properties:
+    type: object
+    description: |
+      The set of requested properties, available within an `items` array.
+    additionalProperties: false
+    properties:
+      items:
+        type: array
+        description: |
+          Configuration data to apply to edge content. Relevant response objects appear within the outer envelope's `properties.items` array.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - accountId
+          - contractId
+          - groupId
+          - propertyId
+          - propertyName
+          - latestVersion
+          - stagingVersion
+          - productionVersion
+          - assetId
+          - note
+          properties:
+            accountId:
+              type: string
+              description: |
+                Identifies the account the property belongs to. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `act_` prefix.
+              readOnly: true
+            assetId:
+              type: string
+              description: |
+                An alternative identifier for the property. Use this value to key the property in the Identity and Access Management API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+            contractId:
+              type: string
+              description: |
+                Identifies the contract the property belongs to. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ctr_` prefix.
+            groupId:
+              type: string
+              description: |
+                Identifies the group to which the property is assigned. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `grp_` prefix.
+            latestVersion:
+              type: integer
+              description: |
+                Specifies the most recent version of the property.
+            note:
+              type: string
+              description: |
+                Further descriptive commentary.
+            productId:
+              type: string
+              description: |
+                The product assigned to the property, required when POSTing a new property. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prd_` prefix.
+            productionVersion:
+              type:
+              - integer
+              - 'null'
+              description: |
+                The most recent version to be activated to the production network, otherwise `null`.
+              nullable: true
+            propertyId:
+              type: string
+              description: |
+                The property's unique identifier. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+            propertyName:
+              type: string
+              description: |
+                A descriptive name for the property.
+            propertyType:
+              type: string
+              description: |
+                Specifies the type of the property. Either `TRADITIONAL` for properties where you pair property hostnames with the property version, or `HOSTNAME_BUCKET` where you manage property hostnames independently of the property version.
+              enum:
+              - HOSTNAME_BUCKET
+              - TRADITIONAL
+            ruleFormat:
+              type: string
+              description: |
+                Name of the rule format. The rule format can be frozen to a specific version, or represent the `latest` set of behaviors and criteria.
+            stagingVersion:
+              type:
+              - integer
+              - 'null'
+              description: |
+                The most recent version to be activated to the test network, otherwise `null`.
+              nullable: true
+$schema: http://json-schema.org/draft-04/schema#

@@ -1,0 +1,199 @@
+type: object
+description: |-
+  Specifies IP addresses and CIDR blocks of a region or geographic area for an assigned policy.
+  
+x-akamai:
+  file-path: schemas/siteRetrieveSpecific.yaml
+additionalProperties: false
+required:
+- name
+- exitPoints
+- policyId
+properties:
+  id:
+    type: integer
+    description: |
+      A unique identifier for the site. Use this value for `siteId` in subsequent operations.
+    minimum: 1
+  name:
+    type: string
+    description: |
+      The name of the site configuration.
+    minLength: 1
+  description:
+    type: string
+    description: |
+      A description of the site configuration that you provide.
+    minLength: 1
+  accessConfig:
+    type: object
+    description: |
+      Provides access config details.
+    additionalProperties: false
+    required:
+    - configurable
+    - delegatedAdmins
+    - readable
+    properties:
+      configurable:
+        type: boolean
+        description: |
+          Marks the site as configurable.
+      delegatedAdmins:
+        type: array
+        description: |
+          List of delegated admins for the site.
+        minItems: 0
+        items:
+          type: string
+          minLength: 1
+      readable:
+        type: boolean
+        description: |
+          Marks the site as readable.
+  clientOverridePolicyId:
+    type: integer
+    description: |
+      The unique ID of the related client override policy.
+  clientOverridePolicyInfo:
+    type: object
+    description: |
+      The unique policy for handling the traffic arriving from Zero Trust Client or SIA Client.
+    additionalProperties: false
+    required:
+    - name
+    - id
+    properties:
+      id:
+        type: integer
+        description: |
+          The unique ID for the policy.
+        minimum: 1
+      name:
+        type: string
+        description: |
+          The policy name.
+        minLength: 1
+  createdBy:
+    type: string
+    description: |
+      Name of the user who created this site.
+    minLength: 1
+  createdDate:
+    type: string
+    description: |
+      ISO 8601 timestamp marking this site's creation.
+    readOnly: true
+    format: date-time
+  deleted:
+    type: boolean
+    description: |
+      Indicates the site's deletion.
+  dynamicExitPoints:
+    type: array
+    description: |
+      A list of site dynamic exit points.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - ipAddr
+      - addrType
+      properties:
+        addrType:
+          type: string
+          description: |
+            The IP address type, either `ADDR_TYPE_IPv4` or `ADDR_TYPE_IPv6`.
+          enum:
+          - ADDR_TYPE_IPv4
+          - ADDR_TYPE_IPv6
+        ipAddr:
+          type: string
+          description: |
+            The IP address or CIDR block for your company used to match a policy to a request.
+          minLength: 1
+  dynamicIpEnabled:
+    type: boolean
+    description: |
+      Enables dynamic IP onramp for the site.
+  exitPoints:
+    type: array
+    description: |
+      Contains data for site exit points.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - ipAddr
+      - addrType
+      properties:
+        addrType:
+          type: string
+          description: |
+            The IP address type, either `ADDR_TYPE_IPV4` or `ADDR_TYPE_IPV6`.
+          enum:
+          - ADDR_TYPE_IPV4
+          - ADDR_TYPE_IPV6
+        ipAddr:
+          type: string
+          description: |
+            The IP address or CIDR block for your company used to match a policy to a request.
+          minLength: 1
+  ipsecOnrampcredential:
+    $ref: credential.yaml
+  ipsecOverDNSEnabled:
+    type: boolean
+    description: |
+      Enables IPsec over DNS for the site.
+  isOffnetworkLocation:
+    type: boolean
+    description: |
+      Indicates if the site is an off-network location.
+  modifiedBy:
+    type: string
+    description: |
+      Name of the user who most recently modified this site.
+    minLength: 1
+  modifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp marking when this site's last modification.
+    readOnly: true
+    format: date-time
+  policyId:
+    type: integer
+    description: |
+      The unique ID of the related policy.
+    minimum: 1
+  policyInfo:
+    type: object
+    description: |
+      Specifies the related policy SIA applies to incoming DNS requests.
+    additionalProperties: false
+    required:
+    - name
+    - id
+    properties:
+      id:
+        type: integer
+        description: |
+          The unique ID of the related policy.
+        minimum: 1
+      name:
+        type: string
+        description: |
+          The name of the related policy.
+        minLength: 1
+  sublocations:
+    type: array
+    description: |
+      Nested sublocation instances.
+    minItems: 0
+    items:
+      $ref: siteRetrieveSpecific-nested.yaml
+  useInternalIpPrivacyMask:
+    type: boolean
+    description: |
+      Applies internal IP privacy mask.

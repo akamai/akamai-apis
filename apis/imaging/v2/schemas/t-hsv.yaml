@@ -1,0 +1,49 @@
+type: object
+description: |-
+  Identical to HSL except it replaces `lightness` with `value`. For example, if you reduce the `lightness` of a light green, almost white, image, the color turns a vibrant green. Reducing the `value` turns the image a darker color, close to gray. This happens because the original image color is very close to white.
+  
+x-akamai:
+  file-path: schemas/t-hsv.yaml
+title: HSV
+additionalProperties: false
+required:
+- transformation
+properties:
+  value:
+    description: |
+      A multiplier to adjust the lightness or darkness of the images base color. Values less than 1.0 decrease the base colors in the image, making them appear darker. Values greater than 1.0 increase the base colors in the image, making them appear lighter.
+    oneOf:
+    - default: 1
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+    - $ref: variable-inline.yaml
+  hue:
+    description: |
+      The number of degrees to rotate colors around the color wheel, `0.0` by default.
+    oneOf:
+    - default: 0
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 360
+    - $ref: variable-inline.yaml
+  saturation:
+    description: |
+      A multiplier to adjust the saturation of colors in the image. Values less than `1.0` decrease saturation and values greater than `1.0` increase the saturation. A value of `0.0` removes all color from the image.
+    oneOf:
+    - default: 1
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+    - $ref: variable-inline.yaml
+  transformation:
+    type: string
+    description: |
+      Identifies the type of transformation, `HSV` in this case.
+    default: HSV
+    enum:
+    - HSV

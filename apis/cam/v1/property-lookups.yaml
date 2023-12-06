@@ -1,0 +1,42 @@
+openapi: 3.0.0
+info:
+  title: Property lookups
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cam/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: property-lookups.yaml
+paths:
+  /property-lookups/{lookupId}:
+    parameters:
+    - $ref: parameters/lookupId-path.yaml
+    get:
+      operationId: get-property-lookup
+      summary: Perform a property lookup request asynchronously
+      tags:
+      - Property lookups
+      description: |
+        Provides functionality similar to the [Perform a property lookup request](ref:get-access-key-version-properties) operation, but accesses the data asynchronously after running the [Get an ID for an asynchronous property lookup request](ref:get-async-version-property-lookup) operation to obtain the `lookupId`.
+      responses:
+        200:
+          description: |
+            Response contains details of the property lookup.
+          content:
+            application/json:
+              example:
+                $ref: examples/property-lookup-get-200.json
+              schema:
+                $ref: schemas/property-lookup-get-200.yaml
+        500:
+          description: |
+            A problem has occurred while calling an external service. Retry the operation.
+          content:
+            application/problem+json:
+              example:
+                $ref: examples/external-service-error.json
+              schema:
+                $ref: schemas/problem.yaml

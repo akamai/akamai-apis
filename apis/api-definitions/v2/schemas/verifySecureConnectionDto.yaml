@@ -1,0 +1,31 @@
+type: object
+description: |-
+  Contains the hostnames and certificate chain for secure connection verification.
+  
+x-akamai:
+  file-path: schemas/verifySecureConnectionDto.yaml
+additionalProperties: false
+required:
+- hosts
+- certChain
+properties:
+  certChain:
+    type: object
+    description: |
+      Contains information about a PEM file with the certificate to use for verification of hostnames included in the corresponding `hosts` member.
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        description: |
+          The name of the PEM file that includes the certificate.
+      content:
+        type: string
+        description: |
+          The contents of the PEM file that includes the certificate.
+  hosts:
+    type: array
+    description: |
+      The list of HTTPS hostnames to verify. Each hostname must be digitally signed with the certificate chain described in the corresponding `certChain` field. If your hostname uses a different port for secure connections than the default 443, you can indicate it after a colon.
+    items:
+      type: string

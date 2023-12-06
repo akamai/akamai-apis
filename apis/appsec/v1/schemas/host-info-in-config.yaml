@@ -1,0 +1,60 @@
+type: object
+description: |-
+  Contains the list of hostnames available for protection and its details.
+  
+x-akamai:
+  file-path: schemas/host-info-in-config.yaml
+additionalProperties: false
+required:
+- configId
+- configVersion
+- protectARLInclusionHost
+properties:
+  availableSet:
+    type: array
+    description: |
+      The available hosts set for the current user.
+    items:
+      $ref: hostname-object.yaml#
+  configId:
+    type: integer
+    description: |
+      Uniquely identifies the security configuration.
+  configVersion:
+    type: integer
+    description: |
+      The security configuration version.
+  errorSet:
+    type: array
+    description: |
+      The requested hosts aren't available in this configuration version.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - reason
+      - reasonCode
+      - hostname
+      properties:
+        hostname:
+          type: string
+          description: |
+            The hostname that triggers an error.
+        reason:
+          type: string
+          description: |
+            The reason why the hosts aren't protectable in this configuration version.
+        reasonCode:
+          type: integer
+          description: |
+            The error status code for the hostname.
+  protectARLInclusionHost:
+    type: boolean
+    description: |
+      Whether the host defined in the ARL file has legacy WAF enabled in the configuration.
+  selectedSet:
+    type: array
+    description: |
+      The selected set of hostnames in this configuration version.
+    items:
+      $ref: hostname-object.yaml#

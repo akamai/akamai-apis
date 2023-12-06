@@ -1,0 +1,1088 @@
+openapi: 3.0.0
+info:
+  title: Applications
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/crux/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: apps.yaml
+paths:
+  /mgmt-pop/agents/{agentId}/app-metrics:
+    parameters:
+    - $ref: parameters/agentId-path.yaml
+    get:
+      operationId: get-connector-app-metrics
+      summary: List application metrics for connector
+      tags:
+      - Connectors
+      description: |
+        Lists application metrics for the specified connector.
+      parameters:
+      - $ref: parameters/app_uuid_url-query.yaml
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/agentsappmetrics-200.json
+              schema:
+                $ref: schemas/agentsappmetrics.yaml
+  /mgmt-pop/appbundle:
+    post:
+      operationId: post-appbundle
+      summary: Create an application bundle
+      tags:
+      - Application bundles
+      description: |
+        Creates a new application bundle.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-an-app-bundle-body.json
+            schema:
+              $ref: schemas/appBundle.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-an-app-bundle-200.json
+              schema:
+                $ref: schemas/appBundle.yaml
+    get:
+      operationId: get-appbundles
+      summary: List application bundles
+      tags:
+      - Application bundles
+      description: |
+        Lists your application bundles.
+      parameters:
+      - $ref: parameters/expand-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/pageable_offset.yaml
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-app-bundles-200.json
+              schema:
+                $ref: schemas/appBundles.yaml
+  /mgmt-pop/appbundle/{appBundleId}:
+    parameters:
+    - $ref: parameters/appBundleId-path.yaml
+    get:
+      operationId: get-appbundle
+      summary: Get an application bundle
+      tags:
+      - Application bundles
+      description: |
+        Lists details for a specific application bundle by ID.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/expand-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-an-app-bundle-200.json
+              schema:
+                $ref: schemas/appBundle.yaml
+    put:
+      operationId: put-appbundle
+      summary: Modify an application bundle
+      tags:
+      - Application bundles
+      description: |
+        Modifies an existing application bundle.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/modify-an-app-bundle-body.json
+            schema:
+              $ref: schemas/appBundle.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-an-app-bundle-200.json
+              schema:
+                $ref: schemas/appBundle.yaml
+    delete:
+      operationId: delete-appbundle
+      summary: Delete an application bundle
+      tags:
+      - Application bundles
+      description: |
+        Removes an application bundle.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /mgmt-pop/appbundle/{appBundleId}/deploy:
+    parameters:
+    - $ref: parameters/appBundleId-path.yaml
+    post:
+      operationId: post-appbundle-deploy
+      summary: Deploy an application bundle
+      tags:
+      - Application bundles
+      description: |
+        Deploys the specified application bundle.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/deploy-app-bundle-200.json
+              schema:
+                $ref: schemas/deploy.yaml
+  /mgmt-pop/appcategories:
+    post:
+      operationId: post-app-category
+      summary: Create an application category
+      tags:
+      - Application categories
+      description: |
+        Create a new application category.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-an-app-category-body.json
+            schema:
+              $ref: schemas/app-category.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-an-app-category-200.json
+              schema:
+                $ref: schemas/app-category.yaml
+    get:
+      operationId: get-app-categories
+      summary: List application categories
+      tags:
+      - Application categories
+      description: |
+        Lists your application categories.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/expand-query.yaml
+      - $ref: parameters/pageable_offset.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-app-categories-200.json
+              schema:
+                $ref: schemas/appCategories.yaml
+  /mgmt-pop/appcategories/{appCategoryId}:
+    parameters:
+    - $ref: parameters/appCategoryId-path.yaml
+    get:
+      operationId: get-app-category
+      summary: Get an application category
+      tags:
+      - Application categories
+      description: |
+        Lists details for a specific application category.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/expand-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-an-app-category-200.json
+              schema:
+                $ref: schemas/app-category.yaml
+    put:
+      operationId: put-app-category
+      summary: Modify an application category
+      tags:
+      - Application categories
+      description: |
+        Modifies an existing application category.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/modify-an-app-category-body.json
+            schema:
+              $ref: schemas/app-category.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-an-app-category-200.json
+              schema:
+                $ref: schemas/app-category.yaml
+    delete:
+      operationId: delete-app-category
+      summary: Delete an application category
+      tags:
+      - Application categories
+      description: |
+        Removes an application category from your Enterprise Application Access product.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /mgmt-pop/appdirectories:
+    post:
+      operationId: post-app-directory
+      summary: Create or delete application directories
+      tags:
+      - Application directories
+      description: |
+        Creates or deletes a set of application and directories.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/method-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-app-directories-body.json
+            schema:
+              $ref: schemas/createAppDirectory.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-an-app-directory-200.json
+              schema:
+                $ref: schemas/appDirectory.yaml
+    get:
+      operationId: get-app-directories
+      summary: List application directories
+      tags:
+      - Application directories
+      description: |
+        Lists your application directories.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/expand-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/pageable_offset.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-app-directories-200.json
+              schema:
+                $ref: schemas/appDirectories.yaml
+  /mgmt-pop/appdirectories/{appDirectoryId}:
+    parameters:
+    - $ref: parameters/appDirectoryId-path.yaml
+    get:
+      operationId: get-app-directory
+      summary: Get an application directory
+      tags:
+      - Application directories
+      description: |
+        Get details for a specific application directory.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/expand-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-an-app-directory-200.json
+              schema:
+                $ref: schemas/appDirectory.yaml
+  /mgmt-pop/appgroups:
+    parameters:
+    - $ref: parameters/contractId-query.yaml
+    post:
+      operationId: post-assign-app-groups
+      summary: Assign directory groups to applications
+      tags:
+      - Application groups
+      description: |
+        Assigns one or more directory groups to one or more applications.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-assign_app_to-group.json
+            schema:
+              $ref: schemas/assignAppDirectory.yaml
+      responses:
+        200:
+          description: |
+            The response reflects the app group assignment.
+          content:
+            application/json:
+              example:
+                $ref: examples/assign-app-group-post-200.json
+              schema:
+                $ref: schemas/assignAppGroup.yaml
+    get:
+      operationId: get-app-groups
+      summary: List application rewrite groups
+      tags:
+      - Application rewrite groups
+      description: |
+        Lists your application groups.
+      parameters:
+      - $ref: parameters/expand-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/pageable_offset.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-app-groups-200.json
+              schema:
+                $ref: schemas/appGroup.yaml
+  /mgmt-pop/appgroups/{appGroupId}:
+    parameters:
+    - $ref: parameters/appGroupId-path.yaml
+    get:
+      operationId: get-app-group
+      summary: Get an application group
+      tags:
+      - Application groups
+      description: |
+        Get details for an application group.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/expand-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-an-app-group-200.json
+              schema:
+                $ref: schemas/appGroup.yaml
+  /mgmt-pop/appidp:
+    post:
+      operationId: post-app-idp
+      summary: Assign an IDP to an application
+      tags:
+      - Application IDPs
+      description: |
+        Assign an existing IDP to an application. Overwrites any existing IDP assigned to the application.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-app-idp-body.json
+            schema:
+              $ref: schemas/createAppIdp.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-an-app-idp-200.json
+              schema:
+                $ref: schemas/appIdp.yaml
+    get:
+      operationId: get-app-idps
+      summary: List application IDPs
+      tags:
+      - Application IDPs
+      description: |
+        Lists your application IDPs.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/expand-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/pageable_offset.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-app-idps-200.json
+              schema:
+                $ref: schemas/appIdp.yaml
+  /mgmt-pop/appidp/{appIdpId}:
+    parameters:
+    - $ref: parameters/appIdpId-path.yaml
+    get:
+      operationId: get-app-idp
+      summary: Get an application IDP
+      tags:
+      - Application IDPs
+      description: |
+        Get details for a specific application IDP.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/expand-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-an-app-idp-200.json
+              schema:
+                $ref: schemas/appIdp.yaml
+    delete:
+      operationId: delete-app-idp
+      summary: Delete an application IDP
+      tags:
+      - Application IDPs
+      description: |
+        Removes the IDP assigned to your application.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+  /mgmt-pop/application-reports/ops/query:
+    get:
+      operationId: get-application-reports
+      summary: List application audit logs reports
+      tags:
+      - Application audit logs
+      description: |
+        Lists an audit log report with optional custom filters.
+      parameters:
+      - $ref: parameters/app-query.yaml
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      - $ref: parameters/tz-query.yaml
+      - $ref: parameters/limit-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/auditlogs-get-request-response.json
+              schema:
+                $ref: schemas/auditlogs.yaml
+  /mgmt-pop/apps:
+    post:
+      operationId: post-app
+      summary: Create an application
+      tags:
+      - Applications
+      description: |
+        Creates a new application. After successful creation, additional steps are needed to deploy the application, depending on the application type. Refer to [Application creation workflow](ref:application-creation-workflow).
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-an-application-body.json
+            schema:
+              $ref: schemas/application.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-an-application-200.json
+              schema:
+                $ref: schemas/application.yaml
+    get:
+      operationId: get-apps
+      summary: List applications
+      tags:
+      - Applications
+      description: |
+        Lists your EAA applications.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/expand-query.yaml
+      - $ref: parameters/expand-sdk-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/pageable_offset.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-applications-200.json
+              schema:
+                $ref: schemas/applications.yaml
+  /mgmt-pop/apps/{applicationId}:
+    parameters:
+    - $ref: parameters/applicationId-path.yaml
+    get:
+      operationId: get-app
+      summary: Get an application
+      tags:
+      - Applications
+      description: |
+        Lists a specified application.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/expand-query.yaml
+      - $ref: parameters/expand-sdk-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-app-config-version-200.json
+              schema:
+                $ref: schemas/application.yaml
+    put:
+      operationId: put-app
+      summary: Modify an application
+      tags:
+      - Applications
+      description: |
+        Updates the details of an application.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/modify-an-application-200.json
+            schema:
+              $ref: schemas/application.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-an-application-200.json
+              schema:
+                $ref: schemas/application.yaml
+    delete:
+      operationId: delete-app
+      summary: Delete an application
+      tags:
+      - Applications
+      description: |
+        Removes an application.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        204:
+          description: |
+            Successful response.
+  /mgmt-pop/apps/{applicationId}/agents:
+    parameters:
+    - $ref: parameters/applicationId-path.yaml
+    post:
+      operationId: post-app-connectors
+      summary: Assign connectors to an application
+      tags:
+      - Connectors
+      description: |
+        Assign connectors to an application.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/assign-agents-application-body.json
+            schema:
+              $ref: schemas/agent.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/assign-agents-application-200.json
+              schema:
+                $ref: schemas/agent.yaml
+    get:
+      operationId: get-app-connectors
+      summary: List connectors for an application
+      tags:
+      - Connectors
+      description: |
+        Lists connectors for an application.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/pageable_offset.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-app-agents-200.json
+              schema:
+                $ref: schemas/need-schema-here.yaml
+  /mgmt-pop/apps/{applicationId}/agents/{agentId}:
+    parameters:
+    - $ref: parameters/agentId-path.yaml
+    - $ref: parameters/applicationId-path.yaml
+    get:
+      operationId: get-app-connector
+      summary: Get a connector for an application
+      tags:
+      - Connectors
+      description: |
+        Lists connectors for an application.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-app-agents-200.json
+              schema:
+                $ref: schemas/need-schema-here.yaml
+  /mgmt-pop/apps/{applicationId}/deploy:
+    parameters:
+    - $ref: parameters/applicationId-path.yaml
+    post:
+      operationId: post-app-deploy
+      summary: Deploy an application
+      tags:
+      - Applications
+      description: |
+        Deploys an application.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/deploy-app-comment.json
+            schema:
+              $ref: schemas/deploy-app-comment.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/deploy-application-200.json
+              schema:
+                $ref: schemas/deploy.yaml
+  /mgmt-pop/apps/{applicationId}/edgekey:
+    parameters:
+    - $ref: parameters/applicationId-path.yaml
+    post:
+      operationId: post-app-edgekey
+      summary: Create an edge key
+      tags:
+      - Edge keys
+      description: |
+        Generates an edge key for an application.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/create-an-edge-key-200.json
+              schema:
+                $ref: schemas/edge-key.yaml
+  /mgmt-pop/apps/{applicationId}/g2o:
+    parameters:
+    - $ref: parameters/applicationId-path.yaml
+    post:
+      operationId: post-app-g2o
+      summary: Create a Ghost to Origin key
+      tags:
+      - Ghost to Origin keys
+      description: |
+        Enables a G2O configuration for an application. Used only if if you've enabled Akamai Edge Enforcement.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/create-g2o-credentials-200.json
+              schema:
+                $ref: schemas/g2o.yaml
+  /mgmt-pop/apps/{applicationId}/groups:
+    parameters:
+    - $ref: parameters/applicationId-path.yaml
+    get:
+      operationId: get-groups-per-app
+      summary: List the groups assigned to an application
+      tags:
+      - Application rewrite groups
+      description: |
+        Lists the groups authorized to access the application.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-groups-for-application-200.json
+              schema:
+                $ref: schemas/applicationGroups.yaml
+  /mgmt-pop/apps/{applicationId}/services:
+    parameters:
+    - $ref: parameters/applicationId-path.yaml
+    get:
+      operationId: get-app-services
+      summary: List services for an application
+      tags:
+      - Services
+      description: |
+        Lists the details of the services for an application.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/expand-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-services-for-application-200.json
+              schema:
+                $ref: schemas/applicationServices.yaml
+  /mgmt-pop/apps/{applicationId}/urllocation:
+    parameters:
+    - $ref: parameters/applicationId-path.yaml
+    post:
+      operationId: post-app-urllocation
+      summary: Create a URL location rule
+      tags:
+      - URL location rules
+      description: |
+        Create a URL location rule.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-an-urllocation-body.json
+            schema:
+              $ref: schemas/urllocation.yaml#/definitions/urllocation
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/create-an-urllocation-200.json
+              schema:
+                $ref: schemas/urllocation.yaml#/definitions/urllocation
+    get:
+      operationId: get-app-urllocations
+      summary: List URL location rules
+      tags:
+      - URL location rules
+      description: |
+        Lists a list of URL location rules for an application.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      - $ref: parameters/pageable_limit.yaml
+      - $ref: parameters/pageable_offset.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-app-urllocation-200.json
+              schema:
+                $ref: schemas/need-schema-here.yaml
+  /mgmt-pop/apps/{applicationId}/urllocation/{locationId}:
+    parameters:
+    - $ref: parameters/locationId-path.yaml
+    - $ref: parameters/applicationId-path.yaml
+    get:
+      operationId: get-app-urllocation
+      summary: Get a URL location rule
+      tags:
+      - URL location rules
+      description: |
+        Lists the URL location rule for an application.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-app-urllocation-200.json
+              schema:
+                $ref: schemas/need-schema-here.yaml
+    put:
+      operationId: put-app-urllocation
+      summary: Modify a URL location rule
+      tags:
+      - URL location rules
+      description: |
+        Edits a URL location rule.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/modify-a-urllocation-body.json
+            schema:
+              $ref: schemas/urllocation.yaml#/definitions/urllocation
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/modify-a-urllocation-200.json
+              schema:
+                $ref: schemas/urllocation.yaml#/definitions/urllocation
+    delete:
+      operationId: delete-app-urllocation
+      summary: Delete a URL location rule
+      tags:
+      - URL location rules
+      description: |
+        Removes a URL location rule.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        204:
+          description: |
+            Successful response.
+  /mgmt-pop/apps/{applicationId}/versions:
+    parameters:
+    - $ref: parameters/applicationId-path.yaml
+    get:
+      operationId: get-app-versions
+      summary: List application versions
+      tags:
+      - Versions
+      description: |
+        Lists a list of application versions.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-app-config-version-list-200.json
+              schema:
+                $ref: schemas/appconfigversionlist.yaml
+  /mgmt-pop/apps/{applicationId}/versions/{versionId}:
+    parameters:
+    - $ref: parameters/versionId-path.yaml
+    - $ref: parameters/applicationId-path.yaml
+    get:
+      operationId: get-app-version
+      summary: Get an application version
+      tags:
+      - Versions
+      description: |
+        Lists an application version.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-app-config-version-200.json
+              schema:
+                $ref: schemas/appconfigversion.yaml
+    put:
+      operationId: put-app-version
+      summary: Create a new application version from existing
+      tags:
+      - Versions
+      description: |
+        Copies the selected application version to a new draft application.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/copy-to-draft-200.json
+              schema:
+                $ref: schemas/appconfigversion.yaml
+  /mgmt-pop/idpblockuser/idp/{idp_id}/block:
+    parameters:
+    - $ref: parameters/idp_id-path.yaml
+    post:
+      operationId: post-user-block-idp-access
+      summary: Block a user from accessing an IDP
+      tags:
+      - Block user
+      description: |
+        Blocks a user from accessing an IDP.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/block-user-post-request.json
+            schema:
+              $ref: schemas/idpblockuser.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/idp-user-block-unblock-response.json
+              schema:
+                $ref: schemas/idpblockuser.yaml
+  /mgmt-pop/idpblockuser/idp/{idp_id}/unblock:
+    parameters:
+    - $ref: parameters/idp_id-path.yaml
+    post:
+      operationId: post-user-unblock-idp-access
+      summary: Unblock a user from accessing an IDP
+      tags:
+      - Unblock user
+      description: |
+        Unblocks a user from accessing an IDP.
+      parameters:
+      - $ref: parameters/contractId-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/unblock-user-post-request.json
+            schema:
+              $ref: schemas/idpblockuser.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/idp-user-block-unblock-response.json
+              schema:
+                $ref: schemas/idpblockuser.yaml

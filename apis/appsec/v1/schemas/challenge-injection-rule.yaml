@@ -1,0 +1,28 @@
+type: object
+x-akamai:
+  file-path: schemas/challenge-injection-rule.yaml
+additionalProperties: false
+required:
+- injectJavaScript
+- ruleName
+- conditions
+properties:
+  conditions:
+    type: array
+    description: |
+      Rule conditions to match on. The injection rules override `injectJavaScript` at the parent level, so only specify them if that member is `false`.
+    minItems: 1
+    items:
+      oneOf:
+      - $ref: host-condition.yaml
+      - $ref: query-string-condition.yaml
+      - $ref: url-pattern-condition.yaml
+  injectJavaScript:
+    type: boolean
+    description: |
+      Whether to inject the AJAX challenge JavaScript on HTML pages that match the specified rule conditions.
+  ruleName:
+    type: string
+    description: |
+      The rule's unique name.
+    minLength: 1

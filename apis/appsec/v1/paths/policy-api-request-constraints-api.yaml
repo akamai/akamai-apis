@@ -1,0 +1,41 @@
+x-akamai:
+  file-path: paths/policy-api-request-constraints-api.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/api-request-constraints/{apiId}
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/policyId-path.yaml
+- $ref: ../parameters/apiId-path.yaml
+put:
+  operationId: put-api-request-constraints-api
+  summary: Modify an API request constraint's action
+  tags:
+  - API request constraints
+  description: |
+    Update what action to take when the API request constraint triggers. This operation modifies an individual API constraint action. To use this operation, run [List all API request constraints and actions](ref:get-api-request-constraints) and pick an API from the response list. Use `alert` to record the trigger of the event, `deny` to block the request, or `none` to take no action. Currently the only member in the API Request Constraints object is `action`. _Products:_ Kona Site Defender, App & API Protector with the Advanced Security module.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/policy-put-eval-rule-action-200.json
+        schema:
+          $ref: ../schemas/api-request-constraints-action-put.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the API's action.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-put-eval-rule-action-200.json
+          schema:
+            $ref: ../schemas/api-request-constraints-action-put-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

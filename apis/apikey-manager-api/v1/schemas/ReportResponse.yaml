@@ -1,0 +1,143 @@
+type: object
+description: |-
+  Contains the response report, including aggregated data and reflecting details on the request.
+  
+x-akamai:
+  file-path: schemas/ReportResponse.yaml
+additionalProperties: false
+required:
+- data
+- metadata
+- summaryStatistics
+properties:
+  data:
+    type: array
+    description: |
+      The list of report data rows suitable for aggregation. The value of the `groupBy` array serves as a key for each row to indicate the metric by which the row is grouped and sorted.
+    minItems: 0
+    items:
+      $ref: ../schemas/data-row-schema.yaml
+  metadata:
+    type: object
+    description: |
+      Contains information about the requested data set based on the request's parameters and the contents of the query object. Provides information for use in the report output.
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        description: |
+          The name of the current report type.
+        minLength: 1
+      version:
+        type: string
+        description: |
+          The version of the current report type.
+        minLength: 1
+      availableDataEnds:
+        type: string
+        description: |
+          For unfinalized report data, the ISO 8601 timestamp indicating when the data is available. Otherwise, the value is `null` for finalized data.
+        nullable: true
+        minLength: 1
+      columns:
+        type: array
+        description: |
+          The list of interface labels for the `data` member.
+        minItems: 1
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            name:
+              type: string
+              description: |
+                The name of the corresponding `data` member.
+              minLength: 1
+            label:
+              type: string
+              description: |
+                The interface label to assign to the corresponding `name` member.
+              minLength: 1
+      end:
+        type: string
+        description: |
+          The ISO 8601 timestamp indicating the end date for the requested data. This reflects the value of the [Generate a report](ref:post-report) operation's `end` parameter.
+        minLength: 1
+      filters:
+        type: array
+        description: |
+          The list of filters explicitly provided by the user and implicitly resolved, used when retrieving the report data.
+        minItems: 1
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            name:
+              type: string
+              description: |
+                The name of the filter specified in the request or included in the default set for a given report type.
+              minLength: 1
+            value:
+              type: array
+              description: |
+                The list of requested filter values.
+              minItems: 1
+              items:
+                type: string
+                minLength: 1
+      groupBy:
+        type: array
+        description: |
+          The list of fields by which `data` is grouped and sorted. The `groupBy` field is specified in each `data` row.
+        minItems: 0
+        items:
+          type: string
+          minLength: 1
+      interval:
+        type: string
+        description: |
+          The duration of each record in the report, either `FIVE_MINUTES`, `HOUR`, `DAY`, `WEEK`, or `MONTH`. This reflects the value of the [Generate a report](ref:post-report) operation's `interval` parameter.
+        enum:
+        - FIVE_MINUTES
+        - HOUR
+        - DAY
+        - WEEK
+        - MONTH
+      objectIds:
+        type: array
+        description: |
+          The list of internal identifiers related to reports. For quota reports, the array always contains a single entry: `ymdfile`.
+        minItems: 1
+        items:
+          type: string
+          minLength: 1
+      objectType:
+        type: string
+        description: |
+          The internal identifier related to reports. For quota reports, the value is always `rapidfile`.
+        minLength: 1
+      rowCount:
+        type: integer
+        description: |
+          The total number of `data` records included in the report.
+        minimum: 0
+      start:
+        type: string
+        description: |
+          Indicates the start date for the requested data, in ISO 8601 format. This reflects the value of the [Generate a report](ref:post-report) operation's `start` parameter.
+        minLength: 1
+      suggestedRetryTime:
+        type: string
+        description: |
+          For unfinalized report data, indicates the estimated report completion date, in ISO 8601 format. Otherwise, the value is `null` for finalized data.
+        nullable: true
+        minLength: 1
+      uri:
+        type: string
+        description: |
+          The URL called to get the report data.
+        minLength: 1
+  summaryStatistics:
+    type: object
+    description: |
+      Contains summary statistics for a report. This isn't applicable for quota reports and is always empty.

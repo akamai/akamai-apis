@@ -1,0 +1,80 @@
+id: resource:/descriptors/papi/v1/schemas/CreateNewBulkPatchRequestV0.json#
+javaType: com.akamai.devops.model.BulkPatchRequest
+type: object
+description: |-
+  Encapsulates customized JSON patch instructions to run on a set of JSON path locations within various property versions' rule trees. See [Bulk Search and Update](ref:bulk-search-and-update) for guidance on this feature.
+  
+x-akamai:
+  file-path: schemas/bulk-patch-create-request.yaml
+required:
+- patchPropertyVersions
+properties:
+  patchPropertyVersions:
+    type: array
+    description: |
+      Specifies JSON patch instructions to modify each property version.
+    items:
+      type: object
+      required:
+      - propertyId
+      - propertyVersion
+      - patches
+      properties:
+        etag:
+          type: string
+          description: |
+            A digest with which to check the data's integrity. See [Concurrency control](ref:concurrency-control) for guidance.
+        patches:
+          type: array
+          description: |
+            A series of JSON Patch operations.
+          items:
+            description: |
+              A JSON Patch operation.
+            oneOf:
+            - properties:
+                op:
+                  description: |
+                    The operation to perform: `replace`, `add`, or `test` in this case.
+                  enum:
+                  - replace
+                  - add
+                  - test
+                path:
+                  type: string
+                  description: |
+                    A JSON Path expression that locates the data to replace.
+                  pattern: ^(/[^/~]*(~[01][^/~]*)*)*$
+              type: object
+              title: Replace
+              required:
+              - op
+              - path
+              - value
+            - properties:
+                op:
+                  description: |
+                    The operation to perform: `remove` in this case.
+                  enum:
+                  - remove
+                path:
+                  type: string
+                  description: |
+                    A JSON Path expression that locates the data to remove.
+                  pattern: ^(/[^/~]*(~[01][^/~]*)*)*$
+              type: object
+              title: Remove
+              required:
+              - op
+              - path
+        propertyId:
+          type: string
+          description: |
+            Identifies the property for this version. See [Data conventions](ref:data-conventions) for details on how to omit the ID's `prp_` prefix. Don't use this value if you want to exchange data with the Identity and Access Manager API. See [Manage properties and includes](https://techdocs.akamai.com/iam-api/reference/manage-access-to-properties-and-includes).
+          pattern: ^(prp_|PRP_)?[0-9]+$
+        propertyVersion:
+          type: integer
+          description: |
+            A positive integer identifying the incremental version.
+          minimum: 1
+$schema: http://json-schema.org/draft-04/schema#

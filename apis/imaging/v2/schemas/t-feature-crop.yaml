@@ -1,0 +1,102 @@
+type: object
+description: |-
+  Identifies prominent features of the source image, then crops around as many of these features as possible relative to the specified `width` and `height` values.
+  
+x-akamai:
+  file-path: schemas/t-feature-crop.yaml
+title: FeatureCrop
+additionalProperties: false
+required:
+- transformation
+- width
+- height
+properties:
+  style:
+    description: |
+      Specifies how to crop or scale a crop area for the features identified in the source image, `fill` by default. The output image resizes to the specified `width` and `height` values. A value of `crop` performs a raw crop around the features, relative to the specified `gravity` value.  A value of `fill` scales the crop area to include as much of the image and features as possible, relative to the specified `width` and `height` values. A value of `zoom` scales the crop area as small as possible to fit the features, relative to the specified `width` and `height` values.
+    oneOf:
+    - default: zoom
+      type: string
+      title: String enum
+      enum:
+      - crop
+      - fill
+      - zoom
+    - $ref: variable-inline.yaml
+  failGravity:
+    description: |
+      Controls placement of the crop if Image & Video Manager does not detect any features in the image. Directions are relative to the edges of the image being transformed.
+    default: Center
+    oneOf:
+    - $ref: gravity.yaml
+    - $ref: variable-inline.yaml
+  featureRadius:
+    description: |
+      The size in pixels of the important features to search for. If identified, two features never appear closer together than this value, `8.0` by default.
+    oneOf:
+    - default: 8
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+    - $ref: variable-inline.yaml
+  gravity:
+    description: |
+      Controls placement of the crop. Directions are relative to the region of interest plus padding.
+    default: Center
+    oneOf:
+    - $ref: gravity.yaml
+    - $ref: variable-inline.yaml
+  height:
+    description: |
+      The height in pixels of the output image relative to the specified `style` value.
+    oneOf:
+    - minimum: 1
+      type: integer
+      title: Integer
+    - $ref: variable-inline.yaml
+  maxFeatures:
+    description: |
+      The maximum number of features to identify as important features, `32` by default. The strongest features are always chosen.
+    oneOf:
+    - default: 32
+      type: integer
+      title: Integer
+      minimum: 0
+    - $ref: variable-inline.yaml
+  minFeatureQuality:
+    description: |
+      Determines the minimum quality level of the feature identified. To consider a feature important, the feature needs to surpass this value.  Image & Video Manager measures quality on a scale from `0` for the lowest quality to `1` for the highest quality, `.1` by default.
+    oneOf:
+    - default: 0.1
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 1
+    - $ref: variable-inline.yaml
+  padding:
+    description: |
+      Adds space around the region of interest. The amount of padding added is directly related to the size of the bounding box of the selected features. Specifically, the region of interest is expanded in all directions by the largest dimension of the bounding box of the selected features multiplied by this value.
+    oneOf:
+    - default: 0.05
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+    - $ref: variable-inline.yaml
+  transformation:
+    type: string
+    description: |
+      Identifies the type of transformation, `FeatureCrop` in this case.
+    default: FeatureCrop
+    enum:
+    - FeatureCrop
+  width:
+    description: |
+      The width in pixels of the output image relative to the specified `style` value.
+    oneOf:
+    - minimum: 1
+      type: integer
+      title: Integer
+    - $ref: variable-inline.yaml

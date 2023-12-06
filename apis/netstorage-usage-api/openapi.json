@@ -1,0 +1,1804 @@
+{
+  "openapi": "3.0.0",
+  "externalDocs": {
+    "description": "See documentation for Akamai's NetStorage Usage API",
+    "url": "https://techdocs.akamai.com/netstorage-usage/reference"
+  },
+  "info": {
+    "title": "Akamai: NetStorage Usage API",
+    "version": "v1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/{cpCode}": {
+      "get": {
+        "description": "View a list of event subscription configurations.",
+        "operationId": "list-all-event-subscriptions",
+        "summary": "List event subscriptions",
+        "tags": [
+          "Manage subscriptions"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's NetStorage Usage API",
+          "url": "https://techdocs.akamai.com/netstorage-usage/reference/list-all-event-subscriptions"
+        },
+        "responses": {
+          "200": {
+            "description": "List of all event subscriptions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Array of event subscriptions.",
+                  "type": "array",
+                  "items": {
+                    "description": "The response for [Get Event Subscription](TBD:slug), describing one subscription.",
+                    "type": "object",
+                    "properties": {
+                      "eventTypes": {
+                        "description": "List of event types for the given `objectPath`. Choose at least one.\n* `com.akamai.netstorage.object-created`. Creation of new object in, or within a sub-dir of a matching `pathPrefix`.\n* `com.akamai.netstorage.object-updated`. Update of matching object. This includes rename and in-place updates.\n* `com.akamai.netstorage.object-deleted`. Deletion of matching object.\n* `com.akamai.netstorage.object-replicated`. Replication is complete for the object that was created or updated on a different primary replica zone.\n* `com.akamai.netstorage.object-replica-delete`. Deletion of the object copy that was deleted on a different primary replica zone.",
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "com.akamai.netstorage.object-created",
+                            "com.akamai.netstorage.object-updated",
+                            "com.akamai.netstorage.object-deleted",
+                            "com.akamai.netstorage.object-replicated",
+                            "com.akamai.netstorage.object-replica-delete"
+                          ]
+                        }
+                      },
+                      "notificationConfig": {
+                        "description": "This specifies where event notifications are sent. It includes the `endPointURL` and `endPointAccessToken`.",
+                        "type": "object",
+                        "properties": {
+                          "endpointConfig": {
+                            "description": "This encapsulates the configuration of the third-party endpoint set to receive event notifications.",
+                            "type": "object",
+                            "properties": {
+                              "endPointAccessToken": {
+                                "description": "A CloudEvents-compliant `access_token`. Include it as a query parameter in the `endPointURL` or as a header in compliance with the [CloudEvents supported authorization schemes](https://github.com/cloudevents/spec/blob/v1.0/http-webhook.md#32-uri-query-parameter).",
+                                "type": "string"
+                              },
+                              "endPointAttributes": {
+                                "description": "Specifies notification and auth scheme that determines version compatibility when publishing event notifications.",
+                                "maxProperties": 2,
+                                "minProperties": 1,
+                                "type": "object",
+                                "properties": {
+                                  "X-Akamai-EN-Ver": {
+                                    "default": "akam-ns-en-v1.0",
+                                    "description": "This API supports version `akam-ns-en-v1.0`.",
+                                    "type": "string",
+                                    "enum": [
+                                      "akam-ns-en-v1.0"
+                                    ]
+                                  },
+                                  "ce-specversion": {
+                                    "default": "1.x-wip",
+                                    "description": "This API supports CloudEvents schema version `1.x-wip`.",
+                                    "type": "string",
+                                    "enum": [
+                                      "1.x-wip"
+                                    ]
+                                  }
+                                }
+                              },
+                              "endPointURL": {
+                                "description": "This identifies the endpoint configured to receive event notifications.",
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "maxRetries": {
+                            "description": "Maximum number of times NetStorage event publishing systems will try to publish the event notification.",
+                            "format": "int32",
+                            "type": "integer"
+                          }
+                        }
+                      },
+                      "objectPath": {
+                        "description": "The complete prefix that is matched for this subscription, including CP code and optional `pathPrefix`.",
+                        "type": "string"
+                      },
+                      "sgZone": {
+                        "default": null,
+                        "description": "The replica zone this subscription is notifying for. If `null`, notifications are for all zones.",
+                        "nullable": true,
+                        "type": "string",
+                        "enum": [
+                          "AU",
+                          "IN",
+                          "JP",
+                          "KR",
+                          "SG",
+                          "asia",
+                          "europe",
+                          "global",
+                          "us",
+                          "useast",
+                          "uswest"
+                        ]
+                      },
+                      "subscriptionEndTime": {
+                        "description": "An epoch timestamp that identifies when the subscription for event notification will end. If not provided, subscriptions will auto-expire 90 days from the `subscriptionStartTime`.",
+                        "type": "string"
+                      },
+                      "subscriptionName": {
+                        "description": "The name of the requested subscription.",
+                        "type": "string"
+                      },
+                      "subscriptionStartTime": {
+                        "description": "An epoch timestamp that identifies when the subscription for event notifications will start. If not provided, the subscription will start immediately after successful subscription.",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/get-all-event-subscriptions-response.yaml"
+                  }
+                },
+                "example": [
+                  {
+                    "objectPath": "/12345/abc",
+                    "sgZone": "us",
+                    "subscriptionEndTime": "1621999940",
+                    "subscriptionName": "subscr.12345.PArRd",
+                    "subscriptionStartTime": "1621995730",
+                    "eventTypes": [
+                      "com.akamai.netstorage.object-created",
+                      "com.akamai.netstorage.object-updated"
+                    ],
+                    "notificationConfig": {
+                      "maxRetries": 2,
+                      "endPointConfig": {
+                        "endPointAccessToken": "<encrypted>",
+                        "endPointURL": "https://www.checkevent.com/receive-events",
+                        "endPointAttributes": {
+                          "X-Akamai-EN-Ver": "akam-ns-en-v1.0",
+                          "ce-specversion": "1.x-wip"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "objectPath": "/12345/abc",
+                    "sgZone": null,
+                    "subscriptionEndTime": "1621999940",
+                    "subscriptionName": "subscr.12345.sXKLd",
+                    "subscriptionStartTime": "1621995730",
+                    "eventTypes": [
+                      "com.akamai.netstorage.object-deleted"
+                    ],
+                    "notificationConfig": {
+                      "maxRetries": 2,
+                      "endPointConfig": {
+                        "endPointAccessToken": "<encrypted>",
+                        "endPointURL": "https://www.checkevent.com/receive-events",
+                        "endPointAttributes": {
+                          "X-Akamai-EN-Ver": "akam-ns-en-v1.0",
+                          "ce-specversion": "1.x-wip"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "[Malformed request](https://techdocs.akamai.com/netstorage-usage/reference/400), such as an illegal combination of parameters in the `X-Akamai-ACS-Action` request header. There may be more information in the response body, represented as unstructured text.",
+            "content": {
+              "*/*": {}
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "403": {
+            "description": "[Forbidden operation](https://techdocs.akamai.com/netstorage-usage/reference/403), such as an `action=stat` in the HTTP PUT request, or an authentication or authorization error. There may be more information in the response body, represented as unstructured text.",
+            "content": {
+              "*/*": {}
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "This operation creates or updates a subscription for notifications of NetStorage events. If no `pathPrefix` is specified, all paths under the CP code will generate notifications.",
+        "operationId": "create-update-event-subscription-all-paths",
+        "summary": "Create or update an event subscription for all paths",
+        "tags": [
+          "Manage subscriptions"
+        ],
+        "callbacks": {
+          "eventNotification": {
+            "{$request.body#/notificationConfig/endpointConfig/endPointURL}?{$request.body#/noficationConfig/endpointConfig/endPointAccessToken}": {
+              "post": {
+                "requestBody": {
+                  "required": true,
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "dataschema": "akam-ns-en-v1.0",
+                        "id": "19566.d19562.2897c2.U2897c0.19fd7.d19fd5.5096c.M4AAFWDjCLoACqPp.M4AAAGDjB8YAADKF",
+                        "source": "/Akamai/NetStorage/1074779",
+                        "specversion": "1.0",
+                        "subject": "nsen",
+                        "time": "2021-07-05T13:27:22.902Z",
+                        "type": "com.akamai.netstorage.object-deleted",
+                        "data": {
+                          "eventTS": "2021-07-05T13:27:22.902Z",
+                          "objectName": "nsen/testfile_2097152_1",
+                          "sgZone": "useast",
+                          "subscriptionId": "TOPIC961612useast"
+                        }
+                      },
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "properties": {
+                              "eventTS": {
+                                "description": "The ISO 8601 time when the event occurred.",
+                                "format": "date-time",
+                                "type": "string"
+                              },
+                              "objectName": {
+                                "description": "The path to the object that changed relative to the CP code.",
+                                "type": "string"
+                              },
+                              "sgZone": {
+                                "description": "The replica zone where the event was detected.",
+                                "type": "string"
+                              },
+                              "subscriptionId": {
+                                "description": "The system assigns a subscription ID using the `$response.body#/subscriptionName` format.",
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "dataschema": {
+                            "description": "The version of this schema. This is always `akam-ns-en-v1.0`.",
+                            "type": "string",
+                            "enum": [
+                              "akam-ns-en-v1.0"
+                            ]
+                          },
+                          "id": {
+                            "description": "A unique identifier for this event.",
+                            "type": "string"
+                          },
+                          "source": {
+                            "description": "This identifies the source `storageGroupId` of the event, for example, `/Akamai/NetStorage/{storageGroupId}`.",
+                            "type": "string"
+                          },
+                          "specversion": {
+                            "description": "Version of CloudEvents in use. This is always `1.0`.",
+                            "type": "string",
+                            "enum": [
+                              "1.0"
+                            ]
+                          },
+                          "subject": {
+                            "description": "This describes the subject of the event. Configure this in the context of the event producer, for example, `/{Path}/{Object}`.",
+                            "type": "string"
+                          },
+                          "time": {
+                            "description": "An ISO 8601 timstamp when the event was enqueued.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "This describes the type of event related to the originating occurrence.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/event-notification-callback-post.yaml"
+                        }
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "Notification accepted."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's NetStorage Usage API",
+          "url": "https://techdocs.akamai.com/netstorage-usage/reference/create-update-event-subscription-all-paths"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "sgZone": "us",
+                "subscriptionEndTime": "1621999940",
+                "subscriptionStartTime": "1621995730",
+                "eventTypes": [
+                  "com.akamai.netstorage.object-created",
+                  "com.akamai.netstorage.object-updated"
+                ],
+                "notificationConfig": {
+                  "maxRetries": 2,
+                  "endPointConfig": {
+                    "endPointAccessToken": "abcd",
+                    "endPointURL": "https://www.checkevent.com/receive-events",
+                    "endPointAttributes": {
+                      "X-Akamai-EN-Ver": "akam-ns-en-v1.0",
+                      "ce-specversion": "1.x-wip"
+                    }
+                  }
+                }
+              },
+              "schema": {
+                "description": "This encapsulates the configuration for NetStorage event notifications.",
+                "type": "object",
+                "required": [
+                  "eventTypes",
+                  "notificationConfig"
+                ],
+                "properties": {
+                  "eventTypes": {
+                    "description": "Subscribe to event notifications for object creation, update, and delete events. Events are available for when replication is complete or a replica is deleted.\n* com.akamai.netstorage.object-created\n* com.akamai.netstorage.object-updated\n* com.akamai.netstorage.object-deleted\n* com.akamai.netstorage.object-replicated\n* com.akamai.netstorage.object-replica-delete",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "com.akamai.netstorage.object-created",
+                        "com.akamai.netstorage.object-updated",
+                        "com.akamai.netstorage.object-deleted",
+                        "com.akamai.netstorage.object-replicated",
+                        "com.akamai.netstorage.object-replica-delete"
+                      ]
+                    }
+                  },
+                  "notificationConfig": {
+                    "description": "This specifies where event notifications are sent. It includes the `endPointURL` and `endPointAccessToken`.",
+                    "type": "object",
+                    "required": [
+                      "endpointConfig"
+                    ],
+                    "properties": {
+                      "endpointConfig": {
+                        "description": "This encapsulates the configuration of the third-party endpoint set to receive event notifications.",
+                        "type": "object",
+                        "required": [
+                          "endPointURL"
+                        ],
+                        "properties": {
+                          "endPointAccessToken": {
+                            "description": "A CloudEvents-compliant `access_token`. Include it as a query parameter in the `endPointURL` or as a header in compliance with the [CloudEvents supported authorization schemes](https://github.com/cloudevents/spec/blob/v1.0/http-webhook.md#32-uri-query-parameter).",
+                            "type": "string"
+                          },
+                          "endPointAttributes": {
+                            "description": "Specifies notification and auth scheme that determines version compatibility when publishing event notifications.",
+                            "maxProperties": 2,
+                            "minProperties": 1,
+                            "type": "object",
+                            "properties": {
+                              "X-Akamai-EN-Ver": {
+                                "default": "akam-ns-en-v1.0",
+                                "description": "This API supports version `akam-ns-en-v1.0`.",
+                                "type": "string",
+                                "enum": [
+                                  "akam-ns-en-v1.0"
+                                ]
+                              },
+                              "ce-specversion": {
+                                "default": "1.x-wip",
+                                "description": "This API supports CloudEvents schema version `1.x-wip`.",
+                                "type": "string",
+                                "enum": [
+                                  "1.x-wip"
+                                ]
+                              }
+                            }
+                          },
+                          "endPointURL": {
+                            "description": "This identifies the endpoint configured to receive event notifications.",
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "maxRetries": {
+                        "description": "Maximum number of times NetStorage event publishing systems will try to publish the event notification.",
+                        "format": "int32",
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "sgZone": {
+                    "default": null,
+                    "description": "Specify the replication zone to monitor for `eventTypes` that will trigger an event notification. If empty, subscription applies to events that are detected in any of the replica zones in the object's storage group.",
+                    "example": "{{sgZone}}",
+                    "nullable": true,
+                    "type": "string",
+                    "enum": [
+                      "AU",
+                      "IN",
+                      "JP",
+                      "KR",
+                      "SG",
+                      "asia",
+                      "europe",
+                      "global",
+                      "us",
+                      "useast",
+                      "uswest"
+                    ]
+                  },
+                  "subscriptionEndTime": {
+                    "description": "An epoch timestamp that identifies when the subscription for event notification will end. If not provided, subscriptions will auto-expire 90 days from the `subscriptionStartTime`.",
+                    "example": "{{subscriptionEndTime}}",
+                    "type": "string"
+                  },
+                  "subscriptionStartTime": {
+                    "description": "An epoch timestamp that identifies when the subscription for event notifications will start. If not provided, the subscription will start immediately after successful subscription.",
+                    "example": "{{subscriptionStartTime}}",
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/event-subscription-put.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Created or updated event subscription.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "objectPath": "/12345/abc",
+                  "sgZone": "us",
+                  "subscriptionEndTime": "1621999940",
+                  "subscriptionName": "subscr.12345.PArRd",
+                  "subscriptionStartTime": "1621995730",
+                  "eventTypes": [
+                    "com.akamai.netstorage.object-created",
+                    "com.akamai.netstorage.object-updated"
+                  ],
+                  "notificationConfig": {
+                    "maxRetries": 2,
+                    "endPointConfig": {
+                      "endPointAccessToken": "<encrypted>",
+                      "endPointURL": "https://www.checkevent.com/receive-events",
+                      "endPointAttributes": {
+                        "X-Akamai-EN-Ver": "akam-ns-en-v1.0",
+                        "ce-specversion": "1.x-wip"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "description": "The response for an event notification subscription.",
+                  "type": "object",
+                  "properties": {
+                    "eventTypes": {
+                      "description": "List of subscribed event 'types' for the given resource in objectPath. One or more of the following:\n* `com.akamai.netstorage.object-created`. Creation of new object in, or within a sub-dir of a matching `pathPrefix`.\n* `com.akamai.netstorage.object-updated`. Update of matching object. This includes rename and in-place updates.\n* `com.akamai.netstorage.object-deleted`. Deletion of matching object.\n* `com.akamai.netstorage.object-replicated`. Replication is complete for the object that was created or updated on a different primary replica zone.\n* `com.akamai.netstorage.object-replica-delete`. Deletion of the object copy that was deleted on a different primary replica zone.",
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "com.akamai.netstorage.object-created",
+                          "com.akamai.netstorage.object-updated",
+                          "com.akamai.netstorage.object-deleted",
+                          "com.akamai.netstorage.object-replicated",
+                          "com.akamai.netstorage.object-replica-delete"
+                        ]
+                      }
+                    },
+                    "notificationConfig": {
+                      "description": "This specifies where event notifications are sent. It includes the `endPointURL` and `endPointAccessToken`.",
+                      "type": "object",
+                      "properties": {
+                        "endpointConfig": {
+                          "description": "This encapsulates the configuration of the third-party endpoint set to receive event notifications.",
+                          "type": "object",
+                          "properties": {
+                            "endPointAccessToken": {
+                              "description": "A CloudEvents-compliant `access_token`. Include it as a query parameter in the `endPointURL` or as a header in compliance with the [CloudEvents supported authorization schemes](https://github.com/cloudevents/spec/blob/v1.0/http-webhook.md#32-uri-query-parameter).",
+                              "type": "string"
+                            },
+                            "endPointAttributes": {
+                              "description": "Specifies notification and auth scheme that determines version compatibility when publishing event notifications.",
+                              "maxProperties": 2,
+                              "minProperties": 1,
+                              "type": "object",
+                              "properties": {
+                                "X-Akamai-EN-Ver": {
+                                  "default": "akam-ns-en-v1.0",
+                                  "description": "This API supports version `akam-ns-en-v1.0`.",
+                                  "type": "string",
+                                  "enum": [
+                                    "akam-ns-en-v1.0"
+                                  ]
+                                },
+                                "ce-specversion": {
+                                  "default": "1.x-wip",
+                                  "description": "This API supports CloudEvents schema version `1.x-wip`.",
+                                  "type": "string",
+                                  "enum": [
+                                    "1.x-wip"
+                                  ]
+                                }
+                              }
+                            },
+                            "endPointURL": {
+                              "description": "This identifies the endpoint configured to receive event notifications.",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "maxRetries": {
+                          "description": "Maximum number of times NetStorage event publishing systems will try to publish the event notification.",
+                          "format": "int32",
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "objectPath": {
+                      "description": "The complete prefix that is matched for this subscription, including CP code and optional `pathPrefix`.",
+                      "type": "string"
+                    },
+                    "sgZone": {
+                      "default": null,
+                      "description": "The replica zone this subscription is notifying for. If `null`, notifications are for all zones.",
+                      "nullable": true,
+                      "type": "string",
+                      "enum": [
+                        "AU",
+                        "IN",
+                        "JP",
+                        "KR",
+                        "SG",
+                        "asia",
+                        "europe",
+                        "global",
+                        "us",
+                        "useast",
+                        "uswest"
+                      ]
+                    },
+                    "subscriptionEndTime": {
+                      "description": "An epoch timestamp that identifies when the subscription for event notification will end. If not provided, subscriptions will auto-expire 90 days from the `subscriptionStartTime`.",
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "subscriptionName": {
+                      "description": "The `subscriptionName` assigned by the system.",
+                      "type": "string"
+                    },
+                    "subscriptionStartTime": {
+                      "description": "An epoch timestamp that identifies when the subscription for event notifications will start. If not provided, the subscription will start immediately after successful subscription.",
+                      "format": "int32",
+                      "type": "integer"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/event-subscription-response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "[Malformed request](https://techdocs.akamai.com/netstorage-usage/reference/400), such as an illegal combination of parameters in the `X-Akamai-ACS-Action` request header. There may be more information in the response body, represented as unstructured text.",
+            "content": {
+              "*/*": {}
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "403": {
+            "description": "[Forbidden operation](https://techdocs.akamai.com/netstorage-usage/reference/403), such as an `action=stat` in the HTTP PUT request, or an authentication or authorization error. There may be more information in the response body, represented as unstructured text.",
+            "content": {
+              "*/*": {}
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "description": "Form the header value as a query parameter string with these fields:\n  - `version=1`: This value is constant.\n  - `action=subscribe`: This is the action for this API operation.",
+          "example": "{{X-Akamai-ACS-Action}}",
+          "in": "header",
+          "name": "X-Akamai-ACS-Action",
+          "required": true,
+          "schema": {
+            "description": "The identification of the notification subscription request, in HTTP query-string format.",
+            "example": "version=1&action=subscribe",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/X-Akamai-ACS-Action-subscribe.yaml"
+          }
+        },
+        {
+          "description": "X-Akamai-ACS-Auth-Data: [version], [0.0.0.0], [0.0.0.0], [current epoch time], [unique-number-id], [UploadAccountName]",
+          "example": "{{X-Akamai-ACS-Auth-Data}}",
+          "in": "header",
+          "name": "X-Akamai-ACS-Auth-Data",
+          "required": true,
+          "schema": {
+            "example": "5, 0.0.0.0, 0.0.0.0, 1280000000, 382644692, UploadAccountMedia",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/X-Akamai-ACS-Auth-Data.yaml"
+          }
+        },
+        {
+          "description": "This is a base-64-encoded-signature comprised of HMAC-SHA256([key], [data] + [sign-string]).",
+          "example": "{{X-Akamai-ACS-Auth-Sign}}",
+          "in": "header",
+          "name": "X-Akamai-ACS-Auth-Sign",
+          "required": true,
+          "schema": {
+            "example": "yh1MXm/rv7RKZhfKlTuSUBV69Acph5IyOWCU0/nFjms=",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/X-Akamai-ACS-Auth-Sign.yaml"
+          }
+        },
+        {
+          "description": "The unique CP code that represents the root directory in the applicable NetStorage storage group.",
+          "example": "{{cpCode}}",
+          "in": "path",
+          "name": "cpCode",
+          "required": true,
+          "schema": {
+            "example": 123456,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/cpCode.yaml"
+          }
+        }
+      ]
+    },
+    "/{cpCode}/{pathPrefix}": {
+      "put": {
+        "description": "This operation creates or updates a subscription for notifications of NetStorage events. Some of this API exchanges XML, but this part exchanges JSON.",
+        "operationId": "create-update-event-subscription",
+        "summary": "Create or update an event subscription",
+        "tags": [
+          "Manage subscriptions"
+        ],
+        "callbacks": {
+          "eventNotification": {
+            "{$request.body#/notificationConfig/endpointConfig/endPointURL}?{$request.body#/noficationConfig/endpointConfig/endPointAccessToken}": {
+              "post": {
+                "requestBody": {
+                  "required": true,
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "dataschema": "akam-ns-en-v1.0",
+                        "id": "19566.d19562.2897c2.U2897c0.19fd7.d19fd5.5096c.M4AAFWDjCLoACqPp.M4AAAGDjB8YAADKF",
+                        "source": "/Akamai/NetStorage/1074779",
+                        "specversion": "1.0",
+                        "subject": "nsen",
+                        "time": "2021-07-05T13:27:22.902Z",
+                        "type": "com.akamai.netstorage.object-deleted",
+                        "data": {
+                          "eventTS": "2021-07-05T13:27:22.902Z",
+                          "objectName": "nsen/testfile_2097152_1",
+                          "sgZone": "useast",
+                          "subscriptionId": "TOPIC961612useast"
+                        }
+                      },
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "properties": {
+                              "eventTS": {
+                                "description": "The ISO 8601 time when the event occurred.",
+                                "format": "date-time",
+                                "type": "string"
+                              },
+                              "objectName": {
+                                "description": "The path to the object that changed relative to the CP code.",
+                                "type": "string"
+                              },
+                              "sgZone": {
+                                "description": "The replica zone where the event was detected.",
+                                "type": "string"
+                              },
+                              "subscriptionId": {
+                                "description": "The system assigns a subscription ID using the `$response.body#/subscriptionName` format.",
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "dataschema": {
+                            "description": "The version of this schema. This is always `akam-ns-en-v1.0`.",
+                            "type": "string",
+                            "enum": [
+                              "akam-ns-en-v1.0"
+                            ]
+                          },
+                          "id": {
+                            "description": "A unique identifier for this event.",
+                            "type": "string"
+                          },
+                          "source": {
+                            "description": "This identifies the source `storageGroupId` of the event, for example, `/Akamai/NetStorage/{storageGroupId}`.",
+                            "type": "string"
+                          },
+                          "specversion": {
+                            "description": "Version of CloudEvents in use. This is always `1.0`.",
+                            "type": "string",
+                            "enum": [
+                              "1.0"
+                            ]
+                          },
+                          "subject": {
+                            "description": "This describes the subject of the event. Configure this in the context of the event producer, for example, `/{Path}/{Object}`.",
+                            "type": "string"
+                          },
+                          "time": {
+                            "description": "An ISO 8601 timstamp when the event was enqueued.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "This describes the type of event related to the originating occurrence.",
+                            "type": "string"
+                          }
+                        },
+                        "x-akamai": {
+                          "file-path": "schemas/event-notification-callback-post.yaml"
+                        }
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "Notification accepted."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's NetStorage Usage API",
+          "url": "https://techdocs.akamai.com/netstorage-usage/reference/create-update-event-subscription"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "sgZone": "us",
+                "subscriptionEndTime": "1621999940",
+                "subscriptionStartTime": "1621995730",
+                "eventTypes": [
+                  "com.akamai.netstorage.object-created",
+                  "com.akamai.netstorage.object-updated"
+                ],
+                "notificationConfig": {
+                  "maxRetries": 2,
+                  "endPointConfig": {
+                    "endPointAccessToken": "abcd",
+                    "endPointURL": "https://www.checkevent.com/receive-events",
+                    "endPointAttributes": {
+                      "X-Akamai-EN-Ver": "akam-ns-en-v1.0",
+                      "ce-specversion": "1.x-wip"
+                    }
+                  }
+                }
+              },
+              "schema": {
+                "description": "This encapsulates the configuration for NetStorage event notifications.",
+                "type": "object",
+                "required": [
+                  "eventTypes",
+                  "notificationConfig"
+                ],
+                "properties": {
+                  "eventTypes": {
+                    "description": "Subscribe to event notifications for object creation, update, and delete events. Events are available for when replication is complete or a replica is deleted.\n* com.akamai.netstorage.object-created\n* com.akamai.netstorage.object-updated\n* com.akamai.netstorage.object-deleted\n* com.akamai.netstorage.object-replicated\n* com.akamai.netstorage.object-replica-delete",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "com.akamai.netstorage.object-created",
+                        "com.akamai.netstorage.object-updated",
+                        "com.akamai.netstorage.object-deleted",
+                        "com.akamai.netstorage.object-replicated",
+                        "com.akamai.netstorage.object-replica-delete"
+                      ]
+                    }
+                  },
+                  "notificationConfig": {
+                    "description": "This specifies where event notifications are sent. It includes the `endPointURL` and `endPointAccessToken`.",
+                    "type": "object",
+                    "required": [
+                      "endpointConfig"
+                    ],
+                    "properties": {
+                      "endpointConfig": {
+                        "description": "This encapsulates the configuration of the third-party endpoint set to receive event notifications.",
+                        "type": "object",
+                        "required": [
+                          "endPointURL"
+                        ],
+                        "properties": {
+                          "endPointAccessToken": {
+                            "description": "A CloudEvents-compliant `access_token`. Include it as a query parameter in the `endPointURL` or as a header in compliance with the [CloudEvents supported authorization schemes](https://github.com/cloudevents/spec/blob/v1.0/http-webhook.md#32-uri-query-parameter).",
+                            "type": "string"
+                          },
+                          "endPointAttributes": {
+                            "description": "Specifies notification and auth scheme that determines version compatibility when publishing event notifications.",
+                            "maxProperties": 2,
+                            "minProperties": 1,
+                            "type": "object",
+                            "properties": {
+                              "X-Akamai-EN-Ver": {
+                                "default": "akam-ns-en-v1.0",
+                                "description": "This API supports version `akam-ns-en-v1.0`.",
+                                "type": "string",
+                                "enum": [
+                                  "akam-ns-en-v1.0"
+                                ]
+                              },
+                              "ce-specversion": {
+                                "default": "1.x-wip",
+                                "description": "This API supports CloudEvents schema version `1.x-wip`.",
+                                "type": "string",
+                                "enum": [
+                                  "1.x-wip"
+                                ]
+                              }
+                            }
+                          },
+                          "endPointURL": {
+                            "description": "This identifies the endpoint configured to receive event notifications.",
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "maxRetries": {
+                        "description": "Maximum number of times NetStorage event publishing systems will try to publish the event notification.",
+                        "format": "int32",
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "sgZone": {
+                    "default": null,
+                    "description": "Specify the replication zone to monitor for `eventTypes` that will trigger an event notification. If empty, subscription applies to events that are detected in any of the replica zones in the object's storage group.",
+                    "example": "{{sgZone}}",
+                    "nullable": true,
+                    "type": "string",
+                    "enum": [
+                      "AU",
+                      "IN",
+                      "JP",
+                      "KR",
+                      "SG",
+                      "asia",
+                      "europe",
+                      "global",
+                      "us",
+                      "useast",
+                      "uswest"
+                    ]
+                  },
+                  "subscriptionEndTime": {
+                    "description": "An epoch timestamp that identifies when the subscription for event notification will end. If not provided, subscriptions will auto-expire 90 days from the `subscriptionStartTime`.",
+                    "example": "{{subscriptionEndTime}}",
+                    "type": "string"
+                  },
+                  "subscriptionStartTime": {
+                    "description": "An epoch timestamp that identifies when the subscription for event notifications will start. If not provided, the subscription will start immediately after successful subscription.",
+                    "example": "{{subscriptionStartTime}}",
+                    "type": "string"
+                  }
+                },
+                "x-akamai": {
+                  "file-path": "schemas/event-subscription-put.yaml"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Created or updated event subscription.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "objectPath": "/12345/abc",
+                  "sgZone": "us",
+                  "subscriptionEndTime": "1621999940",
+                  "subscriptionName": "subscr.12345.PArRd",
+                  "subscriptionStartTime": "1621995730",
+                  "eventTypes": [
+                    "com.akamai.netstorage.object-created",
+                    "com.akamai.netstorage.object-updated"
+                  ],
+                  "notificationConfig": {
+                    "maxRetries": 2,
+                    "endPointConfig": {
+                      "endPointAccessToken": "<encrypted>",
+                      "endPointURL": "https://www.checkevent.com/receive-events",
+                      "endPointAttributes": {
+                        "X-Akamai-EN-Ver": "akam-ns-en-v1.0",
+                        "ce-specversion": "1.x-wip"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "description": "The response for an event notification subscription.",
+                  "type": "object",
+                  "properties": {
+                    "eventTypes": {
+                      "description": "List of subscribed event 'types' for the given resource in objectPath. One or more of the following:\n* `com.akamai.netstorage.object-created`. Creation of new object in, or within a sub-dir of a matching `pathPrefix`.\n* `com.akamai.netstorage.object-updated`. Update of matching object. This includes rename and in-place updates.\n* `com.akamai.netstorage.object-deleted`. Deletion of matching object.\n* `com.akamai.netstorage.object-replicated`. Replication is complete for the object that was created or updated on a different primary replica zone.\n* `com.akamai.netstorage.object-replica-delete`. Deletion of the object copy that was deleted on a different primary replica zone.",
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "com.akamai.netstorage.object-created",
+                          "com.akamai.netstorage.object-updated",
+                          "com.akamai.netstorage.object-deleted",
+                          "com.akamai.netstorage.object-replicated",
+                          "com.akamai.netstorage.object-replica-delete"
+                        ]
+                      }
+                    },
+                    "notificationConfig": {
+                      "description": "This specifies where event notifications are sent. It includes the `endPointURL` and `endPointAccessToken`.",
+                      "type": "object",
+                      "properties": {
+                        "endpointConfig": {
+                          "description": "This encapsulates the configuration of the third-party endpoint set to receive event notifications.",
+                          "type": "object",
+                          "properties": {
+                            "endPointAccessToken": {
+                              "description": "A CloudEvents-compliant `access_token`. Include it as a query parameter in the `endPointURL` or as a header in compliance with the [CloudEvents supported authorization schemes](https://github.com/cloudevents/spec/blob/v1.0/http-webhook.md#32-uri-query-parameter).",
+                              "type": "string"
+                            },
+                            "endPointAttributes": {
+                              "description": "Specifies notification and auth scheme that determines version compatibility when publishing event notifications.",
+                              "maxProperties": 2,
+                              "minProperties": 1,
+                              "type": "object",
+                              "properties": {
+                                "X-Akamai-EN-Ver": {
+                                  "default": "akam-ns-en-v1.0",
+                                  "description": "This API supports version `akam-ns-en-v1.0`.",
+                                  "type": "string",
+                                  "enum": [
+                                    "akam-ns-en-v1.0"
+                                  ]
+                                },
+                                "ce-specversion": {
+                                  "default": "1.x-wip",
+                                  "description": "This API supports CloudEvents schema version `1.x-wip`.",
+                                  "type": "string",
+                                  "enum": [
+                                    "1.x-wip"
+                                  ]
+                                }
+                              }
+                            },
+                            "endPointURL": {
+                              "description": "This identifies the endpoint configured to receive event notifications.",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "maxRetries": {
+                          "description": "Maximum number of times NetStorage event publishing systems will try to publish the event notification.",
+                          "format": "int32",
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "objectPath": {
+                      "description": "The complete prefix that is matched for this subscription, including CP code and optional `pathPrefix`.",
+                      "type": "string"
+                    },
+                    "sgZone": {
+                      "default": null,
+                      "description": "The replica zone this subscription is notifying for. If `null`, notifications are for all zones.",
+                      "nullable": true,
+                      "type": "string",
+                      "enum": [
+                        "AU",
+                        "IN",
+                        "JP",
+                        "KR",
+                        "SG",
+                        "asia",
+                        "europe",
+                        "global",
+                        "us",
+                        "useast",
+                        "uswest"
+                      ]
+                    },
+                    "subscriptionEndTime": {
+                      "description": "An epoch timestamp that identifies when the subscription for event notification will end. If not provided, subscriptions will auto-expire 90 days from the `subscriptionStartTime`.",
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "subscriptionName": {
+                      "description": "The `subscriptionName` assigned by the system.",
+                      "type": "string"
+                    },
+                    "subscriptionStartTime": {
+                      "description": "An epoch timestamp that identifies when the subscription for event notifications will start. If not provided, the subscription will start immediately after successful subscription.",
+                      "format": "int32",
+                      "type": "integer"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/event-subscription-response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "[Malformed request](https://techdocs.akamai.com/netstorage-usage/reference/400), such as an illegal combination of parameters in the `X-Akamai-ACS-Action` request header. There may be more information in the response body, represented as unstructured text.",
+            "content": {
+              "*/*": {}
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "403": {
+            "description": "[Forbidden operation](https://techdocs.akamai.com/netstorage-usage/reference/403), such as an `action=stat` in the HTTP PUT request, or an authentication or authorization error. There may be more information in the response body, represented as unstructured text.",
+            "content": {
+              "*/*": {}
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "description": "Form the header value as a query parameter string with these fields:\n  - `version=1`: This value is constant.\n  - `action=subscribe`: This is the action for this API operation.",
+          "example": "{{X-Akamai-ACS-Action}}",
+          "in": "header",
+          "name": "X-Akamai-ACS-Action",
+          "required": true,
+          "schema": {
+            "description": "The identification of the notification subscription request, in HTTP query-string format.",
+            "example": "version=1&action=subscribe",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/X-Akamai-ACS-Action-subscribe.yaml"
+          }
+        },
+        {
+          "description": "X-Akamai-ACS-Auth-Data: [version], [0.0.0.0], [0.0.0.0], [current epoch time], [unique-number-id], [UploadAccountName]",
+          "example": "{{X-Akamai-ACS-Auth-Data}}",
+          "in": "header",
+          "name": "X-Akamai-ACS-Auth-Data",
+          "required": true,
+          "schema": {
+            "example": "5, 0.0.0.0, 0.0.0.0, 1280000000, 382644692, UploadAccountMedia",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/X-Akamai-ACS-Auth-Data.yaml"
+          }
+        },
+        {
+          "description": "This is a base-64-encoded-signature comprised of HMAC-SHA256([key], [data] + [sign-string]).",
+          "example": "{{X-Akamai-ACS-Auth-Sign}}",
+          "in": "header",
+          "name": "X-Akamai-ACS-Auth-Sign",
+          "required": true,
+          "schema": {
+            "example": "yh1MXm/rv7RKZhfKlTuSUBV69Acph5IyOWCU0/nFjms=",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/X-Akamai-ACS-Auth-Sign.yaml"
+          }
+        },
+        {
+          "description": "The unique CP code that represents the root directory in the applicable NetStorage storage group.",
+          "example": "{{cpCode}}",
+          "in": "path",
+          "name": "cpCode",
+          "required": true,
+          "schema": {
+            "example": 123456,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/cpCode.yaml"
+          }
+        },
+        {
+          "description": "The path prefix to match against the object name of events to determine if there should be a notification. Starts after the CP code of the root directory. Can be empty.",
+          "example": "{{pathPrefix}}",
+          "in": "path",
+          "name": "pathPrefix",
+          "required": true,
+          "schema": {
+            "example": "directory",
+            "minLength": 0,
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/pathPrefix.yaml"
+          }
+        }
+      ]
+    },
+    "/{cpCode}/{path}": {
+      "get": {
+        "description": "Use the `dir` action to list the objects directly within the specified directory (similar to a standard `ls` or `dir` command).",
+        "operationId": "get-dir",
+        "summary": "dir action",
+        "tags": [
+          "API actions"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's NetStorage Usage API",
+          "url": "https://techdocs.akamai.com/netstorage-usage/reference/get-dir"
+        },
+        "responses": {
+          "200": {
+            "description": "Response data indicates a successful action.",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "stat": {
+                      "type": "object",
+                      "properties": {
+                        "file": {
+                          "type": "array",
+                          "items": {
+                            "properties": {
+                              "bytes": {
+                                "type": "integer",
+                                "xml": {
+                                  "attribute": true
+                                }
+                              },
+                              "files": {
+                                "type": "integer",
+                                "xml": {
+                                  "attribute": true
+                                }
+                              },
+                              "filetype": {
+                                "type": "string",
+                                "xml": {
+                                  "attribute": true
+                                }
+                              },
+                              "implicit": {
+                                "type": "boolean",
+                                "xml": {
+                                  "attribute": true
+                                }
+                              },
+                              "md5": {
+                                "type": "string",
+                                "xml": {
+                                  "attribute": true
+                                }
+                              },
+                              "mtime": {
+                                "type": "integer",
+                                "xml": {
+                                  "attribute": true
+                                }
+                              },
+                              "name": {
+                                "type": "string",
+                                "xml": {
+                                  "attribute": true
+                                }
+                              },
+                              "size": {
+                                "type": "integer",
+                                "xml": {
+                                  "attribute": true
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "resume": {
+                          "type": "object",
+                          "properties": {
+                            "start": {
+                              "type": "string",
+                              "xml": {
+                                "attribute": true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/dir-schema.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "[Malformed request](https://techdocs.akamai.com/netstorage-usage/reference/400), such as an illegal combination of parameters in the `X-Akamai-ACS-Action` request header. There may be more information in the response body, represented as unstructured text.",
+            "content": {
+              "*/*": {}
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "description": "[TBD](https://learn.akamai.com/en-us/webhelp/netstorage/netstorage-http-api-developer-guide/).",
+          "example": "{{X-Akamai-ACS-Action}}",
+          "in": "header",
+          "name": "X-Akamai-ACS-Action",
+          "required": true,
+          "examples": {
+            "base": {
+              "description": "These are the minimum parameters for the list action. The response will be in ISO 8859-1 encoding.",
+              "summary": "Required parameters",
+              "value": "version=1&action=dir"
+            },
+            "encoding": {
+              "description": "This will request that the response be in UTF-8 encoding. If an object name or link target is not valid UTF-8, the name encoded in Base64 will be in name_base64 or the link target will be in target_base64.",
+              "summary": "UTF-8 encoding",
+              "value": "version=1&action=dir&encoding=utf-8"
+            },
+            "end": {
+              "description": "This will set the path of the last object to list.",
+              "summary": "Use of end",
+              "value": "version=1&action=dir&end=1234/example/dir0"
+            },
+            "max_entries": {
+              "description": "This will set a limit on the number of entries returned.",
+              "summary": "Use of max_entries",
+              "value": "version=1&action=dir&max_entries=1000"
+            },
+            "prefix": {
+              "description": "Only list files whose names begins with the specified prefix.",
+              "summary": "Use of prefix",
+              "value": "version=1&action=dir&prefix=a"
+            },
+            "start": {
+              "description": "Start with the first file in the directory whose name is greater than or equal to this value.",
+              "summary": "Use of start",
+              "value": "version=1&action=dir&start=1234/example/dir0"
+            }
+          },
+          "schema": {
+            "description": "The parameters of the request, in HTTP query-string format."
+          },
+          "x-akamai": {
+            "file-path": "parameters/X-Akamai-ACS-Action-dir.yaml"
+          }
+        },
+        {
+          "description": "X-Akamai-ACS-Auth-Data: [version], [0.0.0.0], [0.0.0.0], [current epoch time], [unique-number-id], [UploadAccountName]",
+          "example": "{{X-Akamai-ACS-Auth-Data}}",
+          "in": "header",
+          "name": "X-Akamai-ACS-Auth-Data",
+          "required": true,
+          "schema": {
+            "example": "5, 0.0.0.0, 0.0.0.0, 1280000000, 382644692, UploadAccountMedia",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/X-Akamai-ACS-Auth-Data.yaml"
+          }
+        },
+        {
+          "description": "This is a base-64-encoded-signature comprised of HMAC-SHA256([key], [data] + [sign-string]).",
+          "example": "{{X-Akamai-ACS-Auth-Sign}}",
+          "in": "header",
+          "name": "X-Akamai-ACS-Auth-Sign",
+          "required": true,
+          "schema": {
+            "example": "yh1MXm/rv7RKZhfKlTuSUBV69Acph5IyOWCU0/nFjms=",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/X-Akamai-ACS-Auth-Sign.yaml"
+          }
+        },
+        {
+          "description": "This full value is your NetStorage HTTP API [connection hostname](https://techdocs.akamai.com/netstorage/docs/access-methods#upload-domains-for-each-access-method).",
+          "example": "{{Host}}",
+          "in": "header",
+          "name": "Host",
+          "required": true,
+          "schema": {
+            "example": "example-nsu.akamaihd.net",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/Host.yaml"
+          }
+        },
+        {
+          "description": "The unique CP code that represents the root directory in the applicable NetStorage storage group.",
+          "example": "{{cpCode}}",
+          "in": "path",
+          "name": "cpCode",
+          "required": true,
+          "schema": {
+            "example": 123456,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/cpCode.yaml"
+          }
+        },
+        {
+          "description": "If applicable, any additional sub-directories that exist within the path to the desired file/symbolic link.",
+          "example": "{{path}}",
+          "in": "path",
+          "name": "path",
+          "required": true,
+          "schema": {
+            "example": "files_baseball",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/path.yaml"
+          }
+        }
+      ]
+    },
+    "/{cpCode}/{path}/{filename}": {
+      "put": {
+        "description": "[TBD](https://techdocs.akamai.com/clone-akamai-test-project/reference/post-symlink) upload.",
+        "operationId": "put-upload",
+        "summary": "upload action",
+        "tags": [
+          "API actions"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's NetStorage Usage API",
+          "url": "https://techdocs.akamai.com/netstorage-usage/reference/put-upload"
+        },
+        "responses": {
+          "204": {
+            "description": "The command succeeded, with no response data.",
+            "content": {
+              "*/*": {}
+            }
+          },
+          "400": {
+            "description": "[Malformed request](https://techdocs.akamai.com/netstorage-usage/reference/400), such as an illegal combination of parameters in the `X-Akamai-ACS-Action` request header. There may be more information in the response body, represented as unstructured text.",
+            "content": {
+              "*/*": {}
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "description": "[TBD](https://learn.akamai.com/en-us/webhelp/netstorage/netstorage-http-api-developer-guide/).",
+          "example": "{{X-Akamai-ACS-Action}}",
+          "in": "header",
+          "name": "X-Akamai-ACS-Action",
+          "required": true,
+          "schema": {
+            "example": "version=1&action=upload&[Optional action header field variables]",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/X-Akamai-ACS-Action-upload.yaml"
+          }
+        },
+        {
+          "description": "X-Akamai-ACS-Auth-Data: [version], [0.0.0.0], [0.0.0.0], [current epoch time], [unique-number-id], [UploadAccountName]",
+          "example": "{{X-Akamai-ACS-Auth-Data}}",
+          "in": "header",
+          "name": "X-Akamai-ACS-Auth-Data",
+          "required": true,
+          "schema": {
+            "example": "5, 0.0.0.0, 0.0.0.0, 1280000000, 382644692, UploadAccountMedia",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/X-Akamai-ACS-Auth-Data.yaml"
+          }
+        },
+        {
+          "description": "This is a base-64-encoded-signature comprised of HMAC-SHA256([key], [data] + [sign-string]).",
+          "example": "{{X-Akamai-ACS-Auth-Sign}}",
+          "in": "header",
+          "name": "X-Akamai-ACS-Auth-Sign",
+          "required": true,
+          "schema": {
+            "example": "yh1MXm/rv7RKZhfKlTuSUBV69Acph5IyOWCU0/nFjms=",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/X-Akamai-ACS-Auth-Sign.yaml"
+          }
+        },
+        {
+          "description": "This full value is your NetStorage HTTP API [connection hostname](https://techdocs.akamai.com/netstorage/docs/access-methods#upload-domains-for-each-access-method).",
+          "example": "{{Host}}",
+          "in": "header",
+          "name": "Host",
+          "required": true,
+          "schema": {
+            "example": "example-nsu.akamaihd.net",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/Host.yaml"
+          }
+        },
+        {
+          "description": "The unique CP code that represents the root directory in the applicable NetStorage storage group.",
+          "example": "{{cpCode}}",
+          "in": "path",
+          "name": "cpCode",
+          "required": true,
+          "schema": {
+            "example": 123456,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/cpCode.yaml"
+          }
+        },
+        {
+          "description": "If applicable, any additional sub-directories that exist within the path to the desired file/symbolic link.",
+          "example": "{{path}}",
+          "in": "path",
+          "name": "path",
+          "required": true,
+          "schema": {
+            "example": "files_baseball",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/path.yaml"
+          }
+        },
+        {
+          "description": "The complete filename and extension of the object.",
+          "example": "{{filename}}",
+          "in": "path",
+          "name": "filename",
+          "required": true,
+          "schema": {
+            "example": "sweep.m4a",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/filename.yaml"
+          }
+        }
+      ]
+    },
+    "/{cpCode}/{subscriptionName}": {
+      "get": {
+        "description": "View the configuration details of an event subscription.",
+        "operationId": "get-event-subscription",
+        "summary": "Get an event subscription",
+        "tags": [
+          "Manage subscriptions"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's NetStorage Usage API",
+          "url": "https://techdocs.akamai.com/netstorage-usage/reference/get-event-subscription"
+        },
+        "responses": {
+          "200": {
+            "description": "An event subscription.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "objectPath": "/12345/abc",
+                  "sgZone": "us",
+                  "subscriptionEndTime": "1621999940",
+                  "subscriptionName": "subscr.12345.PArRd",
+                  "subscriptionStartTime": "1621995730",
+                  "eventTypes": [
+                    "com.akamai.netstorage.object-created",
+                    "com.akamai.netstorage.object-updated"
+                  ],
+                  "notificationConfig": {
+                    "maxRetries": 2,
+                    "endPointConfig": {
+                      "endPointAccessToken": "<encrypted>",
+                      "endPointURL": "https://www.checkevent.com/receive-events",
+                      "endPointAttributes": {
+                        "X-Akamai-EN-Ver": "akam-ns-en-v1.0",
+                        "ce-specversion": "1.x-wip"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "description": "Describes a subscription.",
+                  "type": "object",
+                  "properties": {
+                    "eventTypes": {
+                      "description": "List of subscribed event 'types', for the given objectPath. One of more of following event types:\n* `com.akamai.netstorage.object-created`. Creation of new object in, or within a sub-dir of a matching `pathPrefix`.\n* `com.akamai.netstorage.object-updated`. Update of matching object. This includes rename and in-place updates.\n* `com.akamai.netstorage.object-deleted`. Deletion of matching object.\n* `com.akamai.netstorage.object-replicated`. Replication is complete for the object that was created or updated on a different primary replica zone.\n* `com.akamai.netstorage.object-replica-delete`. Deletion of the object copy that was deleted on a different primary replica zone.",
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "com.akamai.netstorage.object-created",
+                          "com.akamai.netstorage.object-updated",
+                          "com.akamai.netstorage.object-deleted",
+                          "com.akamai.netstorage.object-replicated",
+                          "com.akamai.netstorage.object-replica-delete"
+                        ]
+                      }
+                    },
+                    "notificationConfig": {
+                      "description": "This specifies where event notifications are sent. It includes the `endPointURL` and `endPointAccessToken`.",
+                      "type": "object",
+                      "properties": {
+                        "endpointConfig": {
+                          "description": "This encapsulates the configuration of the third-party endpoint set to receive event notifications.",
+                          "type": "object",
+                          "properties": {
+                            "endPointAccessToken": {
+                              "description": "A CloudEvents-compliant `access_token`. Include it as a query parameter in the `endPointURL` or as a header in compliance with the [CloudEvents supported authorization schemes](https://github.com/cloudevents/spec/blob/v1.0/http-webhook.md#32-uri-query-parameter).",
+                              "type": "string"
+                            },
+                            "endPointAttributes": {
+                              "description": "Specifies notification and auth scheme that determines version compatibility when publishing event notifications.",
+                              "maxProperties": 2,
+                              "minProperties": 1,
+                              "type": "object",
+                              "properties": {
+                                "X-Akamai-EN-Ver": {
+                                  "default": "akam-ns-en-v1.0",
+                                  "description": "This API supports version `akam-ns-en-v1.0`.",
+                                  "type": "string",
+                                  "enum": [
+                                    "akam-ns-en-v1.0"
+                                  ]
+                                },
+                                "ce-specversion": {
+                                  "default": "1.x-wip",
+                                  "description": "This API supports CloudEvents schema version `1.x-wip`.",
+                                  "type": "string",
+                                  "enum": [
+                                    "1.x-wip"
+                                  ]
+                                }
+                              }
+                            },
+                            "endPointURL": {
+                              "description": "This identifies the endpoint configured to receive event notifications.",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "maxRetries": {
+                          "description": "Maximum number of times NetStorage event publishing systems will try to publish the event notification.",
+                          "format": "int32",
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "objectPath": {
+                      "description": "The complete prefix that is matched for this subscription, including CP code and optional `pathPrefix`.",
+                      "type": "string"
+                    },
+                    "sgZone": {
+                      "description": "The replica zone this subscription is notifying for. If `null`, notifications are for all zones.",
+                      "type": "string"
+                    },
+                    "subscriptionEndTime": {
+                      "description": "An epoch timestamp that identifies when the subscription for event notification will end. If not provided, subscriptions will auto-expire 90 days from the `subscriptionStartTime`.",
+                      "type": "string"
+                    },
+                    "subscriptionName": {
+                      "description": "The name of the requested subscription.",
+                      "type": "string"
+                    },
+                    "subscriptionStartTime": {
+                      "description": "An epoch timestamp that identifies when the subscription for event notifications will start. If not provided, the subscription will start immediately after successful subscription.",
+                      "type": "string"
+                    }
+                  },
+                  "x-akamai": {
+                    "file-path": "schemas/get-event-subscription-response.yaml"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "[Malformed request](https://techdocs.akamai.com/netstorage-usage/reference/400), such as an illegal combination of parameters in the `X-Akamai-ACS-Action` request header. There may be more information in the response body, represented as unstructured text.",
+            "content": {
+              "*/*": {}
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "403": {
+            "description": "[Forbidden operation](https://techdocs.akamai.com/netstorage-usage/reference/403), such as an `action=stat` in the HTTP PUT request, or an authentication or authorization error. There may be more information in the response body, represented as unstructured text.",
+            "content": {
+              "*/*": {}
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Remove an event subscription configuration.",
+        "operationId": "delete-event-subscription",
+        "summary": "Delete an event subscription",
+        "tags": [
+          "Manage subscriptions"
+        ],
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's NetStorage Usage API",
+          "url": "https://techdocs.akamai.com/netstorage-usage/reference/delete-event-subscription"
+        },
+        "responses": {
+          "200": {
+            "description": "Deleted an event subscription.",
+            "content": {
+              "*/*": {}
+            }
+          },
+          "400": {
+            "description": "[Malformed request](https://techdocs.akamai.com/netstorage-usage/reference/400), such as an illegal combination of parameters in the `X-Akamai-ACS-Action` request header. There may be more information in the response body, represented as unstructured text.",
+            "content": {
+              "*/*": {}
+            },
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "403": {
+            "description": "[Forbidden operation](https://techdocs.akamai.com/netstorage-usage/reference/403), such as an `action=stat` in the HTTP PUT request, or an authentication or authorization error. There may be more information in the response body, represented as unstructured text.",
+            "content": {
+              "*/*": {}
+            },
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "description": "Form the header value as a query parameter string with these fields:\n  - `version=1`: This value is constant.\n  - `action=subscribe`: This is the action for this API operation.",
+          "example": "{{X-Akamai-ACS-Action}}",
+          "in": "header",
+          "name": "X-Akamai-ACS-Action",
+          "required": true,
+          "schema": {
+            "description": "The identification of the notification subscription request, in HTTP query-string format.",
+            "example": "version=1&action=subscribe",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/X-Akamai-ACS-Action-subscribe.yaml"
+          }
+        },
+        {
+          "description": "X-Akamai-ACS-Auth-Data: [version], [0.0.0.0], [0.0.0.0], [current epoch time], [unique-number-id], [UploadAccountName]",
+          "example": "{{X-Akamai-ACS-Auth-Data}}",
+          "in": "header",
+          "name": "X-Akamai-ACS-Auth-Data",
+          "required": true,
+          "schema": {
+            "example": "5, 0.0.0.0, 0.0.0.0, 1280000000, 382644692, UploadAccountMedia",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/X-Akamai-ACS-Auth-Data.yaml"
+          }
+        },
+        {
+          "description": "This is a base-64-encoded-signature comprised of HMAC-SHA256([key], [data] + [sign-string]).",
+          "example": "{{X-Akamai-ACS-Auth-Sign}}",
+          "in": "header",
+          "name": "X-Akamai-ACS-Auth-Sign",
+          "required": true,
+          "schema": {
+            "example": "yh1MXm/rv7RKZhfKlTuSUBV69Acph5IyOWCU0/nFjms=",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/X-Akamai-ACS-Auth-Sign.yaml"
+          }
+        },
+        {
+          "description": "The unique CP code that represents the root directory in the applicable NetStorage storage group.",
+          "example": "{{cpCode}}",
+          "in": "path",
+          "name": "cpCode",
+          "required": true,
+          "schema": {
+            "example": 123456,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/cpCode.yaml"
+          }
+        },
+        {
+          "description": "The name of the event notification subscription created by [Create Event Subscription](https://techdocs.akamai.com/netstorage-usage/reference/TBDslug) -- TBD. Update this to the correct Readme slug before going live.",
+          "example": "{{subscriptionName}}",
+          "in": "path",
+          "name": "subscriptionName",
+          "required": true,
+          "schema": {
+            "example": "episodes",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/subscriptionName.yaml"
+          }
+        }
+      ]
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "servers": [
+    {
+      "url": "http://{apiKey}-nsu.akamaihd.net"
+    }
+  ]
+}

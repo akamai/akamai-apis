@@ -1,0 +1,160 @@
+type: object
+description: |-
+  A custom security list of domains and IP addresses, with a confidence level for each.
+  
+x-akamai:
+  file-path: schemas/listRetrieveSpecific.yaml
+additionalProperties: false
+required:
+- name
+- securityCategoryId
+- description
+properties:
+  id:
+    type: integer
+    description: |
+      A unique identifier for each list. Use this value for a `listId` parameter in subsequent operations.
+    readOnly: true
+    minimum: 1
+  name:
+    type: string
+    description: |
+      The name of the list.
+    minLength: 1
+  description:
+    type: string
+    description: |
+      A description of the list that you provide.
+    minLength: 1
+  accessConfig:
+    type: object
+    description: |
+      Provides access config details.
+    additionalProperties: false
+    required:
+    - configurable
+    - delegatedAdmins
+    - readable
+    properties:
+      configurable:
+        type: boolean
+        description: |
+          Marks the list as configurable.
+      delegatedAdmins:
+        type: array
+        description: |
+          List of delegated admins for the list.
+        minItems: 0
+        items:
+          type: string
+          minLength: 1
+      readable:
+        type: boolean
+        description: |
+          Marks the list as readable.
+  allowedForDnsPolicy:
+    type: boolean
+    description: |
+      Allows the list per DNS policy.
+  createdBy:
+    type: string
+    description: |
+      Name of the user who created this list.
+    minLength: 1
+  createdDate:
+    type: string
+    description: |
+      ISO 8601 timestamp marking this list's creation.
+    readOnly: true
+    format: date-time
+  itemCount:
+    type: integer
+    description: |
+      The number of entries in a list.
+    minimum: 0
+  knownCounts:
+    type: object
+    description: |
+      Contains data of known counts.
+    additionalProperties: false
+    required:
+    - domains
+    - ips
+    properties:
+      domains:
+        type: integer
+        description: |
+          The number of known domain entries in the list.
+        minimum: 0
+      ips:
+        type: integer
+        description: |
+          The number of known IP addresses in the list.
+        minimum: 0
+  modifiedBy:
+    type: string
+    description: |
+      Name of the user who most recently modified the list.
+    minLength: 1
+  modifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp marking this list's last modification.
+    readOnly: true
+    format: date-time
+  policySecuritySettings:
+    type: array
+    description: |
+      Lists the security settings applied to the policy.
+    minItems: 0
+    items:
+      $ref: securitySettingsInfoV2.yaml
+  remainingCount:
+    type: integer
+    description: |
+      The number of remaining entries for all lists globally.
+    minimum: 0
+  securityCategoryId:
+    type: integer
+    description: |
+      The unique ID for the security category.
+    readOnly: true
+    minimum: 1
+  securityCategoryInfo:
+    type: object
+    description: |
+      Specifies the security category.
+    additionalProperties: false
+    required:
+    - name
+    - id
+    properties:
+      id:
+        type: integer
+        description: |
+          A unique identifier for the security category.
+        minimum: 1
+      name:
+        type: string
+        description: |
+          The name of the security category.
+        minLength: 1
+  suspectedCounts:
+    type: object
+    description: |
+      The count of suspected domain entries in the list.
+    additionalProperties: false
+    required:
+    - domains
+    - ips
+    properties:
+      domains:
+        type: integer
+        description: |
+          The number of suspected domains in the list.
+        minimum: 0
+      ips:
+        type: integer
+        description: |
+          The number of suspected IP addresses in the list.
+        minimum: 0

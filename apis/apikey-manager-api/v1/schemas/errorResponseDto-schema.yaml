@@ -1,0 +1,51 @@
+type: object
+description: |-
+  Contains information about a customizable error response.
+  
+x-akamai:
+  file-path: schemas/errorResponseDto-schema.yaml
+additionalProperties: false
+required:
+- statusCode
+- overrideDefaults
+nullable: true
+properties:
+  headers:
+    type: array
+    description: |
+      The list of HTTP headers to return in case of the error. By default, API Gateway returns the `Content-Type` header with a value of `application/problem+json` which reflects the default response body. If the `body` member indicates a different content type, set the `Content-Type` header to the appropriate value. For example, in case of an XML body, the value could be `application/problem+xml`.
+    nullable: true
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - value
+      properties:
+        name:
+          type: string
+          description: |
+            The name of the HTTP header to return in case of the error.
+          minLength: 1
+        value:
+          type: string
+          description: |
+            The value of the HTTP header to return in case of the error.
+          minLength: 1
+  body:
+    type: string
+    description: |
+      The response body to return in case of the error. The value should have the proper formatting to reflect the content type. For example, in case of a JSON body format, enclose the text in curly brackets (`{}`). If you specify an empty string in the request or omit this member from the object, the JSON response reflects it as `null`.
+    nullable: true
+    minLength: 0
+  overrideDefaults:
+    type: boolean
+    description: |
+      Whether you overrode the default error response.
+  statusCode:
+    type: integer
+    description: |
+      The status code to return in case of the error.
+    minimum: 200
+    maximum: 599

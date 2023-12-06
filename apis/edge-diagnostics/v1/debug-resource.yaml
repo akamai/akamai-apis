@@ -1,0 +1,45 @@
+openapi: 3.0.0
+info:
+  title: ESI debugger
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: debug-resource.yaml
+paths:
+  /esi-debugger-api/v1/debug:
+    post:
+      operationId: post-debug
+      summary: Get an ESI debugging report
+      tags:
+      - ESI debugger
+      description: |
+        This operation provides a debugging report on the ESI code of your source page and all pages that the source page references.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/inputBody-example.json
+            schema:
+              $ref: schemas/inputBody.yaml
+      responses:
+        200:
+          description: |
+            The response provides a debugging report.
+          content:
+            application/json:
+              example:
+                $ref: examples/esiDebugReport-example.json
+              schema:
+                $ref: schemas/esiDebugReport.yaml
+        401:
+          $ref: errors/401.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  title: Notifications
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/network-list/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: notifications.yaml
+paths:
+  /notifications/subscribe:
+    post:
+      operationId: post-notifications-subscribe
+      summary: Subscribe to network lists
+      tags:
+      - Subscriptions
+      description: |
+        Specifies a set of email addresses to inform Control Center account recipients about changes to a set of network lists.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/subscribe-request.json
+            schema:
+              $ref: schemas/subscribe.yaml
+      responses:
+        204:
+          description: |
+            Subscribed successfully. It also returns a 204 if request specifies users not in Control Center.
+        400:
+          $ref: responses/clientReadErrors_400.yaml
+        404:
+          $ref: responses/clientReadErrors_404.yaml
+        500:
+          $ref: responses/serverErrors_500.yaml
+  /notifications/unsubscribe:
+    post:
+      operationId: post-notifications-unsubscribe
+      summary: Unsubscribe to network lists
+      tags:
+      - Subscriptions
+      description: |
+        Unsubscribes the listed users from a set of network lists.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/subscribe-request.json
+            schema:
+              $ref: schemas/subscribe.yaml
+      responses:
+        204:
+          description: |
+            Unsubscribed successfully.
+        400:
+          $ref: responses/clientReadErrors_400.yaml
+        404:
+          $ref: responses/clientReadErrors_404.yaml
+        500:
+          $ref: responses/serverErrors_500.yaml

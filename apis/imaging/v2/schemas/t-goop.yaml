@@ -1,0 +1,54 @@
+type: object
+description: |-
+  Distorts an image by randomly repositioning a set of control points along a specified grid. The transformed image appears _goopy_. Adjust the density of the grid and the degree of randomity. You can use this transformation to create watermarks for use in security.
+  
+x-akamai:
+  file-path: schemas/t-goop.yaml
+title: Goop
+additionalProperties: false
+required:
+- transformation
+properties:
+  chaos:
+    description: |
+      Specifies the greatest distance control points may move from their original position. A value of `1.0` shifts control points over as far as the next one in the original grid. A value of `0.0` leaves the image unchanged. Values under `0.5` work better for subtle distortions, otherwise control points may pass each other and cause a twisting effect.
+    oneOf:
+    - default: 0.25
+      type: number
+      title: Number
+      format: float
+      minimum: 0
+      maximum: 1
+    - $ref: variable-inline.yaml
+  density:
+    description: |
+      Controls the density of control points used to distort the image. The largest dimension of the input image is divided up to fit this number of control points. A grid of points is extended on the smaller dimension such that each row and column of control points is equidistant from each adjacent row or column. This parameter strongly affects transformation performance. Be careful choosing values above the default if you expect to transform medium- to large-size images.
+    oneOf:
+    - default: 4
+      type: integer
+      title: Integer
+      minimum: 1
+    - $ref: variable-inline.yaml
+  power:
+    description: |
+      By default, the distortion algorithm relies on inverse squares to calculate distance but this allows you to change the exponent. You shouldn't need to vary the default value of `2.0`.
+    oneOf:
+    - default: 2
+      type: number
+      title: Number
+      format: float
+    - $ref: variable-inline.yaml
+  seed:
+    description: |
+      Specifies your own `seed` value as an alternative to the default, which is subject to variability. This allows for reproducible and deterministic distortions. If all parameters are kept equal and a constant seed is used, `Goop` distorts an input image consistently over many transformations. By default, this value is set to the current Epoch Time measured in milliseconds, which provides inconsistent transformation output.
+    oneOf:
+    - title: Integer
+      type: integer
+    - $ref: variable-inline.yaml
+  transformation:
+    type: string
+    description: |
+      Identifies the type of transformation, `Goop` in this case.
+    default: Goop
+    enum:
+    - Goop

@@ -1,0 +1,76 @@
+type: object
+description: |-
+  Information about the virtual IP addresses found in an Akamai virtual subnet.
+  
+x-akamai:
+  file-path: schemas/CreateOrDeployConfig.yaml
+additionalProperties: false
+properties:
+  version:
+    type: integer
+    description: |
+      Information about the virtual IP addresses found in an Akamai virtual subnet.
+  required:
+  - version
+  - pdSubnet
+  pdSubnets:
+    type: array
+    description: |
+      Subnets for the virtual IP addresses.
+    items:
+      type: object
+      description: |
+        Subnets for the virtual IP addresses.
+      additionalProperties: false
+      properties:
+        legacyPdSubnet:
+          type: boolean
+          description: |
+            Indicates whether IP Protect's predecessor, Prolexic Proxy, was responsible for creating the subnet.
+        pdSubnet:
+          type: string
+          description: |
+            Unique identifier of the subnet.
+        vips:
+          type: array
+          items:
+            type: object
+            description: |
+              Virtual IP addresses. IP Protect directs Internet traffic to these addresses.
+            additionalProperties: false
+            required:
+            - ports
+            - akamaiFrontend
+            - configVersionId
+            - customerBackend
+            - type
+            - sourceIpProtocol
+            - legacyVip
+            properties:
+              akamaiFrontend:
+                type: string
+                description: |
+                  Virtual IP address that's been mapped to a customer's server or subnet.
+              customerBackend:
+                type: string
+                description: |
+                  IP address of a customer's server or subnet that's been mapped to a virtual IP address.
+              legacyVip:
+                type: boolean
+                description: |
+                  Indicates whether IP Protect's predecessor, Prolexic Proxy, was responsible for creating the virtual IP address.
+              ports:
+                type: string
+                description: |
+                  Ports open to traffic directed to a customer's website.
+              sourceIpProtocol:
+                type: string
+                description: |
+                  Specifies the source IP for network packets received at a customer's back-end server or subnet. By default, packets are set to `NA`, identifying Akamai as the source IP. Other source IP options are `NAT46`, `CIP`, `PROXY_PROTOCOL_V1`, `PROXY_PROTOCOL_V2`, and `OPTION_28`. `NAT46` is only available if the virtual IP address has an IPv4 address and the back-end server or subnet has an IPv6 address. The remaining options require the virtual IP address to be running on a TCP network.
+                enum:
+                - CIP
+                - PROXY_PROTOCOL_V1
+                - PROXY_PROTOCOL_V2
+                - OPTION_28
+                - NAT46
+                - NA

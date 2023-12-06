@@ -1,0 +1,54 @@
+type: object
+description: |-
+  Specifies execution and initialization times, grouped by event handler for each EdgeWorker.
+  
+x-akamai:
+  file-path: schemas/report-2.yaml
+title: Report 2
+additionalProperties: false
+required:
+- edgeWorkerId
+- data
+properties:
+  data:
+    type: object
+    description: |
+      Data points grouped by event handler and initialization mapping keys.
+    additionalProperties:
+      type: array
+      description: |
+        Up to four event handler arrays and an init array for initialization data points.
+      items:
+        type: object
+        description: |
+          Aggregated execution or initialization durations.
+        additionalProperties: false
+        required:
+        - startDateTime
+        - edgeWorkerVersion
+        - invocations
+        properties:
+          edgeWorkerVersion:
+            type: string
+            description: |
+              The EdgeWorker version that was active during the execution of event handlers.
+          execDuration:
+            description: |
+              Execution duration.
+            $ref: report-exec-duration.yaml
+          initDuration:
+            description: |
+              Initialization duration.
+            $ref: report-init-duration.yaml
+          invocations:
+            type: integer
+            description: |
+              Number of aggregated executions or initializations.
+          startDateTime:
+            type: string
+            description: |
+              Start date of the time period (ISO 8601).
+  edgeWorkerId:
+    type: integer
+    description: |
+      Unique identifier for an EdgeWorker.

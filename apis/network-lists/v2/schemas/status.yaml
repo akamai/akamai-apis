@@ -1,0 +1,53 @@
+type: object
+description: |-
+  Represents a network list's activation status, as the response to the [Get activation status](ref:get-network-list-status) operation.
+  
+x-akamai:
+  file-path: schemas/status.yaml
+additionalProperties: false
+required:
+- syncPoint
+- uniqueId
+- activationStatus
+properties:
+  activationComments:
+    type: string
+    description: |
+      Further information related to the activation. This reflects the `comments` from the initial activation request.
+  activationId:
+    type: integer
+    description: |
+      Unique identifier for the most recent activation request. May be absent if the list is inactive, or if this object in embedded within an outer object envelope.
+  activationStatus:
+    type: string
+    description: |
+      This network list's current activation status in the specified `environment`. See [Activation States](ref:activation-states) for details on each activation state.
+    enum:
+    - INACTIVE
+    - ACTIVE
+    - MODIFIED
+    - PENDING_ACTIVATION
+    - FAILED
+    - PENDING_DEACTIVATION
+  dispatchCount:
+    type: integer
+    description: |
+      Number of activation attempts for this security configuration.
+  fast:
+    type: boolean
+    description: |
+      A network list's initial activation is relatively slow, indicated here with a `false` value. A `true` value indicates subsequent fast activations.
+    default: true
+  links:
+    description: |
+      Encapsulates the set of [API hypermedia](ref:api-hypermedia) to access a set of resources related to this activation. The object is arranged as a hash of keys, each of which represents a link relation.
+    $ref: list-links.yaml#/definitions/links
+  syncPoint:
+    type: integer
+    description: |
+      The version of the currently activated network list. See [Concurrency control](ref:concurrency-control) for details.
+  uniqueId:
+    type: string
+    description: |
+      Unique identifier for this network list, corresponding to the `networkListId` URL parameter.
+    readOnly: true

@@ -1,0 +1,101 @@
+type: array
+description: |-
+  Array of event subscriptions.
+  
+x-akamai:
+  file-path: schemas/get-all-event-subscriptions-response.yaml
+items:
+  type: object
+  description: |
+    The response for [Get Event Subscription](TBD:slug), describing one subscription.
+  properties:
+    eventTypes:
+      type: array
+      description: |
+        List of event types for the given `objectPath`. Choose at least one. * `com.akamai.netstorage.object-created`. Creation of new object in, or within a sub-dir of a matching `pathPrefix`. * `com.akamai.netstorage.object-updated`. Update of matching object. This includes rename and in-place updates. * `com.akamai.netstorage.object-deleted`. Deletion of matching object. * `com.akamai.netstorage.object-replicated`. Replication is complete for the object that was created or updated on a different primary replica zone. * `com.akamai.netstorage.object-replica-delete`. Deletion of the object copy that was deleted on a different primary replica zone.
+      items:
+        type: string
+        enum:
+        - com.akamai.netstorage.object-created
+        - com.akamai.netstorage.object-updated
+        - com.akamai.netstorage.object-deleted
+        - com.akamai.netstorage.object-replicated
+        - com.akamai.netstorage.object-replica-delete
+    notificationConfig:
+      type: object
+      description: |
+        This specifies where event notifications are sent. It includes the `endPointURL` and `endPointAccessToken`.
+      properties:
+        endpointConfig:
+          type: object
+          description: |
+            This encapsulates the configuration of the third-party endpoint set to receive event notifications.
+          properties:
+            endPointAccessToken:
+              type: string
+              description: |
+                A CloudEvents-compliant `access_token`. Include it as a query parameter in the `endPointURL` or as a header in compliance with the [CloudEvents supported authorization schemes](https://github.com/cloudevents/spec/blob/v1.0/http-webhook.md#32-uri-query-parameter).
+            endPointAttributes:
+              type: object
+              description: |
+                Specifies notification and auth scheme that determines version compatibility when publishing event notifications.
+              minProperties: 1
+              maxProperties: 2
+              properties:
+                X-Akamai-EN-Ver:
+                  type: string
+                  description: |
+                    This API supports version `akam-ns-en-v1.0`.
+                  default: akam-ns-en-v1.0
+                  enum:
+                  - akam-ns-en-v1.0
+                ce-specversion:
+                  type: string
+                  description: |
+                    This API supports CloudEvents schema version `1.x-wip`.
+                  default: 1.x-wip
+                  enum:
+                  - 1.x-wip
+            endPointURL:
+              type: string
+              description: |
+                This identifies the endpoint configured to receive event notifications.
+        maxRetries:
+          type: integer
+          description: |
+            Maximum number of times NetStorage event publishing systems will try to publish the event notification.
+          format: int32
+    objectPath:
+      type: string
+      description: |
+        The complete prefix that is matched for this subscription, including CP code and optional `pathPrefix`.
+    sgZone:
+      type: string
+      description: |
+        The replica zone this subscription is notifying for. If `null`, notifications are for all zones.
+      default: null
+      nullable: true
+      enum:
+      - AU
+      - IN
+      - JP
+      - KR
+      - SG
+      - asia
+      - europe
+      - global
+      - us
+      - useast
+      - uswest
+    subscriptionEndTime:
+      type: string
+      description: |
+        An epoch timestamp that identifies when the subscription for event notification will end. If not provided, subscriptions will auto-expire 90 days from the `subscriptionStartTime`.
+    subscriptionName:
+      type: string
+      description: |
+        The name of the requested subscription.
+    subscriptionStartTime:
+      type: string
+      description: |
+        An epoch timestamp that identifies when the subscription for event notifications will start. If not provided, the subscription will start immediately after successful subscription.

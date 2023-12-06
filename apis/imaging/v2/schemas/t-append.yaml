@@ -1,0 +1,47 @@
+type: object
+description: |-
+  Places a specified `image` beside the source image. The API places the `image` on a major dimension, then aligns it on the minor dimension. Transparent pixels fill any area not covered by either image.
+  
+x-akamai:
+  file-path: schemas/t-append.yaml
+title: Append
+additionalProperties: false
+required:
+- transformation
+- image
+properties:
+  gravity:
+    description: |
+      Specifies where to place the `image` relative to the source image. The available values represent the eight cardinal directions (`North`, `South`, `East`, `West`, `NorthEast`, `NorthWest`, `SouthEast`, `SouthWest`) and a `Center` by default.
+    default: Center
+    oneOf:
+    - $ref: gravity.yaml
+    - $ref: variable-inline.yaml
+  gravityPriority:
+    description: |
+      Determines the exact placement of the `image` when `gravity` is `Center` or a diagonal. The value is either `horizontal` or `vertical`. Use `horizontal` to append an `image` east or west of the source image. This aligns the `image` on the vertical gravity component, placing `Center` gravity east. Use `vertical` to append an `image` north or south of the source image. This aligns the `image` on the horizontal gravity component, placing `Center` gravity south.
+    oneOf:
+    - default: horizontal
+      type: string
+      title: String enum
+      enum:
+      - horizontal
+      - vertical
+    - $ref: variable-inline.yaml
+  image:
+    $ref: image-type.yaml
+  preserveMinorDimension:
+    description: |
+      Whether to preserve the source image's minor dimension, `false` by default. The minor dimension is the dimension opposite the dimension that the appending `image` is placed. For example, the dimensions of the source image are 100 &times; 100 pixels. The dimensions of the appending `image` are 50 &times; 150 pixels. The `gravity` is set to `East`. This makes the major dimension horizontal and the source image's minor dimension vertical. To preserve the source image's minor dimension at 100 pixels, the `preserveMinorDimension` is set to `true`. As a result of the append, the major dimension expanded with the appended image to 150 pixels. The source image's minor dimension was maintained at 100 pixels. The total combined dimension of the image is 150 &times; 100 pixels.
+    oneOf:
+    - default: false
+      type: boolean
+      title: Boolean
+    - $ref: variable-inline.yaml
+  transformation:
+    type: string
+    description: |
+      Identifies the type of transformation, `Append` in this case.
+    default: Append
+    enum:
+    - Append

@@ -1,0 +1,56 @@
+x-akamai:
+  file-path: paths/bulk-searches.yaml
+  path-for-file: /bulk/rules-search-requests
+post:
+  operationId: post-bulk-search
+  summary: Bulk search a set of properties or includes
+  tags:
+  - Bulk search
+  description: |
+    POST a bulk search object to search across all active property or include versions. Specify a [JSONPath](http://goessner.net/articles/JsonPath/) expression to match their rule trees. This operation launches an asynchronous process to gather search results. To check its progress, run the [List bulk search results](ref:get-bulk-search) operation, whose link is available in the `Location` header or the `bulkSearchLink` member of this operation's response. After gathering completed results, you can create new property versions, bulk patch the rule trees, then activate them. See [Bulk Search and Update](ref:bulk-search-and-update) for guidance on this feature. Run [Synchronously bulk search a set of properties](ref:post-bulk-searchsynchronus) as an alternative to get completed search results directly. To perform simpler searches for an include's name or property's name or hostnames to which it applies, run the [Search properties and includes](ref:post-search-find-by-value) operation instead.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional-bulk.yaml
+  - $ref: ../parameters/groupId-optional-bulk.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/search-bulk-create-request.json
+        schema:
+          $ref: ../schemas/bulk-search-create-request.yaml
+  responses:
+    202:
+      description: |
+        The response links the bulk search process.
+      headers:
+        Location:
+          $ref: ../headers/Location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/search-bulk-create-response.json
+          schema:
+            $ref: ../schemas/bulk-search-post-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: bulkSearches
+  group: Bulk searches

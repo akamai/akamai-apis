@@ -1,0 +1,122 @@
+type: object
+description: |-
+  Contains information about caching settings configured for an endpoint. Caching settings specify properties such as the maximum age of cached content, caching HTTP error responses, downstream cacheability, and cache key customization. You can set specific caching instructions for each resource within an endpoint version. You can configure caching settings if the API Gateway product is in your contract.
+  
+x-akamai:
+  file-path: schemas/cacheSettingsDto.yaml
+additionalProperties: false
+required:
+- enabled
+- option
+- downstreamCaching
+- errorCaching
+properties:
+  cacheKey:
+    description: |
+      Contains information about cache key settings.
+    $ref: cacheKeyDto.yaml
+  downstreamCaching:
+    type: object
+    description: |
+      Contains information about downstream caching settings. Downstream caching refers to the caching instructions assigned to objects sent with responses toward clients&mdash;browsers, mobile devices, or client proxies.
+    additionalProperties: false
+    required:
+    - option
+    - lifetime
+    - headers
+    properties:
+      headers:
+        type: string
+        description: |
+          The policy for sending headers downstream, either `CACHE_CONTROL_AND_EXPIRES` to send both `Cache-Control` and `Expires` headers, `CACHE_CONTROL` to send only the `Cache-Control` header, `EXPIRES` to send only the `Expires` header, or `SAME_AS_ORIGIN` to send the same headers as your origin.
+        enum:
+        - CACHE_CONTROL_AND_EXPIRES
+        - CACHE_CONTROL
+        - EXPIRES
+        - SAME_AS_ORIGIN
+      lifetime:
+        type: string
+        description: |
+          The cache lifetime policy, either `SMALLER_VALUE` for a value smaller than specified in the origin header or the remaining edge TTL, `GREATER_VALUE` for a value greater than specified in the origin header or the remaining edge TTL, `REMAINING_EDGE_TTL` for a remaining edge TTL, `FULL_EDGE_TTL` for a full edge TTL, `FIXED_VALUE` for a value that you specify, or `CALCULATES_EXPIRES_FROM_ORIGIN_CACHE_CONTROL` for calculating the maximum age from the origin `Cache-Control` header.
+        default: SMALLER_VALUE
+        enum:
+        - SMALLER_VALUE
+        - GREATER_VALUE
+        - REMAINING_EDGE_TTL
+        - FULL_EDGE_TTL
+        - FIXED_VALUE
+        - CALCULATES_EXPIRES_FROM_ORIGIN_CACHE_CONTROL
+      markAsPrivate:
+        type: boolean
+        description: |
+          Specifies whether to disallow storing responses in a shared cache. Use this when you want to set a maximum age for the end client, but have shared caches not store the response.
+        default: false
+      maxAge:
+        description: |
+          Contains information about the maximum duration to keep content in a cache.
+        $ref: durationDto.yaml
+      option:
+        type: string
+        description: |
+          The option for downstream caching, either `ALLOW_CACHING` to allow downstream caching, `ALLOW_CACHING_REQUIRES_REVALIDATION` to allow downstream caching, but require origin revalidation, `NOT_ALLOW_CACHING` to disallow downstream caching, `PASS_CACHEABILITY_HEADERS_FROM_ORIGIN` to pass cacheability headers from your origin, or `DO_NOT_SEND_HEADERS` to disallow sending headers and apply browser defaults.
+        default: ALLOW_CACHING
+        enum:
+        - ALLOW_CACHING
+        - ALLOW_CACHING_REQUIRES_REVALIDATION
+        - NOT_ALLOW_CACHING
+        - PASS_CACHEABILITY_HEADERS_FROM_ORIGIN
+        - DO_NOT_SEND_HEADERS
+  enabled:
+    type: boolean
+    description: |
+      Whether you enabled caching for the endpoint.
+  errorCaching:
+    type: object
+    description: |
+      Contains information about error caching settings.
+    additionalProperties: false
+    required:
+    - enabled
+    properties:
+      enabled:
+        type: boolean
+        description: |
+          Whether you enabled error caching.
+      maxAge:
+        description: |
+          Contains information about the maximum duration to keep error responses in a cache.
+        $ref: durationDto.yaml
+      preserveStale:
+        type: boolean
+        description: |
+          Whether to preserve stale responses when the origin is unreachable and content revalidation isn't possible.
+        default: false
+  maxAge:
+    description: |
+      Contains information about the maximum duration to keep content in a cache.
+    $ref: durationDto.yaml
+  option:
+    type: string
+    description: |
+      The options for how to pass cached content, either `CACHE` to enable caching in Akamai platform servers according to the instructions you specify, `BYPASS_CACHE` to disallow caching in Akamai platform servers and keep the existing cache entries, `NO_STORE` to disallow caching in Akamai platform servers and remove the existing cache entries, `HONOR_ORIGIN_CACHE_CONTROL` to apply caching instructions specified in your origin's `Cache-Control` header, `HONOR_ORIGIN_EXPIRES` to apply caching instructions specified in your origin's `Expires` header, or `HONOR_ORIGIN_CACHE_CONTROL_AND_EXPIRES` to apply caching instructions specified in your origin's `Cache-Control` and `Expires` headers.
+    default: CACHE
+    enum:
+    - CACHE
+    - NO_STORE
+    - BYPASS_CACHE
+    - HONOR_ORIGIN_CACHE_CONTROL
+    - HONOR_ORIGIN_CACHE_CONTROL_AND_EXPIRES
+    - HONOR_ORIGIN_EXPIRES
+  preRefreshing:
+    nullable: true
+    $ref: preRefreshing.yaml
+  resources:
+    type: object
+    description: |
+      Contains information about caching settings for each resource assigned to an endpoint version. This object is a map where the keys are resource IDs and values are cache settings applied to them.
+    additionalProperties:
+      $ref: resources-cache.yaml
+  serveStale:
+    type: boolean
+    description: |
+      Whether to serve stale responses when the origin is unreachable and content revalidation isn't possible.

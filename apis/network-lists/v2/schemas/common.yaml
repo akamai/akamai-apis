@@ -1,0 +1,42 @@
+x-akamai:
+  file-path: schemas/common.yaml
+definitions:
+  name:
+    type: string
+    description: |
+      Display name of the network list.
+    minLength: 1
+    maxLength: 100
+  type:
+    type: string
+    description: |
+      The network list type, either `IP` for IP addresses and CIDR blocks, or `GEO` for two-letter country codes.
+    enum:
+    - IP
+    - GEO
+  description:
+    type: string
+    description: |
+      Detailed description of the list.
+    minLength: 1
+    maxLength: 255
+  list:
+    type: array
+    description: |
+      Defines the network list's set of elements. If the `type` is `IP`, values are any combination of IPv4 addresses, IPv6 addresses, or CIDR blocks. If the `type` is `GEO`, values are ISO 3166 two-character country codes. This array does not appear in the object if you get it with the `includeElements` query parameter set to `false`.
+    items:
+      type: string
+      example: FR
+      minLength: 0
+  syncPoint:
+    type: integer
+    description: |
+      Identifies each version of the network list, which increments each time it's modified. You need to include this value in any requests to modify the list. See [Concurrency control](ref:concurrency-control) for details.
+    default: 0
+    minimum: 0
+  uniqueId:
+    type: string
+    description: |
+      A unique identifier for each network list, corresponding to the `networkListId` URL parameter.
+    readOnly: true
+    minLength: 3

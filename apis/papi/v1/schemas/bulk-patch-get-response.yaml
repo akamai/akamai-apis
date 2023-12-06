@@ -1,0 +1,185 @@
+id: resource:/descriptors/papi/v1/schemas/GetBulkPatchResponse.json#
+type: object
+description: |-
+  Encapsulates customized JSON patch instructions to run on a set of JSON path locations within various property versions' rule trees. See [Bulk Search and Update](ref:bulk-search-and-update) for guidance on this feature.
+  
+x-akamai:
+  file-path: schemas/bulk-patch-get-response.yaml
+additionalProperties: false
+required:
+- bulkPatchId
+- bulkPatchStatus
+- bulkPatchSubmitDate
+- patchPropertyVersions
+properties:
+  bulkPatchId:
+    type: integer
+    description: |
+      Identifies each bulk patch process.
+    minimum: 1
+  bulkPatchStatus:
+    type: string
+    description: |
+      Reflects the status of the entire bulk update request, either `PENDING`, `IN_PROGRESS`, or `COMPLETE`.
+    enum:
+    - PENDING
+    - COMPLETE
+    - IN_PROGRESS
+  bulkPatchSubmitDate:
+    type: string
+    description: |
+      An ISO 8601 timestamp indicating when you first made the bulk patch request.
+  bulkPatchUpdateDate:
+    type: string
+    description: |
+      An ISO 8601 timestamp indicating when any of the property versions `status` value last changed.
+  message:
+    type: string
+    description: |
+      A notification in case the bulk request repeatedly fails to process.
+  patchPropertyVersions:
+    type: array
+    description: |
+      Specifies JSON patch instructions to modify each property version.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - patchPropertyId
+      - patchPropertyVersion
+      - patches
+      properties:
+        etag:
+          type: string
+          description: |
+            When specified as part of the bulk patch request, this property doesn't update if someone else has modified the property since you got the value. See [Concurrency control](ref:concurrency-control) for guidance on this feature.
+        fatalError:
+          type: string
+          description: |
+            Indicates an error that prevented this property version from updating. For example, malformed JSON Patch instructions or resulting rule tree data formatting. This type of error isn't the same as the `papiErrors` you're allowed to save on a property version, but not to activate.
+        papiErrors:
+          type: array
+          description: |
+            Validation errors resulting from the bulk update. Errors prevent you from including this property version in a bulk activation. These are the same type of validation errors that PAPI saves in a property version, not to be confused with a `fatalError` that prevents it from being saved.
+          minItems: 0
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              type:
+                type: string
+                description: |
+                  A URI that identifies each error case. See the [Errors](ref:api-errors) section for details on each.
+              title:
+                type: string
+                description: |
+                  A descriptive label for each type of error.
+              detail:
+                type: string
+                description: |
+                  Provides context for the problem that triggered the error.
+              errorLocation:
+                type: string
+                description: |
+                  A JSON Path expression that locates the rule tree node where the problem occurred.
+              instance:
+                type: string
+                description: |
+                  A URI that identifies each error's occurrence. Possibly useful when communicating with Akamai customer support.
+        papiWarnings:
+          type: array
+          description: |
+            Lists any validation warnings resulting from the bulk update. You need to acknowledge them when bulk-activating property versions.
+          minItems: 0
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              type:
+                type: string
+                description: |
+                  A URI that identifies each warning case. See the [Errors](ref:api-errors) section for details on each.
+              title:
+                type: string
+                description: |
+                  A descriptive label for each type of warning.
+              detail:
+                type: string
+                description: |
+                  Provides context for the problem that triggered the warning.
+              errorLocation:
+                type: string
+                description: |
+                  A JSON Path expression that locates the rule tree node where the problem occurred.
+              instance:
+                type: string
+                description: |
+                  A URI that identifies each warning's occurrence. Possibly useful when communicating with Akamai customer support.
+        patchPropertyId:
+          type: string
+          description: |
+            Identifies the property you want to modify as part of the bulk patch.
+        patchPropertyVersion:
+          type: integer
+          description: |
+            The version of the property you want to modify as part of the bulk patch.
+          minimum: 1
+        patchPropertyVersionStatus:
+          type: string
+          description: |
+            Indicates progress for the update to this property version's rule tree, either `PENDING`, `SUBMITTED`, `IN_PROGRESS`, or `COMPLETE` for success. A `SUBMISSION_ERROR` typically indicates that replacement values caused a schema violation, not a new set of `errors` that you'd ordinarily be able to save on rule trees. A value of `INTERRUPTED` indicates a server error.
+          enum:
+          - PENDING
+          - SUBMITTED
+          - IN_PROGRESS
+          - COMPLETE
+          - INTERRUPTED
+          - SUBMISSION_ERROR
+        patchSubmitDate:
+          type: string
+          description: |
+            An ISO 8601 timestamp indicating when the request to modify this property version's rule tree occurred.
+        patchUpdateDate:
+          type: string
+          description: |
+            An ISO 8601 timestamp indicating when this property version's `status` last changed. Usually, it also indicates when the update completed.
+        patches:
+          type: array
+          description: |
+            Represents each instruction to modify part of a rule tree.
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - op
+            - path
+            - value
+            properties:
+              value:
+                description: |
+                  Specifies the replacement value. This needs to correspond to the original matched value's data type, otherwise the rule tree fails to update.
+                anyOf:
+                - title: String value
+                  type: string
+                - title: Numeric value
+                  type: number
+                - title: Boolean value
+                  type: boolean
+              op:
+                type: string
+                description: |
+                  The JSON Patch operation to perform, either `replace`, `add`, `remove`, or `test`. For various techniques to use these operations, see [Bulk Search and Update](ref:bulk-search-and-update).
+                enum:
+                - replace
+                - add
+                - remove
+                - test
+              path:
+                type: string
+                description: |
+                  A JSONPath expression that locates the value to replace within the rule tree.
+        propertyVersionRulesLink:
+          type: string
+          description: |
+            An API hypermedia link to get specific rule trees after they're updated.
+$schema: http://json-schema.org/draft-04/schema#

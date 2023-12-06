@@ -1,0 +1,49 @@
+type: object
+description: |-
+  The difference in a settings value between two versions.
+  
+x-akamai:
+  file-path: schemas/diff-setting.yaml
+additionalProperties: false
+required:
+- fieldName
+- operation
+properties:
+  fieldName:
+    type: string
+    description: |
+      The name of the settings value that changed.
+  fromValue:
+    description: |
+      The prior value of the settings field or record set. This may be any type of data, depending on the field that changed. The value is not present for an `ADD` difference.
+    nullable: true
+    oneOf:
+    - title: Boolean
+      type: boolean
+    - title: Integer
+      type: integer
+    - title: Object
+      type: object
+    - title: String
+      type: string
+  operation:
+    type: string
+    description: |
+      The type of difference. An `ADD` difference contains the `toValue` and a `DELETE` difference contains a `fromValue`. An `EDIT` difference contains both fields.
+    enum:
+    - ADD
+    - DELETE
+    - EDIT
+  toValue:
+    description: |
+      The new value of the settings field or record set. This may be any type of data, depending on the field that changed. The value is not present for a `DELETE` difference.
+    nullable: true
+    oneOf:
+    - title: Boolean
+      type: boolean
+    - title: Integer
+      type: integer
+    - title: Object
+      type: object
+    - title: String
+      type: string

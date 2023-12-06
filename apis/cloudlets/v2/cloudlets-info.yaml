@@ -1,0 +1,47 @@
+openapi: 3.0.0
+info:
+  title: Cloudlets
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cloudlets/api/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: cloudlets-info.yaml
+paths:
+  /cloudlet-info:
+    get:
+      operationId: get-cloudlets
+      summary: List Cloudlets
+      description: |
+        Returns name, code, and ID (`cloudletId`) information for all available Cloudlets. You need the `cloudletId` when creating a new policy.
+      responses:
+        200:
+          description: |
+            Returns details for Cloudlets that you can [create a policy](ref:post-policy) for, including the Cloudlet's name and code.
+          content:
+            application/json:
+              example:
+                $ref: examples/cloudlets-get-200.json
+              schema:
+                $ref: schemas/get-cloudlet-info-response.yaml
+  /cloudlet-info/{cloudletId}:
+    parameters:
+    - $ref: parameters/cloudletId-path.yaml
+    get:
+      operationId: get-cloudlet-info
+      summary: Get a Cloudlet
+      description: |
+        Returns name, code, and ID information for a specific type of Cloudlet. You need the `cloudletId` when creating a new policy.
+      responses:
+        200:
+          description: |
+            Successful operation.
+          content:
+            application/json:
+              example:
+                $ref: examples/cloudlet-get-200.json
+              schema:
+                $ref: schemas/cloudlets-info-object.yaml

@@ -1,0 +1,64 @@
+x-akamai:
+  file-path: paths/policy-attack-group.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/attack-groups/{attackGroupId}
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/policyId-path.yaml
+- $ref: ../parameters/attackGroupId-path.yaml
+get:
+  operationId: get-policy-attack-group
+  summary: Get the action for an attack group
+  tags:
+  - 'WAF rules: Attack groups'
+  description: |
+    Currently the only member in the response object is `action`, which displays the action for the attack group. _Products:_ All.
+  responses:
+    200:
+      description: |
+        Successfully retrieved the attack group's actions.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-put-eval-rule-action-200.json
+          schema:
+            $ref: ../schemas/attack-group-action-get-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-attack-group
+  summary: Modify the action for an attack group
+  tags:
+  - 'WAF rules: Attack groups'
+  description: |
+    Update what action to take when an attack group's rule triggers. Use `alert` to record the trigger of the event, `deny` to block the request, or `none` to take no action. Currently the only member in the attack group object is `action`. _Products:_ All.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/policy-put-eval-rule-action-200.json
+        schema:
+          $ref: ../schemas/attack-group-action-put.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the attack group's action.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/policy-put-eval-rule-action-200.json
+          schema:
+            $ref: ../schemas/attack-group-action-put-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

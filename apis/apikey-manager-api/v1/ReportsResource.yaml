@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: Reports
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/apikey-manager-api/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: ReportsResource.yaml
+paths:
+  /reports/{reportName}/versions/{reportVersion}/report-data:
+    parameters:
+    - $ref: parameters/reportVersion-path.yaml
+    - $ref: parameters/reportName-path.yaml
+    post:
+      operationId: post-report
+      summary: Generate a report
+      tags:
+      - Reports
+      description: |
+        Creates a report in a JSON format for a specific version of a report. You can specify the `start` and `end` date for the report data and the aggregation `interval` for each record.
+      parameters:
+      - $ref: parameters/start-query.yaml
+      - $ref: parameters/end-query.yaml
+      - $ref: parameters/interval-query.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/report-request-example.json
+            schema:
+              $ref: schemas/ReportRequest.yaml
+      responses:
+        200:
+          description: |
+            Success.
+          content:
+            application/json:
+              example:
+                $ref: examples/report-response-example.json
+              schema:
+                $ref: schemas/ReportResponse.yaml
+        400:
+          description: |
+            Invalid report request. Appropriate message is returned.

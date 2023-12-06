@@ -1,0 +1,393 @@
+openapi: 3.0.0
+info:
+  title: Network Lists
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/network-list/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: network-lists.yaml
+paths:
+  /network-lists:
+    post:
+      operationId: post-network-lists
+      summary: Create a new network list
+      tags:
+      - Network lists
+      description: |
+        Creates a new network list.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/create-blank.json
+            schema:
+              $ref: schemas/create.yaml
+      responses:
+        201:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/retrieve-default.json
+              schema:
+                $ref: schemas/retrieve.yaml
+        400:
+          $ref: responses/clientReadErrors_400.yaml
+        403:
+          $ref: responses/clientWriteErrors_403.yaml
+        404:
+          $ref: responses/clientReadErrors_404.yaml
+        500:
+          $ref: responses/serverErrors_500.yaml
+    get:
+      operationId: get-network-lists
+      summary: List network lists
+      tags:
+      - Network lists
+      description: |
+        List all network lists available for an authenticated user who belongs to a group, optionally filtered by `listType` or based on a `search` string. Results appear within the `networkLists` array, which might be empty if no network lists are available to the client.
+      parameters:
+      - $ref: parameters/includeElements-query.yaml
+      - $ref: parameters/search-query.yaml
+      - $ref: parameters/listType_listType.yaml
+      - $ref: parameters/extended_extended.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/list-default.json
+              schema:
+                $ref: schemas/lists.yaml
+        400:
+          $ref: responses/clientReadErrors_400.yaml
+        404:
+          $ref: responses/clientReadErrors_404.yaml
+        500:
+          $ref: responses/serverErrors_500.yaml
+  /network-lists/{networkListId}:
+    parameters:
+    - $ref: parameters/networkListId-path.yaml
+    get:
+      operationId: get-network-list
+      summary: Get a network list
+      tags:
+      - Network lists
+      description: |
+        Gets a network list's most recent `syncPoint` version.
+      parameters:
+      - $ref: parameters/extended_extended.yaml
+      - $ref: parameters/includeElements_includeElements.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/retrieve-default.json
+              schema:
+                $ref: schemas/retrieve.yaml
+        400:
+          $ref: responses/clientReadErrors_400.yaml
+        404:
+          $ref: responses/clientReadErrors_404.yaml
+        500:
+          $ref: responses/serverErrors_500.yaml
+    put:
+      operationId: put-network-list
+      summary: Update a network list
+      tags:
+      - Network lists
+      description: |
+        Modify the network list items and properties. Allows you to set the name, description and set of network list items to the resource. The current state of the list will be replaced with the properties and items you provide. The type cannot be changed.
+      parameters:
+      - $ref: parameters/extended_extended.yaml
+      - $ref: parameters/includeElements_includeElements.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/update-IP.json
+            schema:
+              $ref: schemas/update.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/retrieve-default.json
+              schema:
+                $ref: schemas/retrieve.yaml
+        400:
+          $ref: responses/clientReadErrors_400.yaml
+        403:
+          $ref: responses/clientWriteErrors_403.yaml
+        404:
+          $ref: responses/clientReadErrors_404.yaml
+        409:
+          description: |
+            This error will be presented if the submitted sync point is differs from sync point provided in the most recent retrieve action for this network list.  The most common cause of this is multiple users simultaneously editing the same network list.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          $ref: responses/serverErrors_500.yaml
+    delete:
+      operationId: delete-network-list
+      summary: Delete a network list
+      tags:
+      - Network lists
+      description: |
+        Removes a network list. You can only remove network lists that never activated. To deactivate a list, you can empty out its `list` of elements.
+      responses:
+        200:
+          description: |
+            A confirmation message that the network list has been removed.
+          content:
+            application/json:
+              example:
+                $ref: examples/message.json
+              schema:
+                $ref: schemas/message.yaml
+        400:
+          $ref: responses/clientReadErrors_400.yaml
+        403:
+          $ref: responses/clientWriteErrors_403.yaml
+        404:
+          $ref: responses/clientReadErrors_404.yaml
+        409:
+          description: |
+            A HTTP 409 response will be presented if the list is currently activated in staging or production.  Active network lists cannot be deleted. Use the status APIs to determine if this list is active.
+          content:
+            application/problem+json:
+              schema:
+                $ref: schemas/error.yaml
+        500:
+          $ref: responses/serverErrors_500.yaml
+  /network-lists/{networkListId}/append:
+    parameters:
+    - $ref: parameters/networkListId-path.yaml
+    post:
+      operationId: post-network-list-append
+      summary: Append elements to a network list
+      tags:
+      - Network lists
+      description: |
+        Appends a set of elements to a network list.  If the networks list's `type` is `IP`, the submitted `list` is a series of IP addresses or CIDR blocks.  If the type is `GEO`, it's a set of two-character country codes. (See the [EdgeScape Documentation](https://control.akamai.com/apps/download-center/#/products/3;name=EdgeScape) for more information. For a list of countries, go to __Data Codes__ &rArr; __Country Code__.)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/append.json
+            schema:
+              $ref: schemas/append.yaml
+      responses:
+        202:
+          description: |
+            Counter to its ordinary usage, a 202 response here indicates a complete response, the same as a 200.
+          content:
+            application/json:
+              example:
+                $ref: examples/retrieve-default.json
+              schema:
+                $ref: schemas/retrieve.yaml
+        400:
+          $ref: responses/clientReadErrors_400.yaml
+        403:
+          $ref: responses/clientWriteErrors_403.yaml
+        404:
+          $ref: responses/clientReadErrors_404.yaml
+        500:
+          $ref: responses/serverErrors_500.yaml
+  /network-lists/{networkListId}/details:
+    parameters:
+    - $ref: parameters/networkListId-path.yaml
+    put:
+      operationId: put-network-list-details
+      summary: Update network list details
+      tags:
+      - Network lists
+      description: |
+        Update a network list's name or description.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/update-details.json
+            schema:
+              $ref: schemas/update-details.yaml
+      responses:
+        204:
+          description: |
+            Updated successfully.
+        400:
+          $ref: responses/clientReadErrors_400.yaml
+        403:
+          $ref: responses/clientWriteErrors_403.yaml
+        404:
+          $ref: responses/clientReadErrors_404.yaml
+        500:
+          $ref: responses/serverErrors_500.yaml
+  /network-lists/{networkListId}/elements:
+    parameters:
+    - $ref: parameters/networkListId-path.yaml
+    put:
+      operationId: put-network-list-elements
+      summary: Add an element
+      tags:
+      - Elements
+      description: |
+        Adds the specified `element` to the list.  If the network list's `type` is `IP`, the value needs to be a URL-encoded IP address or CIDR block. If the type is `GEO`, it's a two-character country code. (See the [EdgeScape Documentation](https://control.akamai.com/apps/download-center/#/products/3;name=EdgeScape)) for more information. For a list of countries, go to __Data Codes__ &rArr; __Country Code__.)
+      parameters:
+      - $ref: parameters/element-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/retrieve-default.json
+              schema:
+                $ref: schemas/retrieve.yaml
+        400:
+          $ref: responses/clientReadErrors_400.yaml
+        403:
+          $ref: responses/clientWriteErrors_403.yaml
+        404:
+          $ref: responses/clientReadErrors_404.yaml
+        500:
+          $ref: responses/serverErrors_500.yaml
+    delete:
+      operationId: delete-network-list-elements
+      summary: Remove an element
+      tags:
+      - Elements
+      description: |
+        Removes the specified `element` from the list.  If the network list's `type` is `IP`, the value is a URL-encoded IP address or CIDR block. If the type is `GEO`, it's a two-character country code.
+      parameters:
+      - $ref: parameters/element-query.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/retrieve-default.json
+              schema:
+                $ref: schemas/retrieve.yaml
+        400:
+          $ref: responses/clientReadErrors_400.yaml
+        403:
+          $ref: responses/clientWriteErrors_403.yaml
+        404:
+          $ref: responses/clientReadErrors_404.yaml
+        500:
+          $ref: responses/serverErrors_500.yaml
+  /network-lists/{networkListId}/environments/{environment}/activate:
+    parameters:
+    - $ref: parameters/environment-path.yaml
+    - $ref: parameters/networkListId-path.yaml
+    post:
+      operationId: post-network-list-activate
+      summary: Activate a network list
+      tags:
+      - Activations
+      description: |
+        Activate the most recent `syncPoint` version of a network list in either the `STAGING` or `PRODUCTION` environment.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/activate.json
+            schema:
+              $ref: schemas/activate.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/activation-status.json
+              schema:
+                $ref: schemas/status.yaml
+        400:
+          $ref: responses/clientReadErrors_400.yaml
+        404:
+          $ref: responses/clientReadErrors_404.yaml
+        500:
+          $ref: responses/serverErrors_500.yaml
+  /network-lists/{networkListId}/environments/{environment}/status:
+    parameters:
+    - $ref: parameters/environment-path.yaml
+    - $ref: parameters/networkListId-path.yaml
+    get:
+      operationId: get-network-list-status
+      summary: Get activation status
+      tags:
+      - Activations
+      description: |
+        Shows a network list's activation status on either the `STAGING` or `PRODUCTION` environment. The response reflects standard activation status. For fast activation status, see [Get activation details](ref:get-activation).
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/activation-status.json
+              schema:
+                $ref: schemas/status.yaml
+        400:
+          $ref: responses/clientReadErrors_400.yaml
+        404:
+          $ref: responses/clientReadErrors_404.yaml
+        500:
+          $ref: responses/serverErrors_500.yaml
+  /network-lists/{networkListId}/sync-points/{syncPoint}/history:
+    parameters:
+    - $ref: parameters/syncPoint-path.yaml
+    - $ref: parameters/networkListId-path.yaml
+    get:
+      operationId: get-network-list-history
+      summary: Get an activation's snapshot
+      tags:
+      - Activations
+      description: |
+        Gets a version of a network list in its state when activated, with each version identified by its `syncPoint` value.  You can only get `syncPoint` versions that have been activated.
+      parameters:
+      - $ref: parameters/extended_extended.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/retrieve-default.json
+              schema:
+                $ref: schemas/retrieve.yaml
+        400:
+          $ref: responses/clientReadErrors_400.yaml
+        404:
+          $ref: responses/clientReadErrors_404.yaml
+        500:
+          $ref: responses/serverErrors_500.yaml

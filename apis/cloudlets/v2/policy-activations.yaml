@@ -1,0 +1,64 @@
+openapi: 3.0.0
+info:
+  title: Policy Activations
+  version: '2'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cloudlets/api/v2
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: policy-activations.yaml
+paths:
+  /policies/{policyId}/activations:
+    parameters:
+    - $ref: parameters/policyId-path.yaml
+    get:
+      operationId: get-policy-activations
+      summary: List policy activations
+      description: |
+        Returns the activation history for the policy. The policy activation history provides results for each property where the policy applies dating back up to one year. If no activations occurred within the year, only the latest activation data is returned.
+      parameters:
+      - $ref: parameters/network-query.yaml
+      - $ref: parameters/propertyName-query.yaml
+      - $ref: parameters/offset-query.yaml
+      - $ref: parameters/pageSize-query.yaml
+      responses:
+        200:
+          description: |
+            Returns the policy's activation history.
+          content:
+            application/json:
+              example:
+                $ref: examples/policyactivations-get-200.json
+              schema:
+                $ref: schemas/get-policy-activations-response.yaml
+  /policies/{policyId}/versions/{version}/activations:
+    parameters:
+    - $ref: parameters/version-path.yaml
+    - $ref: parameters/policyId-path.yaml
+    - $ref: parameters/async-query.yaml
+    post:
+      operationId: post-policy-version-activations
+      summary: Activate a policy version
+      description: |
+        Activate the selected cloudlet policy version.  After activation completes, the Cloudlets policy is ready for use.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/policyversionactivations-post.json
+            schema:
+              $ref: schemas/post-policy-version-activations-request.yaml
+      responses:
+        200:
+          description: |
+            Returns the activation history for the policy.
+          content:
+            application/json:
+              example:
+                $ref: examples/policyversionactivations-post-200.json
+              schema:
+                $ref: schemas/post-policy-version-activations-response.yaml

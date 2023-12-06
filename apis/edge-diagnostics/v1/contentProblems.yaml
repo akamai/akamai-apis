@@ -1,0 +1,91 @@
+openapi: 3.0.0
+info:
+  title: Content problems
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/edge-diagnostics/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: contentProblems.yaml
+paths:
+  /content-problems:
+    post:
+      operationId: post-content-problems
+      summary: Run the content problems scenario
+      tags:
+      - Content problems
+      description: |
+        Launches an [asynchronous](ref:asynchronous-processes) request to simultaneously run [Launch a GREP request](ref:post-grep) and [Request content with cURL](ref:post-curl) operations for a URL. It may help you diagnose issues with slow download and high response time. Successful operations return fetched GREP and cURL data.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            example:
+              $ref: examples/contentProblemsRequest.json
+            schema:
+              $ref: schemas/contentProblemsRequest.yaml
+      responses:
+        202:
+          description: |
+            Process successfully launched.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/contentProblemsResponse.json
+              schema:
+                $ref: schemas/contentProblemsResponse.yaml
+        400:
+          $ref: errors/400.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml
+  /content-problems/requests/{requestId}:
+    parameters:
+    - $ref: parameters/requestId-path.yaml
+    get:
+      operationId: get-content-problems
+      summary: Get the Content problems scenario response
+      tags:
+      - Content problems
+      description: |
+        Returns the status of the [asynchronous](ref:asynchronous-processes) [Run the content problems scenario](ref:post-content-problems) request. Operations with the `SUCCESS` status include fetched GREP and cURL data.
+      parameters:
+      - $ref: parameters/includeContentResponseBody-query.yaml
+      responses:
+        200:
+          description: |
+            The response provides the status of the request and its details.
+          headers:
+            X-RateLimit-Limit:
+              $ref: headers/X-RateLimit-Limit.yaml
+            X-RateLimit-Remaining:
+              $ref: headers/X-RateLimit-Remaining.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/contentProblemsResponse.json
+              schema:
+                $ref: schemas/contentProblemsResponse.yaml
+        401:
+          $ref: errors/401.yaml
+        403:
+          $ref: errors/403.yaml
+        404:
+          $ref: errors/404.yaml
+        405:
+          $ref: errors/405.yaml
+        429:
+          $ref: errors/429.yaml

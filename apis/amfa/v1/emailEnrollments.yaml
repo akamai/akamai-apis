@@ -1,0 +1,39 @@
+openapi: 3.0.0
+info:
+  title: Email enrollments
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/amfa/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: emailEnrollments.yaml
+paths:
+  /email-enrollments:
+    post:
+      operationId: post-send-enrollment-email
+      summary: Send enrollment email
+      tags:
+      - Email enrollments
+      description: |
+        Send enrollment email to a set of new users inviting them to Akamai MFA. This operation provides users with unique links to enroll and activate authentication devices in Akamai MFA.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/assignUsersById-example.json
+            schema:
+              $ref: schemas/assignUsers.yaml
+      responses:
+        200:
+          description: |
+            The enrollment email was successfully sent to the users.
+          content:
+            application/json:
+              example:
+                $ref: examples/assignUsersById-example.json
+              schema:
+                $ref: schemas/assignUsers.yaml

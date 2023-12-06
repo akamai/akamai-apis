@@ -1,0 +1,63 @@
+x-akamai:
+  file-path: paths/policy-ip-geo-firewall.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/ip-geo-firewall
+parameters:
+- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/policyId-path.yaml
+get:
+  operationId: get-policy-ip-geo-firewall
+  summary: Get the IP/Geo Firewall settings
+  tags:
+  - IP/Geo Firewall settings
+  description: |
+    Lists which network lists are used in the IP/Geo Firewall settings. In Control Center this method is called `mode`. In this API the method is called `blocked`. The response shows blocked and allowed IPs depending on which network lists you include and which version of the mode you choose. If you want to add or remove IP addresses from the network lists, use the [Network Lists API](https://techdocs.akamai.com/network-lists/reference/api). Note that subnet controls are a legacy item in Control Center and are not available through this API. _Products:_ All.
+  responses:
+    200:
+      description: |
+        Successfully retrieved the IP/Geo firewall settings.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/ip-geo-firewall-get-200.json
+          schema:
+            $ref: ../schemas/ip-geo-firewall-get-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-policy-ip-geo-firewall
+  summary: Update the IP Geo Firewall settings
+  tags:
+  - IP/Geo Firewall settings
+  description: |
+    Update the method and which network lists to use for IP/Geo firewall blocking. In Control Center this method is called `mode`. In this API the method is called `blocked`. Use `blockSpecificIPGeo` to block any IPs, geographies, or network lists you choose with this setting. Use `blockAllTrafficExceptAllowedIPs` to allow specific IPs or geographies that you choose to let through while the rest remain blocked. IPs you want to allow are contained in the `allowedIPNetworkLists`. It's important to verify the IPs you block are the ones you intend to block as it's easy to block wanted traffic by accident. Note that subnet controls are a legacy item in Control Center and are not available through this API. _Products:_ All.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/ip-geo-firewall-get-200.json
+        schema:
+          $ref: ../schemas/ip-geo-firewall-put.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the IP/Geo Firewall settings.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/ip-geo-firewall-get-200.json
+          schema:
+            $ref: ../schemas/ip-geo-firewall-put-200.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

@@ -1,0 +1,76 @@
+type: object
+x-akamai:
+  file-path: schemas/traffic-property.yaml
+additionalProperties: true
+required:
+- metadata
+- dataRows
+- links
+properties:
+  dataRows:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - timestamp
+      - datacenters
+      properties:
+        datacenters:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - datacenterId
+            - nickname
+            - trafficTargetName
+            - requests
+            - status
+            properties:
+              datacenterId:
+                type: number
+              nickname:
+                type: string
+              requests:
+                type: number
+              status:
+                type: string
+              trafficTargetName:
+                type: string
+        timestamp:
+          type: string
+          format: date-time
+  dataSummary:
+    type: object
+  links:
+    type: array
+    items:
+      $ref: ../schemas/http___json-schema.org_draft-04_hyper-schema__definitions_linkDescription
+  metadata:
+    type: object
+    additionalProperties: false
+    required:
+    - uri
+    - domain
+    - property
+    - start
+    - end
+    properties:
+      domain:
+        type: string
+      end:
+        type: string
+        format: date-time
+      interval:
+        type: string
+        enum:
+        - FIVE_MINUTE
+      property:
+        type: string
+      start:
+        type: string
+        format: date-time
+      uri:
+        type: string
+        format: uri

@@ -1,0 +1,157 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Deployments
+  version: v3
+servers:
+- url: https://{hostname}/etp-config/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: deployments.yaml
+paths:
+  /configs/{configId}/deployments:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-deployment
+      summary: Create a configuration deployment
+      tags:
+      - Deployment configuration
+      description: |
+        Creates a new  configuration deployment.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/deployment-post-request-200.json
+            schema:
+              $ref: schemas/deploymentPostRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            Location:
+              $ref: headers/location-header.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    get:
+      operationId: get-deployments
+      summary: List configuration deployments
+      tags:
+      - Deployment configuration
+      description: |
+        Returns all deployment history that the user has access to for the current  configuration.
+      parameters:
+      - $ref: parameters/deploymentQueryParams_deploymentStatuses.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/deployments-response-200.json
+              schema:
+                $ref: schemas/etpConfigurationDeploymentsAll.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/deployments/{configDeploymentId}:
+    parameters:
+    - $ref: parameters/configDeploymentId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-deployment
+      summary: Get a configuration deployment
+      tags:
+      - Deployment configuration
+      description: |
+        Returns details of a specific  configuration deployment.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/deployment-specific-response-200.json
+              schema:
+                $ref: schemas/etpConfigurationDeploymentSpecific.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/deployments/{configDeploymentId}/diff:
+    parameters:
+    - $ref: parameters/configDeploymentId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-deployment-diff
+      summary: List deployment changes
+      tags:
+      - Deployment changes
+      description: |
+        Provides details of deployment changes.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/deployment-diff-200.json
+              schema:
+                $ref: schemas/deploymentDiff.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/recentChanges:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-config-recent-changes
+      summary: List recent changes
+      tags:
+      - Deployment changes
+      description: |
+        Returns a list of all changes made since the last  configuration deployment.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/etp-configuration-deployment-changes-made-since-last-deployment-200.json
+              schema:
+                $ref: schemas/etpConfigurationDeploymentChangesMadeSinceLastDeployment.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml

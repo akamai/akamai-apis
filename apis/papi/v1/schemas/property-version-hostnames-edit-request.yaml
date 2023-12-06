@@ -1,0 +1,50 @@
+id: resource:/descriptors/papi/v1/schemas/EditPropertyVersionsHostnamesRequestV0.json#
+javaType: com.akamai.luna.papi.model.EditHostnameItem
+type: object
+description: |-
+  Updates the set of property hostnames that apply to a property version. You delete each hostname by specifying its string value. For additions, you need to specify a fuller object.
+  
+x-akamai:
+  file-path: schemas/property-version-hostnames-edit-request.yaml
+properties:
+  add:
+    type: array
+    description: |
+      Adds new hostnames to a property version's current set of hostnames.
+    items:
+      type: object
+      required:
+      - cnameFrom
+      properties:
+        certProvisioningType:
+          type: string
+          description: |
+            Indicates the certificate's provisioning type. Either the `CPS_MANAGED` type for the custom certificates you create with the [Certificate Provisioning System API](https://techdocs.akamai.com/cps/reference) (CPS), or `DEFAULT` for certificates created automatically. Note that you can't specify the `DEFAULT` value if your property hostname uses the `akamaized.net` domain suffix.
+          enum:
+          - DEFAULT
+          - CPS_MANAGED
+        cnameFrom:
+          type: string
+          description: |
+            The hostname that your end users see, indicated by the `Host` header in end user requests.
+        cnameTo:
+          type: string
+          description: |
+            The edge hostname you point the property hostname to so that you can start serving traffic through Akamai servers. This member corresponds to the edge hostname object's `edgeHostnameDomain` member.
+        cnameType:
+          type: string
+          description: |
+            Only one supported `EDGE_HOSTNAME` value.
+          enum:
+          - EDGE_HOSTNAME
+        edgeHostnameId:
+          type: string
+          description: |
+            Identifies each edge hostname. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ehn_` prefix.
+  remove:
+    type: array
+    description: |
+      Removes property hostnames from a property version's current set of hostnames.
+    items:
+      type: string
+$schema: http://json-schema.org/draft-04/schema#

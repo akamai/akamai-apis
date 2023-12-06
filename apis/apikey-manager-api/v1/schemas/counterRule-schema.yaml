@@ -1,0 +1,38 @@
+type: object
+description: |-
+  Contains information about a set of throttling conditions that cause the throttling counter to increment. This value may appear as `null` if you don't specify any conditions.
+  
+x-akamai:
+  file-path: schemas/counterRule-schema.yaml
+additionalProperties: false
+required:
+- type
+- values
+nullable: true
+properties:
+  id:
+    type: integer
+    description: |
+      The unique identifier for the throttling condition.
+    readOnly: true
+    minimum: 0
+  type:
+    type: string
+    description: |
+      The type of the throttling condition. Either `KEY` for conditions associated with API keys, `KEY_COLLECTION` for conditions associated with API collections, or `ACL_ENTRY` for conditions associated with API endpoints, resources, or HTTP methods.
+    enum:
+    - KEY
+    - KEY_COLLECTION
+    - ACL_ENTRY
+  values:
+    type: array
+    description: |
+      The specific values that trigger the throttling condition. If you selected `KEY` for the `type` member, specify API key integer IDs. If you selected `ACL_ENTRY` for the `type` member, specify strings that represent API endpoints, resources, or HTTP methods.
+    minItems: 1
+    maxItems: 10000
+    items:
+      oneOf:
+      - title: Integer
+        type: integer
+      - title: String
+        type: string

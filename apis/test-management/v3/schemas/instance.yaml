@@ -1,0 +1,83 @@
+type: object
+description: |-
+  Contains information about the diff found between the source URL and target URL, under a specific IP version, within a specific geolocation and on a specific browser, as configured in the test cases of the test definition that was run.
+  
+x-akamai:
+  file-path: schemas/instance.yaml
+additionalProperties: false
+required:
+- instanceId
+- testCaseId
+- sourceUrl
+- targetUrl
+- ipVersion
+- geoLocation
+- browser
+- parameterNames
+- isAccepted
+properties:
+  browser:
+    type: object
+    description: |
+      Object containing browser info.
+    additionalProperties: false
+    required:
+    - name
+    - version
+    properties:
+      name:
+        type: string
+        description: |
+          Name of the browser. The only available value is `chrome`.
+        enum:
+        - chrome
+      version:
+        type: string
+        description: |
+          Version of the browser.
+        minLength: 1
+  geoLocation:
+    type: string
+    description: |
+      Identifier of the geolocation.
+    minLength: 1
+  instanceId:
+    type: string
+    description: |
+      Unique identifier for each diff.
+    minLength: 1
+  ipVersion:
+    type: string
+    description: |
+      IP version used for this execution, either `IPV4` or `IPV6`.
+    enum:
+    - IPV4
+    - IPV6
+  isAccepted:
+    type: boolean
+    description: |
+      Whether the diff is accepted.
+    default: false
+  parameterNames:
+    type: array
+    description: |
+      List of strings which represents a hierarchy of keys deduced from the response header value.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  sourceUrl:
+    type: string
+    description: |
+      URL of the object in source environment.
+    format: uri
+  targetUrl:
+    type: string
+    description: |
+      URL of the object in target environment.
+    format: uri
+  testCaseId:
+    type: integer
+    description: |
+      Unique identifier of comparative test case the diff belongs to.
+    minimum: 0

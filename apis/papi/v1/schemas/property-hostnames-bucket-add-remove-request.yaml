@@ -1,0 +1,68 @@
+id: resource:/descriptors/papi/v1/schemas/CreateOrDeleteHostnameBucketV0.json#
+javaType: com.akamai.luna.papi.model.AddRemoveHostnameBucketRequest
+type: object
+description: |-
+  Adds and removes up to 1000 property hostnames per single request without incrementing the property version. Changes are automatically activated on the selected network. You remove each hostname by specifying its custom domain name that your end users see as a string value. For additions, you need to specify a fuller object.
+  
+x-akamai:
+  file-path: schemas/property-hostnames-bucket-add-remove-request.yaml
+required:
+- network
+properties:
+  add:
+    type: array
+    description: |
+      The property hostnames you want to add to a hostname bucket. You can specify up to 1000 new property hostnames in a single request.
+    items:
+      type: object
+      required:
+      - cnameType
+      - edgeHostnameId
+      - cnameFrom
+      - certProvisioningType
+      properties:
+        certProvisioningType:
+          type: string
+          description: |
+            Indicates the type of the certificate used in the property hostname. Either the `CPS_MANAGED` for the custom certificates you create with the [Certificate Provisioning System API](https://techdocs.akamai.com/cps/reference) (CPS), or `DEFAULT` for certificates deployed automatically. Note that you can't specify the `DEFAULT` value if your account hostname uses the `akamaized.net` domain suffix.
+          enum:
+          - CPS_MANAGED
+          - DEFAULT
+        cnameFrom:
+          type: string
+          description: |
+            The hostname that your end users see, indicated by the `Host` header in end user requests.
+        cnameType:
+          type: string
+          description: |
+            Only one supported `EDGE_HOSTNAME` value.
+          enum:
+          - EDGE_HOSTNAME
+        edgeHostnameId:
+          type: string
+          description: |
+            Identifies the edge hostname you mapped your traffic to on the production network. See [ID prefixes](ref:id-prefixes) for details on how to omit the ID's `ehn_` prefix.
+  network:
+    description: |
+      The network to activate on, either `STAGING` or `PRODUCTION`.
+    enum:
+    - STAGING
+    - PRODUCTION
+  note:
+    type: string
+    description: |
+      Assigns a log message to the request.
+  notifyEmails:
+    type: array
+    description: |
+      Email addresses to notify when the activation status changes.
+    minItems: 1
+    items:
+      type: string
+  remove:
+    type: array
+    description: |
+      The property hostnames you want to delete from the current set in the hostname bucket.
+    items:
+      type: string
+$schema: http://json-schema.org/draft-04/schema#

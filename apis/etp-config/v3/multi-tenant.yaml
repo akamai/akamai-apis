@@ -1,0 +1,187 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Tenant and Delegated Access
+  version: v3
+servers:
+- url: https://{hostname}/etp-config/v3
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: multi-tenant.yaml
+paths:
+  /configs/{configId}/onboard-tenant:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    post:
+      operationId: post-onboard-tenant
+      summary: Onboard a tenant
+      tags:
+      - Tenants
+      description: |
+        Onboards a new Tenant.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/tenant-onboard-post-request-200.json
+            schema:
+              $ref: schemas/TenantOnboardRequest.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+          headers:
+            configId:
+              $ref: headers/response-configId.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        406:
+          $ref: errors/already-onboarded-406.yaml
+  /configs/{configId}/tenants:
+    parameters:
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-tenants
+      summary: List all tenants
+      tags:
+      - Tenants
+      description: |
+        Returns a list of all tenant details.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/tenants-list-200.json
+              schema:
+                $ref: schemas/TenantsList.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+  /configs/{configId}/tenants/{tenantId}:
+    parameters:
+    - $ref: parameters/tenantId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-tenant
+      summary: Get a tenant
+      tags:
+      - Tenants
+      description: |
+        Returns a tenant details.
+      responses:
+        200:
+          description: |
+            Tenant onboard request details.
+          headers:
+            ETag:
+              $ref: headers/ETag.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/tenant-detail-200.json
+              schema:
+                $ref: schemas/tenant-detail.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    put:
+      operationId: put-tenant
+      summary: Update a tenant
+      tags:
+      - Tenants
+      description: |
+        Updates the specified tenant.
+      parameters:
+      - $ref: headers/if-match-header.yaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/tenant-detail-200.json
+            schema:
+              $ref: schemas/tenant-detail.yaml
+      responses:
+        200:
+          description: |
+            Successful response.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+    delete:
+      operationId: delete-tenant
+      summary: Remove a tenant
+      tags:
+      - Tenants
+      description: |
+        Deletes a specific tenant.
+      responses:
+        200:
+          description: |
+            Successful removed the tenant.
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml
+        412:
+          $ref: errors/precondition-failed-412.yaml
+  /configs/{configId}/tenants/{tenantId}/users:
+    parameters:
+    - $ref: parameters/tenantId-path.yaml
+    - $ref: parameters/configId-path.yaml
+    get:
+      operationId: get-tenant-users
+      summary: List the tenant user details
+      tags:
+      - Tenants
+      description: |
+        Lists details of users assigned to a tenant.
+      responses:
+        200:
+          description: |
+            Successful response.
+          content:
+            application/json:
+              example:
+                $ref: examples/tenant-user-list-200.json
+              schema:
+                $ref: schemas/tenant-user-list.yaml
+        400:
+          $ref: errors/validation-error-400.yaml
+        401:
+          $ref: errors/unauthorized-401.yaml
+        403:
+          $ref: errors/InsufficientPermissions-403.yaml
+        404:
+          $ref: errors/not-found-404.yaml

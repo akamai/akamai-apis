@@ -1,0 +1,245 @@
+openapi: 3.0.0
+info:
+  title: Access keys
+  version: '1'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://{hostname}/cam/v1
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: access-keys.yaml
+paths:
+  /access-keys:
+    post:
+      operationId: post-access-key
+      summary: Create an access key
+      tags:
+      - Access keys
+      description: |
+        Creates a new access key. An access key's name needs to be unique within a user account. Once an access key has been created, it's available on both the staging and production Akamai networks.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/access-key-post.json
+            schema:
+              $ref: schemas/access-key-post.yaml
+      responses:
+        202:
+          description: |
+            The response contains the `requestId` assigned to the request to create a new access key. It also includes the `Location` and `Retry-After` response headers that apply to the request.
+          headers:
+            Location:
+              $ref: headers/location.yaml
+            Retry-After:
+              $ref: headers/retry-after.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/access-key-post-202.json
+              schema:
+                $ref: schemas/access-key-post-202.yaml
+        400:
+          $ref: errors/400.yaml
+        409:
+          $ref: errors/409.yaml
+    get:
+      operationId: get-access-keys
+      summary: List access keys
+      tags:
+      - Access keys
+      description: |
+        Returns detailed information about all access keys available to the current user account.
+      parameters:
+      - $ref: parameters/versionGuid-query.yaml
+      responses:
+        200:
+          description: |
+            The response contains a list of requested access keys.
+          content:
+            application/json:
+              example:
+                $ref: examples/access-keys-get-200.json
+              schema:
+                $ref: schemas/access-keys-get-200.yaml
+  /access-keys/{accessKeyUid}:
+    parameters:
+    - $ref: parameters/accessKeyUid-path.yaml
+    get:
+      operationId: get-access-key
+      summary: Get an access key
+      tags:
+      - Access keys
+      description: |
+        Returns details for a specific access key.
+      responses:
+        200:
+          description: |
+            The response contains details for the selected access key.
+          content:
+            application/json:
+              example:
+                $ref: examples/access-key-get-200.json
+              schema:
+                $ref: schemas/access-key-get-200.yaml
+        404:
+          $ref: errors/404.yaml
+  /access-keys/{accessKeyUid}/versions:
+    parameters:
+    - $ref: parameters/accessKeyUid-path.yaml
+    post:
+      operationId: post-access-key-version
+      summary: Create an access key version
+      tags:
+      - Access key versions
+      description: |
+        Rotates an access key to a new version. You should only need to do this if your cloud provider credentials have changed, for example because they've expired or been compromised. Only two versions of an access key can exist and be active at the same time. If you have two access key versions you have to [delete](ref:delete-access-key-version) one of them before you can create another version.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/access-key-credentials-post.json
+            schema:
+              $ref: schemas/access-key-credentials-post.yaml
+      responses:
+        202:
+          description: |
+            The response contains the `requestId` assigned to the request to create a new version of an access key. It also includes the `Location` and `Retry-After` response headers that apply to the request.
+          headers:
+            Location:
+              $ref: headers/location.yaml
+            Retry-After:
+              $ref: headers/retry-after.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/access-key-version-post-202.json
+              schema:
+                $ref: schemas/access-key-version-post-202.yaml
+        404:
+          $ref: errors/404.yaml
+        409:
+          $ref: errors/409.yaml
+    get:
+      operationId: get-access-key-versions
+      summary: List access key versions
+      tags:
+      - Access key versions
+      description: |
+        Returns detailed information about all of the versions for a specific access key.
+      responses:
+        200:
+          description: |
+            The response contains a list of requested access key versions.
+          content:
+            application/json:
+              example:
+                $ref: examples/access-key-versions-get-200.json
+              schema:
+                $ref: schemas/access-key-versions-get-200.yaml
+  /access-keys/{accessKeyUid}/versions/{version}:
+    parameters:
+    - $ref: parameters/version-path.yaml
+    - $ref: parameters/accessKeyUid-path.yaml
+    get:
+      operationId: get-access-key-version
+      summary: Get an access key version
+      tags:
+      - Access key versions
+      description: |
+        Returns detailed information for a specific version of an access key.
+      responses:
+        200:
+          description: |
+            Response contains details of the access key version.
+          content:
+            application/json:
+              example:
+                $ref: examples/access-key-version-get-200.json
+              schema:
+                $ref: schemas/access-key-version-get-200.yaml
+        404:
+          $ref: errors/404.yaml
+    delete:
+      operationId: delete-access-key-version
+      summary: Delete an access key version
+      tags:
+      - Access key versions
+      description: |
+        Deletes a specific version of an access key. This operation works asynchronously. If you receive a successful 202 response, the request has been accepted and it's been added to the queue for deletion. You can use the `Location` header that's returned in the response to check the status of the request. You can't delete an access key version if it is still in use.
+      responses:
+        202:
+          description: |
+            The response contains various data including the access key version as well as the `Location` response header.
+          headers:
+            Location:
+              $ref: headers/location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/access-key-version-delete-202.json
+              schema:
+                $ref: schemas/access-key-version-get-200.yaml
+        404:
+          $ref: errors/404.yaml
+        409:
+          $ref: errors/409.yaml
+  /access-keys/{accessKeyUid}/versions/{version}/properties:
+    parameters:
+    - $ref: parameters/version-path.yaml
+    - $ref: parameters/accessKeyUid-path.yaml
+    get:
+      operationId: get-access-key-version-properties
+      summary: Look up properties
+      tags:
+      - Access key version properties
+      description: |
+        Returns information about all of the Property Manager properties that use a specific version of an access key. This operation gets the data directly. To avoid any latency problems, run the [Perform a property lookup request asynchronously](ref:get-property-lookup) operation.
+      responses:
+        200:
+          description: |
+            The response contains a list of properties that use the specified version of an access key.
+          content:
+            application/json:
+              example:
+                $ref: examples/properties-get-200.json
+              schema:
+                $ref: schemas/properties-get-200.yaml
+        404:
+          $ref: errors/404.yaml
+        500:
+          $ref: errors/500.yaml
+  /access-keys/{accessKeyUid}/versions/{version}/property-lookup-id:
+    parameters:
+    - $ref: parameters/version-path.yaml
+    - $ref: parameters/accessKeyUid-path.yaml
+    get:
+      operationId: get-async-version-property-lookup
+      summary: Get an ID for an asynchronous property lookup request
+      tags:
+      - Access key version properties
+      description: |
+        Get the unique identifier used to perform an [asynchronous property lookup request](ref:get-property-lookup).
+      responses:
+        202:
+          description: |
+            Response contains the unique ID that Akamai created for a lookup request and location to it in 'Location' header. The response contains the `requestId` assigned to the request to create a new access key. It also includes the `Location` and `Retry-After` response headers that apply to the request.
+          headers:
+            Location:
+              $ref: headers/location.yaml
+            Retry-After:
+              $ref: headers/retry-after.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/property-lookup-get-202.json
+              schema:
+                $ref: schemas/property-lookup-get-202.yaml
+        404:
+          $ref: errors/404.yaml
+        500:
+          $ref: errors/500.yaml

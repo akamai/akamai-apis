@@ -1,0 +1,56 @@
+x-akamai:
+  file-path: paths/bulk-activations.yaml
+  path-for-file: /bulk/activations
+post:
+  operationId: post-bulk-activations
+  summary: Bulk activate a set of properties
+  tags:
+  - Bulk activations
+  description: |
+    Bulk activate a set of property versions. Alternately, perform a bulk [fallback](ref:property-activation-error-handling) to the previous activation within an hour of the previous bulk activation. Base the set of versions to activate on the results of a [bulk patch](ref:get-bulk-patch) operation, which you use in this operation's request. This operation launches an asynchronous process to update properties. To check its progress, run the [List bulk-activated properties](ref:get-bulk-activation) operation, whose link is available in the `Location` header or `bulkActivationLink` member of this operation's response. See [Bulk Search and Update](ref:bulk-search-and-update) for overall guidance on this feature.
+  parameters:
+  - $ref: ../parameters/PAPI-Use-Prefixes-header.yaml
+  - $ref: ../parameters/contractId-optional-bulk.yaml
+  - $ref: ../parameters/groupId-optional-bulk.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/bulk-activation-create-request.json
+        schema:
+          $ref: ../schemas/bulk-property-activation-create-request.yaml
+  responses:
+    202:
+      description: |
+        The response links the bulk activation process.
+      headers:
+        Location:
+          $ref: ../headers/Location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/bulk-activation-create-response.json
+          schema:
+            $ref: ../schemas/bulk-property-activation-post-response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
+    415:
+      $ref: ../errors/415.yaml
+    429:
+      $ref: ../errors/429.yaml
+    500:
+      $ref: ../errors/500.yaml
+x-akamai-descriptor-tools:
+  displayName: bulkPropertyActivations
+  group: Bulk property activations

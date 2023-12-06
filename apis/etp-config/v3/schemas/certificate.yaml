@@ -1,0 +1,89 @@
+type: object
+description: |-
+  Contains data about a TLS certificate.
+  
+x-akamai:
+  file-path: schemas/certificate.yaml
+additionalProperties: false
+required:
+- certificate
+properties:
+  caMode:
+    type: string
+    description: |
+      Mode of the certificate, either `CUSTOMER` or `AKAMAI`.
+    enum:
+    - AKAMAI
+    - CUSTOMER
+  certificate:
+    type: string
+    description: |
+      Value of the certificate in PEM format. ASCII, base64-encoded text starting with `-----BEGIN CERTIFICATE-----` and ending with `-----END CERTIFICATE-----`.
+    format: byte
+  certificateId:
+    type: integer
+    description: |
+      A unique identifier for each certificate.
+    readOnly: true
+    minimum: 1
+  certificateRequest:
+    type: string
+    description: |
+      Value for the certificate signing request (CSR). ASCII, base64-encoded text starting with `-----BEGIN CERTIFICATE REQUEST-----` and ending with `-----END CERTIFICATE REQUEST-----`.
+    format: byte
+  createdBy:
+    type: string
+    description: |
+      Name of the user who created this certificate.
+    minLength: 1
+  createdDate:
+    type: string
+    description: |
+      ISO 8601 timestamp marking the certificate's creation.
+    readOnly: true
+    format: date-time
+  expiredDate:
+    type: string
+    description: |
+      ISO 8601 timestamp marking the certificate's expiration.
+    readOnly: true
+    format: date-time
+  fingerprint:
+    type: string
+    description: |
+      The certificate's hexadecimal fingerprint.
+    minLength: 1
+  issuedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp marking the certificate's issue.
+    readOnly: true
+    format: date-time
+  modifiedBy:
+    type: string
+    description: |
+      Name of the user who most recently modified this certificate. If there haven't been any modifications, the value matches `createdBy`.
+    minLength: 1
+  modifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp marking this certificate's last modification. If there haven't been any modifications, the value matches `createdDate`.
+    readOnly: true
+    format: date-time
+  status:
+    type: string
+    description: |
+      The certificate's deployment status. Either `CREATING`, `UPDATING`, `PENDING_DOWNLOAD`, `PENDING_DISTRIBUTION`, `PENDING_ACTIVATION`, `ACTIVATING`, `ACTIVATED`, `DEACTIVATING`, `DEACTIVATED`, `EXPIRED` or `INCOMPLETE`.
+    readOnly: true
+    enum:
+    - CREATING
+    - INCOMPLETE
+    - UPDATING
+    - PENDING_DOWNLOAD
+    - PENDING_DISTRIBUTION
+    - PENDING_ACTIVATION
+    - ACTIVATING
+    - ACTIVATED
+    - DEACTIVATING
+    - DEACTIVATED
+    - EXPIRED

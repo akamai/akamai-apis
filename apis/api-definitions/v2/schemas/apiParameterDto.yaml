@@ -1,0 +1,202 @@
+type: object
+description: |-
+  Contains information about a method's parameter.
+  
+x-akamai:
+  file-path: schemas/apiParameterDto.yaml
+additionalProperties: false
+required:
+- apiParameterName
+- apiParameterType
+- apiParameterRequired
+- apiParameterLocation
+properties:
+  apiChildParameters:
+    type: array
+    description: |
+      The collection of child JSON members or XML elements for JSON or XML body type parameters.
+    items:
+      $ref: apiParameterDto-nested.yaml
+  apiParamLogicId:
+    type: integer
+    description: |
+      The unique identifier for the parameter across all endpoint versions.
+    readOnly: true
+  apiParameterContentType:
+    type: string
+    description: |
+      The content type of the parameter. Only applicable for top level body parameters.
+    enum:
+    - json
+    - xml
+    - urlencoded
+    - json/xml
+    - any
+    - none
+  apiParameterId:
+    type: integer
+    description: |
+      The unique identifier for the parameter.
+    readOnly: true
+  apiParameterLocation:
+    type: string
+    description: |
+      The location of the parameter in an HTTP request, either `query`, `header`, `path`, `cookie`, or `body` for a JSON or XML body type parameter.
+    enum:
+    - query
+    - body
+    - header
+    - path
+    - cookie
+  apiParameterName:
+    type: string
+    description: |
+      The name of the parameter. If the corresponding `apiParameterLocation` is `path`, ensure that this value matches the parameter name you specified in the `resourcePath`.
+  apiParameterNotes:
+    type: string
+    description: |
+      The description to clarify the parameter's function. If you specify an empty string in the request or omit this member from the object, the JSON response reflects it as `null`.
+    nullable: true
+  apiParameterRequired:
+    type: boolean
+    description: |
+      Specifies whether the API user needs to specify the parameter. If the corresponding `apiParameterLocation` is `path`, set this member to `true`.
+  apiParameterRestriction:
+    type: object
+    description: |
+      Contains information about restrictions and XML representation rules specified for the parameter.
+    additionalProperties: false
+    nullable: true
+    properties:
+      arrayRestriction:
+        type: object
+        description: |
+          Contains information about array restrictions for array type parameters. Define this object only if you enabled the corresponding `array` member.
+        additionalProperties: false
+        nullable: true
+        properties:
+          minItems:
+            type: integer
+            description: |
+              The minimum allowed number of array items.
+          maxItems:
+            type: integer
+            description: |
+              The maximum allowed number of array items.
+          uniqueItems:
+            type: boolean
+            description: |
+              Whether the array contains only unique items.
+          collectionFormat:
+            type: string
+            description: |
+              The format of the array that specifies how you separated array values, either the default `csv` for comma separated values, `ssv` for space separated values, `tsv` for tab separated values, `pipes` for pipe separated values, or `multi` for several parameter instances instead of several values for a single instance.
+            default: csv
+            enum:
+            - csv
+            - ssv
+            - tsv
+            - pipes
+            - multi
+      lengthRestriction:
+        type: object
+        description: |
+          Contains information about length restrictions for string type parameters.
+        additionalProperties: false
+        nullable: true
+        properties:
+          lengthMax:
+            type: integer
+            description: |
+              The maximum allowed number of characters in the string.
+            nullable: true
+          lengthMin:
+            type: integer
+            description: |
+              The minimum allowed number of characters in the string.
+            nullable: true
+      numberRangeRestriction:
+        type: object
+        description: |
+          Contains information about range restrictions for number type parameters.
+        additionalProperties: false
+        nullable: true
+        properties:
+          numberRangeMax:
+            type: number
+            description: |
+              The maximum range restriction.
+            nullable: true
+          numberRangeMin:
+            type: number
+            description: |
+              The minimum range restriction.
+            nullable: true
+      rangeRestriction:
+        type: object
+        description: |
+          Contains information about range restrictions for integer type parameters.
+        additionalProperties: false
+        nullable: true
+        properties:
+          rangeMax:
+            type: integer
+            description: |
+              The maximum range restriction.
+            nullable: true
+          rangeMin:
+            type: integer
+            description: |
+              The minimum range restriction.
+            nullable: true
+      responseRestriction:
+        type: object
+        additionalProperties: false
+        properties:
+          maxBodySize:
+            type: string
+            description: |
+              Limit how large the response body can be before tripping the firewall action. The default is `SIZE_6K`. You can choose `SIZE_8K`, `SIZE_12K`, or `NO_LIMIT`, which allows a response of any size.
+            enum:
+            - SIZE_6K
+            - SIZE_8K
+            - SIZE_12K
+            - NO_LIMIT
+          statusCodes:
+            type: array
+            description: |
+              The response status codes to match to a particular response body format. A `null` or empty value means the response body definition applies to any response body.
+            nullable: true
+            items:
+              type: integer
+      xmlConversionRule:
+        $ref: xmlRestrictionDto.yaml
+  apiParameterType:
+    type: string
+    description: |
+      The data type of the parameter, either `string`, `integer`, `number`, `boolean`, or `json/xml` for JSON or XML objects.
+    enum:
+    - string
+    - integer
+    - number
+    - boolean
+    - json/xml
+  apiResourceMethParamId:
+    type: integer
+    description: |
+      The unique identifier for the parameter's parent method.
+    nullable: true
+    readOnly: true
+  array:
+    type: boolean
+    description: |
+      Whether the parameter can express more than one value. This member is only applicable for `apiChildParameters` that you can specify if the corresponding `apiParameterLocation` is `body` and the `apiParameterType` is `json/xml`. If you enable this, also define the `arrayRestriction` member.
+  pathParamLocationId:
+    type: number
+    description: |
+      The index of a segment that includes a path parameter in a resource path. For example, given a path `\books\{bookId}`, the `books` segment has index `0`, and the path parameter `{bookId}` has index `1`.
+    nullable: true
+  response:
+    type: boolean
+    description: |
+      Whether the parameter is within a response type.

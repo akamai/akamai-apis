@@ -1,0 +1,66 @@
+type: object
+description: |-
+  Provides details about the custom HTTPS endpoint connector in a stream.
+  
+x-akamai:
+  file-path: schemas/HTTPSSavedConnector.yaml
+title: HTTPS
+additionalProperties: false
+required:
+- connectorType
+- connectorName
+- authenticationType
+- url
+- connectorId
+- compressLogs
+properties:
+  authenticationType:
+    type: string
+    description: |
+      Either `NONE` for no authentication, or `BASIC`. For basic authentication, provide the username and password you set in your custom HTTPS endpoint.
+    enum:
+    - BASIC
+    - NONE
+  compressLogs:
+    type: boolean
+    description: |
+      Enables gzip compression for a log file sent to a destination. If not set, this member's value is `false` by default.
+    default: false
+  connectorId:
+    type: integer
+    description: |
+      Identifies the connector you assign to the stream.
+  connectorName:
+    type: string
+    description: |
+      The name of the connector.
+  connectorType:
+    type: string
+    description: |
+      The name of the connector type. Set it to `HTTPS` for this connector type.
+    enum:
+    - HTTPS
+  contentType:
+    type: string
+    description: |
+      The type of the resource passed in the request's custom header.
+  customHeaderName:
+    type: string
+    description: |
+      A human-readable name for the request's custom header, containing only alphanumeric, dash, and underscore characters.
+  customHeaderValue:
+    type: string
+    description: |
+      The custom header's contents passed with the request that contains information about the client connection.
+  mTLS:
+    type: string
+    description: |
+      Identifies if the stream has the mTLS authentication enabled. The response returns this field only if you pass the `clientCert` and `clientKey` members while creating or editing a stream.
+  tlsHostname:
+    type: string
+    description: |
+      The hostname that verifies the server's certificate and matches the Subject Alternative Names (SANs) in the certificate. If not provided, DataStream fetches the hostname from the endpoint URL.
+  url:
+    type: string
+    description: |
+      Enter the secure URL where you want to send and store your logs. You can use Akamaized property hostnames as endpoint URLs. See [Stream logs to a custom HTTPS endpoint](doc:stream-custom-https#akamaized-hostname-as-endpoint).
