@@ -65,6 +65,4 @@ or the [README](./README.md) for more information.
 | [Security Information and Event Management](apis/siem/v1) | `siem` | Integrate third-party SIEM applications with Akamai security solutions. ([Learn more...](https://techdocs.akamai.com/siem-integration/reference)) |
 | [Service-Level Agreement](apis/sla-api/v1) | `sla-api` | Access the SLA test configurations and the resulting reports. ([Learn more...](https://techdocs.akamai.com/sla/reference)) |
 | [Site Shield](apis/siteshield/v1) | `siteshield` | Hide websites and applications from the Internet and restrict clients from accessing the origin. ([Learn more...](https://techdocs.akamai.com/site-shield/reference)) |
-| [Test Center v1](apis/test-management/v1) | `test-management/v1` | Run functional and comparative tests to check how configuration changes affect your configuration. ([Learn more...](https://techdocs.akamai.com/test-ctr/reference)) |
-| [Test Center v2](apis/test-management/v2) | `test-management/v2` | Run functional and comparative tests to check how configuration changes affect your configuration. ([Learn more...](https://techdocs.akamai.com/test-ctr/reference)) |
 | [Test Center v3](apis/test-management/v3) | `test-management/v3` | Run functional tests to check how configuration changes affect your configuration. ([Learn more...](https://techdocs.akamai.com/test-ctr/reference)) |
