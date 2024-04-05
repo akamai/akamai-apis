@@ -2,14 +2,10 @@ openapi: 3.0.0
 info:
   title: Adaptive Media Delivery
   version: '1'
-  license:
-    name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0.html
-servers:
-- url: https://{hostname}/media-delivery-reports/v1
 x-akamai:
   auth-type: EDGE_GRID
-  file-path: AdaptiveMediaDelivery.yaml
+servers:
+- url: https://{hostname}/media-delivery-reports/v1
 paths:
   /adaptive-media-delivery/data:
     get:
@@ -38,14 +34,14 @@ paths:
       - $ref: parameters/enableCPCodeName-query.yaml
       responses:
         200:
-          description: |
-            OK. Empty rows are returned in the response body when there's no available data.
           content:
             application/json:
               example:
                 $ref: examples/get-adaptive-media-delivery-data-200.json
               schema:
                 $ref: schemas/data.yaml
+          description: |
+            OK. The response includes empty `rows` when there's no available data.
   /adaptive-media-delivery/data-stores:
     get:
       operationId: get-adaptive-media-delivery-data-stores
@@ -56,17 +52,15 @@ paths:
         Data stores are collections of reporting dimensions and the individual metrics supported for use with those dimensions. Each data store is unique to its delivery product. For example, you can't combine Adaptive Media Delivery's dimensions and metrics with those from another product in this API. This operation's response can be very long, so the example here is truncated.
       responses:
         200:
-          description: |
-            OK. Empty rows are returned in the response body when there's no available data.
           content:
             application/json:
               example:
                 $ref: examples/list-data-stores-adaptive-media-delivery-200-trunc.json
               schema:
                 $ref: schemas/dataStores.yaml
+          description: |
+            OK. The response includes empty `rows` when there's no available data.
   /adaptive-media-delivery/data-stores/{dataStoreId}:
-    parameters:
-    - $ref: parameters/dataStoreId-path.yaml
     get:
       operationId: get-adaptive-media-delivery-data-stores-datastoreid
       summary: Get an Adaptive Media Delivery data store
@@ -76,14 +70,16 @@ paths:
         This fetches a list of dimensions and metrics used with AMD, as well as the aggregation interval, purge interval, maximum allowed query interval, and other details for a data store you specify. Responses can be very long, so the example here is truncated.
       responses:
         200:
-          description: |
-            OK. Empty rows are returned in the response body when there's no available data.
           content:
             application/json:
               example:
                 $ref: examples/get-data-store-adaptive-media-delivery-200-trunc.json
               schema:
-                $ref: schemas/dataStores.yaml
+                $ref: schemas/dataStore.yaml
+          description: |
+            OK. The response includes empty `rows` when there's no available data.
+    parameters:
+    - $ref: parameters/dataStoreId-path.yaml
   /adaptive-media-delivery/realtime-data:
     get:
       operationId: get-adaptive-media-delivery-realtime-data
@@ -104,11 +100,11 @@ paths:
       - $ref: parameters/enableCPCodeName-query.yaml
       responses:
         200:
-          description: |
-            OK. Empty rows are returned in the response body when there's no available data.
           content:
             application/json:
               example:
                 $ref: examples/get-adaptive-media-delivery-data-200.json
               schema:
                 $ref: schemas/data.yaml
+          description: |
+            OK. The response includes empty `rows` when there's no available data.

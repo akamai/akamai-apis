@@ -2,207 +2,151 @@ openapi: 3.0.0
 info:
   title: Media Services Live 4
   version: v1
-  license:
-    name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0.html
-servers:
-- url: https://{hostname}/media-reports/v1
 x-akamai:
   auth-type: EDGE_GRID
-  file-path: MediaServicesLive_HTTPIngest.yaml
+servers:
+  - url: https://{hostname}/media-reports/v1
 paths:
   /media-services-live/http-ingest/data:
     get:
       operationId: get-http-ingest-data
       summary: Get Media Services Live 4 data
       tags:
-      - Media Services Live 4
+        - Media Services Live 4
       description: |
         Retrieves Media Services Live 4 data for the given parameters.
       parameters:
-      - $ref: parameters/cpcodesParamOp_cpcodes.yaml
-      - $ref: parameters/dimParamOp_dimensions.yaml
-      - $ref: parameters/dimParamOp_metrics.yaml
-      - $ref: parameters/rangeParamOp_endDate.yaml
-      - $ref: parameters/rangeParamOp_startDate.yaml
-      - $ref: parameters/batchParamOp_offset.yaml
-      - $ref: parameters/batchParamOp_limit.yaml
-      - $ref: parameters/jsonFiltersParamOp_filterParams.yaml
-      - $ref: parameters/jsonFiltersParamOp_sortParams.yaml
-      - $ref: parameters/streamsParamOp_streams.yaml
-      - $ref: parameters/aggNoKeywordParamOp_aggregation.yaml
+        - $ref: parameters/cpcodesParamOp_cpcodes.yaml
+        - $ref: parameters/dimParamOp_dimensions.yaml
+        - $ref: parameters/dimParamOp_metrics.yaml
+        - $ref: parameters/rangeParamOp_endDate.yaml
+        - $ref: parameters/rangeParamOp_startDate.yaml
+        - $ref: parameters/batchParamOp_offset.yaml
+        - $ref: parameters/batchParamOp_limit.yaml
+        - $ref: parameters/jsonFiltersParamOp_filterParams.yaml
+        - $ref: parameters/jsonFiltersParamOp_sortParams.yaml
+        - $ref: parameters/streamsParamOp_streams.yaml
+        - $ref: parameters/aggNoKeywordParamOp_aggregation.yaml
       responses:
         200:
-          description: |
-            OK. If the report yields an empty data set, the response yields an empty set of rows.
           content:
             application/json:
               example:
                 $ref: examples/get-http-ingest-data-200.json
               schema:
-                $ref: schemas/dataStore.yaml
+                $ref: schemas/data.yaml
+          description: |
+            OK. If the report yields an empty data set, the response yields an empty set of rows.
   /media-services-live/http-ingest/data-stores:
     get:
       operationId: get-http-data-stores
-      summary: Get Media Services Live 4 data stores
+      summary: List Media Services Live 4 data stores
       tags:
-      - Media Services Live 4
+        - Media Services Live 4
       description: |
         Retrieves Media Services Live 4 data stores for the specified parameters.
       responses:
         200:
-          description: |
-            Successful response.
           content:
             application/json:
               example:
                 $ref: examples/get-http-ingest-datastore-200.json
               schema:
-                $ref: schemas/dataStore.yaml
+                $ref: schemas/dataStores.yaml
+          description: |
+            Successful response.
   /media-services-live/http-ingest/data-stores/{dataStoreId}:
     parameters:
-    - $ref: parameters/dataStoreId-path.yaml
+      - $ref: parameters/dataStoreId-path.yaml
     get:
       operationId: get-http-ingest-data-store
       summary: Get a Media Services Live 4 data store
       tags:
-      - Media Services Live 4
+        - Media Services Live 4
       description: |
         Retrieves a specific Media Services Live 4 data store, based on the `dataStoreId`.
       responses:
         200:
-          description: |
-            Successful response.
           content:
             application/json:
               example:
                 $ref: examples/get-http-ingest-datastores-id.json
               schema:
-                $ref: schemas/data.yaml
-  /media-services-live/http-ingest/dimensions:
-    get:
-      operationId: get-msl-http-ingest-dimensions
-      summary: List Media Services Live 4 dimensions
-      tags:
-      - Media Services Live 4
-      description: |
-        Retrieves all of the dimensions available for HTTP Ingest (Media Services Live 4).
-      responses:
-        200:
+                $ref: schemas/dataStore.yaml
           description: |
-            OK. If the report yields an empty data set, the response yields an empty set of rows.
-          content:
-            application/json:
-              example:
-                $ref: examples/list-http-ingest-dimensions-200.json
-              schema:
-                $ref: schemas/epSwitchData.yaml
+            Successful response.
+
   /media-services-live/http-ingest/ep-switch/data:
     get:
       operationId: get-ep-switch-data
       summary: Get Media Services Live 4 entry point switch information
       tags:
-      - Media Services Live 4
+        - Media Services Live 4
       description: |
         Retrieves information about the entry point switches that occurred in a given time period.
       parameters:
-      - $ref: parameters/cpcodesParamOp_cpcodes.yaml
-      - $ref: parameters/startDate_startDate.yaml
-      - $ref: parameters/startDate_endDate.yaml
-      - $ref: parameters/batchParamOp_limit.yaml
-      - $ref: parameters/batchParamOp_offset.yaml
-      - $ref: parameters/streamsParamOp_streams.yaml
+        - $ref: parameters/cpcodesParamOp_cpcodes.yaml
+        - $ref: parameters/startDate_startDate.yaml
+        - $ref: parameters/startDate_endDate.yaml
+        - $ref: parameters/batchParamOp_limit.yaml
+        - $ref: parameters/batchParamOp_offset.yaml
+        - $ref: parameters/streamsParamOp_streams.yaml
       responses:
         200:
-          description: |
-            OK. If the report yields an empty data set, the response yields an empty set of rows.
           content:
             application/json:
               example:
                 $ref: examples/get-entry-point-switch-annotations-200.json
               schema:
-                $ref: schemas/epSwitchData.yaml
-  /media-services-live/http-ingest/metrics:
-    get:
-      operationId: get-msl-http-ingest-metrics
-      summary: List Media Services Live 4 metrics
-      tags:
-      - Media Services Live 4
-      description: |
-        Retrieves all of the metrics available for HTTP Ingest (Media Services Live 4).
-      responses:
-        200:
+                $ref: schemas/data.yaml
           description: |
             OK. If the report yields an empty data set, the response yields an empty set of rows.
-          content:
-            application/json:
-              example:
-                $ref: examples/list-http-ingest-metrics-200.json
-              schema:
-                $ref: schemas/metrics.yaml
+
   /media-services-live/http-ingest/origin-shield/data:
     get:
       operationId: get-media-services-live-http-ingest-origin-shield-data
       summary: Get Media Services Live 4 Origin Shield data
       tags:
-      - Media Services Live 4
+        - Media Services Live 4
       description: |
         Retrieves HTTP Ingest Origin Shield data for the given parameters. You can query data collected at a one minute aggregation with ten percent sampling frequency and a purge window of seven days. The maximum duration is two minutes per query.
       parameters:
-      - $ref: parameters/cpcodesParamOp_cpcodes.yaml
-      - $ref: parameters/dimParamOp_dimensions.yaml
-      - $ref: parameters/dimParamOp_metrics.yaml
-      - $ref: parameters/rangeParamOp_endDate.yaml
-      - $ref: parameters/rangeParamOp_startDate.yaml
-      - $ref: parameters/batchParamOp_offset.yaml
-      - $ref: parameters/batchParamOp_limit.yaml
-      - $ref: parameters/jsonFiltersParamOp_filterParams.yaml
-      - $ref: parameters/jsonFiltersParamOp_sortParams.yaml
-      - $ref: parameters/streamsParamOp_streams.yaml
-      - $ref: parameters/aggNoKeywordParamOp_aggregation.yaml
+        - $ref: parameters/cpcodesParamOp_cpcodes.yaml
+        - $ref: parameters/dimParamOp_dimensions.yaml
+        - $ref: parameters/dimParamOp_metrics.yaml
+        - $ref: parameters/rangeParamOp_endDate.yaml
+        - $ref: parameters/rangeParamOp_startDate.yaml
+        - $ref: parameters/batchParamOp_offset.yaml
+        - $ref: parameters/batchParamOp_limit.yaml
+        - $ref: parameters/jsonFiltersParamOp_filterParams.yaml
+        - $ref: parameters/jsonFiltersParamOp_sortParams.yaml
+        - $ref: parameters/streamsParamOp_streams.yaml
+        - $ref: parameters/aggNoKeywordParamOp_aggregation.yaml
       responses:
         200:
-          description: |
-            OK. If the report yields an empty data set, the response yields an empty set of rows.
           content:
             application/json:
               example:
                 $ref: examples/get-http-ingest-origin-shield-data-200.json
               schema:
-                $ref: schemas/origin-shieldData.yaml
-  /media-services-live/http-ingest/origin-shield/dimensions:
-    get:
-      operationId: get-ingest-origin-shield-dimensions
-      summary: List Media Services Live 4 Origin Shield dimensions
-      tags:
-      - Media Services Live 4
-      description: |
-        Retrieves all of the dimensions available for HTTP Ingest (Media Services Live 4).
-      responses:
-        200:
+                $ref: schemas/data.yaml
           description: |
             OK. If the report yields an empty data set, the response yields an empty set of rows.
+  /media-services-live/http-ingest/origin-shield/data-stores:
+    get:
+      operationId: get-http-ingest-origin-shield-data-stores
+      summary: List Media Services Live 4 Origin Shield data stores
+      tags:
+        - Media Services Live 4
+      description: |
+        Retrieves Media Services Live 4 Origin Shield data stores for the specified parameters.
+      responses:
+        200:
           content:
             application/json:
               example:
-                $ref: examples/list-http-ingest-os-dimensions-200.json
+                $ref: examples/get-http-ingest-os-datastore-200.json
               schema:
-                $ref: schemas/dimensions.yaml
-  /media-services-live/http-ingest/origin-shield/metrics:
-    get:
-      operationId: get-ingest-origin-shield-metrics
-      summary: List Media Services Live 4 Origin Shield metrics
-      tags:
-      - Media Services Live 4
-      description: |
-        Retrieves all of the metrics available for Media Services Live 4 (HLS/HDS/DASH).
-      responses:
-        200:
+                $ref: schemas/dataStores.yaml
           description: |
-            OK. If the report yields an empty data set, the response yields an empty set of rows.
-          content:
-            application/json:
-              example:
-                $ref: examples/list-http-ingest-os-metrics-200.json
-              schema:
-                $ref: schemas/metrics.yaml
+            Successful response.
