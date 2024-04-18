@@ -2,14 +2,10 @@ openapi: 3.0.0
 info:
   title: Download Delivery
   version: '1'
-  license:
-    name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0.html
-servers:
-- url: https://{hostname}/media-delivery-reports/v1
 x-akamai:
   auth-type: EDGE_GRID
-  file-path: DownloadDelivery.yaml
+servers:
+- url: https://{hostname}/media-delivery-reports/v1
 paths:
   /download-delivery/data:
     get:
@@ -20,30 +16,30 @@ paths:
       description: |
         Retrieves past Download Delivery activity data using parameters you specify.
       parameters:
-      - $ref: parameters/dimensions-dd-query.yaml
-      - $ref: parameters/metrics-dd-query.yaml
-      - $ref: parameters/cpcodes-query.yaml
-      - $ref: parameters/endDate-query.yaml
-      - $ref: parameters/startDate-query.yaml
-      - $ref: parameters/limit-query.yaml
-      - $ref: parameters/offset-query.yaml
-      - $ref: parameters/aggWithKeywordParamOp_aggregation.yaml
-      - $ref: parameters/filterParams-query.yaml
-      - $ref: parameters/sortParams-query.yaml
-      - $ref: parameters/deliveryOption-query.yaml
-      - $ref: parameters/mediaEncryption-query.yaml
-      - $ref: parameters/ipVersion-query.yaml
-      - $ref: parameters/enableCPCodeName-query.yaml
+        - $ref: parameters/dimensions-dd-query.yaml
+        - $ref: parameters/metrics-dd-query.yaml
+        - $ref: parameters/cpcodes-query.yaml
+        - $ref: parameters/endDate-query.yaml
+        - $ref: parameters/startDate-query.yaml
+        - $ref: parameters/limit-query.yaml
+        - $ref: parameters/offset-query.yaml
+        - $ref: parameters/aggWithKeywordParamOp_aggregation.yaml
+        - $ref: parameters/filterParams-query.yaml
+        - $ref: parameters/sortParams-query.yaml
+        - $ref: parameters/deliveryOption-query.yaml
+        - $ref: parameters/mediaEncryption-query.yaml
+        - $ref: parameters/ipVersion-query.yaml
+        - $ref: parameters/enableCPCodeName-query.yaml
       responses:
         200:
-          description: |
-            OK. Empty rows are returned in the response body when there's no available data.
           content:
             application/json:
               example:
                 $ref: examples/get-download-delivery-data-200.json
               schema:
                 $ref: schemas/data.yaml
+          description: |
+            OK. The response includes empty `rows` when there's no available data.
   /download-delivery/data-stores:
     get:
       operationId: get-download-delivery-data-stores
@@ -54,17 +50,15 @@ paths:
         Data stores are collections of reporting dimensions and the individual metrics supported for use with those dimensions. Each data store is unique to its delivery product. For example, you can't combine Download Delivery's dimensions and metrics with those from another product in this API. This operation's response can be very long, so the example here is truncated.
       responses:
         200:
-          description: |
-            OK. Empty rows are returned in the response body when there's no available data.
           content:
             application/json:
               example:
                 $ref: examples/list-data-stores-download-delivery-200-trunc.json
               schema:
                 $ref: schemas/dataStores.yaml
+          description: |
+            OK. The response includes empty `rows` when there's no available data.
   /download-delivery/data-stores/{dataStoreId}:
-    parameters:
-    - $ref: parameters/dataStoreId-path.yaml
     get:
       operationId: get-download-delivery-data-stores-datastoreid
       summary: Get a Download Delivery data store
@@ -74,14 +68,16 @@ paths:
         This fetches a list of dimensions and metrics used with Download Delivery, as well as the aggregation interval, purge interval, maximum allowed query interval, and other details for a data store you specify. Responses can be long, so the example here is truncated.
       responses:
         200:
-          description: |
-            OK. Empty rows are returned in the response body when there's no available data.
           content:
             application/json:
               example:
                 $ref: examples/get-data-store-download-delivery-200-trunc.json
               schema:
-                $ref: schemas/dataStores.yaml
+                $ref: schemas/dataStore.yaml
+          description: |
+            OK. The response includes empty `rows` when there's no available data.
+    parameters:
+    - $ref: parameters/dataStoreId-path.yaml
   /download-delivery/realtime-data:
     get:
       operationId: get-download-delivery-realtime-data
@@ -91,22 +87,22 @@ paths:
       description: |
         Retrieves near real-time data for Download Delivery using parameters you specify. There's a 15 minute latency for data gathering. To get a substantial set of results, set the `startDate` and `endDate` parameters to at least 15 minutes before the current time, using the GMT (UTC) time zone.
       parameters:
-      - $ref: parameters/dimensions-dd-query.yaml
-      - $ref: parameters/metrics-dd-query.yaml
-      - $ref: parameters/endDate-query.yaml
-      - $ref: parameters/startDate-query.yaml
-      - $ref: parameters/limit-query.yaml
-      - $ref: parameters/offset-query.yaml
-      - $ref: parameters/reduce-query.yaml
-      - $ref: parameters/aggForRealtimeDataParamOp_aggregation.yaml
-      - $ref: parameters/enableCPCodeName-query.yaml
+        - $ref: parameters/dimensions-dd-query.yaml
+        - $ref: parameters/metrics-dd-query.yaml
+        - $ref: parameters/endDate-query.yaml
+        - $ref: parameters/startDate-query.yaml
+        - $ref: parameters/limit-query.yaml
+        - $ref: parameters/offset-query.yaml
+        - $ref: parameters/reduce-query.yaml
+        - $ref: parameters/aggForRealtimeDataParamOp_aggregation.yaml
+        - $ref: parameters/enableCPCodeName-query.yaml
       responses:
         200:
-          description: |
-            OK. Empty rows are returned in the response body when there's no available data.
           content:
             application/json:
               example:
                 $ref: examples/get-download-delivery-data-200.json
               schema:
                 $ref: schemas/data.yaml
+          description: |
+            OK. The response includes empty `rows` when there's no available data.

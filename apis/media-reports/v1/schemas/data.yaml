@@ -1,6 +1,6 @@
 type: object
-x-akamai:
-  file-path: schemas/data.yaml
+description: |
+  TBD Add description.
 additionalProperties: false
 required:
 - columns
@@ -9,24 +9,63 @@ required:
 properties:
   columns:
     type: array
+    description: |
+      Encapsulates context for each element listed within corresponding `rows`.
     minItems: 1
     uniqueItems: true
     items:
       type: object
       additionalProperties: false
       required:
+      - type
+      - id
       - name
-      - aggregate
       - index
       properties:
+        id:
+          minimum: 0
+          type: integer
+          description: |
+            TBD Add description.
         name:
           type: string
+          description: |
+            Depending on the `type`, provides the name of the relevant dimension or metric.
           minLength: 1
+        type:
+          type: string
+          description: |
+            Type of data: `DIMENSION` or `METRIC`.
+          enum:
+          - DIMENSION
+          - METRIC
+        description:
+          minLength: 1
+          type: string
+          description: |
+            TBD Add description.
         aggregate:
           type: string
+          description: |
+            TBD Add description.
           minLength: 1
         index:
-          type: number
+          minimum: 0
+          type: integer
+          description: |
+            Positions each column within the table.
+        unit:
+          type: string
+          description: |
+            Unit of column: `TIME`, `SECONDS`, `MINUTES`, `COUNT`, `HITS`, `BYTES`, `MS`, `MBPS`, `KBPS`, `MB`, `GB`, `NUMBER`, `MBIT/SEC`, `HITS/SEC` or `%`.
+          enum:
+            $ref: unit-enum.yaml
+        dataType:
+          type: string
+          description: |
+            Type of data: `STRING`, `NUMBER`, `ENCODED`, `DATE`, `COUNT`, `TIME`, `BIT_FLAG`, `VOLUME`, `BANDWIDTH`, `PERCENT`, `CONTINENT`, `COUNTRY`, `REGION`, `CPCODE`, `ACGID`, `DOMAIN` or `STREAM`.
+          enum:
+            $ref: dataType-enum.yaml
   metaData:
     type: object
     description: |
@@ -42,27 +81,33 @@ properties:
     - hasMoreData
     properties:
       aggregation:
-        type: number
+        minimum: 0
+        type: integer
         description: |
           The time span included in each record, expressed in seconds.
       endTimeInEpoch:
-        type: number
+        minimum: 0
+        type: integer
         description: |
           The end of the requested time range, in epoch seconds.
       hasMoreData:
         type: boolean
         description: |
-          Indicates that a constrained set of requested data does not represent the entire set.
+          Indicates that a constrained set of requested data doesn't represent the entire set.
       limit:
-        type: number
+        default: 300
+        minimum: 0
+        type: integer
         description: |
           The maximum number of requested data `rows`.
       offset:
-        type: number
+        minimum: 0
+        type: integer
         description: |
           The offset of the row from which the data should start. Used with overall `limit`, it reflects where a batch of data starts. For example, setting both `offset` and `limit` to `100` selects rows 101-200 from the overall results.
       startTimeInEpoch:
-        type: number
+        minimum: 0
+        type: integer
         description: |
           The start of the requested time range, in epoch seconds.
       timeZone:
@@ -70,11 +115,29 @@ properties:
         description: |
           Identifies the time zone from which the request was made.
         minLength: 1
+      dasTable:
+        minLength: 1
+        type: string
+        description: |
+          TBD Add description.
+      messages:
+        minItems: 1
+        type: array
+        description: |
+          TBD Add description.
+        items:
+          minLength: 1
+          type: string
   rows:
+    minItems: 0
     type: array
+    description: |
+      Encapsulates the report's two-dimensional table data. If there's no data to report, the array is empty.
     uniqueItems: true
     items:
+      minItems: 1
       type: array
       uniqueItems: true
       items:
+        minLength: 1
         type: string
