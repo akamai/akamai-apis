@@ -1,0 +1,150 @@
+additionalProperties: false
+description: 'Encapsulates information about multiple roles.
+
+  '
+properties:
+  actions:
+    additionalProperties: false
+    description: 'Specifies activities available for the role.
+
+      '
+    properties:
+      delete:
+        description: 'Whether you can remove the role from the account. You can''t
+          remove a group that contains resources or subgroups, or if users have roles
+          on that group.
+
+          '
+        type: boolean
+      edit:
+        description: 'Whether you can modify the role.
+
+          '
+        type: boolean
+    required:
+    - delete
+    - edit
+    type: object
+  createdBy:
+    description: 'The user who created the role.
+
+      '
+    minLength: 1
+    type: string
+  createdDate:
+    description: 'ISO 8601 timestamp indicating when the role was originally created.
+
+      '
+    format: date-time
+    type: string
+  modifiedBy:
+    description: 'The user who last edited the role.
+
+      '
+    minLength: 1
+    type: string
+  modifiedDate:
+    description: 'ISO 8601 timestamp indicating when the role was last updated.
+
+      '
+    format: date-time
+    type: string
+  numUsers:
+    description: 'The number of users who have the role.
+
+      '
+    minimum: 0
+    type: integer
+  roleDescription:
+    description: 'Descriptive label for the role to convey its use.
+
+      '
+    minLength: 1
+    type: string
+  roleId:
+    description: 'Unique identifier for each role.
+
+      '
+    minimum: 1
+    type: integer
+  roleName:
+    description: 'Descriptive label for the role.
+
+      '
+    minLength: 1
+    type: string
+  type:
+    description: 'Whether it''s a `standard` or `account` role defined by Akamai,
+      or a `custom` role created by one of your account''s users. You can only modify
+      or delete `custom` roles. To learn more, see [About roles](https://techdocs.akamai.com/iam/docs/about-roles-permissions).
+
+      '
+    enum:
+    - custom
+    - standard
+    - account
+    type: string
+  users:
+    description: 'User details. They appear only when you set the `users` query parameter
+      to `true`.
+
+      '
+    items:
+      additionalProperties: false
+      properties:
+        accountId:
+          description: 'Unique identifier for each account.
+
+            '
+          minLength: 1
+          type: string
+        email:
+          description: 'The user''s email address.
+
+            '
+          format: email
+          type: string
+        firstName:
+          description: 'The user''s first name.
+
+            '
+          minLength: 1
+          type: string
+        lastLoginDate:
+          description: 'ISO 8601 timestamp indicating when the user last logged in.
+
+            '
+          format: date-time
+          type: string
+        lastName:
+          description: 'The user''s surname.
+
+            '
+          minLength: 1
+          type: string
+        uiIdentityId:
+          description: 'Unique identifier for each user, which corresponds to their
+            Control Center profile or client ID. Also known as a `contactId` in other
+            APIs.
+
+            '
+          minLength: 1
+          type: string
+      required:
+      - uiIdentityId
+      - firstName
+      - lastName
+      - accountId
+      - email
+      - lastLoginDate
+      type: object
+    minItems: 0
+    type: array
+required:
+- type
+- roleId
+- roleName
+- roleDescription
+type: object
+x-akamai:
+  file-path: schemas/role-list-item.yaml

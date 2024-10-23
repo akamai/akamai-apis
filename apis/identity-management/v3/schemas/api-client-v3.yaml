@@ -1,104 +1,166 @@
-type: object
-description: |-
-  API clients on the account.
-  
-x-akamai:
-  file-path: schemas/api-client-v3.yaml
 additionalProperties: false
+description: 'API clients on the account.
+
+  '
 properties:
   accessToken:
+    description: 'Part of the client secret that identifies your API client and lets
+      you access applications and resources. It helps form the unique hostname the
+      client uses to call the API. Tokens are unique per client.
+
+      '
+    minLength: 1
     type: string
-    description: |
-      Part of the client secret that identifies your API client and lets you access applications and resources. It helps form the unique hostname the client uses to call the API. Tokens are unique per client.
   actions:
-    type: object
-    description: |
-      Encapsulates activities performed on the API client.
     additionalProperties: false
+    description: 'Specifies activities available for the API client.
+
+      '
     properties:
-      delete:
-        type: boolean
-        description: |
-          When enabled, you can remove the API client.
       deactivateAll:
+        description: 'Whether you can deactivate the API client''s credentials.
+
+          '
         type: boolean
-        description: |
-          When enabled, you can deactivate the API client's credentials.
+      delete:
+        description: 'Whether you can remove the API client.
+
+          '
+        type: boolean
       edit:
+        description: 'Whether you can update the API client.
+
+          '
         type: boolean
-        description: |
-          When enabled, you can update the API client.
       lock:
+        description: 'Whether you can lock the API client.
+
+          '
         type: boolean
-        description: |
-          When enabled, you can lock the API client.
       transfer:
+        description: 'Whether you can transfer the API client to a new owner.
+
+          '
         type: boolean
-        description: |
-          When enabled, you can transfer the API client to a new owner.
       unlock:
+        description: 'Whether you can unlock the API client.
+
+          '
         type: boolean
-        description: |
-          When enabled, you can unlock the API client.
+    required:
+    - delete
+    - deactivateAll
+    - edit
+    - lock
+    - transfer
+    - unlock
+    type: object
   activeCredentialCount:
+    description: 'Number of credentials active for the API client. When the count
+      is zero, you can delete the API client without interruption.
+
+      '
+    minimum: 0
     type: integer
-    description: |
-      Number of credentials active for the API client. When the count is `0`, you can delete the API client without interruption.
   allowAccountSwitch:
+    description: 'Whether the API client can manage more than one account. For details,
+      see [Manage many accounts with one API client](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client).
+
+      '
     type: boolean
-    description: |
-      Indicates whether the API client can manage more than one account.
   authorizedUsers:
-    type: array
-    description: |
-      The API client's valid users.
+    description: 'The API client''s valid users.
+
+      '
     items:
+      minLength: 1
       type: string
+    minItems: 0
+    type: array
   canAutoCreateCredential:
+    description: "Whether the API client can create a credential for a new API client.\
+      \ \n"
     type: boolean
-    description: |
-      When enabled, the API client can create a credential for a new API client. The default is `false`.
   clientDescription:
+    description: 'Descriptive label about the API client.
+
+      '
+    minLength: 0
     type: string
-    description: |
-      Descriptive text about the API client.
   clientId:
+    description: 'Unique identifier for each API client.
+
+      '
+    minLength: 1
     type: string
-    description: |
-      Unique identifier for the API client.
   clientName:
+    description: 'Descriptive label for the API client.
+
+      '
+    minLength: 1
     type: string
-    description: |
-      Descriptive label for the API client.
   clientType:
-    type: string
-    description: |
-      Specifies the API client's ownership and credential management. `CLIENT` indicates the creator owns and manages the credentials. `USER_CLIENT` indicates another user owns the client and manages the credentials. `SERVICE_ACCOUNT` indicates only `authorizedUsers` can manage the client's credentials. The default is `CLIENT`.
     default: CLIENT
+    description: 'Specifies the API client''s ownership and credential management.
+      `CLIENT` indicates the creator owns and manages the credentials. `USER_CLIENT`
+      indicates another user owns the client and manages the credentials. `SERVICE_ACCOUNT`
+      indicates only `authorizedUsers` can manage the client''s credentials. The default
+      is `CLIENT`.
+
+      '
     enum:
     - CLIENT
     - USER_CLIENT
     - SERVICE_ACCOUNT
+    type: string
   createdBy:
+    description: 'The user who created the API client.
+
+      '
+    minLength: 1
     type: string
-    description: |
-      The user who created the API client.
   createdDate:
-    type: string
-    description: |
-      ISO 8601 timestamp indicating when the API client was created.
+    description: 'ISO 8601 timestamp indicating when the API client was created.
+
+      '
     format: date-time
-  isLocked:
-    type: boolean
-    description: |
-      When enabled, restricts the API clients's access to Control Center services.
-  notificationEmails:
-    type: array
-    description: |
-      Email addresses to notify users of expiring credentials.
-    items:
-      type: string
-  serviceConsumerToken:
     type: string
-    description: |
-      Unique identifier for the service hostname.
+  isLocked:
+    description: 'Whether the user''s account is locked. To learn more, see [Temporary
+      account lockout](https://techdocs.akamai.com/iam/docs/tmp-account-lockout).
+
+      '
+    type: boolean
+  notificationEmails:
+    description: 'Email addresses to notify users of expiring credentials.
+
+      '
+    items:
+      minLength: 1
+      type: string
+    minItems: 0
+    type: array
+  serviceConsumerToken:
+    description: 'Unique identifier for the service hostname.
+
+      '
+    minLength: 1
+    type: string
+required:
+- accessToken
+- actions
+- activeCredentialCount
+- allowAccountSwitch
+- canAutoCreateCredential
+- authorizedUsers
+- clientId
+- clientName
+- clientType
+- createdBy
+- createdDate
+- isLocked
+- notificationEmails
+- serviceConsumerToken
+type: object
+x-akamai:
+  file-path: schemas/api-client-v3.yaml

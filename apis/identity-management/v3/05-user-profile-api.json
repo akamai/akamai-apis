@@ -1,0 +1,1353 @@
+{
+  "externalDocs": {
+    "description": "See documentation for Akamai's Identity and Access Management API",
+    "url": "https://techdocs.akamai.com/iam-api/reference"
+  },
+  "info": {
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "title": "Your user profile",
+    "version": "3"
+  },
+  "openapi": "3.0.0",
+  "paths": {
+    "/user-profile": {
+      "get": {
+        "description": "This operation gets your profile information. To make changes to your profile, run the [Edit your profile](https://techdocs.akamai.com/iam-api/reference/put-user-profile-info) operation.",
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Identity and Access Management API",
+          "url": "https://techdocs.akamai.com/iam-api/reference/get-user-profile"
+        },
+        "operationId": "get-user-profile",
+        "parameters": [
+          {
+            "description": "Includes the list of your group and role assignments, `false` by default.",
+            "in": "query",
+            "name": "authGrants",
+            "required": false,
+            "schema": {
+              "default": false,
+              "example": true,
+              "type": "boolean"
+            },
+            "x-akamai": {
+              "file-path": "parameters/auth-grants-query.yaml"
+            }
+          },
+          {
+            "description": "Includes product notifications you subscribe to, `false` by default.",
+            "in": "query",
+            "name": "notifications",
+            "schema": {
+              "default": false,
+              "example": true,
+              "type": "boolean"
+            },
+            "x-akamai": {
+              "file-path": "parameters/notifications-query.yaml"
+            }
+          },
+          {
+            "description": "Includes information about actions such as `edit` or `delete` that you can take for the object, `false` by default. Don't confuse this with the `action` parameter, which applies to the [Set two-factor authentication](https://techdocs.akamai.com/iam-api/reference/put-user-profile-tfa) operation.",
+            "in": "query",
+            "name": "actions",
+            "schema": {
+              "default": false,
+              "example": true,
+              "type": "boolean"
+            },
+            "x-akamai": {
+              "file-path": "parameters/qparams-actions-actions.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "actions": {
+                    "delete": true,
+                    "apiClient": true,
+                    "edit": true,
+                    "isCloneable": false,
+                    "resetPassword": true,
+                    "thirdPartyAccess": true
+                  },
+                  "additionalAuthentication": "TFA",
+                  "additionalAuthenticationConfigured": false,
+                  "address": "first Street",
+                  "authGrants": [
+                    {
+                      "groupId": 12345,
+                      "groupName": "Internet Company",
+                      "roleDescription": "A newly create role.",
+                      "roleId": 16,
+                      "roleName": "Publisher"
+                    }
+                  ],
+                  "city": "Santa Clara",
+                  "contactType": "Billing",
+                  "country": "USA",
+                  "email": "jsmith@example.com",
+                  "firstName": "John",
+                  "isLocked": false,
+                  "jobTitle": "Engineer",
+                  "lastLoginDate": "2016-01-13T17:53:57Z",
+                  "lastName": "Smith",
+                  "mobilePhone": "3456787657",
+                  "notifications": {
+                    "options": {
+                      "apiClientCredentialExpiryNotification": false,
+                      "newUserNotification": true,
+                      "passwordExpiry": true,
+                      "proactive": [
+                        "EdgeScape",
+                        "EdgeSuite (HTTP Content Delivery)"
+                      ],
+                      "upgrade": [
+                        "NetStorage",
+                        "Other Upgrade Notifications (Planned)"
+                      ]
+                    },
+                    "enableEmailNotifications": true
+                  },
+                  "passwordExpiryDate": "2018-01-13T17:53:57Z",
+                  "phone": "3456788765",
+                  "preferredLanguage": "English",
+                  "secondaryEmail": "john-smith@example.com",
+                  "sessionTimeOut": 30,
+                  "state": "CA",
+                  "timeZone": "GMT",
+                  "uiIdentityId": "A-B-123456",
+                  "uiUserName": "jsmith@example.com",
+                  "zipCode": "34567"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates information about each user.",
+                  "properties": {
+                    "accountId": {
+                      "description": "Unique identifier for each account.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "actions": {
+                      "additionalProperties": false,
+                      "description": "Specifies permissions available to the user for this group. This data is available when you specify the `actions` parameter of the same name, not to be confused with the `action` parameter that applies to the [Set two-factor authentication](https://techdocs.akamai.com/iam-api/reference/put-user-profile-tfa) operation.",
+                      "properties": {
+                        "delete": {
+                          "description": "Whether the user is deletable.",
+                          "type": "boolean"
+                        },
+                        "apiClient": {
+                          "description": "Enables the administrator to create an API client.",
+                          "type": "boolean"
+                        },
+                        "edit": {
+                          "description": "Whether the user is editable.",
+                          "type": "boolean"
+                        },
+                        "isCloneable": {
+                          "description": "Enables an administrator to create a new user with permissions cloned from this user.",
+                          "type": "boolean"
+                        },
+                        "resetPassword": {
+                          "description": "Enables an administrator to send a user a password by email or see a one-time token.",
+                          "type": "boolean"
+                        },
+                        "thirdPartyAccess": {
+                          "description": "Enables the administrator to manage extended access.",
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "delete",
+                        "edit",
+                        "resetPassword",
+                        "isCloneable",
+                        "thirdPartyAccess",
+                        "apiClient"
+                      ],
+                      "type": "object"
+                    },
+                    "additionalAuthentication": {
+                      "description": "Specifies the user's multi-factor authentication method, confirming their identity. Either `TFA`, `MFA`, or `NONE`, which offers no additional authentication.",
+                      "enum": [
+                        "TFA",
+                        "MFA",
+                        "NONE"
+                      ],
+                      "type": "string"
+                    },
+                    "additionalAuthenticationConfigured": {
+                      "description": "Whether the user has multi-factor authentication configured.",
+                      "type": "boolean"
+                    },
+                    "address": {
+                      "description": "The user's street address.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "authGrants": {
+                      "description": "A user's role assignments, per group.",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A user's role assignments, per group.",
+                        "properties": {
+                          "groupId": {
+                            "description": "Unique identifier for each group. It's returned only for group roles.",
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "groupName": {
+                            "description": "Descriptive label for the group.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "isBlocked": {
+                            "description": "Whether a user's access to a group is blocked.",
+                            "type": "boolean"
+                          },
+                          "roleDescription": {
+                            "description": "Descriptive label for the role to convey its use.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "roleId": {
+                            "description": "Unique identifier for each role.",
+                            "minimum": 1,
+                            "type": "integer"
+                          },
+                          "roleName": {
+                            "description": "Descriptive label for the role.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "subGroups": {
+                            "description": "Children of the parent group. Permissions cascade downward from parent to child unless the child group's `isBlocked` is `true`.",
+                            "items": {
+                              "additionalProperties": true,
+                              "description": "A further nested group.",
+                              "properties": {},
+                              "type": "object",
+                              "x-akamai": {
+                                "file-path": "schemas/groups-nested.yaml"
+                              }
+                            },
+                            "minItems": 0,
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "roleId",
+                          "roleName"
+                        ],
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/auth-grant-response.yaml"
+                        }
+                      },
+                      "minItems": 0,
+                      "type": "array"
+                    },
+                    "city": {
+                      "description": "The user's city.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "contactType": {
+                      "description": "User's contact type.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "country": {
+                      "description": "User's country.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "email": {
+                      "description": "The user's email address.",
+                      "format": "email",
+                      "type": "string"
+                    },
+                    "emailUpdatePending": {
+                      "description": "Whether there are any pending changes to the email address.",
+                      "type": "boolean"
+                    },
+                    "firstName": {
+                      "description": "The user's first name.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "isLocked": {
+                      "description": "Whether the user's account is locked. To learn more, see [Temporary account lockout](https://techdocs.akamai.com/iam/docs/tmp-account-lockout).",
+                      "type": "boolean"
+                    },
+                    "jobTitle": {
+                      "description": "The user's position at the company.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "lastLoginDate": {
+                      "description": "ISO 8601 timestamp indicating when the user last logged in.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "lastName": {
+                      "description": "The user's surname.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "mobilePhone": {
+                      "description": "The user's mobile phone number in ITU-T E.164 format, that is, `+country code-area code-subscriber number`.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "notifications": {
+                      "additionalProperties": false,
+                      "description": "Specifies email notifications the user receives for products.",
+                      "properties": {
+                        "options": {
+                          "additionalProperties": false,
+                          "description": "Specifies email notifications settings.",
+                          "properties": {
+                            "apiClientCredentialExpiryNotification": {
+                              "description": "Whether the user gets notifications for expiring API client credentials.",
+                              "type": "boolean"
+                            },
+                            "newUserNotification": {
+                              "description": "Whether group administrators get notifications when the user creates other new users.",
+                              "type": "boolean"
+                            },
+                            "passwordExpiry": {
+                              "description": "Whether the user gets notifications for password expiration.",
+                              "type": "boolean"
+                            },
+                            "proactive": {
+                              "description": "Products for which the user gets notifications for service issues.",
+                              "items": {
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "minItems": 0,
+                              "type": "array"
+                            },
+                            "upgrade": {
+                              "description": "Products for which the user receives notifications for upgrades.",
+                              "items": {
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "minItems": 0,
+                              "type": "array"
+                            }
+                          },
+                          "required": [
+                            "upgrade",
+                            "proactive",
+                            "passwordExpiry",
+                            "newUserNotification",
+                            "apiClientCredentialExpiryNotification"
+                          ],
+                          "type": "object"
+                        },
+                        "enableEmailNotifications": {
+                          "description": "Enables email notifications.",
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "options",
+                        "enableEmailNotifications"
+                      ],
+                      "type": "object"
+                    },
+                    "passwordExpiryDate": {
+                      "description": "The date a user's password expires.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "phone": {
+                      "description": "The user's mobile phone number in ITU-T E.164 format, that is, `+country code-area code-subscriber number`.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "preferredLanguage": {
+                      "description": "The user's language.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "secondaryEmail": {
+                      "description": "The user's alternate email address.",
+                      "format": "email",
+                      "type": "string"
+                    },
+                    "sessionTimeOut": {
+                      "description": "The number of seconds it takes for the user's Control Center session to time out after no activity.",
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "state": {
+                      "description": "The user's state or province if user's country is USA or Canada.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "tfaConfigured": {
+                      "description": "Whether TFA is configured.",
+                      "type": "boolean"
+                    },
+                    "tfaEnabled": {
+                      "description": "Whether TFA is enabled.",
+                      "type": "boolean"
+                    },
+                    "timeZone": {
+                      "description": "The user's time zone. To get the available values, run the [View time zones](https://techdocs.akamai.com/iam-api/reference/get-common-timezones) operation.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "uiIdentityId": {
+                      "description": "Unique identifier for each user, which corresponds to their Control Center profile or client ID. Also known as a `contactId` in other APIs.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "uiUserName": {
+                      "description": "The user's username in Control Center.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "zipCode": {
+                      "description": "The user's five-digit postal code, represented as a string.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "uiIdentityId",
+                    "firstName",
+                    "lastName",
+                    "email",
+                    "additionalAuthentication",
+                    "country",
+                    "address",
+                    "timeZone",
+                    "additionalAuthenticationConfigured"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/user-response.yaml"
+                  }
+                }
+              }
+            },
+            "description": "The response provides your profile."
+          }
+        },
+        "summary": "View your profile",
+        "tags": [
+          "Profile"
+        ]
+      }
+    },
+    "/user-profile/additionalAuthentication": {
+      "put": {
+        "description": "This operation sets multi-factor authentication to `TFA`, `MFA`, or `NONE`. You have five login attempts with MFA or 2FA before your account is locked. If your account is locked, use the [Reset multi-factor authentication for your user profile](https://techdocs.akamai.com/iam-api/reference/put-user-profile-reset-additional-authentication) operation to unlock it.",
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Identity and Access Management API",
+          "url": "https://techdocs.akamai.com/iam-api/reference/put-user-profile-additional-authentication"
+        },
+        "operationId": "put-user-profile-additional-authentication",
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "value": "TFA"
+              },
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "value": {
+                    "description": "A user's multi-factor authentication method, either `TFA`, `MFA`, or `NONE`.",
+                    "enum": [
+                      "TFA",
+                      "MFA",
+                      "NONE"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "value"
+                ],
+                "type": "object",
+                "x-akamai": {
+                  "file-path": "schemas/additional-authentication-request.yaml"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "content": {},
+            "description": "Authentication successfully set."
+          }
+        },
+        "summary": "Set multi-factor authentication for your user profile",
+        "tags": [
+          "User authentication settings"
+        ]
+      }
+    },
+    "/user-profile/additionalAuthentication/reset": {
+      "put": {
+        "description": "This operation resets your multi-factor authentication.",
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Identity and Access Management API",
+          "url": "https://techdocs.akamai.com/iam-api/reference/put-user-profile-reset-additional-authentication"
+        },
+        "operationId": "put-user-profile-reset-additional-authentication",
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": {},
+            "description": "Authentication successfully reset."
+          }
+        },
+        "summary": "Reset multi-factor authentication for your user profile",
+        "tags": [
+          "User authentication settings"
+        ]
+      }
+    },
+    "/user-profile/basic-info": {
+      "put": {
+        "description": "This operation updates your basic profile information, such as your name or phone number. To edit detailed settings, run the [Update your notifications](https://techdocs.akamai.com/iam-api/reference/put-user-profile-notifications) or [Modify a user's group and role assignments](https://techdocs.akamai.com/iam-api/reference/put-ui-uiidentity-auth-grants) operations.",
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Identity and Access Management API",
+          "url": "https://techdocs.akamai.com/iam-api/reference/put-user-profile-info"
+        },
+        "operationId": "put-user-profile-info",
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "additionalAuthentication": "TFA",
+                "address": "first Street",
+                "city": "Santa Clara",
+                "contactType": "Billing",
+                "country": "USA",
+                "firstName": "John",
+                "jobTitle": "Engineer",
+                "lastName": "Smith",
+                "mobilePhone": "3456787657",
+                "phone": "3456788765",
+                "preferredLanguage": "English",
+                "secondaryEmail": "john.smith@example.com",
+                "sessionTimeOut": 30,
+                "state": "CA",
+                "timeZone": "GMT",
+                "zipCode": "34567"
+              },
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "additionalAuthentication": {
+                    "description": "Specifies the user's multi-factor authentication method, confirming their identity. Either `TFA`, `MFA`, or `NONE`, which offers no additional authentication.",
+                    "enum": [
+                      "TFA",
+                      "MFA",
+                      "NONE"
+                    ],
+                    "type": "string"
+                  },
+                  "address": {
+                    "description": "The user's street address.",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "city": {
+                    "description": "The user's city.",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "contactType": {
+                    "description": "User's contact type. To get the available values, run the [View contact types](https://techdocs.akamai.com/iam-api/reference/get-common-contact-types) operation.",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "country": {
+                    "description": "User's country. To get the available values, run the [View supported countries](https://techdocs.akamai.com/iam-api/reference/get-common-countries) operation.",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "email": {
+                    "description": "The user's email address.",
+                    "format": "email",
+                    "type": "string"
+                  },
+                  "firstName": {
+                    "description": "The user's first name.",
+                    "maxLength": 50,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "jobTitle": {
+                    "description": "The user's position at the company.",
+                    "maxLength": 75,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "description": "The user's surname.",
+                    "maxLength": 50,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "mobilePhone": {
+                    "description": "The user's mobile phone number in ITU-T E.164 format, that is, `+country code-area code-subscriber number`. For example, `+3551234567891` or `+441234567891`. For Canadian and US phone numbers, you can provide them with a country code (for example, `+11234567891`) or without it as a ten-digit integer within a string (for example, `1234567891`).",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "phone": {
+                    "description": "The user's mobile phone number in ITU-T E.164 format, that is, `+country code-area code-subscriber number`. For example, `+3551234567891` or `+441234567891`. For Canadian and US phone numbers, you can provide them with a country code (for example, `+11234567891`) or without it as a ten-digit integer within a string (for example, `1234567891`).",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "preferredLanguage": {
+                    "description": "The user's language. To get the available values, run the [View languages](https://techdocs.akamai.com/iam-api/reference/get-common-languages) operation.",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "secondaryEmail": {
+                    "description": "The user's alternate email address.",
+                    "format": "email",
+                    "type": "string"
+                  },
+                  "sessionTimeOut": {
+                    "description": "The number of seconds it takes for the user's Control Center session to time out after no activity. To get the available values, run the [View timeout policies](https://techdocs.akamai.com/iam-api/reference/get-common-timeout-policies) operation.",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "state": {
+                    "description": "The user's state or province if user's country is USA or Canada. To get the available values, run the [View states for a user profile](https://techdocs.akamai.com/iam-api/reference/get-user-states) operation.",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "timeZone": {
+                    "description": "The user's time zone. To get the available values, run the [View time zones](https://techdocs.akamai.com/iam-api/reference/get-common-timezones) operation.",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "zipCode": {
+                    "description": "The user's five-digit postal code, represented as a string.",
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "firstName",
+                  "lastName",
+                  "country",
+                  "preferredLanguage",
+                  "sessionTimeOut",
+                  "timeZone"
+                ],
+                "type": "object",
+                "x-akamai": {
+                  "file-path": "schemas/update-user-basic-info-request.yaml"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "additionalAuthentication": "TFA",
+                  "additionalAuthenticationConfigured": false,
+                  "address": "first Street",
+                  "city": "Santa Clara",
+                  "contactType": "Billing",
+                  "country": "USA",
+                  "email": "jsmith@example.com",
+                  "firstName": "John",
+                  "isLocked": false,
+                  "jobTitle": "Engineer",
+                  "lastLoginDate": "2016-04-12T20:54:24.000Z",
+                  "lastName": "Smith",
+                  "mobilePhone": "3456787657",
+                  "passwordExpiryDate": "2023-04-12T20:54:24.000Z",
+                  "phone": "3456788765",
+                  "preferredLanguage": "English",
+                  "secondaryEmail": "john-smith@example.com",
+                  "sessionTimeOut": 30,
+                  "state": "CA",
+                  "timeZone": "GMT",
+                  "uiIdentityId": "1-ABCDE",
+                  "uiUserName": "jsmith",
+                  "zipCode": "34567"
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates information about each user.",
+                  "properties": {
+                    "accountId": {
+                      "description": "Unique identifier for each account.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "actions": {
+                      "additionalProperties": false,
+                      "description": "Specifies permissions available to the user for this group. This data is available when you specify the `actions` parameter of the same name, not to be confused with the `action` parameter that applies to the [Set two-factor authentication](https://techdocs.akamai.com/iam-api/reference/put-user-profile-tfa) operation.",
+                      "properties": {
+                        "delete": {
+                          "description": "Whether the user is deletable.",
+                          "type": "boolean"
+                        },
+                        "apiClient": {
+                          "description": "Enables the administrator to create an API client.",
+                          "type": "boolean"
+                        },
+                        "edit": {
+                          "description": "Whether the user is editable.",
+                          "type": "boolean"
+                        },
+                        "isCloneable": {
+                          "description": "Enables an administrator to create a new user with permissions cloned from this user.",
+                          "type": "boolean"
+                        },
+                        "resetPassword": {
+                          "description": "Enables an administrator to send a user a password by email or see a one-time token.",
+                          "type": "boolean"
+                        },
+                        "thirdPartyAccess": {
+                          "description": "Enables the administrator to manage extended access.",
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "delete",
+                        "edit",
+                        "resetPassword",
+                        "isCloneable",
+                        "thirdPartyAccess",
+                        "apiClient"
+                      ],
+                      "type": "object"
+                    },
+                    "additionalAuthentication": {
+                      "description": "Specifies the user's multi-factor authentication method, confirming their identity. Either `TFA`, `MFA`, or `NONE`, which offers no additional authentication.",
+                      "enum": [
+                        "TFA",
+                        "MFA",
+                        "NONE"
+                      ],
+                      "type": "string"
+                    },
+                    "additionalAuthenticationConfigured": {
+                      "description": "Whether the user has multi-factor authentication configured.",
+                      "type": "boolean"
+                    },
+                    "address": {
+                      "description": "The user's street address.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "authGrants": {
+                      "description": "A user's role assignments, per group.",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "A user's role assignments, per group.",
+                        "properties": {
+                          "groupId": {
+                            "description": "Unique identifier for each group. It's returned only for group roles.",
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "groupName": {
+                            "description": "Descriptive label for the group.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "isBlocked": {
+                            "description": "Whether a user's access to a group is blocked.",
+                            "type": "boolean"
+                          },
+                          "roleDescription": {
+                            "description": "Descriptive label for the role to convey its use.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "roleId": {
+                            "description": "Unique identifier for each role.",
+                            "minimum": 1,
+                            "type": "integer"
+                          },
+                          "roleName": {
+                            "description": "Descriptive label for the role.",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "subGroups": {
+                            "description": "Children of the parent group. Permissions cascade downward from parent to child unless the child group's `isBlocked` is `true`.",
+                            "items": {
+                              "additionalProperties": true,
+                              "description": "A further nested group.",
+                              "properties": {},
+                              "type": "object",
+                              "x-akamai": {
+                                "file-path": "schemas/groups-nested.yaml"
+                              }
+                            },
+                            "minItems": 0,
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "roleId",
+                          "roleName"
+                        ],
+                        "type": "object",
+                        "x-akamai": {
+                          "file-path": "schemas/auth-grant-response.yaml"
+                        }
+                      },
+                      "minItems": 0,
+                      "type": "array"
+                    },
+                    "city": {
+                      "description": "The user's city.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "contactType": {
+                      "description": "User's contact type.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "country": {
+                      "description": "User's country.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "email": {
+                      "description": "The user's email address.",
+                      "format": "email",
+                      "type": "string"
+                    },
+                    "emailUpdatePending": {
+                      "description": "Whether there are any pending changes to the email address.",
+                      "type": "boolean"
+                    },
+                    "firstName": {
+                      "description": "The user's first name.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "isLocked": {
+                      "description": "Whether the user's account is locked. To learn more, see [Temporary account lockout](https://techdocs.akamai.com/iam/docs/tmp-account-lockout).",
+                      "type": "boolean"
+                    },
+                    "jobTitle": {
+                      "description": "The user's position at the company.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "lastLoginDate": {
+                      "description": "ISO 8601 timestamp indicating when the user last logged in.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "lastName": {
+                      "description": "The user's surname.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "mobilePhone": {
+                      "description": "The user's mobile phone number in ITU-T E.164 format, that is, `+country code-area code-subscriber number`.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "notifications": {
+                      "additionalProperties": false,
+                      "description": "Specifies email notifications the user receives for products.",
+                      "properties": {
+                        "options": {
+                          "additionalProperties": false,
+                          "description": "Specifies email notifications settings.",
+                          "properties": {
+                            "apiClientCredentialExpiryNotification": {
+                              "description": "Whether the user gets notifications for expiring API client credentials.",
+                              "type": "boolean"
+                            },
+                            "newUserNotification": {
+                              "description": "Whether group administrators get notifications when the user creates other new users.",
+                              "type": "boolean"
+                            },
+                            "passwordExpiry": {
+                              "description": "Whether the user gets notifications for password expiration.",
+                              "type": "boolean"
+                            },
+                            "proactive": {
+                              "description": "Products for which the user gets notifications for service issues.",
+                              "items": {
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "minItems": 0,
+                              "type": "array"
+                            },
+                            "upgrade": {
+                              "description": "Products for which the user receives notifications for upgrades.",
+                              "items": {
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "minItems": 0,
+                              "type": "array"
+                            }
+                          },
+                          "required": [
+                            "upgrade",
+                            "proactive",
+                            "passwordExpiry",
+                            "newUserNotification",
+                            "apiClientCredentialExpiryNotification"
+                          ],
+                          "type": "object"
+                        },
+                        "enableEmailNotifications": {
+                          "description": "Enables email notifications.",
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "options",
+                        "enableEmailNotifications"
+                      ],
+                      "type": "object"
+                    },
+                    "passwordExpiryDate": {
+                      "description": "The date a user's password expires.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "phone": {
+                      "description": "The user's mobile phone number in ITU-T E.164 format, that is, `+country code-area code-subscriber number`.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "preferredLanguage": {
+                      "description": "The user's language.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "secondaryEmail": {
+                      "description": "The user's alternate email address.",
+                      "format": "email",
+                      "type": "string"
+                    },
+                    "sessionTimeOut": {
+                      "description": "The number of seconds it takes for the user's Control Center session to time out after no activity.",
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "state": {
+                      "description": "The user's state or province if user's country is USA or Canada.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "tfaConfigured": {
+                      "description": "Whether TFA is configured.",
+                      "type": "boolean"
+                    },
+                    "tfaEnabled": {
+                      "description": "Whether TFA is enabled.",
+                      "type": "boolean"
+                    },
+                    "timeZone": {
+                      "description": "The user's time zone. To get the available values, run the [View time zones](https://techdocs.akamai.com/iam-api/reference/get-common-timezones) operation.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "uiIdentityId": {
+                      "description": "Unique identifier for each user, which corresponds to their Control Center profile or client ID. Also known as a `contactId` in other APIs.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "uiUserName": {
+                      "description": "The user's username in Control Center.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "zipCode": {
+                      "description": "The user's five-digit postal code, represented as a string.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "uiIdentityId",
+                    "firstName",
+                    "lastName",
+                    "email",
+                    "additionalAuthentication",
+                    "country",
+                    "address",
+                    "timeZone",
+                    "additionalAuthenticationConfigured"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/user-response.yaml"
+                  }
+                }
+              }
+            },
+            "description": "The response reflects the user's modified profile."
+          }
+        },
+        "summary": "Edit your profile",
+        "tags": [
+          "Profile"
+        ]
+      }
+    },
+    "/user-profile/change-password": {
+      "post": {
+        "description": "This operation changes your password. Include your old password and your new password in the request body. Before you create your new password, run the [View password policy](https://techdocs.akamai.com/iam-api/reference/get-common-password-policy) operation to ensure it adheres to your policy. If you include your existing password incorrectly and make too many login attempts, your account locks.",
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Identity and Access Management API",
+          "url": "https://techdocs.akamai.com/iam-api/reference/post-profile-change-password"
+        },
+        "operationId": "post-profile-change-password",
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "currentPassword": "CompanyLogin!3",
+                "newPassword": "CompanyLogin!3"
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Uses the old password to authenticate you are who you say you are when you update your password. Includes the new password.",
+                "properties": {
+                  "currentPassword": {
+                    "description": "Your existing password.",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "newPassword": {
+                    "description": "New password.",
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "currentPassword",
+                  "newPassword"
+                ],
+                "type": "object",
+                "x-akamai": {
+                  "file-path": "schemas/change-password-request.yaml"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "content": {},
+            "description": "Password successfully rotated."
+          }
+        },
+        "summary": "Rotate your password",
+        "tags": [
+          "User authentication settings"
+        ]
+      }
+    },
+    "/user-profile/notifications": {
+      "put": {
+        "description": "This operation subscribes to notifications emails for password expiration reminders, proactive maintenance emails, and upgrade notification emails.",
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Identity and Access Management API",
+          "url": "https://techdocs.akamai.com/iam-api/reference/put-user-profile-notifications"
+        },
+        "operationId": "put-user-profile-notifications",
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "options": {
+                  "apiClientCredentialExpiryNotification": true,
+                  "newUserNotification": true,
+                  "passwordExpiry": true,
+                  "proactive": [
+                    "EdgeScape",
+                    "EdgeSuite (HTTP Content Delivery)"
+                  ],
+                  "upgrade": [
+                    "NetStorage",
+                    "Other Upgrade Notifications (Planned)"
+                  ]
+                },
+                "enableEmailNotifications": true
+              },
+              "schema": {
+                "additionalProperties": false,
+                "description": "Encapsulates the types of email notifications you can receive.",
+                "properties": {
+                  "options": {
+                    "additionalProperties": false,
+                    "description": "Specifies email notifications settings.",
+                    "properties": {
+                      "apiClientCredentialExpiryNotification": {
+                        "description": "Enables notifications for expiring API client credentials.",
+                        "type": "boolean"
+                      },
+                      "newUserNotification": {
+                        "description": "Enables notifications for group administrators when the user creates other new users.",
+                        "type": "boolean"
+                      },
+                      "passwordExpiry": {
+                        "description": "Enables notifications for expiring passwords.",
+                        "type": "boolean"
+                      },
+                      "proactive": {
+                        "description": "Products for which the user gets notifications for service issues.",
+                        "items": {
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "minItems": 0,
+                        "type": "array"
+                      },
+                      "upgrade": {
+                        "description": "Products for which the user receives notifications for upgrades.",
+                        "items": {
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "minItems": 0,
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "passwordExpiry",
+                      "proactive",
+                      "upgrade"
+                    ],
+                    "type": "object"
+                  },
+                  "enableEmailNotifications": {
+                    "description": "Enables email notifications.",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "enableEmailNotifications",
+                  "options"
+                ],
+                "x-akamai": {
+                  "file-path": "schemas/notifications-request.yaml"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "options": {
+                    "apiClientCredentialExpiryNotification": true,
+                    "newUserNotification": true,
+                    "passwordExpiry": true,
+                    "proactive": [
+                      "EdgeScape",
+                      "EdgeSuite (HTTP Content Delivery)"
+                    ],
+                    "upgrade": [
+                      "NetStorage",
+                      "Other Upgrade Notifications (Planned)"
+                    ]
+                  },
+                  "enableEmailNotifications": true
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Encapsulates the types of email notifications you can receive.",
+                  "properties": {
+                    "options": {
+                      "additionalProperties": false,
+                      "description": "Specifies email notifications settings.",
+                      "properties": {
+                        "apiClientCredentialExpiryNotification": {
+                          "description": "Whether the user gets notifications for expiring API client credentials.",
+                          "type": "boolean"
+                        },
+                        "newUserNotification": {
+                          "description": "Whether group administrators get notifications when the user creates other new users.",
+                          "type": "boolean"
+                        },
+                        "passwordExpiry": {
+                          "description": "Whether the user gets notifications for password expiration.",
+                          "type": "boolean"
+                        },
+                        "proactive": {
+                          "description": "Products for which the user gets notifications for service issues.",
+                          "items": {
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "minItems": 0,
+                          "type": "array"
+                        },
+                        "upgrade": {
+                          "description": "Products for which the user receives notifications for upgrades.",
+                          "items": {
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "minItems": 0,
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "newUserNotification",
+                        "passwordExpiry",
+                        "proactive",
+                        "upgrade",
+                        "apiClientCredentialExpiryNotification"
+                      ],
+                      "type": "object"
+                    },
+                    "enableEmailNotifications": {
+                      "description": "Enables email notifications.",
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "options",
+                    "enableEmailNotifications"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/notifications-response.yaml"
+                  }
+                }
+              }
+            },
+            "description": "The response reflects the modified notifications emails."
+          }
+        },
+        "summary": "Update your notifications",
+        "tags": [
+          "User notifications"
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://{hostname}/identity-management/v3"
+    }
+  ],
+  "tags": [
+    {
+      "description": "Manage your profile, password, or multi-factor authentication. Users can edit their own profiles, but only administrators can edit profiles belonging to other users.",
+      "name": "Profile"
+    }
+  ],
+  "x-akamai": {
+    "auth-type": "EDGE_GRID",
+    "file-path": "05-user-profile-api.yaml"
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  }
+}

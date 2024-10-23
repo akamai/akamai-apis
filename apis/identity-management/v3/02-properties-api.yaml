@@ -1,146 +1,180 @@
-openapi: 3.0.0
 info:
-  title: Properties
-  version: '3'
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-servers:
-- url: https://{hostname}/identity-management/v3
-x-akamai:
-  auth-type: EDGE_GRID
-  file-path: 02-properties-api.yaml
+  title: Properties
+  version: '3'
+openapi: 3.0.0
 paths:
   /user-admin/properties:
     get:
+      description: 'This operation lists the properties and includes for the current
+        account or other managed accounts using the `accountSwitchKey` parameter.
+        Include the `groupId` parameter in your request to filter the results by group.
+        The response returns a list of `propertyId` regardless of whether they represent
+        a property or include in PAPI. To learn more, see [Manage access to properties
+        and includes](ref:manage-access-to-properties-and-includes).
+
+        '
       operationId: get-properties
-      summary: List properties
-      tags:
-      - Properties
-      description: |
-        This operation lists the properties for an account. Include the `groupId` parameter in your request to filter the results by group.
       parameters:
-      - $ref: parameters/groupIdopt_groupId.yaml
+      - $ref: parameters/group-id-opt-group-id.yaml
       responses:
         200:
-          description: |
-            The response provides the properties.
           content:
             application/json:
               example:
                 $ref: examples/get-response-properties.json
               schema:
-                $ref: schemas/ListOfPropertyListItem.yaml
-  /user-admin/properties/{propertyId}:
-    parameters:
-    - $ref: parameters/propertyId-path.yaml
-    get:
-      operationId: get-property
-      summary: Get a property
+                $ref: schemas/list-of-property-list-item.yaml
+          description: 'The response provides the assets.
+
+            '
+      summary: List properties or includes
       tags:
-      - Properties
-      description: |
-        This operation lists a property's details.
+      - Assets
+  /user-admin/properties/{assetId}:
+    get:
+      description: 'This operation fetches a property''s or include''s details. The
+        response returns details for `propertyId` regardless of whether it represent
+        a property or include in PAPI. To learn more, see [Manage access to properties
+        and includes](ref:manage-access-to-properties-and-includes).
+
+        '
+      operationId: get-property
       parameters:
-      - $ref: parameters/groupIdreqQP_groupId.yaml
+      - $ref: parameters/group-id-req-qp-group-id.yaml
       responses:
         200:
-          description: |
-            The response provides the property's details.
           content:
             application/json:
               example:
                 $ref: examples/get-response-property-details.json
               schema:
-                $ref: schemas/PropertyResponse.yaml
-    put:
-      operationId: put-property
-      summary: Move a property
+                $ref: schemas/property-response.yaml
+          description: 'The response provides the asset''s details.
+
+            '
+      summary: Get a property or include
       tags:
-      - Properties
-      description: |
-        This operation moves a property from one group to another group. You can only move a property into another group within the same group hierarchy. Depending on your role in the destination group, you may lose access to resources the property uses. After moving a property, run the [List users affected by moving a group](ref:get-move-affected-users) operation to determine which users gained or lost access.
+      - Assets
+    parameters:
+    - $ref: parameters/asset-id-path.yaml
+    put:
+      description: 'This operation moves a property or include from one group to another
+        group. You can only move an asset into another group within the same group
+        hierarchy. Depending on your role in the destination group, you may lose access
+        to resources the asset uses. Before moving an asset, run the [List users affected
+        by moving a group](ref:get-move-affected-users) operation to review which
+        users will be affected by the move.
+
+        '
+      operationId: put-property
       requestBody:
-        required: true
         content:
           application/json:
             example:
               $ref: examples/put-request-property-move.json
             schema:
-              $ref: schemas/MovePropertyRequest.yaml
+              $ref: schemas/move-property-request.yaml
+        required: true
       responses:
         204:
-          description: |
-            Property successfully moved.
-  /user-admin/properties/{propertyId}/resources:
-    parameters:
-    - $ref: parameters/propertyId-path.yaml
-    get:
-      operationId: get-property-resources
-      summary: Get a property's resources
+          description: 'Asset successfully moved.
+
+            '
+      summary: Move a property or include
       tags:
-      - Resources
-      description: |
-        This operation lists resources a property uses to deliver your web content across Akamai's edge network. You can think of these resources as objects, like CP codes and configuration files. For example, an ARL (Akamai resource locator) configuration file specifies how Akamai purges versions of an object that you can’t purge using just the URL.
+      - Assets
+  /user-admin/properties/{assetId}/resources:
+    get:
+      description: "This operation lists resources a property or include uses to deliver\
+        \ your web content across Akamai's edge network. You can think of these resources\
+        \ as objects, like CP codes and configuration files. For example, an ARL (Akamai\
+        \ resource locator) configuration file specifies how Akamai purges versions\
+        \ of an object that you can\u2019t purge using just the URL.\n"
+      operationId: get-property-resources
       parameters:
-      - $ref: parameters/groupIdreqQP_groupId.yaml
+      - $ref: parameters/group-id-req-qp-group-id.yaml
       responses:
         200:
-          description: |
-            The response provides the resources.
           content:
             application/json:
               example:
                 $ref: examples/get-response-property-resources.json
               schema:
-                $ref: schemas/ListOfResourceItem.yaml
-  /user-admin/properties/{propertyId}/users:
-    parameters:
-    - $ref: parameters/propertyId-path.yaml
-    get:
-      operationId: get-property-users
-      summary: List users for property
+                $ref: schemas/list-of-resource-item.yaml
+          description: 'The response provides the resources.
+
+            '
+      summary: Get asset's resources
       tags:
-      - Properties
-      description: |
-        This operation lists users who can access a property.
+      - Resources
+    parameters:
+    - $ref: parameters/asset-id-path.yaml
+  /user-admin/properties/{assetId}/users:
+    get:
+      description: 'This operation lists users who can access a property or include.
+
+        '
+      operationId: get-property-users
       parameters:
-      - $ref: parameters/userType-query.yaml
+      - $ref: parameters/user-type-query.yaml
       responses:
         200:
-          description: |
-            The response provides the users accessing the property.
           content:
             application/json:
               example:
                 $ref: examples/put-response-block-uiidentities.json
               schema:
-                $ref: schemas/UsersOfPropertyResponse.yaml
-  /user-admin/properties/{propertyId}/users/block:
-    parameters:
-    - $ref: parameters/propertyId-path.yaml
-    put:
-      operationId: put-property-users-block
-      summary: Block users
+                $ref: schemas/users-of-property-response.yaml
+          description: 'The response provides the users accessing the property or
+            include.
+
+            '
+      summary: List users for property or include
       tags:
-      - Properties
-      description: |
-        This operation blocks the users on a property.
+      - Assets
+    parameters:
+    - $ref: parameters/asset-id-path.yaml
+  /user-admin/properties/{assetId}/users/block:
+    parameters:
+    - $ref: parameters/asset-id-path.yaml
+    put:
+      description: 'This operation blocks the users on a property or include.
+
+        '
+      operationId: put-property-users-block
       requestBody:
-        required: true
         content:
           application/json:
             example:
               $ref: examples/put-request-block-uiidentities.json
             schema:
-              $ref: schemas/UsersBlockUIIdentities.yaml
+              $ref: schemas/users-block-uiidentities.yaml
+        required: true
       responses:
         200:
-          description: |
-            The response provides the users blocked from the property.
           content:
             application/json:
               example:
                 $ref: examples/put-response-block-uiidentities.json
               schema:
-                $ref: schemas/UsersOfPropertyResponse.yaml
+                $ref: schemas/users-of-property-response.yaml
+          description: 'The response provides the users blocked from the asset.
+
+            '
+      summary: Block users from a property or include
+      tags:
+      - Assets
+servers:
+- url: https://{hostname}/identity-management/v3
+tags:
+- description: Fetch properties and includes used by an account with their details,
+    including their users.
+  name: Assets
+- description: Fetch resources used by a property or include.
+  name: Resources
+x-akamai:
+  auth-type: EDGE_GRID
+  file-path: 02-properties-api.yaml

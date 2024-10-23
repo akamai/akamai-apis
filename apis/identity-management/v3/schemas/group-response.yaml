@@ -1,0 +1,90 @@
+additionalProperties: false
+description: 'Specifies a group.
+
+  '
+properties:
+  actions:
+    additionalProperties: false
+    description: 'Specifies activities available for the group.
+
+      '
+    properties:
+      delete:
+        description: 'Whether you can remove the group from the account. You can''t
+          remove a group that contains resources or subgroups, or if users have roles
+          on that group.
+
+          '
+        type: boolean
+      edit:
+        description: 'Whether you can modify the group.
+
+          '
+        type: boolean
+    required:
+    - delete
+    - edit
+    type: object
+  createdBy:
+    description: 'The user who created the group.
+
+      '
+    minLength: 1
+    type: string
+  createdDate:
+    description: 'ISO 8601 timestamp indicating when the group was created.
+
+      '
+    format: date-time
+    type: string
+  groupId:
+    description: 'Unique identifier for each group.
+
+      '
+    minimum: 1
+    type: integer
+  groupName:
+    description: 'Descriptive label for the group.
+
+      '
+    minLength: 1
+    type: string
+  modifiedBy:
+    description: 'The user who last edited the group.
+
+      '
+    minLength: 1
+    type: string
+  modifiedDate:
+    description: 'ISO 8601 timestamp indicating when the group was last updated.
+
+      '
+    format: date-time
+    type: string
+  parentGroupId:
+    description: 'Unique identifier for the parent group within the group tree. If
+      you''re viewing group info for a root-level group, you may not see this member.
+
+      '
+    minimum: 0
+    type: integer
+  subGroups:
+    description: 'Children of the parent group. Permissions cascade downward from
+      parent to child unless the child group''s `isBlocked` is `true`.
+
+      '
+    items:
+      $ref: groups-nested.yaml
+    minItems: 0
+    type: array
+required:
+- createdBy
+- createdDate
+- groupId
+- groupName
+- modifiedBy
+- modifiedDate
+- subGroups
+type: object
+x-akamai:
+  file-path: schemas/group-response.yaml

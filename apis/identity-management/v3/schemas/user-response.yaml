@@ -1,0 +1,306 @@
+additionalProperties: false
+description: 'Encapsulates information about each user.
+
+  '
+properties:
+  accountId:
+    description: 'Unique identifier for each account.
+
+      '
+    minLength: 1
+    type: string
+  actions:
+    additionalProperties: false
+    description: 'Specifies permissions available to the user for this group. This
+      data is available when you specify the `actions` parameter of the same name,
+      not to be confused with the `action` parameter that applies to the [Set two-factor
+      authentication](ref:put-user-profile-tfa) operation.
+
+      '
+    properties:
+      apiClient:
+        description: 'Enables the administrator to create an API client.
+
+          '
+        type: boolean
+      delete:
+        description: 'Whether the user is deletable.
+
+          '
+        type: boolean
+      edit:
+        description: 'Whether the user is editable.
+
+          '
+        type: boolean
+      isCloneable:
+        description: 'Enables an administrator to create a new user with permissions
+          cloned from this user.
+
+          '
+        type: boolean
+      resetPassword:
+        description: 'Enables an administrator to send a user a password by email
+          or see a one-time token.
+
+          '
+        type: boolean
+      thirdPartyAccess:
+        description: 'Enables the administrator to manage extended access.
+
+          '
+        type: boolean
+    required:
+    - delete
+    - edit
+    - resetPassword
+    - isCloneable
+    - thirdPartyAccess
+    - apiClient
+    type: object
+  additionalAuthentication:
+    description: 'Specifies the user''s multi-factor authentication method, confirming
+      their identity. Either `TFA`, `MFA`, or `NONE`, which offers no additional authentication.
+
+      '
+    enum:
+    - TFA
+    - MFA
+    - NONE
+    type: string
+  additionalAuthenticationConfigured:
+    description: 'Whether the user has multi-factor authentication configured.
+
+      '
+    type: boolean
+  address:
+    description: 'The user''s street address.
+
+      '
+    minLength: 1
+    type: string
+  authGrants:
+    description: 'A user''s role assignments, per group.
+
+      '
+    items:
+      $ref: auth-grant-response.yaml
+    minItems: 0
+    type: array
+  city:
+    description: 'The user''s city.
+
+      '
+    minLength: 1
+    type: string
+  contactType:
+    description: 'User''s contact type.
+
+      '
+    minLength: 1
+    type: string
+  country:
+    description: 'User''s country.
+
+      '
+    minLength: 1
+    type: string
+  email:
+    description: 'The user''s email address.
+
+      '
+    format: email
+    type: string
+  emailUpdatePending:
+    description: 'Whether there are any pending changes to the email address.
+
+      '
+    type: boolean
+  firstName:
+    description: 'The user''s first name.
+
+      '
+    minLength: 1
+    type: string
+  isLocked:
+    description: 'Whether the user''s account is locked. To learn more, see [Temporary
+      account lockout](https://techdocs.akamai.com/iam/docs/tmp-account-lockout).
+
+      '
+    type: boolean
+  jobTitle:
+    description: 'The user''s position at the company.
+
+      '
+    minLength: 1
+    type: string
+  lastLoginDate:
+    description: 'ISO 8601 timestamp indicating when the user last logged in.
+
+      '
+    format: date-time
+    type: string
+  lastName:
+    description: 'The user''s surname.
+
+      '
+    minLength: 1
+    type: string
+  mobilePhone:
+    description: 'The user''s mobile phone number in ITU-T E.164 format, that is,
+      `+country code-area code-subscriber number`.
+
+      '
+    minLength: 1
+    type: string
+  notifications:
+    additionalProperties: false
+    description: 'Specifies email notifications the user receives for products.
+
+      '
+    properties:
+      enableEmailNotifications:
+        description: 'Enables email notifications.
+
+          '
+        type: boolean
+      options:
+        additionalProperties: false
+        description: 'Specifies email notifications settings.
+
+          '
+        properties:
+          apiClientCredentialExpiryNotification:
+            description: 'Whether the user gets notifications for expiring API client
+              credentials.
+
+              '
+            type: boolean
+          newUserNotification:
+            description: 'Whether group administrators get notifications when the
+              user creates other new users.
+
+              '
+            type: boolean
+          passwordExpiry:
+            description: 'Whether the user gets notifications for password expiration.
+
+              '
+            type: boolean
+          proactive:
+            description: 'Products for which the user gets notifications for service
+              issues.
+
+              '
+            items:
+              minLength: 1
+              type: string
+            minItems: 0
+            type: array
+          upgrade:
+            description: 'Products for which the user receives notifications for upgrades.
+
+              '
+            items:
+              minLength: 1
+              type: string
+            minItems: 0
+            type: array
+        required:
+        - upgrade
+        - proactive
+        - passwordExpiry
+        - newUserNotification
+        - apiClientCredentialExpiryNotification
+        type: object
+    required:
+    - options
+    - enableEmailNotifications
+    type: object
+  passwordExpiryDate:
+    description: 'The date a user''s password expires.
+
+      '
+    format: date-time
+    type: string
+  phone:
+    description: 'The user''s mobile phone number in ITU-T E.164 format, that is,
+      `+country code-area code-subscriber number`.
+
+      '
+    minLength: 1
+    type: string
+  preferredLanguage:
+    description: 'The user''s language.
+
+      '
+    minLength: 1
+    type: string
+  secondaryEmail:
+    description: 'The user''s alternate email address.
+
+      '
+    format: email
+    type: string
+  sessionTimeOut:
+    description: 'The number of seconds it takes for the user''s Control Center session
+      to time out after no activity.
+
+      '
+    minimum: 0
+    type: integer
+  state:
+    description: 'The user''s state or province if user''s country is USA or Canada.
+
+      '
+    minLength: 1
+    type: string
+  tfaConfigured:
+    description: 'Whether TFA is configured.
+
+      '
+    type: boolean
+  tfaEnabled:
+    description: 'Whether TFA is enabled.
+
+      '
+    type: boolean
+  timeZone:
+    description: 'The user''s time zone. To get the available values, run the [View
+      time zones](ref:get-common-timezones) operation.
+
+      '
+    minLength: 1
+    type: string
+  uiIdentityId:
+    description: 'Unique identifier for each user, which corresponds to their Control
+      Center profile or client ID. Also known as a `contactId` in other APIs.
+
+      '
+    minLength: 1
+    type: string
+  uiUserName:
+    description: 'The user''s username in Control Center.
+
+      '
+    minLength: 1
+    type: string
+  zipCode:
+    description: 'The user''s five-digit postal code, represented as a string.
+
+      '
+    minLength: 1
+    type: string
+required:
+- uiIdentityId
+- firstName
+- lastName
+- email
+- additionalAuthentication
+- country
+- address
+- timeZone
+- additionalAuthenticationConfigured
+type: object
+x-akamai:
+  file-path: schemas/user-response.yaml
