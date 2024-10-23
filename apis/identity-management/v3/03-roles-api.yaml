@@ -1,163 +1,10 @@
+openapi: 3.0.0
 info:
+  title: Roles
+  version: '3'
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  title: Roles
-  version: '3'
-openapi: 3.0.0
-paths:
-  /user-admin/roles:
-    get:
-      description: 'This operation lists roles for the current account and contract
-        type or other accounts using the `accountSwitchKey` parameter. The account
-        and contract type are determined by the access tokens in your API client.
-
-        '
-      operationId: get-roles
-      parameters:
-      - $ref: parameters/roles-filter-params-actions-actions.yaml
-      - $ref: parameters/roles-filter-params-group-group-id.yaml
-      - $ref: parameters/roles-filter-params-users-users.yaml
-      - $ref: parameters/roles-filter-params-context-ignore-context.yaml
-      responses:
-        200:
-          content:
-            application/json:
-              example:
-                $ref: examples/get-response-roles.json
-              schema:
-                $ref: schemas/list-of-role-list-item.yaml
-          description: 'The response provides the roles for the account.
-
-            '
-      summary: List roles
-      tags:
-      - Roles
-    post:
-      description: 'This operation creates a custom role. A custom role combines [grantable
-        roles](ref:get-grantable-roles) defined by Akamai. Roles exist at the account
-        level regardless of group, but are constrained by contract type. If you create
-        a role under one contract type, you can''t apply that role to groups belonging
-        to a different contract type, even if they''re in the same account.
-
-        '
-      operationId: post-role
-      requestBody:
-        content:
-          application/json:
-            example:
-              $ref: examples/post-request-create-custom-role.json
-            schema:
-              $ref: schemas/role-request-post.yaml
-        required: true
-      responses:
-        201:
-          content:
-            application/json:
-              example:
-                $ref: examples/post-response-create-custom-role.json
-              schema:
-                $ref: schemas/role-with-granted-roles.yaml
-          description: 'Custom role successfully created.
-
-            '
-          headers:
-            Location:
-              $ref: headers/location.yaml
-      summary: Create a role
-      tags:
-      - Roles
-  /user-admin/roles/grantable-roles:
-    get:
-      description: 'This operation lists the grantable roles you can include in a
-        new custom role, or add to an existing custom role.
-
-        '
-      operationId: get-grantable-roles
-      responses:
-        200:
-          content:
-            application/json:
-              example:
-                $ref: examples/get-response-grantable-roles.json
-              schema:
-                $ref: schemas/list-of-granted-role.yaml
-          description: 'The response provides grantable roles.
-
-            '
-      summary: List grantable roles
-      tags:
-      - Grantable roles
-  /user-admin/roles/{roleId}:
-    delete:
-      description: 'This operation deletes a custom role. You can''t delete a role
-        if it''s assigned to a user.
-
-        '
-      operationId: delete-role
-      responses:
-        204:
-          description: 'Role deleted.
-
-            '
-      summary: Delete a role
-      tags:
-      - Roles
-    get:
-      description: 'This operation retrieves a role''s details.
-
-        '
-      operationId: get-role
-      parameters:
-      - $ref: parameters/roles-filter-params-actions-actions.yaml
-      - $ref: parameters/granted-roles-granted-roles.yaml
-      - $ref: parameters/roles-filter-params-users-users.yaml
-      responses:
-        200:
-          content:
-            application/json:
-              example:
-                $ref: examples/get-response-role-details.json
-              schema:
-                $ref: schemas/role-with-granted-roles.yaml
-          description: 'The response provides the role''s details.
-
-            '
-      summary: Get a role
-      tags:
-      - Roles
-    parameters:
-    - $ref: parameters/role-id-path.yaml
-    put:
-      description: 'This operation adds or removes a role''s group role assignments,
-        along with other data such as name and description. When you modify a role,
-        those changes affect existing API clients. Review all API clients belonging
-        to the user before modifying a role.
-
-        '
-      operationId: put-role
-      requestBody:
-        content:
-          application/json:
-            example:
-              $ref: examples/put-request-update-custom-role.json
-            schema:
-              $ref: schemas/role-request-put.yaml
-        required: true
-      responses:
-        200:
-          content:
-            application/json:
-              example:
-                $ref: examples/put-response-update-custom-role.json
-              schema:
-                $ref: schemas/role.yaml
-          description: 'The response reflects the modified role.
-
-            '
-      summary: Edit a role
-      tags:
-      - Roles
 servers:
 - url: https://{hostname}/identity-management/v3
 tags:
@@ -169,3 +16,133 @@ tags:
 x-akamai:
   auth-type: EDGE_GRID
   file-path: 03-roles-api.yaml
+paths:
+  /user-admin/roles:
+    post:
+      operationId: post-role
+      summary: Create a role
+      tags:
+      - Roles
+      description: |
+        This operation creates a custom role. A custom role combines [grantable roles](ref:get-grantable-roles) defined by Akamai. Roles exist at the account level regardless of group, but are constrained by contract type. If you create a role under one contract type, you can't apply that role to groups belonging to a different contract type, even if they're in the same account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/post-request-create-custom-role.json
+            schema:
+              $ref: schemas/role-request-post.yaml
+      responses:
+        201:
+          description: |
+            Custom role successfully created.
+          headers:
+            Location:
+              $ref: headers/location.yaml
+          content:
+            application/json:
+              example:
+                $ref: examples/post-response-create-custom-role.json
+              schema:
+                $ref: schemas/role-with-granted-roles.yaml
+    get:
+      operationId: get-roles
+      summary: List roles
+      tags:
+      - Roles
+      description: |
+        This operation lists roles for the current account and contract type or other accounts using the `accountSwitchKey` parameter. The account and contract type are determined by the access tokens in your API client.
+      parameters:
+      - $ref: parameters/roles-filter-params-actions-actions.yaml
+      - $ref: parameters/roles-filter-params-group-group-id.yaml
+      - $ref: parameters/roles-filter-params-users-users.yaml
+      - $ref: parameters/roles-filter-params-context-ignore-context.yaml
+      responses:
+        200:
+          description: |
+            The response provides the roles for the account.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-roles.json
+              schema:
+                $ref: schemas/list-of-role-list-item.yaml
+  /user-admin/roles/grantable-roles:
+    get:
+      operationId: get-grantable-roles
+      summary: List grantable roles
+      tags:
+      - Grantable roles
+      description: |
+        This operation lists the grantable roles you can include in a new custom role, or add to an existing custom role.
+      responses:
+        200:
+          description: |
+            The response provides grantable roles.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-grantable-roles.json
+              schema:
+                $ref: schemas/list-of-granted-role.yaml
+  /user-admin/roles/{roleId}:
+    parameters:
+    - $ref: parameters/role-id-path.yaml
+    get:
+      operationId: get-role
+      summary: Get a role
+      tags:
+      - Roles
+      description: |
+        This operation retrieves a role's details.
+      parameters:
+      - $ref: parameters/roles-filter-params-actions-actions.yaml
+      - $ref: parameters/granted-roles-granted-roles.yaml
+      - $ref: parameters/roles-filter-params-users-users.yaml
+      responses:
+        200:
+          description: |
+            The response provides the role's details.
+          content:
+            application/json:
+              example:
+                $ref: examples/get-response-role-details.json
+              schema:
+                $ref: schemas/role-with-granted-roles.yaml
+    put:
+      operationId: put-role
+      summary: Edit a role
+      tags:
+      - Roles
+      description: |
+        This operation adds or removes a role's group role assignments, along with other data such as name and description. When you modify a role, those changes affect existing API clients. Review all API clients belonging to the user before modifying a role.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              $ref: examples/put-request-update-custom-role.json
+            schema:
+              $ref: schemas/role-request-put.yaml
+      responses:
+        200:
+          description: |
+            The response reflects the modified role.
+          content:
+            application/json:
+              example:
+                $ref: examples/put-response-update-custom-role.json
+              schema:
+                $ref: schemas/role.yaml
+    delete:
+      operationId: delete-role
+      summary: Delete a role
+      tags:
+      - Roles
+      description: |
+        This operation deletes a custom role. You can't delete a role if it's assigned to a user.
+      responses:
+        204:
+          description: |
+            Role deleted.

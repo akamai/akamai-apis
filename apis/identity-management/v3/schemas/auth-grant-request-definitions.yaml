@@ -1,42 +1,32 @@
-additionalProperties: false
-properties:
-  groupId:
-    description: 'Unique identifier for each group.
-
-      '
-    minimum: 1
-    type: integer
-  groupName:
-    description: 'Descriptive label for the group.
-
-      '
-    minLength: 1
-    type: string
-  isBlocked:
-    description: 'Blocks a user''s access to a group.
-
-      '
-    type: boolean
-  roleId:
-    description: 'Unique identifier for each role. To get this value, run the [List
-      roles](ref:get-roles) operation. You need to assign at least one role to a user.
-      Setting the value to `null` in POST leaves the default role: either unassigned
-      or cascaded from a parent group. For `PUT`, it clears the current assignment
-      and reverts it to the default role.
-
-      '
-    minimum: 1
-    nullable: true
-    type: integer
-  subGroups:
-    description: 'Children of the parent group. Permissions cascade downward from
-      parent to child unless the child group''s `isBlocked` is `true`.
-
-      '
-    items:
-      $ref: auth-grant-request-nested.yaml
-    minItems: 0
-    type: array
 type: object
 x-akamai:
   file-path: schemas/auth-grant-request-definitions.yaml
+additionalProperties: false
+properties:
+  groupId:
+    type: integer
+    description: |
+      Unique identifier for each group.
+    minimum: 1
+  groupName:
+    type: string
+    description: |
+      Descriptive label for the group.
+    minLength: 1
+  isBlocked:
+    type: boolean
+    description: |
+      Blocks a user's access to a group.
+  roleId:
+    type: integer
+    description: |
+      Unique identifier for each role. To get this value, run the [List roles](ref:get-roles) operation. You need to assign at least one role to a user. Setting the value to `null` in POST leaves the default role: either unassigned or cascaded from a parent group. For `PUT`, it clears the current assignment and reverts it to the default role.
+    nullable: true
+    minimum: 1
+  subGroups:
+    type: array
+    description: |
+      Children of the parent group. Permissions cascade downward from parent to child unless the child group's `isBlocked` is `true`.
+    minItems: 0
+    items:
+      $ref: auth-grant-request-nested.yaml

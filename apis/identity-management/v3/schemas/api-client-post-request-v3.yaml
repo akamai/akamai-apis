@@ -1,287 +1,230 @@
+type: object
+x-akamai:
+  file-path: schemas/api-client-post-request-v3.yaml
 additionalProperties: false
-properties:
-  allowAccountSwitch:
-    default: false
-    description: 'Enables the API client to manage more than one account. For details,
-      see [Manage many accounts with one API client](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client).
-
-      '
-    type: boolean
-  apiAccess:
-    additionalProperties: false
-    description: 'The APIs the API client can access.
-
-      '
-    oneOf:
-    - additionalProperties: false
-      properties:
-        allAccessibleApis:
-          description: 'Enables the API client to access a full set of available APIs.
-            Note there''s a limit of 99 API services for each client. Clients that
-            make calls to URLs from the 100th service get a 403 error.
-
-            '
-          type: boolean
-      required:
-      - apis
-      title: Not all APIs accessible
-    - additionalProperties: false
-      properties:
-        allAccessibleApis:
-          description: 'Enables the API client to access a full set of available APIs.
-            Note there''s a limit of 99 API services for each client. Clients that
-            make calls to URLs from the 100th service get a 403 error.
-
-            '
-          type: boolean
-      required:
-      - allAccessibleApis
-      title: All APIs accessible
-    properties:
-      allAccessibleApis:
-        description: 'Enables the API client to access a full set of available APIs.
-          Note there''s a limit of 99 API services for each client. Clients that make
-          calls to URLs from the 100th service get a 403 error.
-
-          '
-        type: boolean
-      apis:
-        description: 'Set of APIs the API client can access when `allAccessibleApis`
-          is disabled. To get this data, run the [List allowed APIs](ref:get-api-clients-users-allowed-apis)
-          operation.
-
-          '
-        items:
-          additionalProperties: false
-          properties:
-            accessLevel:
-              description: 'The API client''s access level on a per API basis, either
-                `READ-ONLY` or `READ-WRITE`.
-
-                '
-              enum:
-              - READ-ONLY
-              - READ-WRITE
-              type: string
-            apiId:
-              description: 'Unique identifier for each API. To get this value, run
-                the [List allowed APIs](ref:get-api-clients-users-allowed-apis) operation.
-
-                '
-              minimum: 0
-              type: integer
-            apiName:
-              description: 'Descriptive label for the API.
-
-                '
-              minLength: 1
-              type: string
-            description:
-              description: 'Descriptive label for the API.
-
-                '
-              minLength: 1
-              type: string
-            documentationUrl:
-              description: 'Link to more information about the API.
-
-                '
-              minLength: 1
-              type: string
-            endPoint:
-              description: 'Specifies where the API can access resources.
-
-                '
-              minLength: 1
-              type: string
-          required:
-          - apiId
-          - accessLevel
-          type: object
-        minItems: 0
-        type: array
-    type: object
-  authorizedUsers:
-    description: 'The API client''s valid users. When the `clientType` is either `CLIENT`
-      or `USER_CLIENT`, you need to specify a single `username` in the array. To get
-      this data, run the [List authorized users](ref:get-api-clients-users) operation.
-
-      '
-    items:
-      minLength: 1
-      type: string
-    minItems: 0
-    type: array
-  canAutoCreateCredential:
-    default: false
-    description: 'Whether the API client can create a credential for a new API client.
-      The default is `false`.
-
-      '
-    type: boolean
-  clientDescription:
-    description: 'Descriptive label about the API client.
-
-      '
-    minLength: 1
-    type: string
-  clientName:
-    description: 'Descriptive label for the API client.
-
-      '
-    minLength: 1
-    type: string
-  clientType:
-    description: 'Specifies the API client''s ownership and credential management.
-      `CLIENT` indicates the creator owns and manages the credentials. `USER_CLIENT`
-      indicates another user owns the client and manages the credentials.
-
-      '
-    enum:
-    - CLIENT
-    - USER_CLIENT
-    type: string
-  createCredential:
-    default: false
-    description: 'With `canAutoCreateCredential` enabled, setting this to `true` creates
-      new credentials along with a new API client. The default is `false`.
-
-      '
-    type: boolean
-  groupAccess:
-    additionalProperties: false
-    description: 'Specifies the API client''s group access.
-
-      '
-    oneOf:
-    - additionalProperties: false
-      properties:
-        cloneAuthorizedUserGroups:
-          description: 'Sets the API client''s group access the same as the authorized
-            user. Set it to `false` and specify the access in the `groups` array.
-
-            '
-          type: boolean
-        groups:
-          description: 'Groups the API client can access. To get this data, run the
-            [List accessible groups](ref:get-api-clients-users-group-access) operation.
-
-            '
-          items:
-            $ref: groups.yaml#/definitions/groups
-          minItems: 0
-          type: array
-      required:
-      - groups
-      - cloneAuthorizedUserGroups
-      title: Custom access
-    - additionalProperties: false
-      properties:
-        cloneAuthorizedUserGroups:
-          description: 'Set it to `true` to clone the API client''s group access from
-            the authorized user.
-
-            '
-          type: boolean
-        groups:
-          description: 'Groups the API client can access. To get this data, run the
-            [List accessible groups](ref:get-api-clients-users-group-access) operation.
-
-            '
-          items:
-            $ref: groups.yaml#/definitions/groups
-          minItems: 0
-          type: array
-      required:
-      - cloneAuthorizedUserGroups
-      title: Cloned access
-    type: object
-  ipAcl:
-    additionalProperties: false
-    description: 'Specifies the API client''s IP list restriction.
-
-      '
-    properties:
-      cidr:
-        description: 'IP addresses or CIDR blocks the API client can access.
-
-          '
-        items:
-          minLength: 1
-          type: string
-        minItems: 0
-        type: array
-      enable:
-        description: 'Enables API client''s access to the IP ACL.
-
-          '
-        type: boolean
-    required:
-    - enable
-    - cidr
-    type: object
-  notificationEmails:
-    description: 'Email addresses to notify users of expiring credentials.
-
-      '
-    items:
-      minLength: 1
-      type: string
-    minItems: 0
-    type: array
-  purgeOptions:
-    additionalProperties: false
-    description: 'Configures the API client for access to the [Fast Purge API](https://techdocs.akamai.com/purge-cache/reference/api).
-      Provide it only if the `apis` object includes an `apiName` of `CCU APIs`.
-
-      '
-    properties:
-      canPurgeByCacheTag:
-        description: 'Whether the API client can purge content by cache tag.
-
-          '
-        type: boolean
-      canPurgeByCpcode:
-        description: 'Whether the API client can purge content by CP code.
-
-          '
-        type: boolean
-      cpcodeAccess:
-        additionalProperties: false
-        description: 'CP codes the API client can purge.
-
-          '
-        properties:
-          allCurrentAndNewCpcodes:
-            description: 'Whether the API client can purge content by cache tag.
-
-              '
-            type: boolean
-          cpcodes:
-            description: 'CP codes the API client can purge. To get these values,
-              run the [List allowed CP codes](ref:post-api-clients-users-allowed-cpcodes)
-              operation.
-
-              '
-            items:
-              minimum: 0
-              type: integer
-            minItems: 0
-            type: array
-        required:
-        - allCurrentAndNewCpcodes
-        - cpcodes
-        type: object
-    required:
-    - canPurgeByCacheTag
-    - canPurgeByCpcode
-    - cpcodeAccess
-    type: object
 required:
 - clientType
 - apiAccess
 - groupAccess
 - authorizedUsers
-type: object
-x-akamai:
-  file-path: schemas/api-client-post-request-v3.yaml
+properties:
+  allowAccountSwitch:
+    type: boolean
+    description: |
+      Enables the API client to manage more than one account. For details, see [Manage many accounts with one API client](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client).
+    default: false
+  apiAccess:
+    type: object
+    description: |
+      The APIs the API client can access.
+    additionalProperties: false
+    oneOf:
+    - additionalProperties: false
+      title: Not all APIs accessible
+      required:
+      - apis
+      properties:
+        allAccessibleApis:
+          type: boolean
+          description: |
+            Enables the API client to access a full set of available APIs. Note there's a limit of 99 API services for each client. Clients that make calls to URLs from the 100th service get a 403 error.
+    - additionalProperties: false
+      title: All APIs accessible
+      required:
+      - allAccessibleApis
+      properties:
+        allAccessibleApis:
+          type: boolean
+          description: |
+            Enables the API client to access a full set of available APIs. Note there's a limit of 99 API services for each client. Clients that make calls to URLs from the 100th service get a 403 error.
+    properties:
+      allAccessibleApis:
+        type: boolean
+        description: |
+          Enables the API client to access a full set of available APIs. Note there's a limit of 99 API services for each client. Clients that make calls to URLs from the 100th service get a 403 error.
+      apis:
+        type: array
+        description: |
+          Set of APIs the API client can access when `allAccessibleApis` is disabled. To get this data, run the [List allowed APIs](ref:get-api-clients-users-allowed-apis) operation.
+        minItems: 0
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - apiId
+          - accessLevel
+          properties:
+            description:
+              type: string
+              description: |
+                Descriptive label for the API.
+              minLength: 1
+            accessLevel:
+              type: string
+              description: |
+                The API client's access level on a per API basis, either `READ-ONLY` or `READ-WRITE`.
+              enum:
+              - READ-ONLY
+              - READ-WRITE
+            apiId:
+              type: integer
+              description: |
+                Unique identifier for each API. To get this value, run the [List allowed APIs](ref:get-api-clients-users-allowed-apis) operation.
+              minimum: 0
+            apiName:
+              type: string
+              description: |
+                Descriptive label for the API.
+              minLength: 1
+            documentationUrl:
+              type: string
+              description: |
+                Link to more information about the API.
+              minLength: 1
+            endPoint:
+              type: string
+              description: |
+                Specifies where the API can access resources.
+              minLength: 1
+  authorizedUsers:
+    type: array
+    description: |
+      The API client's valid users. When the `clientType` is either `CLIENT` or `USER_CLIENT`, you need to specify a single `username` in the array. To get this data, run the [List authorized users](ref:get-api-clients-users) operation.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  canAutoCreateCredential:
+    type: boolean
+    description: |
+      Whether the API client can create a credential for a new API client. The default is `false`.
+    default: false
+  clientDescription:
+    type: string
+    description: |
+      Descriptive label about the API client.
+    minLength: 1
+  clientName:
+    type: string
+    description: |
+      Descriptive label for the API client.
+    minLength: 1
+  clientType:
+    type: string
+    description: |
+      Specifies the API client's ownership and credential management. `CLIENT` indicates the creator owns and manages the credentials. `USER_CLIENT` indicates another user owns the client and manages the credentials.
+    enum:
+    - CLIENT
+    - USER_CLIENT
+  createCredential:
+    type: boolean
+    description: |
+      With `canAutoCreateCredential` enabled, setting this to `true` creates new credentials along with a new API client. The default is `false`.
+    default: false
+  groupAccess:
+    type: object
+    description: |
+      Specifies the API client's group access.
+    additionalProperties: false
+    oneOf:
+    - additionalProperties: false
+      title: Custom access
+      required:
+      - groups
+      - cloneAuthorizedUserGroups
+      properties:
+        cloneAuthorizedUserGroups:
+          type: boolean
+          description: |
+            Sets the API client's group access the same as the authorized user. Set it to `false` and specify the access in the `groups` array.
+        groups:
+          type: array
+          description: |
+            Groups the API client can access. To get this data, run the [List accessible groups](ref:get-api-clients-users-group-access) operation.
+          minItems: 0
+          items:
+            $ref: groups.yaml#/definitions/groups
+    - additionalProperties: false
+      title: Cloned access
+      required:
+      - cloneAuthorizedUserGroups
+      properties:
+        cloneAuthorizedUserGroups:
+          type: boolean
+          description: |
+            Set it to `true` to clone the API client's group access from the authorized user.
+        groups:
+          type: array
+          description: |
+            Groups the API client can access. To get this data, run the [List accessible groups](ref:get-api-clients-users-group-access) operation.
+          minItems: 0
+          items:
+            $ref: groups.yaml#/definitions/groups
+  ipAcl:
+    type: object
+    description: |
+      Specifies the API client's IP list restriction.
+    additionalProperties: false
+    required:
+    - enable
+    - cidr
+    properties:
+      cidr:
+        type: array
+        description: |
+          IP addresses or CIDR blocks the API client can access.
+        minItems: 0
+        items:
+          type: string
+          minLength: 1
+      enable:
+        type: boolean
+        description: |
+          Enables API client's access to the IP ACL.
+  notificationEmails:
+    type: array
+    description: |
+      Email addresses to notify users of expiring credentials.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  purgeOptions:
+    type: object
+    description: |
+      Configures the API client for access to the [Fast Purge API](https://techdocs.akamai.com/purge-cache/reference/api). Provide it only if the `apis` object includes an `apiName` of `CCU APIs`.
+    additionalProperties: false
+    required:
+    - canPurgeByCacheTag
+    - canPurgeByCpcode
+    - cpcodeAccess
+    properties:
+      canPurgeByCacheTag:
+        type: boolean
+        description: |
+          Whether the API client can purge content by cache tag.
+      canPurgeByCpcode:
+        type: boolean
+        description: |
+          Whether the API client can purge content by CP code.
+      cpcodeAccess:
+        type: object
+        description: |
+          CP codes the API client can purge.
+        additionalProperties: false
+        required:
+        - allCurrentAndNewCpcodes
+        - cpcodes
+        properties:
+          allCurrentAndNewCpcodes:
+            type: boolean
+            description: |
+              Whether the API client can purge content by cache tag.
+          cpcodes:
+            type: array
+            description: |
+              CP codes the API client can purge. To get these values, run the [List allowed CP codes](ref:post-api-clients-users-allowed-cpcodes) operation.
+            minItems: 0
+            items:
+              type: integer
+              minimum: 0
