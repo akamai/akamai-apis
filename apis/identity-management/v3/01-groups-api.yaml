@@ -7,6 +7,12 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
 - url: https://{hostname}/identity-management/v3
+tags:
+- description: Manage groups for your account. Groups are organizational containers
+    for the objects you use in Control Center.
+  name: Groups
+- description: Move nested groups within the same parent hierarchy.
+  name: Move groups
 x-akamai:
   auth-type: EDGE_GRID
   file-path: 01-groups-api.yaml
@@ -18,9 +24,9 @@ paths:
       tags:
       - Groups
       description: |
-        This operation lists all groups the administrator can manage for the current account and contract type. The account and contract type are determined by the access tokens in your API client.
+        This operation lists all groups the administrator can manage for the current account and contract type or other managed accounts using the `accountSwitchKey` parameter. The account and contract type are determined by the access tokens in your API client.
       parameters:
-      - $ref: parameters/rolesFilterParamsActions_actions.yaml
+      - $ref: parameters/roles-filter-params-actions-actions.yaml
       responses:
         200:
           description: |
@@ -30,7 +36,7 @@ paths:
               example:
                 $ref: examples/get-response-groups.json
               schema:
-                $ref: schemas/ListOfGroupResponse.yaml
+                $ref: schemas/list-of-group-response.yaml
   /user-admin/groups/move:
     post:
       operationId: post-groups-move
@@ -46,24 +52,24 @@ paths:
             example:
               $ref: examples/post-request-move-group.json
             schema:
-              $ref: schemas/MoveGroupRequest.yaml
+              $ref: schemas/move-group-request.yaml
       responses:
         204:
           description: |
             Nested group successfully moved.
   /user-admin/groups/move/{sourceGroupId}/{destinationGroupId}/affected-users:
     parameters:
-    - $ref: parameters/destinationGroupId-path.yaml
-    - $ref: parameters/sourceGroupId-path.yaml
+    - $ref: parameters/destination-group-id-path.yaml
+    - $ref: parameters/source-group-id-path.yaml
     get:
       operationId: get-move-affected-users
       summary: List users affected by moving a group
       tags:
       - Move groups
       description: |
-        This operation lists users who are affected when you move a group. Users may lose or gain access to resources depending on the roles and permissions inherited from the new parent group. Users with a `userType` of `lostAccess` lose their access to the source group. If the `userType` is `gainAccess`, they gain access to the resources in the source group. Users who have inherited access to a group lose access to that group if it moves out of its the hierarchy that gives them those access rights. If the group moves to another parent group to which they have access, they still have access to the group you move. Likewise, when you move a group to a new location, users who inherit their access rights from the new parent group gain access to the resources in the group you move.
+        This operation lists users who are affected when you move a group. Users may lose or gain access to resources depending on the roles and permissions inherited from the new parent group. Users with a `userType` of `lostAccess` lose their access to the source group. If the `userType` is `gainAccess`, they gain access to the resources in the source group. Users who have inherited access to a group lose access to that group if it moves out of its hierarchy that gives them those access rights. If the group moves to another parent group to which they have access, they still have access to the group you move. Likewise, when you move a group to a new location, users who inherit their access rights from the new parent group gain access to the resources in the group you move.
       parameters:
-      - $ref: parameters/userType-query.yaml
+      - $ref: parameters/user-type-query.yaml
       responses:
         200:
           description: |
@@ -73,10 +79,10 @@ paths:
               example:
                 $ref: examples/get-response-affected-users.json
               schema:
-                $ref: schemas/ListOfMoveUserResponse.yaml
+                $ref: schemas/list-of-move-user-response.yaml
   /user-admin/groups/{groupId}:
     parameters:
-    - $ref: parameters/groupId-path.yaml
+    - $ref: parameters/group-id-path.yaml
     post:
       operationId: post-group
       summary: Create a new group
@@ -91,20 +97,20 @@ paths:
             example:
               $ref: examples/post-request-group.json
             schema:
-              $ref: schemas/GroupRequest.yaml
+              $ref: schemas/group-request.yaml
       responses:
         201:
           description: |
             Group successfully created.
           headers:
             Location:
-              $ref: headers/Location.yaml
+              $ref: headers/location.yaml
           content:
             application/json:
               example:
                 $ref: examples/post-response-group.json
               schema:
-                $ref: schemas/GroupResponse.yaml
+                $ref: schemas/group-response.yaml
     get:
       operationId: get-group
       summary: Get a group
@@ -113,7 +119,7 @@ paths:
       description: |
         This operation retrieves a group's details.
       parameters:
-      - $ref: parameters/rolesFilterParamsActions_actions.yaml
+      - $ref: parameters/roles-filter-params-actions-actions.yaml
       responses:
         200:
           description: |
@@ -123,7 +129,7 @@ paths:
               example:
                 $ref: examples/get-response-group-details.json
               schema:
-                $ref: schemas/GroupResponse.yaml
+                $ref: schemas/group-response.yaml
     put:
       operationId: put-group
       summary: Modify a group's name
@@ -136,11 +142,11 @@ paths:
         content:
           application/json:
             example:
-              $ref: examples/put-request-group.json
+              $ref: examples/post-request-group.json
             schema:
-              $ref: schemas/GroupRequest.yaml
+              $ref: schemas/group-request.yaml
       responses:
-        201:
+        200:
           description: |
             The response reflects the modified group.
           content:
@@ -148,7 +154,7 @@ paths:
               example:
                 $ref: examples/put-response-group.json
               schema:
-                $ref: schemas/GroupResponse.yaml
+                $ref: schemas/group-response.yaml
     delete:
       operationId: delete-group
       summary: Delete a group

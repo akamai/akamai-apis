@@ -1,0 +1,141 @@
+type: object
+description: |-
+  Encapsulates information about each user.
+  
+x-akamai:
+  file-path: schemas/ui-identities-response.yaml
+additionalProperties: false
+required:
+- uiIdentityId
+- firstName
+- lastName
+- uiUserName
+- email
+- accountId
+- additionalAuthentication
+- additionalAuthenticationConfigured
+- isLocked
+- tfaEnabled
+- tfaConfigured
+properties:
+  accountId:
+    type: string
+    description: |
+      Unique identifier for each account.
+    minLength: 1
+  actions:
+    type: object
+    description: |
+      Specifies permissions available to the user for this group. This data is available when you specify the `actions` parameter of the same name, not to be confused with the `action` parameter that applies to the [Set two-factor authentication](ref:put-user-profile-tfa) operation.
+    additionalProperties: false
+    required:
+    - delete
+    - edit
+    - resetPassword
+    - isCloneable
+    - thirdPartyAccess
+    - apiClient
+    - editProfile
+    - canEditTFA
+    properties:
+      delete:
+        type: boolean
+        description: |
+          Whether the user is deletable.
+      apiClient:
+        type: boolean
+        description: |
+          Enables the administrator to create an API client.
+      canEditMFA:
+        type: boolean
+        description: |
+          With a `true` value, the user can turn their MFA setting on or off.
+      canEditNone:
+        type: boolean
+        description: |
+          With a `true` value, the user can turn their None setting on or off.
+      canEditTFA:
+        type: boolean
+        description: |
+          With a `true` value, the user can turn their TFA setting on or off.
+      edit:
+        type: boolean
+        description: |
+          Whether the user is editable.
+      editProfile:
+        type: boolean
+        description: |
+          With a `true` value, the user can edit their user profile.
+      isCloneable:
+        type: boolean
+        description: |
+          Enables an administrator to create a new user with permissions cloned from this user.
+      resetPassword:
+        type: boolean
+        description: |
+          Enables an administrator to send a user a password by email or see a one-time token.
+      thirdPartyAccess:
+        type: boolean
+        description: |
+          Enables the administrator to manage extended access.
+  additionalAuthentication:
+    type: string
+    description: |
+      Specifies the user's multi-factor authentication method, confirming their identity. Either `TFA`, `MFA`, or `NONE`, which offers no additional authentication.
+    enum:
+    - TFA
+    - MFA
+    - NONE
+  additionalAuthenticationConfigured:
+    type: boolean
+    description: |
+      Whether the user has multi-factor authentication configured.
+  authGrants:
+    type: array
+    description: |
+      A user's role assignments, per group. 
+    minItems: 1
+    items:
+      $ref: auth-grant-response.yaml
+  email:
+    type: string
+    description: |
+      The user's email address.
+    format: email
+  firstName:
+    type: string
+    description: |
+      The user's first name.
+    minLength: 1
+  isLocked:
+    type: boolean
+    description: |
+      Whether the user's account is locked. To learn more, see [Temporary account lockout](https://techdocs.akamai.com/iam/docs/tmp-account-lockout).
+  lastLoginDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the user last logged in.
+    format: date-time
+  lastName:
+    type: string
+    description: |
+      The user's surname.
+    minLength: 1
+  tfaConfigured:
+    type: boolean
+    description: |
+      Whether TFA is configured.
+  tfaEnabled:
+    type: boolean
+    description: |
+      Whether TFA is enabled.
+  uiIdentityId:
+    type: string
+    description: |
+      Unique identifier for each user, which corresponds to their Control Center profile or client ID. Also known as a `contactId` in other APIs.
+    minLength: 1
+  uiUserName:
+    type: string
+    description: |
+      The user's username in Control Center.
+    minLength: 1

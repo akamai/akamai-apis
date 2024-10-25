@@ -18,14 +18,15 @@ properties:
   type:
     type: string
     description: |
-      Specifies a `standard` role provided by Akamai or a `custom` role you create for the account. You can't modify a `standard` role.
+      Whether it's a `standard` or `account` role defined by Akamai, or a `custom` role created by one of your account's users. You can only modify or delete `custom` roles. To learn more, see [About roles](https://techdocs.akamai.com/iam/docs/about-roles-permissions).
     enum:
     - custom
     - standard
+    - account
   actions:
     type: object
     description: |
-      Encapsulates activities performed on the group.
+      Specifies activities available for the group.
     additionalProperties: false
     required:
     - delete
@@ -34,11 +35,11 @@ properties:
       delete:
         type: boolean
         description: |
-          Indicates whether you can remove items from the group.
+          Whether you can remove items from the group.
       edit:
         type: boolean
         description: |
-          Indicates whether you can modify items in the group.
+          Whether you can modify items in the group.
   createdBy:
     type: string
     description: |
@@ -52,7 +53,7 @@ properties:
   grantedRoles:
     type: array
     description: |
-      Subset of roles within the role, giving you access to objects in a group.
+      Granted roles for the account.
     minItems: 0
     items:
       type: object
@@ -64,13 +65,13 @@ properties:
         grantedRoleDescription:
           type: string
           description: |
-            Descriptive text for the granted role to convey its use.
+            Descriptive label for the role to convey its use.
           minLength: 1
         grantedRoleId:
           type: integer
           description: |
-            Unique identifier for the granted role.
-          minimum: 0
+            Unique identifier for each granted role.
+          minimum: 1
         grantedRoleName:
           type: string
           description: |
@@ -89,20 +90,17 @@ properties:
   roleDescription:
     type: string
     description: |
-      Descriptive text for the granted role to convey its use.
+      Descriptive label for the role to convey its use.
     minLength: 1
   roleId:
     type: integer
     description: |
-      Unique identifier for the role.
-    minimum: 0
+      Unique identifier for each role.
+    minimum: 1
   roleName:
     type: string
     description: |
-      Indicates whether it's a `standard` role provided by Akamai or a `custom` role you can create for the account. Note that you can't modify a `standard` role.
-    enum:
-    - custom
-    - standard
+      Descriptive label for the role.
     minLength: 1
   users:
     type: array
@@ -122,13 +120,13 @@ properties:
         accountId:
           type: string
           description: |
-            Unique identifier for the account.
+            Unique identifier for each account.
           minLength: 1
         email:
           type: string
           description: |
             The user's email address.
-          minLength: 1
+          format: email
         firstName:
           type: string
           description: |
@@ -147,5 +145,5 @@ properties:
         uiIdentityId:
           type: string
           description: |
-            Unique identifier for a user's profile, which corresponds to their Control Center profile or client ID.
+            Unique identifier for each user, which corresponds to their Control Center profile or client ID. Also known as a `contactId` in other APIs.
           minLength: 1

@@ -1,6 +1,6 @@
 type: object
 description: |-
-  Encapsulates the response schema for creating v3 API client.
+  Specifies the API client.
   
 x-akamai:
   file-path: schemas/api-client-detail-v3.yaml
@@ -29,7 +29,7 @@ properties:
   actions:
     type: object
     description: |
-      Encapsulates activities performed on the API client.
+      Specifies activities available for the API client.
     additionalProperties: false
     required:
     - delete
@@ -47,47 +47,47 @@ properties:
       delete:
         type: boolean
         description: |
-          When enabled, you can remove the API client.
+          Whether you can remove the API client.
       deactivateAll:
         type: boolean
         description: |
-          When enabled, you can deactivate the API client's credentials.
+          Whether you can deactivate the API client's credentials.
       edit:
         type: boolean
         description: |
-          When enabled, you can update the API client.
+          Whether you can update the API client.
       editApis:
         type: boolean
         description: |
-          When enabled, you can update the `apis` the API client can access.
+          Whether you can update the `apis` the API client can access.
       editAuth:
         type: boolean
         description: |
-          When enabled, you can update the `groups` or `apis` the API client can access.
+          Whether you can update the `groups` or `apis` the API client can access.
       editGroups:
         type: boolean
         description: |
-          When enabled, you can update the `groups` the API client can access.
+          Whether you can update the `groups` the API client can access.
       editIpAcl:
         type: boolean
         description: |
-          When enabled, you can update the `ipAcl` the API client can access.
+          Whether you can update the `ipAcl` the API client can access.
       editSwitchAccount:
         type: boolean
         description: |
-          When enabled, you can update the API client's option to manage many accounts.
+          Whether you can update the API client's option to manage many accounts.
       lock:
         type: boolean
         description: |
-          When enabled, you can lock the API client.
+          Whether you can lock the API client.
       transfer:
         type: boolean
         description: |
-          When enabled, you can transfer the API client to a new owner.
+          Whether you can transfer the API client to a new owner.
       unlock:
         type: boolean
         description: |
-          When enabled, you can unlock the API client.
+          Whether you can unlock the API client.
   activeCredentialCount:
     type: integer
     description: |
@@ -96,7 +96,7 @@ properties:
   allowAccountSwitch:
     type: boolean
     description: |
-      Indicates whether the API client can manage more than one account. For details, see [Manage many accounts with one API client](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client)
+      Whether the API client can manage more than one account. For details, see [Manage many accounts with one API client](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client).
   apiAccess:
     type: object
     description: |
@@ -109,7 +109,7 @@ properties:
       allAccessibleApis:
         type: boolean
         description: |
-          When enabled, the API client has access to all available APIs. Otherwise, the client's access is limited to a specific set of `apis`.
+          Whether the API client has access to a full set of available APIs. Note there's a limit of 99 API services for each client. Clients that make calls to URLs from the 100th service get a 403 error.
       apis:
         type: array
         description: |
@@ -129,7 +129,7 @@ properties:
             description:
               type: string
               description: |
-                Descriptive text about the API.
+                Descriptive label for the API.
               minLength: 1
             accessLevel:
               type: string
@@ -139,12 +139,12 @@ properties:
             apiId:
               type: integer
               description: |
-                Unique identifier for the API.
+                Unique identifier for each API.
               minimum: 0
             apiName:
               type: string
               description: |
-                Descriptive label for the API, like Edge Diagnostic Tools, or Identity and Access Management API.
+                Descriptive label for the API.
               minLength: 1
             documentationUrl:
               type: string
@@ -172,16 +172,16 @@ properties:
   canAutoCreateCredential:
     type: boolean
     description: |
-      When enabled, the API client can create a credential for a new API client. The default is `false`.
+      Whether the API client can create a credential for a new API client.
   clientDescription:
     type: string
     description: |
-      Descriptive text about the API client.
+      Descriptive label about the API client.
     minLength: 1
   clientId:
     type: string
     description: |
-      Unique identifier for an API client.
+      Unique identifier for each API client.
     minLength: 1
   clientName:
     type: string
@@ -191,11 +191,10 @@ properties:
   clientType:
     type: string
     description: |
-      Specifies the API client's ownership and credential management. `CLIENT` indicates the creator owns and manages the credentials. `USER_CLIENT` indicates another user owns the client and manages the credentials. `SERVICE_ACCOUNT` indicates only `authorizedUsers` can manage the client's credentials. The default is `CLIENT`.
+      Specifies the API client's ownership and credential management. `CLIENT` indicates the creator owns and manages the credentials. `USER_CLIENT` indicates another user owns the client and manages the credentials.
     enum:
     - CLIENT
     - USER_CLIENT
-    - SERVICE_ACCOUNT
   createdBy:
     type: string
     description: |
@@ -226,12 +225,12 @@ properties:
         description:
           type: string
           description: |
-            A descriptive label for the API client.
-          minLength: 1
+            Descriptive label for the API client.
+          minLength: 0
         actions:
           type: object
           description: |
-            Encapsulates activities you can perform on the credential.
+            Specifies activities available for the credential.
           additionalProperties: false
           required:
           - delete
@@ -243,23 +242,23 @@ properties:
             delete:
               type: boolean
               description: |
-                When enabled, you can remove the credential.
+                Whether you can remove the credential.
             activate:
               type: boolean
               description: |
-                When enabled, you can activate the credential.
+                Whether you can activate the credential.
             deactivate:
               type: boolean
               description: |
-                When enabled, you can deactivate the credential.
+                Whether you can deactivate the credential.
             editDescription:
               type: boolean
               description: |
-                When enabled, you can modify the credential's description.
+                Whether you can modify the credential's description.
             editExpiration:
               type: boolean
               description: |
-                When enabled, you can modify the credential's expiration date.
+                Whether you can modify the credential's expiration date.
         clientToken:
           type: string
           description: |
@@ -273,17 +272,17 @@ properties:
         credentialId:
           type: integer
           description: |
-            Unique identifier for the credential.
+            Unique identifier each credential.
           minimum: 0
         expiresOn:
           type: string
           description: |
-            ISO 8601 timestamp indicating when the credential expires.
+            ISO 8601 timestamp for when the credential expires. The default expiration date is two years from the creation date.
           format: date-time
         status:
           type: string
           description: |
-            Specifies whether you can use the credential. `ACTIVE` indicates the credential can be used. `INACTIVE`indicates the credential can't be used. `DELETED` indicates the credential doesn't exist.
+            Whether a credential is `ACTIVE`, `INACTIVE`, or `DELETED`. Activating or deactivating the credential changes the value between `ACTIVE` and `INACTIVE`, but you can't reactivate any `DELETED` credentials.
           enum:
           - ACTIVE
           - INACTIVE
@@ -291,7 +290,7 @@ properties:
   groupAccess:
     type: object
     description: |
-      Identifies the API client's group access.
+      Specifies the API client's group access.
     additionalProperties: false
     required:
     - cloneAuthorizedUserGroups
@@ -300,7 +299,7 @@ properties:
       cloneAuthorizedUserGroups:
         type: boolean
         description: |
-          With a `true` value, the API client's group access is the same as the authorized user.
+          Sets the API client's group access the same as the authorized user.
       groups:
         type: array
         description: |
@@ -328,11 +327,11 @@ properties:
       enable:
         type: boolean
         description: |
-          With a `true` value, the API client can access the IP ACL.
+          Enables API client's access to the IP ACL.
   isLocked:
     type: boolean
     description: |
-      When enabled, restricts the API clients's access to Control Center services.
+      Whether the user's account is locked. To learn more, see [Temporary account lockout](https://techdocs.akamai.com/iam/docs/tmp-account-lockout).
   notificationEmails:
     type: array
     description: |
@@ -344,7 +343,7 @@ properties:
   purgeOptions:
     type: object
     description: |
-      Configures the API client for access to the [Fast Purge API](https://techdocs.akamai.com/purge-cache/reference/api) in `apis`.
+      Configures the API client for access to the [Fast Purge API](https://techdocs.akamai.com/purge-cache/reference/api). It's returned only if the `apis` object includes an `apiName` of `CCU APIs`.
     additionalProperties: false
     required:
     - canPurgeByCacheTag
@@ -354,11 +353,11 @@ properties:
       canPurgeByCacheTag:
         type: boolean
         description: |
-          When enabled, the API client can purge content by cache tag.
+          Whether the API client can purge content by cache tag.
       canPurgeByCpcode:
         type: boolean
         description: |
-          When enabled, the API client can purge content by CP code.
+          Whether the API client can purge content by CP code.
       cpcodeAccess:
         type: object
         description: |
@@ -371,7 +370,7 @@ properties:
           allCurrentAndNewCpcodes:
             type: boolean
             description: |
-              When enabled, the API client can purge content by cache tag.
+              Whether the API client can purge content by cache tag.
           cpcodes:
             type: array
             description: |

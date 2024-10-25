@@ -7,6 +7,12 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
 - url: https://{hostname}/identity-management/v3
+tags:
+- description: Create and manage the roles for an account. Roles are lists of permissions
+    that are explicitly tied to both a user and a group.
+  name: Roles
+- description: Get information about roles you can include in a new custom role.
+  name: Grantable roles
 x-akamai:
   auth-type: EDGE_GRID
   file-path: 03-roles-api.yaml
@@ -18,7 +24,7 @@ paths:
       tags:
       - Roles
       description: |
-        This operation creates a custom role. Roles exist at the account level regardless of group, but are constrained by contract type. If you create a role under one contract type, you can't apply that role to groups belonging to a different contract type, even if they're in the same account.
+        This operation creates a custom role. A custom role combines [grantable roles](ref:get-grantable-roles) defined by Akamai. Roles exist at the account level regardless of group, but are constrained by contract type. If you create a role under one contract type, you can't apply that role to groups belonging to a different contract type, even if they're in the same account.
       requestBody:
         required: true
         content:
@@ -26,32 +32,32 @@ paths:
             example:
               $ref: examples/post-request-create-custom-role.json
             schema:
-              $ref: schemas/RoleRequestPost.yaml
+              $ref: schemas/role-request-post.yaml
       responses:
         201:
           description: |
             Custom role successfully created.
           headers:
             Location:
-              $ref: headers/Location.yaml
+              $ref: headers/location.yaml
           content:
             application/json:
               example:
                 $ref: examples/post-response-create-custom-role.json
               schema:
-                $ref: schemas/RoleWithGrantedRoles.yaml
+                $ref: schemas/role-with-granted-roles.yaml
     get:
       operationId: get-roles
       summary: List roles
       tags:
       - Roles
       description: |
-        This operation lists roles for the current account and contract type. The account and contract type are determined by the access tokens in your API client.
+        This operation lists roles for the current account and contract type or other accounts using the `accountSwitchKey` parameter. The account and contract type are determined by the access tokens in your API client.
       parameters:
-      - $ref: parameters/rolesFilterParamsActions_actions.yaml
-      - $ref: parameters/rolesFilterParamsGroup_groupId.yaml
-      - $ref: parameters/rolesFilterParamsUsers_users.yaml
-      - $ref: parameters/rolesFilterParamsContext_ignoreContext.yaml
+      - $ref: parameters/roles-filter-params-actions-actions.yaml
+      - $ref: parameters/roles-filter-params-group-group-id.yaml
+      - $ref: parameters/roles-filter-params-users-users.yaml
+      - $ref: parameters/roles-filter-params-context-ignore-context.yaml
       responses:
         200:
           description: |
@@ -61,7 +67,7 @@ paths:
               example:
                 $ref: examples/get-response-roles.json
               schema:
-                $ref: schemas/ListOfRoleListItem.yaml
+                $ref: schemas/list-of-role-list-item.yaml
   /user-admin/roles/grantable-roles:
     get:
       operationId: get-grantable-roles
@@ -79,10 +85,10 @@ paths:
               example:
                 $ref: examples/get-response-grantable-roles.json
               schema:
-                $ref: schemas/ListOfGrantedRole.yaml
+                $ref: schemas/list-of-granted-role.yaml
   /user-admin/roles/{roleId}:
     parameters:
-    - $ref: parameters/roleId-path.yaml
+    - $ref: parameters/role-id-path.yaml
     get:
       operationId: get-role
       summary: Get a role
@@ -91,8 +97,9 @@ paths:
       description: |
         This operation retrieves a role's details.
       parameters:
-      - $ref: parameters/rolesFilterParamsActions_actions.yaml
-      - $ref: parameters/grantedRoles_grantedRoles.yaml
+      - $ref: parameters/roles-filter-params-actions-actions.yaml
+      - $ref: parameters/granted-roles-granted-roles.yaml
+      - $ref: parameters/roles-filter-params-users-users.yaml
       responses:
         200:
           description: |
@@ -102,7 +109,7 @@ paths:
               example:
                 $ref: examples/get-response-role-details.json
               schema:
-                $ref: schemas/RoleWithGrantedRoles.yaml
+                $ref: schemas/role-with-granted-roles.yaml
     put:
       operationId: put-role
       summary: Edit a role
@@ -117,7 +124,7 @@ paths:
             example:
               $ref: examples/put-request-update-custom-role.json
             schema:
-              $ref: schemas/RoleRequestPut.yaml
+              $ref: schemas/role-request-put.yaml
       responses:
         200:
           description: |
@@ -127,15 +134,15 @@ paths:
               example:
                 $ref: examples/put-response-update-custom-role.json
               schema:
-                $ref: schemas/Role.yaml
+                $ref: schemas/role.yaml
     delete:
       operationId: delete-role
       summary: Delete a role
       tags:
       - Roles
       description: |
-        This operation deletes a role. You can't delete a role if it's assigned to a user.
+        This operation deletes a custom role. You can't delete a role if it's assigned to a user.
       responses:
         204:
           description: |
-            Successful response
+            Role deleted.

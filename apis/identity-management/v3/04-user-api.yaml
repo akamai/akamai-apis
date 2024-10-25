@@ -7,6 +7,25 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
 - url: https://{hostname}/identity-management/v3
+tags:
+- description: If you're an administrator, use these operations to create and manage
+    users on your account.
+  name: Users
+- description: If you're an administrator, use these operations to manage the list
+    of properties and includes blocked for a user.
+  name: Blocked assets
+- description: Use these operations to manage your or, if you're an administrator,
+    other users' authentication settings.
+  name: User authentication settings
+- description: If you're an administrator, use these operations to manage a user's
+    multi-factor authentication.
+  name: User access
+- description: If you're an administrator, use these operations to Set up email notifications
+    to remind users about maintenance tasks.
+  name: User notifications
+- description: If you're an administrator, use these operations toManage a user's
+    group and role assignments.
+  name: User authorization settings
 x-akamai:
   auth-type: EDGE_GRID
   file-path: 04-user-api.yaml
@@ -18,9 +37,9 @@ paths:
       tags:
       - Users
       description: |
-        This operation creates a user, or clones an existing user's role assignments, in the account specified in your API client credentials. Optionally, send a randomly generated one-time use password to the new user. If you send the email with the password directly to the user, the response for this operation doesn't include that password. If you don't send the password to the user through email, the password is included in the response.
+        This operation creates a user, or clones an existing user's role assignments, in the account specified in your API client credentials. Optionally, sends a randomly generated one-time use password to the new user. If you send the email with the password directly to the user, the response for this operation doesn't include that password. If you don't send the password to the user through email, the password is included in the response.
       parameters:
-      - $ref: parameters/sendEmail_sendEmail.yaml
+      - $ref: parameters/send-email.yaml
       requestBody:
         required: true
         content:
@@ -28,31 +47,31 @@ paths:
             example:
               $ref: examples/post-request-create-user.json
             schema:
-              $ref: schemas/CreateUserRequest.yaml
+              $ref: schemas/create-user-request.yaml
       responses:
         201:
           description: |
             User or clone successfully created.
           headers:
             Location:
-              $ref: headers/Location.yaml
+              $ref: headers/location.yaml
           content:
             application/json:
               example:
                 $ref: examples/post-response-create-user.json
               schema:
-                $ref: schemas/UserResponse.yaml
+                $ref: schemas/user-response.yaml
     get:
       operationId: get-ui-identities
       summary: List users
       tags:
       - Users
       description: |
-        This operation lists the users who have access on an account. The account is determined by the tokens in your API client. You can pass a `groupId` to filter users based on group. You can also return user information such as what product notifications they subscribe to, or what group and role assignments they have. Set  the `actions` parameter to `true` to return the actions you can take on each user.
+        This operation lists the users who have access to your current account or other managed accounts using the `accountSwitchKey` parameter. The account is determined by the tokens in your API client. You can pass a `groupId` to filter users based on group. You can also return user information such as what product notifications they subscribe to, or what group and role assignments they have. Set  the `actions` parameter to `true` to return the actions you can take on each user.
       parameters:
-      - $ref: parameters/rolesFilterParamsGroup_groupId.yaml
-      - $ref: parameters/authGrants-query.yaml
-      - $ref: parameters/adminActions_actions.yaml
+      - $ref: parameters/roles-filter-params-group-group-id.yaml
+      - $ref: parameters/auth-grants-query.yaml
+      - $ref: parameters/admin-actions-actions.yaml
       responses:
         200:
           description: |
@@ -62,10 +81,10 @@ paths:
               example:
                 $ref: examples/get-response-users.json
               schema:
-                $ref: schemas/ListOfUserResponse.yaml
+                $ref: schemas/list-of-user-response.yaml
   /user-admin/ui-identities/{uiIdentityId}:
     parameters:
-    - $ref: parameters/uiIdentityId-path.yaml
+    - $ref: parameters/ui-identity-id-path.yaml
     get:
       operationId: get-ui-identity
       summary: Get a user
@@ -74,9 +93,9 @@ paths:
       description: |
         This operation retrieves a user's profile.
       parameters:
-      - $ref: parameters/authGrants-query.yaml
+      - $ref: parameters/auth-grants-query.yaml
       - $ref: parameters/notifications-query.yaml
-      - $ref: parameters/adminActions_actions.yaml
+      - $ref: parameters/admin-actions-actions.yaml
       responses:
         200:
           description: |
@@ -86,7 +105,7 @@ paths:
               example:
                 $ref: examples/get-response-user.json
               schema:
-                $ref: schemas/UserResponse.yaml
+                $ref: schemas/user-response.yaml
     delete:
       operationId: delete-ui-identity
       summary: Remove a user
@@ -100,14 +119,14 @@ paths:
             User successfully deleted.
   /user-admin/ui-identities/{uiIdentityId}/additionalAuthentication:
     parameters:
-    - $ref: parameters/uiIdentityId-path.yaml
+    - $ref: parameters/ui-identity-id-path.yaml
     put:
       operationId: put-ui-identity-additional-authentication
       summary: Set a user's multi-factor authentication
       tags:
       - User access
       description: |
-        This operation sets a user's multi-factor authentication (TFA/MFA/NONE). Users are allowed five login attempts with MFA or 2FA before their account is locked. If the account is locked, use the [Reset additional authentication](ref:put-ui-identity-reset-additional-authentication) to unlock it.
+        This operation sets a user's multi-factor authentication to `TFA`, `MFA`, or `NONE`. Users are allowed five login attempts with MFA or 2FA before their account is locked. If the account is locked, use the [Reset additional authentication](ref:put-ui-identity-reset-additional-authentication) to unlock it.
       requestBody:
         required: true
         content:
@@ -115,14 +134,14 @@ paths:
             example:
               $ref: examples/put-request-update-additional-authentication.json
             schema:
-              $ref: schemas/AdditionalAuthenticationRequest.yaml
+              $ref: schemas/additional-authentication-request.yaml
       responses:
         204:
           description: |
-            MFA/2FA successfully set.
+            Authentication successfully set.
   /user-admin/ui-identities/{uiIdentityId}/additionalAuthentication/reset:
     parameters:
-    - $ref: parameters/uiIdentityId-path.yaml
+    - $ref: parameters/ui-identity-id-path.yaml
     put:
       operationId: put-ui-identity-reset-additional-authentication
       summary: Reset a user's multi-factor authentication
@@ -136,7 +155,7 @@ paths:
             MFA/2FA successfully reset.
   /user-admin/ui-identities/{uiIdentityId}/auth-grants:
     parameters:
-    - $ref: parameters/uiIdentityId-path.yaml
+    - $ref: parameters/ui-identity-id-path.yaml
     put:
       operationId: put-ui-uiidentity-auth-grants
       summary: Modify a user's group and role assignments
@@ -151,7 +170,7 @@ paths:
             example:
               $ref: examples/put-request-auth-grants.json
             schema:
-              $ref: schemas/ListOfAuthGrantRequest.yaml
+              $ref: schemas/list-of-auth-grant-request.yaml
       responses:
         200:
           description: |
@@ -161,17 +180,17 @@ paths:
               example:
                 $ref: examples/put-response-auth-grants.json
               schema:
-                $ref: schemas/ListOfAuthGrantResponse.yaml
+                $ref: schemas/list-of-auth-grant-response.yaml
   /user-admin/ui-identities/{uiIdentityId}/basic-info:
     parameters:
-    - $ref: parameters/uiIdentityId-path.yaml
+    - $ref: parameters/ui-identity-id-path.yaml
     put:
       operationId: put-ui-identity-basic-info
       summary: Update a user
       tags:
       - Users
       description: |
-        This operation modifies a user's information. Pass the entire body of data in the request, including members you're not changing, or the unspecified data are removed.
+        This operation modifies a user's basic information. Pass the entire body of data in the request, including members you're not changing, or the unspecified data are removed. To edit detailed settings, run the [Modify a user's group and role assignments](ref:put-ui-uiidentity-auth-grants) or [Update a user's notifications](ref:put-notifications) operations.
       requestBody:
         required: true
         content:
@@ -179,7 +198,7 @@ paths:
             example:
               $ref: examples/put-request-basic-info.json
             schema:
-              $ref: schemas/UpdateUserBasicInfoRequest.yaml
+              $ref: schemas/update-user-basic-info-request.yaml
       responses:
         200:
           description: |
@@ -189,35 +208,35 @@ paths:
               example:
                 $ref: examples/put-response-basic-info.json
               schema:
-                $ref: schemas/UserResponseBasicInfo.yaml
+                $ref: schemas/user-response-basic-info.yaml
   /user-admin/ui-identities/{uiIdentityId}/groups/{groupId}/blocked-properties:
     parameters:
-    - $ref: parameters/groupId-path.yaml
-    - $ref: parameters/uiIdentityId-path.yaml
+    - $ref: parameters/group-id-path.yaml
+    - $ref: parameters/ui-identity-id-path.yaml
     get:
       operationId: get-blocked-properties
-      summary: List blocked properties
+      summary: List blocked properties and includes
       tags:
-      - Blocked properties
+      - Blocked assets
       description: |
-        This operation lists all properties a user doesn't have access to in a group.
+        This operation lists all properties and includes a user doesn't have access to in a group. Note the responses's set of IDs refer to either properties or includes. To find out which each refers to, see [Manage access to properties and includes](ref:manage-access-to-properties-and-includes).
       responses:
         200:
           description: |
-            The response provides the blocked properties.
+            The response provides the blocked assets.
           content:
             application/json:
               example:
                 $ref: examples/get-response-blocked-properties.json
               schema:
-                $ref: schemas/ListOfInteger.yaml
+                $ref: schemas/list-of-integer.yaml
     put:
       operationId: put-blocked-properties
-      summary: Update blocked properties
+      summary: Update blocked properties and includes
       tags:
-      - Blocked properties
+      - Blocked assets
       description: |
-        This operation removes or grants user access to properties. By default, users have access to all properties in a group.
+        This operation updates the list of blocked properties and includes. By default, users can access all properties and includes in a group, and this operation specifies IDs for any to block. To find out which each refers to, see [Manage access to properties and includes](ref:manage-access-to-properties-and-includes). To get the list of already blocked properties run the [List blocked properties and includes](ref:get-blocked-properties) operation. In this request, include the whole list of properties you want to block. By not including a blocked property, you're unlocking it.
       requestBody:
         required: true
         content:
@@ -225,7 +244,7 @@ paths:
             example:
               $ref: examples/get-response-blocked-properties.json
             schema:
-              $ref: schemas/ListOfInteger.yaml
+              $ref: schemas/list-of-integer.yaml
       responses:
         200:
           description: |
@@ -235,10 +254,10 @@ paths:
               example:
                 $ref: examples/get-response-blocked-properties.json
               schema:
-                $ref: schemas/ListOfInteger.yaml
+                $ref: schemas/list-of-integer.yaml
   /user-admin/ui-identities/{uiIdentityId}/lock:
     parameters:
-    - $ref: parameters/uiIdentityId-path.yaml
+    - $ref: parameters/ui-identity-id-path.yaml
     post:
       operationId: post-ui-identity-lock
       summary: Lock a user's account
@@ -252,7 +271,7 @@ paths:
             User account successfully locked.
   /user-admin/ui-identities/{uiIdentityId}/notifications:
     parameters:
-    - $ref: parameters/uiIdentityId-path.yaml
+    - $ref: parameters/ui-identity-id-path.yaml
     put:
       operationId: put-notifications
       summary: Update a user's notifications
@@ -267,7 +286,7 @@ paths:
             example:
               $ref: examples/put-request-update-notifications.json
             schema:
-              $ref: schemas/NotificationsRequest.yaml
+              $ref: schemas/notifications-request.yaml
       responses:
         200:
           description: |
@@ -277,10 +296,10 @@ paths:
               example:
                 $ref: examples/put-request-update-notifications.json
               schema:
-                $ref: schemas/NotificationsResponse.yaml
+                $ref: schemas/notifications-response.yaml
   /user-admin/ui-identities/{uiIdentityId}/reset-password:
     parameters:
-    - $ref: parameters/uiIdentityId-path.yaml
+    - $ref: parameters/ui-identity-id-path.yaml
     post:
       operationId: post-reset-password
       summary: Reset a user's password
@@ -289,23 +308,23 @@ paths:
       description: |
         This operation sends a one-time use password to the user. If you send the email with the password directly to the user, the response for this operation doesn't include that password. If you don't send the password to the user through email, the password is included in the response.
       parameters:
-      - $ref: parameters/sendEmail_sendEmail.yaml
+      - $ref: parameters/send-email.yaml
       responses:
         200:
           description: |
-            Successful response
+            Password reset.
           content:
             application/json:
               example:
                 $ref: examples/post-response-reset-password.json
               schema:
-                $ref: schemas/PasswordResponse.yaml
+                $ref: schemas/password-response.yaml
         204:
           description: |
-            If `sendEmail` is `false`, the 200 response provides the user's new password. Otherwise 204 indicates the user's password was successfully reset.
+            With `sendEmail` set to `true`, the 204 indicates the user's password was successfully reset.
   /user-admin/ui-identities/{uiIdentityId}/set-password:
     parameters:
-    - $ref: parameters/uiIdentityId-path.yaml
+    - $ref: parameters/ui-identity-id-path.yaml
     post:
       operationId: post-set-password
       summary: Set a user's password
@@ -320,14 +339,14 @@ paths:
             example:
               $ref: examples/post-response-reset-password.json
             schema:
-              $ref: schemas/SetPasswordRequest.yaml
+              $ref: schemas/set-password-request.yaml
       responses:
         204:
           description: |
-            If `sendEmail` is `false`, the 200 response provides the user's password. Otherwise 204 indicates the user's password was successfully set.
+            User's password successfully set.
   /user-admin/ui-identities/{uiIdentityId}/unlock:
     parameters:
-    - $ref: parameters/uiIdentityId-path.yaml
+    - $ref: parameters/ui-identity-id-path.yaml
     post:
       operationId: post-ui-identity-unlock
       summary: Unlock a user's account

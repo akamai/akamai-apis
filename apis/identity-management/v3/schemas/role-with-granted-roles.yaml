@@ -1,0 +1,149 @@
+type: object
+description: |-
+  A role that includes granted roles.
+  
+x-akamai:
+  file-path: schemas/role-with-granted-roles.yaml
+additionalProperties: false
+required:
+- roleId
+- roleName
+- roleDescription
+- type
+- createdDate
+- createdBy
+- modifiedDate
+- modifiedBy
+properties:
+  type:
+    type: string
+    description: |
+      Whether it's a `standard` or `account` role defined by Akamai, or a `custom` role created by one of your account's users. You can only modify or delete `custom` roles. To learn more, see [About roles](https://techdocs.akamai.com/iam/docs/about-roles-permissions).
+    enum:
+    - custom
+    - standard
+    - account
+  actions:
+    type: object
+    description: |
+      Specifies activities available for the role.
+    additionalProperties: false
+    required:
+    - delete
+    - edit
+    properties:
+      delete:
+        type: boolean
+        description: |
+          Whether you can remove the role.
+      edit:
+        type: boolean
+        description: |
+          Whether you can modify the role.
+  createdBy:
+    type: string
+    description: |
+      The user who created the granted role.
+    minLength: 1
+  createdDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the granted role was originally created.
+    format: date-time
+  grantedRoles:
+    type: array
+    description: |
+      Granted roles for the account.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - grantedRoleId
+      - grantedRoleName
+      properties:
+        grantedRoleDescription:
+          type: string
+          description: |
+            Descriptive label for the role to convey its use.
+          minLength: 1
+        grantedRoleId:
+          type: integer
+          description: |
+            Unique identifier for each granted role.
+          minimum: 1
+        grantedRoleName:
+          type: string
+          description: |
+            Descriptive label for the granted role.
+          minLength: 1
+  modifiedBy:
+    type: string
+    description: |
+      The user who last edited the granted role.
+    minLength: 1
+  modifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the granted role was last updated.
+    format: date-time
+  roleDescription:
+    type: string
+    description: |
+      Descriptive label for the role to convey its use.
+    minLength: 1
+  roleId:
+    type: integer
+    description: |
+      Unique identifier for each role.
+    minimum: 1
+  roleName:
+    type: string
+    description: |
+      Descriptive label for the role.
+    minLength: 1
+  users:
+    type: array
+    description: |
+      Users on the account who share the same role.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - uiIdentityId
+      - firstName
+      - lastName
+      - accountId
+      - email
+      properties:
+        accountId:
+          type: string
+          description: |
+            Unique identifier for each account.
+          minLength: 1
+        email:
+          type: string
+          description: |
+            The user's email address.
+          format: email
+        firstName:
+          type: string
+          description: |
+            The user's first name.
+          minLength: 1
+        lastLoginDate:
+          type: string
+          description: |
+            ISO 8601 timestamp indicating when the user last logged in.
+          format: date-time
+        lastName:
+          type: string
+          description: |
+            The user's surname.
+          minLength: 1
+        uiIdentityId:
+          type: string
+          description: |
+            Unique identifier for each user, which corresponds to their Control Center profile or client ID. Also known as a `contactId` in other APIs.
+          minLength: 1

@@ -1,0 +1,75 @@
+type: object
+description: |-
+  Specifies a group.
+  
+x-akamai:
+  file-path: schemas/group-response.yaml
+additionalProperties: false
+required:
+- createdBy
+- createdDate
+- groupId
+- groupName
+- modifiedBy
+- modifiedDate
+- subGroups
+properties:
+  actions:
+    type: object
+    description: |
+      Specifies activities available for the group.
+    additionalProperties: false
+    required:
+    - delete
+    - edit
+    properties:
+      delete:
+        type: boolean
+        description: |
+          Whether you can remove the group from the account. You can't remove a group that contains resources or subgroups, or if users have roles on that group.
+      edit:
+        type: boolean
+        description: |
+          Whether you can modify the group.
+  createdBy:
+    type: string
+    description: |
+      The user who created the group.
+    minLength: 1
+  createdDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the group was created.
+    format: date-time
+  groupId:
+    type: integer
+    description: |
+      Unique identifier for each group.
+    minimum: 1
+  groupName:
+    type: string
+    description: |
+      Descriptive label for the group.
+    minLength: 1
+  modifiedBy:
+    type: string
+    description: |
+      The user who last edited the group.
+    minLength: 1
+  modifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating when the group was last updated.
+    format: date-time
+  parentGroupId:
+    type: integer
+    description: |
+      Unique identifier for the parent group within the group tree. If you're viewing group info for a root-level group, you may not see this member.
+    minimum: 0
+  subGroups:
+    type: array
+    description: |
+      Children of the parent group. Permissions cascade downward from parent to child unless the child group's `isBlocked` is `true`.
+    minItems: 0
+    items:
+      $ref: groups-nested.yaml

@@ -7,6 +7,13 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
 - url: https://{hostname}/identity-management/v3
+tags:
+- description: Use helper calls to get information necessary to create an API client.
+  name: Helper
+- description: Manage your own API clients.
+  name: 'API client: self'
+- description: Manage API clients for the account.
+  name: API clients
 x-akamai:
   auth-type: EDGE_GRID
   file-path: 09-api-clients-admin.yaml
@@ -32,7 +39,7 @@ paths:
             The response provides the newly created API client.
           headers:
             Location:
-              $ref: headers/Location.yaml
+              $ref: headers/location.yaml
           content:
             application/json:
               example:
@@ -45,7 +52,7 @@ paths:
       tags:
       - API clients
       description: |
-        This operation lists API clients an administrator can manage.
+        This operation lists API clients an administrator can manage on the current account or other managed accounts using the `accountSwitchKey` parameter.
       parameters:
       - $ref: parameters/actions-query.yaml
       responses:
@@ -68,10 +75,10 @@ paths:
         This operation provides details about your API client.
       parameters:
       - $ref: parameters/actions-query.yaml
-      - $ref: parameters/groupAccess-query.yaml
-      - $ref: parameters/apisAccess-query.yaml
+      - $ref: parameters/group-access-query.yaml
+      - $ref: parameters/apis-access-query.yaml
       - $ref: parameters/credentials-query.yaml
-      - $ref: parameters/ipAcl-query.yaml
+      - $ref: parameters/ip-acl-query.yaml
       responses:
         200:
           description: |
@@ -90,6 +97,7 @@ paths:
       description: |
         This operation updates your API client.
       requestBody:
+        required: true
         content:
           application/json:
             example:
@@ -124,9 +132,9 @@ paths:
       tags:
       - 'API client: self'
       description: |
-        This operation lists your `accountSwitchKeys` and `accountNames`. Use the `accountSwitchKeys` [to make an API call to another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client).
+        This operation lists account switch keys available for your API client. You can use the `accountSwitchKey` in many Akamai APIs [to make an API call to another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client).
       parameters:
-      - $ref: parameters/accountSwitchKeys-query.yaml
+      - $ref: parameters/account-switch-keys-query.yaml
       responses:
         200:
           description: |
@@ -157,7 +165,7 @@ paths:
                 $ref: schemas/api-client-simple-v3.yaml
   /api-clients/{clientId}:
     parameters:
-    - $ref: parameters/clientId-path.yaml
+    - $ref: parameters/client-id-path.yaml
     get:
       operationId: get-api-client
       summary: Get an API client
@@ -167,10 +175,10 @@ paths:
         This operation provides details about an API client.
       parameters:
       - $ref: parameters/actions-query.yaml
-      - $ref: parameters/groupAccess-query.yaml
-      - $ref: parameters/apisAccess-query.yaml
+      - $ref: parameters/group-access-query.yaml
+      - $ref: parameters/apis-access-query.yaml
       - $ref: parameters/credentials-query.yaml
-      - $ref: parameters/ipAcl-query.yaml
+      - $ref: parameters/ip-acl-query.yaml
       responses:
         200:
           description: |
@@ -189,6 +197,7 @@ paths:
       description: |
         This operation updates an API client.
       requestBody:
+        required: true
         content:
           application/json:
             example:
@@ -218,16 +227,16 @@ paths:
             API client successfully deleted.
   /api-clients/{clientId}/account-switch-keys:
     parameters:
-    - $ref: parameters/clientId-path.yaml
+    - $ref: parameters/client-id-path.yaml
     get:
       operationId: get-client-account-switch-keys
       summary: List account switch keys
       tags:
       - API clients
       description: |
-        This operation lists the `accountSwitchKeys` and `accountNames` available to a given API client. Use the `accountSwitchKeys` [to make an API call to another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client).
+        This operation lists account switch keys available for a specific API client. The client can use the `accountSwitchKey` in many Akamai APIs to [make an API call to another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client).
       parameters:
-      - $ref: parameters/accountSwitchKeys-query.yaml
+      - $ref: parameters/account-switch-keys-query.yaml
       responses:
         200:
           description: |
@@ -240,7 +249,7 @@ paths:
                 $ref: schemas/client-account-switch-keys.yaml
   /api-clients/{clientId}/lock:
     parameters:
-    - $ref: parameters/clientId-path.yaml
+    - $ref: parameters/client-id-path.yaml
     put:
       operationId: put-lock-api-client
       summary: Lock an API client
@@ -260,7 +269,7 @@ paths:
                 $ref: schemas/api-client-simple-v3.yaml
   /api-clients/{clientId}/unlock:
     parameters:
-    - $ref: parameters/clientId-path.yaml
+    - $ref: parameters/client-id-path.yaml
     put:
       operationId: put-unlock-api-client
       summary: Unlock an API client
@@ -295,12 +304,10 @@ paths:
               example:
                 $ref: examples/get-response-authorized-users.json
               schema:
-                $ref: schemas/AuthorizedUsers.yaml
+                $ref: schemas/authorized-users.yaml
   /users/{username}/allowed-apis:
     parameters:
     - $ref: parameters/username-path.yaml
-    - $ref: parameters/clientType-query.yaml
-    - $ref: parameters/allowAccountSwitch-query.yaml
     get:
       operationId: get-api-clients-users-allowed-apis
       summary: List allowed APIs
@@ -308,6 +315,9 @@ paths:
       - Helper
       description: |
         This operation lists available APIs for a user.
+      parameters:
+      - $ref: parameters/client-type-query.yaml
+      - $ref: parameters/allow-account-switch-query.yaml
       responses:
         200:
           description: |
@@ -317,7 +327,7 @@ paths:
               example:
                 $ref: examples/get-response-api-clients-allowed-apis.json
               schema:
-                $ref: schemas/AllowedApisResponse.yaml
+                $ref: schemas/allowed-apis-response.yaml
   /users/{username}/allowed-cpcodes:
     parameters:
     - $ref: parameters/username-path.yaml
@@ -334,7 +344,7 @@ paths:
             example:
               $ref: examples/post-request-api-clients-allowed-cpcodes.json
             schema:
-              $ref: schemas/AllowedCpcodesRequest.yaml
+              $ref: schemas/allowed-cpcodes-request.yaml
       responses:
         200:
           description: |
@@ -344,7 +354,7 @@ paths:
               example:
                 $ref: examples/post-response-api-clients-allowed-cpcodes.json
               schema:
-                $ref: schemas/AllowedCpcodesResponse.yaml
+                $ref: schemas/allowed-cpcodes-response.yaml
   /users/{username}/group-access:
     parameters:
     - $ref: parameters/username-path.yaml
@@ -364,4 +374,4 @@ paths:
               example:
                 $ref: examples/get-response-api-clients-group-access.json
               schema:
-                $ref: schemas/GroupAccessResponse.yaml
+                $ref: schemas/group-access-response.yaml

@@ -7,6 +7,11 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
 - url: https://{hostname}/identity-management/v3
+tags:
+- description: Manage the CIDR blocks in your account's allowlist.
+  name: CIDR blocks
+- description: Manage the IP allowlist for an account.
+  name: IP allowlists
 x-akamai:
   auth-type: EDGE_GRID
   file-path: 08-ip-acl.yaml
@@ -18,7 +23,7 @@ paths:
       tags:
       - CIDR blocks
       description: |
-        This operation adds CIDR blocks to your account's allowlist. You can add only one CIDR block at a time.
+        This operation adds CIDR blocks to your account's allowlist. You can add only one CIDR block at a time. Before creating the CIDR block, you may want to [validate it](ref:get-allowlist-validate), to check if its format is correct.
       requestBody:
         required: true
         content:
@@ -33,7 +38,7 @@ paths:
             CIDR block successfully created.
           headers:
             Location:
-              $ref: headers/Location.yaml
+              $ref: headers/location.yaml
           content:
             application/json:
               example:
@@ -46,7 +51,7 @@ paths:
       tags:
       - CIDR blocks
       description: |
-        This operation lists all CIDR blocks on your account's allowlist. Your API client designates the allowlist for the account.
+        This operation lists all CIDR blocks on your current account's allowlist or other managed accounts using the `accountSwitchKey` parameter. Your API client designates the allowlist for the account.
       parameters:
       - $ref: parameters/actions-query.yaml
       responses:
@@ -108,19 +113,19 @@ paths:
       tags:
       - CIDR blocks
       description: |
-        This operation checks the format of your CIDR blocks. To validate, pass in the CIDR block or any IP address as the `cidrblock` query parameter. Encode any slash characters as `%2F`.
+        This operation checks the format of a potential CIDR block. If it's validated successfully, you can [create it](ref:post-allowlist).
       parameters:
-      - $ref: parameters/cidrblock-query.yaml
+      - $ref: parameters/cidr-block-query.yaml
       responses:
         204:
           description: |
             CIDR block successfully validated.
   /user-admin/ip-acl/allowlist/{cidrBlockId}:
     parameters:
-    - $ref: parameters/cidrBlockId-path.yaml
+    - $ref: parameters/cidr-block-id-path.yaml
     get:
       operationId: get-allowlist-cidrblockid
-      summary: View CIDR block details
+      summary: Get a CIDR block
       tags:
       - CIDR blocks
       description: |
