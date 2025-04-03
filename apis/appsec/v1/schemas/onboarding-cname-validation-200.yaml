@@ -1,0 +1,74 @@
+type: object
+description: |-
+  Describes the record information to validate your CNAME.
+  
+x-akamai:
+  file-path: schemas/onboarding-cname-validation-200.yaml
+additionalProperties: false
+required:
+- description
+- records
+- cnameValidationStatus
+- onboardingLink
+properties:
+  description:
+    type: string
+    description: |
+      Describes any remaining actions necessary to validate CNAME record and complete the onboarding process.
+    minLength: 1
+  cnameValidationStatus:
+    type: string
+    description: |
+      The cumulative status for all CNAME validations. If there is more than one record and each is valid, you'll see a value of `VALIDATION_SUCCESS`. If one record is valid but another is not, it will say `VALIDATION_NEEDED`.
+    enum:
+    - VALIDATION_SUCCESS
+    - VALIDATION_NEEDED
+    minLength: 1
+  onboardingLink:
+    type: string
+    description: |
+      The URL to get the onboarding's details.
+    format: uri
+  records:
+    type: array
+    description: |
+      Lists the cname records to validate.
+    minItems: 1
+    uniqueItems: true
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - recordName
+      - recordType
+      - recordValue
+      - recordTtl
+      - recordStatus
+      properties:
+        recordName:
+          type: string
+          description: |
+            The fully qualified domain name (FQDN) of this record.
+          minLength: 1
+        recordStatus:
+          type: string
+          description: |
+            The status of your DNS record. When `VALIDATED`, you can proceed to the next step in the onboarding process. When `NOT_VALIDATED`, you  may need to take additional steps to complete the validation. This information appears in the `DESCRIPTION` field.
+          enum:
+          - VALIDATED
+          - NOT_VALIDATED
+          minLength: 1
+        recordTtl:
+          type: integer
+          description: |
+            The number of seconds that this record should live in cache before being re-fetched.
+        recordType:
+          type: string
+          description: |
+            The type of record. For example, `A`, `TXT`, or `CNAME`.
+          minLength: 1
+        recordValue:
+          type: string
+          description: |
+            The DNS record's IP address.
+          minLength: 1

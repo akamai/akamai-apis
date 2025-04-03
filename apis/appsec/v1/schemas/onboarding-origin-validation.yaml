@@ -1,0 +1,92 @@
+type: object
+description: |-
+  Describes the information necessary to validate your origin.
+  
+x-akamai:
+  file-path: schemas/onboarding-origin-validation.yaml
+additionalProperties: false
+required:
+- description
+- originValidationStatus
+- records
+- originValidateLink
+- originSkipLink
+- onboardingLink
+properties:
+  description:
+    type: string
+    description: |
+      Specifies the instructions to be performed for Origin Validation
+    minLength: 1
+  onboardingLink:
+    type: string
+    description: |
+      The URL to get the onboarding's details.
+    format: uri
+  originSkipLink:
+    type: string
+    description: |
+      The URL to call when you want to skip validating your origin.
+    format: uri
+  originValidateLink:
+    type: string
+    description: |
+      The URL to call when you want to validate your origin.
+    format: uri
+  originValidationStatus:
+    type: string
+    description: |
+      Overall status of the Validation Records
+    enum:
+    - VALIDATION_SUCCESS
+    - VALIDATION_NEEDED
+    minLength: 1
+  records:
+    type: array
+    description: |
+      Lists all hostname records required to validate your origin.
+    minItems: 1
+    uniqueItems: true
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - hostname
+      - recordName
+      - recordType
+      - recordValue
+      - recordTtl
+      - recordStatus
+      properties:
+        hostname:
+          type: string
+          description: |
+            Specifies the hostname for which the record entry is generated
+          minLength: 1
+        recordName:
+          type: string
+          description: |
+            The fully qualified domain name (FQDN) of this record.
+          minLength: 1
+        recordStatus:
+          type: string
+          description: |
+            The status of your origin validation. When `VALIDATED`, you can proceed to the next step in the onboarding process. When `NOT_VALIDATED`, you  may need to take additional steps to complete the validation. This information appears in the `DESCRIPTION` field.
+          enum:
+          - VALIDATED
+          - NOT_VALIDATED
+          minLength: 1
+        recordTtl:
+          type: integer
+          description: |
+            The number of seconds that this record should live in cache before being re-fetched.
+        recordType:
+          type: string
+          description: |
+            The type of DNS record. For example, `A`, `TXT`, or `CNAME`.
+          minLength: 1
+        recordValue:
+          type: string
+          description: |
+            The origin's record's IP address.
+          minLength: 1

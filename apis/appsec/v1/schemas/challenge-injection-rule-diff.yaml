@@ -1,0 +1,86 @@
+type: object
+x-akamai:
+  file-path: schemas/challenge-injection-rule-diff.yaml
+additionalProperties: false
+properties:
+  changesCount:
+    $ref: changes-count-diff.yaml
+  conditions:
+    type: object
+    description: |
+      Rule conditions to match on. The injection rules override `injectJavaScript` at the parent level, so only specify them if that member is `false`. (This object [represents a diff](doc:diff-configuration-versions) of array data.)
+    properties:
+      added:
+        type: array
+        description: |
+          Data added between the two versions.
+        items:
+          oneOf:
+          - $ref: host-condition-diff.yaml
+          - $ref: query-string-condition-diff.yaml
+          - $ref: url-pattern-condition-diff.yaml
+      modified:
+        type: array
+        description: |
+          Data modified between the two versions.
+        items:
+          oneOf:
+          - $ref: host-condition-diff.yaml
+          - $ref: query-string-condition-diff.yaml
+          - $ref: url-pattern-condition-diff.yaml
+      outcome:
+        $ref: outcome-diff.yaml
+      removed:
+        type: array
+        description: |
+          Data removed between the two versions.
+        items:
+          oneOf:
+          - $ref: host-condition-diff.yaml
+          - $ref: query-string-condition-diff.yaml
+          - $ref: url-pattern-condition-diff.yaml
+      unmodified:
+        type: array
+        description: |
+          Data that doesn't change between the two versions. This appears only when the diff request specifies to include `UNMODIFIED` data.
+        items:
+          oneOf:
+          - $ref: host-condition-diff.yaml
+          - $ref: query-string-condition-diff.yaml
+          - $ref: url-pattern-condition-diff.yaml
+  injectJavaScript:
+    type: object
+    description: |
+      Whether to inject the AJAX challenge JavaScript on HTML pages that match the specified rule conditions. (This object [represents a diff](doc:diff-configuration-versions)).
+    properties:
+      from:
+        type: boolean
+        description: |
+          Value from the version assigned as `from`.
+        nullable: true
+      outcome:
+        $ref: outcome-diff.yaml
+      to:
+        type: boolean
+        description: |
+          Value from the version assigned as `to`.
+        nullable: true
+  outcome:
+    $ref: outcome-diff.yaml
+  ruleName:
+    type: object
+    description: |
+      The rule's unique name. (This object [represents a diff](doc:diff-configuration-versions)).
+    properties:
+      from:
+        type: string
+        description: |
+          Value from the version assigned as `from`.
+        nullable: true
+      outcome:
+        $ref: outcome-diff.yaml
+      to:
+        type: string
+        description: |
+          Value from the version assigned as `to`.
+        nullable: true

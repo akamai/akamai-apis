@@ -19,7 +19,7 @@ properties:
   id:
     type: integer
     description: |
-      Uniquely identifies each rate policy.
+      __Read-only__ Uniquely identifies each rate policy.
     readOnly: true
   name:
     type: string
@@ -103,6 +103,7 @@ properties:
     type: integer
     description: |
       The allowed hits per second during any two-minute interval.
+    minimum: 1
   bodyParameters:
     type: array
     description: |
@@ -137,6 +138,7 @@ properties:
     type: integer
     description: |
       The allowed hits per second during any five-second interval.
+    minimum: 1
   burstWindow:
     type: integer
     description: |
@@ -148,9 +150,9 @@ properties:
     description: |
       The client identifier you want to use to identify and track request senders. The value is required only for WAF type, and `api-key` is supported only for API match criteria. Using `ip-useragent` is typically more specific than using `ip` alone when trying to identify a client. Tracking by `cookie:value` applies to requests per individual session, even if the IP address changes.
     enum:
-    - ip
-    - ip-useragent
     - api-key
+    - ip-useragent
+    - ip
     - cookie:value
   condition:
     type: object
@@ -172,13 +174,84 @@ properties:
         type: boolean
         description: |
           Whether the condition should trigger on a match (`true`) or a lack of match (`false`).
+  counterType:
+    type: string
+    description: |
+      The rate policy counter type. Either `per_edge` for rate limiting to work per edge node, or `region_aggregated` for rate limiting to work using aggregated rate accounting across multiple edge nodes.
+    default: per_edge
+    enum:
+    - per_edge
+    - region_aggregated
   createDate:
     type: string
     description: |
-      The time stamp when you created the rate policy.
+      __Read-only__ The time stamp when you created the rate policy.
     example: '2016-07-22 18:57:08.0'
     readOnly: true
     format: date-time
+  evaluation:
+    type: object
+    description: |
+      Contains details about rate policy evaluation.
+    additionalProperties: false
+    required:
+    - averageThreshold
+    - burstThreshold
+    properties:
+      version:
+        type: integer
+        description: |
+          __Read-only__ Evaluation version.
+        readOnly: true
+      averageThreshold:
+        type: integer
+        description: |
+          The allowed hits per second during any two-minute interval during evaluation.
+        minimum: 1
+      burstThreshold:
+        type: integer
+        description: |
+          The allowed hits per second during any five-second interval during evaluation.
+        minimum: 1
+      burstWindow:
+        type: integer
+        description: |
+          __Read-only__ The time span for the `burstThreshold` interval used during evaluation. This value is always set to the `burstWindow` specified by the main rate policy.
+        readOnly: true
+      counterType:
+        type: string
+        description: |
+          The evaluation rate policy counter type. Either `per_edge` for rate limiting to work per edge node, or `region_aggregated` for rate limiting to work using aggregated rate accounting across multiple edge nodes.
+        default: region_aggregated
+        enum:
+        - per_edge
+        - region_aggregated
+      endDate:
+        type: string
+        description: |
+          __Read-only__ The time stamp when evaluation ends.
+        readOnly: true
+        format: date-time
+      evaluationId:
+        type: integer
+        description: |
+          __Read-only__ Uniquely identifies an evaluation.
+        readOnly: true
+      evaluationStatus:
+        type: string
+        description: |
+          __Read-only__ Reflects evaluation status, either `in_progress`, `pending_activation`, or `completed`.
+        readOnly: true
+        enum:
+        - in_progress
+        - pending_activation
+        - completed
+      startDate:
+        type: string
+        description: |
+          __Read-only__ The time stamp when evaluation starts.
+        readOnly: true
+        format: date-time
   fileExtensions:
     type: object
     description: |
@@ -255,9 +328,9 @@ properties:
     description: |
       The type of paths to match in incoming requests. Either `AllRequests` to match an empty path or any path that ends in a trailing slash (`/`), `TopLevel` to match top-level hostnames only, or `Custom` to match a specific path or path component. This applies only when the corresponding `matchType` member is `path`.
     enum:
-    - Custom
-    - TopLevel
     - AllRequests
+    - TopLevel
+    - Custom
   pathUriPositiveMatch:
     type: boolean
     description: |
@@ -308,7 +381,7 @@ properties:
   updateDate:
     type: string
     description: |
-      The ISO 8601 timestamp when you last updated the rate policy.
+      __Read-only__ The ISO 8601 timestamp when you last updated the rate policy.
     example: '2017-02-22 00:05:41.0'
     readOnly: true
     format: date-time
@@ -319,5 +392,5 @@ properties:
   used:
     type: boolean
     description: |
-      Whether you're currently using the rate policy.
+      __Read-only__ Whether you're currently using the rate policy.
     readOnly: true

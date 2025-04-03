@@ -1,0 +1,749 @@
+type: object
+description: |-
+  Describes which headers you can exclude from inspection when you pass a `Pragma` debug header.
+  
+x-akamai:
+  file-path: schemas/pragma-header-diff.yaml
+additionalProperties: false
+properties:
+  action:
+    type: object
+    description: |
+      The action to perform when a user passes a `Pragma` header. The only action currently supported is `REMOVE`. (This object [represents a diff](doc:diff-configuration-versions)).
+    properties:
+      from:
+        type: string
+        description: |
+          Value from the version assigned as `from`.
+        nullable: true
+      outcome:
+        $ref: outcome-diff.yaml
+      to:
+        type: string
+        description: |
+          Value from the version assigned as `to`.
+        nullable: true
+  changesCount:
+    $ref: changes-count-diff.yaml
+  conditionOperator:
+    type: object
+    description: |
+      Use `OR` to match any condition, or `AND` to match on all conditions. (This object [represents a diff](doc:diff-configuration-versions)).
+    properties:
+      from:
+        type: string
+        description: |
+          Value from the version assigned as `from`.
+        nullable: true
+      outcome:
+        $ref: outcome-diff.yaml
+      to:
+        type: string
+        description: |
+          Value from the version assigned as `to`.
+        nullable: true
+  excludeCondition:
+    type: object
+    description: |
+      The conditions to exclude from the default `remove` action. Any condition you set in this object appears in the `Pragma` header debug response object. (This object [represents a diff](doc:diff-configuration-versions) of array data.)
+    properties:
+      added:
+        type: array
+        description: |
+          Data added between the two versions.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            name:
+              type: object
+              description: |
+                The name of the request header to ignore from inspection. In the example, `type`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            type:
+              type: object
+              description: |
+                The header value you want to appear in the response. You can choose from `requestHeaderValueMatch`, `ipMatch`, `networkList`, or `queryParamNameValueMatch`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            value:
+              type: object
+              description: |
+                List of header values, query parameter values, IP addresses, or names of network lists. To manage networks lists, use the [Network Lists API](https://techdocs.akamai.com/network-lists/reference/api). (This object [represents a diff](doc:diff-configuration-versions) of array data.)
+              properties:
+                added:
+                  type: array
+                  description: |
+                    Data added between the two versions.
+                  items:
+                    type: string
+                from:
+                  type: array
+                  description: |
+                    Value from the version assigned as `from`.
+                  items:
+                    type: string
+                modified:
+                  type: array
+                  description: |
+                    Data modified between the two versions.
+                  items:
+                    type: string
+                outcome:
+                  $ref: outcome-diff.yaml
+                removed:
+                  type: array
+                  description: |
+                    Data removed between the two versions.
+                  items:
+                    type: string
+                to:
+                  type: array
+                  description: |
+                    Value from the version assigned as `to`.
+                  items:
+                    type: string
+                unmodified:
+                  type: array
+                  description: |
+                    Data that doesn't change between the two versions. This appears only when the diff request specifies to include `UNMODIFIED` data.
+                  items:
+                    type: string
+            changesCount:
+              $ref: changes-count-diff.yaml
+            header:
+              type: object
+              description: |
+                The name of the request header. In the example, `accept`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            outcome:
+              $ref: outcome-diff.yaml
+            positiveMatch:
+              type: object
+              description: |
+                When `true`, matches the selected values. When `false`, matches on anything outside the selected values. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            useHeaders:
+              type: object
+              description: |
+                Whether the condition should include  the `X-Forwarded-For` header (XFF) header. This only applies when the condition `type` is `IP_MATCH` or `NETWORK_LIST`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            valueCase:
+              type: object
+              description: |
+                Whether to consider the case-sensitivity of the provided header value. This only applies when the condition `type` is `REQUEST_HEADER_VALUE_MATCH`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            valueWildcard:
+              type: object
+              description: |
+                Whether the provided header value includes wildcards, such as `*` or `?`. This only applies to the `REQUEST_HEADER_VALUE_MATCH` condition type. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+      modified:
+        type: array
+        description: |
+          Data modified between the two versions.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            name:
+              type: object
+              description: |
+                The name of the request header to ignore from inspection. In the example, `type`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            type:
+              type: object
+              description: |
+                The header value you want to appear in the response. You can choose from `requestHeaderValueMatch`, `ipMatch`, `networkList`, or `queryParamNameValueMatch`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            value:
+              type: object
+              description: |
+                List of header values, query parameter values, IP addresses, or names of network lists. To manage networks lists, use the [Network Lists API](https://techdocs.akamai.com/network-lists/reference/api). (This object [represents a diff](doc:diff-configuration-versions) of array data.)
+              properties:
+                added:
+                  type: array
+                  description: |
+                    Data added between the two versions.
+                  items:
+                    type: string
+                from:
+                  type: array
+                  description: |
+                    Value from the version assigned as `from`.
+                  items:
+                    type: string
+                modified:
+                  type: array
+                  description: |
+                    Data modified between the two versions.
+                  items:
+                    type: string
+                outcome:
+                  $ref: outcome-diff.yaml
+                removed:
+                  type: array
+                  description: |
+                    Data removed between the two versions.
+                  items:
+                    type: string
+                to:
+                  type: array
+                  description: |
+                    Value from the version assigned as `to`.
+                  items:
+                    type: string
+                unmodified:
+                  type: array
+                  description: |
+                    Data that doesn't change between the two versions. This appears only when the diff request specifies to include `UNMODIFIED` data.
+                  items:
+                    type: string
+            changesCount:
+              $ref: changes-count-diff.yaml
+            header:
+              type: object
+              description: |
+                The name of the request header. In the example, `accept`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            outcome:
+              $ref: outcome-diff.yaml
+            positiveMatch:
+              type: object
+              description: |
+                When `true`, matches the selected values. When `false`, matches on anything outside the selected values. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            useHeaders:
+              type: object
+              description: |
+                Whether the condition should include  the `X-Forwarded-For` header (XFF) header. This only applies when the condition `type` is `IP_MATCH` or `NETWORK_LIST`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            valueCase:
+              type: object
+              description: |
+                Whether to consider the case-sensitivity of the provided header value. This only applies when the condition `type` is `REQUEST_HEADER_VALUE_MATCH`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            valueWildcard:
+              type: object
+              description: |
+                Whether the provided header value includes wildcards, such as `*` or `?`. This only applies to the `REQUEST_HEADER_VALUE_MATCH` condition type. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+      outcome:
+        $ref: outcome-diff.yaml
+      removed:
+        type: array
+        description: |
+          Data removed between the two versions.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            name:
+              type: object
+              description: |
+                The name of the request header to ignore from inspection. In the example, `type`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            type:
+              type: object
+              description: |
+                The header value you want to appear in the response. You can choose from `requestHeaderValueMatch`, `ipMatch`, `networkList`, or `queryParamNameValueMatch`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            value:
+              type: object
+              description: |
+                List of header values, query parameter values, IP addresses, or names of network lists. To manage networks lists, use the [Network Lists API](https://techdocs.akamai.com/network-lists/reference/api). (This object [represents a diff](doc:diff-configuration-versions) of array data.)
+              properties:
+                added:
+                  type: array
+                  description: |
+                    Data added between the two versions.
+                  items:
+                    type: string
+                from:
+                  type: array
+                  description: |
+                    Value from the version assigned as `from`.
+                  items:
+                    type: string
+                modified:
+                  type: array
+                  description: |
+                    Data modified between the two versions.
+                  items:
+                    type: string
+                outcome:
+                  $ref: outcome-diff.yaml
+                removed:
+                  type: array
+                  description: |
+                    Data removed between the two versions.
+                  items:
+                    type: string
+                to:
+                  type: array
+                  description: |
+                    Value from the version assigned as `to`.
+                  items:
+                    type: string
+                unmodified:
+                  type: array
+                  description: |
+                    Data that doesn't change between the two versions. This appears only when the diff request specifies to include `UNMODIFIED` data.
+                  items:
+                    type: string
+            changesCount:
+              $ref: changes-count-diff.yaml
+            header:
+              type: object
+              description: |
+                The name of the request header. In the example, `accept`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            outcome:
+              $ref: outcome-diff.yaml
+            positiveMatch:
+              type: object
+              description: |
+                When `true`, matches the selected values. When `false`, matches on anything outside the selected values. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            useHeaders:
+              type: object
+              description: |
+                Whether the condition should include  the `X-Forwarded-For` header (XFF) header. This only applies when the condition `type` is `IP_MATCH` or `NETWORK_LIST`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            valueCase:
+              type: object
+              description: |
+                Whether to consider the case-sensitivity of the provided header value. This only applies when the condition `type` is `REQUEST_HEADER_VALUE_MATCH`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            valueWildcard:
+              type: object
+              description: |
+                Whether the provided header value includes wildcards, such as `*` or `?`. This only applies to the `REQUEST_HEADER_VALUE_MATCH` condition type. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+      unmodified:
+        type: array
+        description: |
+          Data that doesn't change between the two versions. This appears only when the diff request specifies to include `UNMODIFIED` data.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            name:
+              type: object
+              description: |
+                The name of the request header to ignore from inspection. In the example, `type`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            type:
+              type: object
+              description: |
+                The header value you want to appear in the response. You can choose from `requestHeaderValueMatch`, `ipMatch`, `networkList`, or `queryParamNameValueMatch`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            value:
+              type: object
+              description: |
+                List of header values, query parameter values, IP addresses, or names of network lists. To manage networks lists, use the [Network Lists API](https://techdocs.akamai.com/network-lists/reference/api). (This object [represents a diff](doc:diff-configuration-versions) of array data.)
+              properties:
+                added:
+                  type: array
+                  description: |
+                    Data added between the two versions.
+                  items:
+                    type: string
+                from:
+                  type: array
+                  description: |
+                    Value from the version assigned as `from`.
+                  items:
+                    type: string
+                modified:
+                  type: array
+                  description: |
+                    Data modified between the two versions.
+                  items:
+                    type: string
+                outcome:
+                  $ref: outcome-diff.yaml
+                removed:
+                  type: array
+                  description: |
+                    Data removed between the two versions.
+                  items:
+                    type: string
+                to:
+                  type: array
+                  description: |
+                    Value from the version assigned as `to`.
+                  items:
+                    type: string
+                unmodified:
+                  type: array
+                  description: |
+                    Data that doesn't change between the two versions. This appears only when the diff request specifies to include `UNMODIFIED` data.
+                  items:
+                    type: string
+            changesCount:
+              $ref: changes-count-diff.yaml
+            header:
+              type: object
+              description: |
+                The name of the request header. In the example, `accept`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            outcome:
+              $ref: outcome-diff.yaml
+            positiveMatch:
+              type: object
+              description: |
+                When `true`, matches the selected values. When `false`, matches on anything outside the selected values. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            useHeaders:
+              type: object
+              description: |
+                Whether the condition should include  the `X-Forwarded-For` header (XFF) header. This only applies when the condition `type` is `IP_MATCH` or `NETWORK_LIST`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            valueCase:
+              type: object
+              description: |
+                Whether to consider the case-sensitivity of the provided header value. This only applies when the condition `type` is `REQUEST_HEADER_VALUE_MATCH`. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            valueWildcard:
+              type: object
+              description: |
+                Whether the provided header value includes wildcards, such as `*` or `?`. This only applies to the `REQUEST_HEADER_VALUE_MATCH` condition type. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: boolean
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+  outcome:
+    $ref: outcome-diff.yaml

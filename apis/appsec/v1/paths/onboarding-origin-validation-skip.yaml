@@ -1,0 +1,34 @@
+x-akamai:
+  file-path: paths/onboarding-origin-validation-skip.yaml
+  path-info: /onboardings/{onboardingId}/origin-validation/skip
+parameters:
+- $ref: ../parameters/onboarding-id-path.yaml
+post:
+  operationId: post-skip-onboarding-origin-validation
+  summary: Skip origin hostnames DNS record validation
+  tags:
+  - 'Onboarding: Post-activation validation'
+  description: |
+    Skips the validation of `A` DNS record. In the rare case that you changed your origin values outside this onboarding, you can choose not to complete the origin validation process through this onboarding workflow. Skipping for any other reason may cause your site to become unreachable. When you choose to skip validating your origin through this call, the response shows the records with a value of `skipped`.
+  responses:
+    200:
+      description: |
+        Successfully skipped Origin Record Validation.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboarding-skip-origin-validation.json
+          schema:
+            $ref: ../schemas/onboarding-skip-origin-validation.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You are not authorized to use this API.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The `onboardingId` was not found.
+      $ref: ../errors/404.yaml
+    500:
+      description: |
+        [Conflict](ref:500). Call to validate origin records failed.
+      $ref: ../errors/500.yaml

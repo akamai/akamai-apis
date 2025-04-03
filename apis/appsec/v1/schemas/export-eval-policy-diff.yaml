@@ -1,0 +1,77 @@
+type: object
+description: |-
+  Contains details about the Evaluation Policy settings in the exported configuration version.
+  
+x-akamai:
+  file-path: schemas/export-eval-policy-diff.yaml
+additionalProperties: false
+properties:
+  id:
+    type: object
+    description: |
+      Security Policy ID. (This object [represents a diff](doc:diff-configuration-versions)).
+    properties:
+      from:
+        type: string
+        description: |
+          Value from the version assigned as `from`.
+        nullable: true
+      outcome:
+        $ref: outcome-diff.yaml
+      to:
+        type: string
+        description: |
+          Value from the version assigned as `to`.
+        nullable: true
+  changesCount:
+    $ref: changes-count-diff.yaml
+  effectiveSecurityControls:
+    description: |
+      __Read-only__ The security controls to apply. For a security control to be effectively turned on, you must enable it in both the match target and the security policy.
+    readOnly: true
+    $ref: security-controls-diff.yaml
+  hostnames:
+    type: object
+    description: |
+      The evaluation hostnames in the configuration version. (This object [represents a diff](doc:diff-configuration-versions) of array data.)
+    properties:
+      added:
+        type: array
+        description: |
+          Data added between the two versions.
+        items:
+          type: string
+      from:
+        type: array
+        description: |
+          Value from the version assigned as `from`.
+        items:
+          type: string
+      modified:
+        type: array
+        description: |
+          Data modified between the two versions.
+        items:
+          type: string
+      outcome:
+        $ref: outcome-diff.yaml
+      removed:
+        type: array
+        description: |
+          Data removed between the two versions.
+        items:
+          type: string
+      to:
+        type: array
+        description: |
+          Value from the version assigned as `to`.
+        items:
+          type: string
+      unmodified:
+        type: array
+        description: |
+          Data that doesn't change between the two versions. This appears only when the diff request specifies to include `UNMODIFIED` data.
+        items:
+          type: string
+  outcome:
+    $ref: outcome-diff.yaml

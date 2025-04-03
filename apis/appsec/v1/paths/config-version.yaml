@@ -2,8 +2,8 @@ x-akamai:
   file-path: paths/config-version.yaml
   path-info: /configs/{configId}/versions/{versionNumber}
 parameters:
-- $ref: ../parameters/configId-path.yaml
-- $ref: ../parameters/versionNumber-path.yaml
+- $ref: ../parameters/config-id-path.yaml
+- $ref: ../parameters/version-number-path.yaml
 get:
   operationId: get-version-number
   summary: Get configuration version details
@@ -27,11 +27,11 @@ get:
       $ref: ../errors/404.yaml
 delete:
   operationId: delete-version-number
-  summary: Remove a configuration version
+  summary: Delete a configuration version
   tags:
   - General configuration settings
   description: |
-    Delete the specified configuration version. You can't delete a version that is actively in use. _Products:_ All.
+    Delete the specified configuration version. You can't delete a version that's actively in use. _Products:_ All.
   responses:
     204:
       description: |
@@ -39,18 +39,8 @@ delete:
     403:
       description: |
         [Forbidden](ref:403). You don't have access to this security configuration.
-      content:
-        application/problem+json:
-          example:
-            $ref: ../examples/403.json
-          schema:
-            $ref: ../schemas/problem-details.yaml
+      $ref: ../errors/400.yaml
     404:
       description: |
         [Not found](ref:404). Security configuration version wasn't found.
-      content:
-        application/problem+json:
-          example:
-            $ref: ../examples/404.json
-          schema:
-            $ref: ../schemas/problem-details.yaml
+      $ref: ../errors/404.yaml

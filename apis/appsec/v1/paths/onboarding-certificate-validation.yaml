@@ -1,0 +1,43 @@
+x-akamai:
+  file-path: paths/onboarding-certificate-validation.yaml
+  path-info: /onboardings/{onboardingId}/certificate-validation/validate
+parameters:
+- $ref: ../parameters/onboarding-id-path.yaml
+post:
+  operationId: post-onboarding-certificate-validation
+  summary: Validate onboarding certificate
+  tags:
+  - 'Onboarding: Post-activation validation'
+  description: |
+    Validates the certificate's `TXT` DNS record. Once validation completes, it takes about 5 minutes to deploy the certificates across Akamai's global network. You can validate via HTTPhttp token, DNS records, or URL redirect.
+  responses:
+    200:
+      description: |
+        Successfully validated certificate challenges.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboarding-certificate-validation.json
+          schema:
+            $ref: ../schemas/onboarding-certificate-validation.yaml
+    207:
+      description: |
+        Partially validated\tCertificate Challenges.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboarding-certificate-validation.json
+          schema:
+            $ref: ../schemas/onboarding-certificate-validation.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You are not authorized to use this API.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The `onboardingId` was not found
+      $ref: ../errors/404.yaml
+    500:
+      description: |
+        [Conflict](ref:500). Validating certificate challenges failed.
+      $ref: ../errors/500.yaml

@@ -1,0 +1,34 @@
+x-akamai:
+  file-path: paths/onboarding-origin-validation-status.yaml
+  path-info: /onboardings/{onboardingId}/origin-validation
+parameters:
+- $ref: ../parameters/onboarding-id-path.yaml
+get:
+  operationId: get-onboarding-origin-validation
+  summary: List origin hostname DNS records
+  tags:
+  - 'Onboarding: Post-activation validation'
+  description: |
+    Lists the DNS records for your origin. Once you make this call, visit your DNS provider account and create a new DNS type `A` record with the values returned in the response. In the rare case that you changed your origin values outside this setup, you can run [Skip origin validation](doc:post-skip-onboarding-origin-validation) to proceed to the next step without validating your origin at this time.
+  responses:
+    200:
+      description: |
+        Successfully retrieved origin hostnames DNS records.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboarding-origin-validation.json
+          schema:
+            $ref: ../schemas/onboarding-origin-validation.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You are not authorized to use this API.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The `onboardingId` was not found.
+      $ref: ../errors/404.yaml
+    500:
+      description: |
+        [Conflict](ref:500). Retrieving certificate challenges failed.
+      $ref: ../errors/500.yaml

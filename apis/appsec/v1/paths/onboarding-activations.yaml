@@ -1,0 +1,46 @@
+x-akamai:
+  file-path: paths/onboarding-activations.yaml
+  path-info: /onboardings/{onboardingId}/activations
+parameters:
+- $ref: ../parameters/onboarding-id-path.yaml
+post:
+  operationId: post-onboarding-activation
+  summary: Activate an onboarding
+  tags:
+  - 'Onboarding: Activations and status'
+  description: |
+    Activate an onboarding on the staging or production networks. You need to activate on the staging network before you can activate on production. Note that with this operation you can only activate on one network at a time. Once you activate on staging you can test your site as you normally would when using Property Manager or any of our security products. _Products:_ App & API Protector, App & API Protector with the Advanced Security module.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/onboarding-activation-post.json
+        schema:
+          $ref: ../schemas/onboarding-activation-post.yaml
+  responses:
+    202:
+      description: |
+        Successfully updated the onboarding settings.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboarding-activation-post-202.json
+          schema:
+            $ref: ../schemas/onboarding-activation-post-202.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You are not authorized to use this API.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). Onboarding was not found.
+      $ref: ../errors/404.yaml
+    409:
+      description: |
+        [Conflict](ref:409). Invalid onboarding Activation Request. See the `fieldErrors` and other fields provided in the response for more information.
+      $ref: ../errors/409-onboarding-activation.yaml
+    422:
+      description: |
+        [Unprocessable content](ref:422). Onboarding can't be activated in the Production Network before Staging.
+      $ref: ../errors/422-onboarding-activation.yaml

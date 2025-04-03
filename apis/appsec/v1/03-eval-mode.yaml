@@ -7,30 +7,69 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
 - url: https://{hostname}/appsec/v1
+tags:
+- description: |
+    Manage the attack groups and rules that you're currently evaluating
+    for your security policies.
+  name: 'Security policy: Conditions and exceptions'
+- description: |
+    Manage hostnames you're currently evaluating for security policies.
+  name: 'Security policy: Evaluation hostnames'
+- description: |
+    Set the evaluation mode for your security policies.  This mode
+    runs concurrently with your existing Web Application Firewall
+    Rule settings and records how the rules would respond if applied
+    to live traffic.
+  name: 'Security policy: Evaluation mode'
+- description: |
+    Manage the penalty box settings that you're evaluating for your
+    security policies.
+  name: 'Security policy: Evaluation penalty box'
+- description: |
+    Manage the rules you're currently evaluating for security
+    policies.
+  name: 'Security policy: Evaluation rules'
+- description: |
+    Manage the attack groups that you're evaluating for your
+    security configurations and policies.
+  name: 'Security policy: Evaluation attack groups'
+- description: |
+    Manage the penalty box condition settings for your firewall
+    rules.
+  name: 'WAF rules: Evaluation Penalty box conditions'
+- description: |
+    Manage hostnames you're currently evaluating for a configuration
+    version.  If using Web Application Protector, manage hostnames
+    currently in evaluation mode.  This mode lets you to see how
+    your configuration settings protect a hostname's traffic before
+    adding the hostname to a live configuration.
+  name: 'Configuration: Evaluation hostnames'
 x-akamai:
   auth-type: EDGE_GRID
   file-path: 03-eval-mode.yaml
 paths:
-  /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/eval-groups/{attackGroupId}:
-    $ref: paths/policy-eval-group.yaml
-  /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/eval-groups/{attackGroupId}/condition-exception:
-    $ref: paths/policy-eval-group-condition-exception.yaml
-  /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/eval-rules/{ruleId}/condition-exception:
-    $ref: paths/policy-eval-rule-condition-exception.yaml
   /configs/{configId}/versions/{versionNumber}/protect-eval-hostnames:
     $ref: paths/config-protect-eval-hostnames.yaml
   /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/eval:
     $ref: paths/policy-eval.yaml
   /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/eval-groups:
     $ref: paths/policy-eval-groups.yaml
+  ? /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/eval-groups/{attackGroupId}
+  : $ref: paths/policy-eval-group.yaml
+  ? /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/eval-groups/{attackGroupId}/condition-exception
+  : $ref: paths/policy-eval-group-condition-exception.yaml
   /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/eval-hostnames:
     $ref: paths/policy-eval-hostnames.yaml
   /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/eval-penalty-box:
     $ref: paths/policy-eval-penalty-box.yaml
+  ? /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/eval-penalty-box/conditions
+  : $ref: paths/policy-eval-penalty-box-conditions.yaml
   /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/eval-rules:
     $ref: paths/policy-eval-rules.yaml
   /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/eval-rules/{ruleId}:
     $ref: paths/policy-eval-rule.yaml
+  ? /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/eval-rules/{ruleId}/condition-exception
+  : $ref: paths/policy-eval-rule-condition-exception.yaml
   /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/protect-eval-hostnames:
     $ref: paths/policy-protect-eval-hostnames.yaml
   /configs/{configId}/versions/{versionNumber}/selected-hostnames/eval-hostnames:

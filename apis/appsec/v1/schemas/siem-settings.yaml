@@ -19,7 +19,52 @@ properties:
   enabledBotmanSiemEvents:
     type: boolean
     description: |
-      Whether you enabled SIEM for the Bot Manager events.
+      "__Deprecated__ Whether you enabled SIEM for the Bot Manager events. Use `exceptions` parameter instead to set botman
+      siem events exception. \n"
+    x-akamai:
+      status: DEPRECATED
+  exceptions:
+    type: array
+    description: |
+      Describes all attack type exceptions that will be ignored in siem events.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        actionTypes:
+          type: array
+          description: |
+            Describes actions to be excluded for a particular attack type. A `*` value means all actions.
+          items:
+            type: string
+            enum:
+            - '*'
+            - alert
+            - deny
+            - all_custom
+            - abort
+            - allow
+            - delay
+            - ignore
+            - monitor
+            - slow
+            - tarpit
+        protection:
+          type: string
+          description: |
+            Attack type to be added as an exception.
+          enum:
+          - ipgeo
+          - rate
+          - urlProtection
+          - slowpost
+          - customrules
+          - waf
+          - apirequestconstraints
+          - clientrep
+          - malwareprotection
+          - botmanagement
+          - aprProtection
   firewallPolicyIds:
     type: array
     description: |

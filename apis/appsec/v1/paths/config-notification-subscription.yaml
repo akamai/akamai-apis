@@ -3,7 +3,7 @@ x-akamai:
   path-info: /configs/{configId}/notification/subscription/{feature}
 parameters:
 - $ref: ../parameters/feature-path.yaml
-- $ref: ../parameters/configId-path.yaml
+- $ref: ../parameters/config-id-path.yaml
 post:
   operationId: post-subscription-feature
   summary: Subscribe or unsubscribe to recommendation emails
@@ -26,35 +26,11 @@ post:
     400:
       description: |
         [Invalid](ref:400). Incorrect client input. See the `fieldErrors` and other fields provided in the response for more information.
-      content:
-        application/problem+json:
-          examples:
-            emailValidationErrors:
-              summary: Email validation errors
-              value:
-                $ref: ../examples/400-subscription-email-validation-errors.json
-            invalidAction:
-              summary: Invalid action
-              value:
-                $ref: ../examples/400-subscription-invalid-action.json
-          schema:
-            $ref: ../schemas/problem-details.yaml
+      $ref: ../errors/400-subscription.yaml
     403:
       description: |
         [Forbidden](ref:403). Access denied. Make sure you have correct permissions.
-      content:
-        application/problem+json:
-          examples:
-            noConfig:
-              summary: No access to the configuration
-              value:
-                $ref: ../examples/403-subscription-no-config-access.json
-            noFeatureScope:
-              summary: No feature scope
-              value:
-                $ref: ../examples/403-subscription-no-feature-scope.json
-          schema:
-            $ref: ../schemas/problem-details.yaml
+      $ref: ../errors/403-scope.yaml
     404:
       $ref: ../errors/404.yaml
 get:
@@ -77,18 +53,6 @@ get:
     403:
       description: |
         [Forbidden](ref:403). Access denied. Make sure you have correct permissions.
-      content:
-        application/problem+json:
-          examples:
-            noConfig:
-              summary: No access to the configuration
-              value:
-                $ref: ../examples/403-subscription-no-config-access.json
-            noFeatureScope:
-              summary: No feature scope
-              value:
-                $ref: ../examples/403-subscription-no-feature-scope.json
-          schema:
-            $ref: ../schemas/problem-details.yaml
+      $ref: ../errors/403-scope.yaml
     404:
       $ref: ../errors/404.yaml

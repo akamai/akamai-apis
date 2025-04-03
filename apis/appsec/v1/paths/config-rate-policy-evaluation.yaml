@@ -1,0 +1,42 @@
+x-akamai:
+  file-path: paths/config-rate-policy-evaluation.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/rate-policies/{ratePolicyId}/evaluation
+parameters:
+- $ref: ../parameters/config-id-path.yaml
+- $ref: ../parameters/version-number-path.yaml
+- $ref: ../parameters/rate-policy-id-path.yaml
+put:
+  operationId: put-rate-policy-evaluation
+  summary: Modify a rate policy evaluation
+  tags:
+  - 'Shared resources: Rate policies'
+  description: |
+    Apply or discard a rate policy evaluation.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/rate-policy-evaluation-put.json
+        schema:
+          $ref: ../schemas/rate-policy-evaluation-put.yaml
+  responses:
+    200:
+      description: |
+        Successfully apply or discard rate policy evalutation.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/rate-policy-evaluation-200.json
+          schema:
+            $ref: ../schemas/rate-policy.yaml
+    400:
+      $ref: ../errors/400.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to rate policy in this security configuration.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). Security configuration version or rate policy wasn't found.
+      $ref: ../errors/404.yaml

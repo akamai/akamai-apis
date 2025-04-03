@@ -1,0 +1,91 @@
+type: object
+description: |-
+  Configuration settings for Client-Side Protection & Compliance.
+  
+x-akamai:
+  file-path: schemas/cpc-protection.yaml
+additionalProperties: false
+required:
+- edgeInjection
+- injectionCriteria
+- edgeTestParameters
+properties:
+  edgeInjection:
+    type: object
+    description: |
+      Specifies the Client-Side Protection & Compliance (CPC) configuration you want to apply, and which pages get monitored by CPC's JavaScript injection to flag suspicious activity. See [Client-Side Protection & Compliance](https://techdocs.akamai.com/client-side-protect-compliance/docs/client-side-protect-compliance-ov) for more information.
+    additionalProperties: false
+    required:
+    - clientSideProtectionConfigId
+    - loadScriptAsync
+    - autoLoadStaging
+    properties:
+      autoLoadStaging:
+        type: boolean
+        description: |
+          Whether the agent should load from staging. Enabling this can speed up your testing on the staging network.
+      clientSideProtectionConfigId:
+        type: integer
+        description: |
+          Identifies each Client-Side Protection & Compliance configuration.
+      loadScriptAsync:
+        type: boolean
+        description: |
+          Whether the agent script should load asynchronously. Note that this can help improve performance, but may make malicious scripts detection less accurate. See [Load script asynchronously ](https://techdocs.akamai.com/client-side-protect-compliance/docs/tune-configurations-for-security-and-performance#load-script-asynchronously) to learn more.
+  edgeTestParameters:
+    type: object
+    description: |
+      Use these query string parameters to unit test an edge server's behavior. Entries here override the sampling percentage, ensuring or disabling JavaScript injection.
+    additionalProperties: false
+    properties:
+      disableInjectionKey:
+        type: string
+        description: |
+          Send this query string parameter to defer injecting the agent.
+      disableInjectionValue:
+        type: string
+        description: |
+          Specifies the value to disable agent injection.
+      forceInjectionKey:
+        type: string
+        description: |
+          Send this query string parameter to force agent injection.
+      forceInjectionValue:
+        type: string
+        description: |
+          Specifies the value to force agent injection.
+  injectionCriteria:
+    type: object
+    description: |
+      Specifies the criteria for agent injection.
+    additionalProperties: false
+    required:
+    - injectionPolicy
+    - injectionPercent
+    properties:
+      injectionPathExcludes:
+        type: string
+        description: |
+          The path to exclude from agent injection.
+        minLength: 0
+      injectionPathIncludes:
+        type: string
+        description: |
+          The path to include for agent injection.
+        minLength: 0
+      injectionPercent:
+        type: integer
+        description: |
+          The proportion of all pages into which the Client-Side Protection & Compliance JavaScript is inserted. For example, if you set it to `5` percent, the JavaScript file is embedded in just that fraction of your pages, leaving the remaining `95` percent to run without the script.
+        minimum: 0
+        maximum: 100
+      injectionPolicy:
+        type: string
+        description: |
+          Specifies the position where agent injection should be applied. The JavaScript injection runs on a page, but you can inject it in a more specific location to fit the characteristics of your pages. Use `early_head` to insert the JavaScript after the `<head>` tag at the beginning of the page. Use `mid_head` to add the JavaScript further down in the `<head>` tags, after tags like `<base>`,`<link>`, `<meta>`, and similarly located tags. Use `late_head` to insert the JavaScript before a title and after all heading tags, or `first_script` to insert the user agent before the first `<script>` tag. Note that the injection always occurs before the first `<script>` tag in your site. If you choose another insertion point and a `<script>` tag appears before it, the insertion point will be the `<script>` tag and not the tag you chose. Use `legacy` to inject the JavaScript as the first script on the page. Note that `early_script` is an updated version of `legacy`.
+        enum:
+        - late_head
+        - early_head
+        - mid_head
+        - first_script
+        - legacy

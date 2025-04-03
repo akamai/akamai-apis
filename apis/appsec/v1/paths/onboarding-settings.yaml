@@ -1,0 +1,71 @@
+x-akamai:
+  file-path: paths/onboarding-settings.yaml
+  path-info: /onboardings/{onboardingId}/settings
+parameters:
+- $ref: ../parameters/onboarding-id-path.yaml
+get:
+  operationId: get-onboarding-settings
+  summary: Get onboarding settings
+  tags:
+  - 'Onboarding: Creation and settings'
+  description: |
+    Gets the settings for a specific onboarding. _Products:_ App & API Protector, App & API Protector with the Advanced Security module.
+  responses:
+    200:
+      description: |
+        Successfully returned onboarding settings.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboarding-settings-200.json
+          schema:
+            $ref: ../schemas/onboarding-settings.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You are not authorized to use this API.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). Onboarding Id wasn't found.
+      $ref: ../errors/404.yaml
+put:
+  operationId: put-onboarding-settings
+  summary: Modify onboarding settings
+  tags:
+  - 'Onboarding: Creation and settings'
+  description: |
+    Update the settings in an onboarding. You can't update settings for an onboarding object that has already activated on staging or production. You can, however, change settings for an onboarding that has not been activated. _Products:_ App & API Protector, App & API Protector with the Advanced Security module.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/onboarding-settings-200.json
+        schema:
+          $ref: ../schemas/onboarding-settings-put.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the onboarding settings.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboarding-settings-200.json
+          schema:
+            $ref: ../schemas/onboarding-settings.yaml
+    400:
+      description: |
+        [Invalid](ref:400). Invalid onboarding settings. See the `fieldErrors` and other fields provided in the response for more information.
+      $ref: ../errors/400-onboarding-settings.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You are not authorized to use this API.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The onboarding object wasn't found.
+      $ref: ../errors/404.yaml
+    422:
+      description: |
+        [Unprocessable content](ref:422). Onboarding settings can't be updated after activation.
+      $ref: ../errors/422-onboarding-settings.yaml

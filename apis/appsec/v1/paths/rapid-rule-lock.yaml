@@ -1,0 +1,65 @@
+x-akamai:
+  file-path: paths/rapid-rule-lock.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/rapid-rules/{ruleId}/lock
+parameters:
+- $ref: ../parameters/config-id-path.yaml
+- $ref: ../parameters/version-number-path.yaml
+- $ref: ../parameters/policy-id-path.yaml
+- $ref: ../parameters/rule-id-path.yaml
+get:
+  operationId: get-policy-rapid-rule-lock
+  summary: Get a rapid rule's lock status
+  tags:
+  - 'WAF rules: Rapid rules'
+  description: |
+    "Returns the rapid rule lock status. When locked, the action set for the rapid rule applies to all new versions of
+    that rule. \n"
+  responses:
+    200:
+      description: |
+        Successfully retrieved the rapid rule lock status.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/rapid-rule-lock.json
+          schema:
+            $ref: ../schemas/rapid-rule-lock-object.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-policy-rapid-rule-lock
+  summary: Update a rapid rule's lock status
+  tags:
+  - 'WAF rules: Rapid rules'
+  description: |
+    Set the rapid rule lock status. When enabled, the action set for the rapid rule applies to all new versions of that rule.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/rapid-rule-lock.json
+        schema:
+          $ref: ../schemas/rapid-rule-lock-object.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the rapid rule's lock status.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/rapid-rule-lock.json
+          schema:
+            $ref: ../schemas/rapid-rule-lock-object.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

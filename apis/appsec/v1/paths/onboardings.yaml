@@ -1,0 +1,63 @@
+x-akamai:
+  file-path: paths/onboardings.yaml
+  path-info: /onboardings
+post:
+  operationId: post-onboarding
+  summary: Create an onboarding
+  tags:
+  - 'Onboarding: Creation and settings'
+  description: |
+    Create a new onboarding. To start, you'll need a valid set of hostnames that either need delivery settings, an Akamai-owned certificate from the Certificate Provisioning System (CPS), and security protections, or have delivery settings complete and only need security protections. However, you can include only one type of these hostnames per onboarding, not both. If you have both kinds of hostnames, those that need delivery settings, a CPS certificate, and security protections, and those that only need security protections, you'll need to create two onboarding objects. The response object is your newly created onboarding. _Products:_ App & API Protector, App & API Protector with the Advanced Security module.
+  parameters:
+  - $ref: ../parameters/create-new-resources-only-path.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/onboarding-post.json
+        schema:
+          $ref: ../schemas/onboarding-post.yaml
+  responses:
+    201:
+      description: |
+        Successfully created an onboarding object.
+      headers:
+        Location:
+          $ref: ../headers/location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboarding-post-200.json
+          schema:
+            $ref: ../schemas/onboarding-post-200.yaml
+    400:
+      $ref: ../errors/400.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have create Self Serviceability onboarding.
+      $ref: ../errors/403.yaml
+get:
+  operationId: get-onboardings
+  summary: List onboardings
+  tags:
+  - 'Onboarding: Creation and settings'
+  description: |
+    Lists onboardings. You can filter results by hostname or onboarding status. _Products:_ App & API Protector, App & API Protector with the Advanced Security module.
+  parameters:
+  - $ref: ../parameters/onboarding-status.yaml
+  - $ref: ../parameters/hostnames.yaml
+  responses:
+    200:
+      description: |
+        Successful response.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboardings-listing-200.json
+          schema:
+            $ref: ../schemas/onboardings-get.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml

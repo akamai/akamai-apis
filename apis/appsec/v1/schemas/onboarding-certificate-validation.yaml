@@ -1,0 +1,109 @@
+type: object
+description: |-
+  Specifies the challenges necessary to validate the certificate.
+  
+x-akamai:
+  file-path: schemas/onboarding-certificate-validation.yaml
+additionalProperties: false
+required:
+- description
+- records
+- certificateValidateLink
+- certificateValidationStatus
+- onboardingLink
+properties:
+  description:
+    type: string
+    description: |
+      Details the steps you need to perform to validate your certificate.
+    minLength: 1
+  certificateValidateLink:
+    type: string
+    description: |
+      The URL to call to validate your certificate.
+    format: uri
+  certificateValidationStatus:
+    type: string
+    description: |
+      The cumulative status for all certificate validation. If there is more than one certificate and each is valid, you'll see a value of `VALIDATION_SUCCESS`. If one certificate is valid but another is not, it will say `VALIDATION_NEEDED`.
+    enum:
+    - VALIDATION_SUCCESS
+    - VALIDATION_NEEDED
+    minLength: 1
+  onboardingLink:
+    type: string
+    description: |
+      The URL to get the onboarding's details.
+    format: uri
+  records:
+    type: array
+    description: |
+      Lists all hostname record information you need to validate your certificate.
+    uniqueItems: true
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - hostname
+      - recordName
+      - recordType
+      - recordValue
+      - recordTtl
+      - httpFilePath
+      - httpToken
+      - recordStatus
+      - urlRedirectFrom
+      - urlRedirectTo
+      properties:
+        hostname:
+          type: string
+          description: |
+            The hostname the certificate secures.
+          minLength: 1
+        httpFilePath:
+          type: string
+          description: |
+            The path to the http file when validating your certificate with an HTTP token.
+          minLength: 1
+        httpToken:
+          type: string
+          description: |
+            The domain record's HTTP token you'll use to validate your certificate.
+          minLength: 1
+        recordName:
+          type: string
+          description: |
+            The fully qualified domain name (FQDN) of this record.
+          minLength: 1
+        recordStatus:
+          type: string
+          description: |
+            The status of your certificate. When `VALIDATED`, you can proceed to the next step in the onboarding process. When `NOT_VALIDATED`, you may need to validate your site manually.
+          enum:
+          - VALIDATED
+          - NOT_VALIDATED
+          minLength: 1
+        recordTtl:
+          type: integer
+          description: |
+            The number of seconds that this record should live in cache before being re-fetched.
+        recordType:
+          type: string
+          description: |
+            The type of domain record. For example, `A`, `TXT`, or `CNAME`.
+          minLength: 1
+        recordValue:
+          type: string
+          description: |
+            The resource record's IP address.
+          minLength: 1
+        urlRedirectFrom:
+          type: string
+          description: |
+            The URL for the site you are redirecting `from` when you validate your origin using a redirect.
+          minLength: 1
+        urlRedirectTo:
+          type: string
+          description: |
+            The URL you are redirecting `to` when you validate your origin using a redirect.
+          minLength: 1

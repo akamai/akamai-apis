@@ -1,0 +1,49 @@
+x-akamai:
+  file-path: paths/cves-unsubscribe.yaml
+  path-info: /cves/unsubscribe
+post:
+  operationId: post-unsubscribe
+  summary: Unsubscribe from CVEs
+  tags:
+  - CVE Protections lookup
+  description: |
+    Unsubscribe from notifications about all CVEs, or specific CVEs.
+  parameters:
+  - $ref: ../parameters/all-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        examples:
+          from-all:
+            summary: Unsubscribe from all
+            value:
+              $ref: ../examples/cve-unsubscribe-all-post.json
+          from-list:
+            summary: Unsubscribe from the list of CVEs
+            value:
+              $ref: ../examples/cve-ids-list.json
+        schema:
+          $ref: ../schemas/cve-unsubscribe-post.yaml
+  responses:
+    200:
+      description: |
+        Successful response.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/cve-ids-list.json
+          schema:
+            $ref: ../schemas/cve-unsubscribe-200.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    405:
+      $ref: ../errors/405.yaml
+    406:
+      $ref: ../errors/406.yaml
