@@ -1,0 +1,58 @@
+type: object
+x-akamai:
+  file-path: schemas/challenge-injection-rules-diff.yaml
+additionalProperties: false
+properties:
+  changesCount:
+    $ref: changes-count-diff.yaml
+  injectJavaScript:
+    type: object
+    description: |
+      Whether to automatically inject the AJAX challenge JavaScript on protected operation hostnames. Set to `true` if you use AJAX pervasively. Otherwise, set to `false` and apply injection rules to the page URLs where you use AJAX. (This object [represents a diff](doc:diff-configuration-versions)).
+    properties:
+      from:
+        type: boolean
+        description: |
+          Value from the version assigned as `from`.
+        nullable: true
+      outcome:
+        $ref: outcome-diff.yaml
+      to:
+        type: boolean
+        description: |
+          Value from the version assigned as `to`.
+        nullable: true
+  outcome:
+    $ref: outcome-diff.yaml
+  rules:
+    type: object
+    description: |
+      The conditions that, when met, either inject or don't inject the AJAX challenge. (This object [represents a diff](doc:diff-configuration-versions) of array data.)
+    nullable: true
+    properties:
+      added:
+        type: array
+        description: |
+          Data added between the two versions.
+        items:
+          $ref: challenge-injection-rule-diff.yaml
+      modified:
+        type: array
+        description: |
+          Data modified between the two versions.
+        items:
+          $ref: challenge-injection-rule-diff.yaml
+      outcome:
+        $ref: outcome-diff.yaml
+      removed:
+        type: array
+        description: |
+          Data removed between the two versions.
+        items:
+          $ref: challenge-injection-rule-diff.yaml
+      unmodified:
+        type: array
+        description: |
+          Data that doesn't change between the two versions. This appears only when the diff request specifies to include `UNMODIFIED` data.
+        items:
+          $ref: challenge-injection-rule-diff.yaml

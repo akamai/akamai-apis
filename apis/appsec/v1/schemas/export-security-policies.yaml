@@ -15,10 +15,12 @@ properties:
     type: string
     description: |
       Uniquely identifies the security policy.
+    minLength: 1
   name:
     type: string
     description: |
       The name of the security policy.
+    minLength: 1
   requestBody:
     description: |
       Contains policy level settings for request body inspection limit.
@@ -35,11 +37,13 @@ properties:
       action:
         type: string
         description: |
-          The action will be returned in the apiEndpoints array per API basis, this is retained for backward compatibility.
+          The action will be returned in the `apiEndpoints` array on a per-API basis. This is retained for backward compatibility.
+        minLength: 1
       apiEndpoints:
         type: array
         description: |
           The list of APIs covered by match target set in the security policy.
+        minItems: 0
         items:
           type: object
           additionalProperties: false
@@ -51,10 +55,12 @@ properties:
               type: integer
               description: |
                 Uniquely identifies the API match target.
+              minimum: 0
             action:
               type: string
               description: |
                 The action to take for the requests that violate the constraints.
+              minLength: 1
   clientReputation:
     type: object
     description: |
@@ -67,6 +73,7 @@ properties:
         type: array
         description: |
           The list of reputation profile actions set in the security policy.
+        minItems: 0
         items:
           type: object
           additionalProperties: false
@@ -78,14 +85,17 @@ properties:
               type: integer
               description: |
                 Uniquely identifies the reputation profile.
+              minimum: 0
             action:
               type: string
               description: |
                 The action to take when the request exceeds the threshold set in the reputation profile.
+              minLength: 1
   customRuleActions:
     type: array
     description: |
       The list of custom rule actions set in the security policy.
+    minItems: 0
     items:
       type: object
       additionalProperties: false
@@ -97,10 +107,12 @@ properties:
           type: integer
           description: |
             Uniquely identifies the custom rule.
+          minimum: 0
         action:
           type: string
           description: |
             The action to take when a request meets the custom rule conditions.
+          minLength: 1
   evaluationPenaltyBox:
     $ref: penalty-box.yaml
   hasRatePolicyWithApiKey:
@@ -119,10 +131,9 @@ properties:
     type: array
     description: |
       The list of malware policy actions set in the security policy.
+    minItems: 0
     items:
       type: object
-      description: |
-        The actions for a malware policy. Only files up to 5MB are scanned. When files are larger than 5MB, you can set an `unscannedAction`, which is the action you want the network to take for files outside the scan limit.
       additionalProperties: false
       required:
       - action
@@ -133,24 +144,69 @@ properties:
           type: integer
           description: |
             Uniquely identifies the malware policy.
+          minimum: 0
         action:
           type: string
           description: |
             The action to take when malware is detected.
+          minLength: 1
         unscannedAction:
           type: string
           description: |
-            The action to take when a file is outside the 5MB scan limit and isn't scanned.
+            The action to take when a file is outside the 5 MB scan limit and isn't scanned.
+          minLength: 1
   penaltyBox:
     $ref: penalty-box.yaml
   pragmaHeader:
     description: |
       Contains policy level settings for the `Pragma` header.
     $ref: pragma-header.yaml
+  rapidRules:
+    type: object
+    description: |
+      Contains details about the rapid rules defined in the security policy.
+    additionalProperties: false
+    required:
+    - enabled
+    - defaultAction
+    - policyRules
+    properties:
+      defaultAction:
+        $ref: rapid-rule-action.yaml
+      enabled:
+        type: boolean
+        description: |
+          Whether you enabled the rapid rules.
+      policyRules:
+        type: array
+        description: |
+          Contains a list of policy rapid rules.
+        minItems: 0
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - ruleId
+          - ruleVersion
+          - action
+          - lock
+          - conditionException
+          properties:
+            action:
+              $ref: rapid-rule-action.yaml
+            conditionException:
+              $ref: condition-exception-get-200.yaml
+            lock:
+              $ref: rapid-rule-lock.yaml
+            ruleId:
+              $ref: rapid-rule-id.yaml
+            ruleVersion:
+              $ref: rapid-rule-version.yaml
   ratePolicyActions:
     type: array
     description: |
       The list of rate policy actions set in the security policy.
+    minItems: 0
     items:
       type: object
       additionalProperties: false
@@ -163,14 +219,17 @@ properties:
           type: integer
           description: |
             Uniquely identifies the rate policy.
+          minimum: 0
         ipv4Action:
           type: string
           description: |
             The action to take for the IPv4 traffic when the limits set in the rate policy are exceeded.
+          minLength: 1
         ipv6Action:
           type: string
           description: |
             The action to take for the IPv6 traffic when the limits set in the rate policy are exceeded.
+          minLength: 1
   securityControls:
     type: object
     description: |
@@ -183,6 +242,10 @@ properties:
     - applyApplicationLayerControls
     - applyMalwareControls
     properties:
+      applyAccountProtectionControls:
+        type: boolean
+        description: |
+          Indicates if you enabled the account protection controls.
       applyApplicationLayerControls:
         type: boolean
         description: |
@@ -232,6 +295,7 @@ properties:
             type: integer
             description: |
               The time (in seconds) when the first 8 kilobytes of the POST body should be processed to avoid flagging the request.
+            minimum: 0
       slowRateThreshold:
         type: object
         description: |
@@ -245,10 +309,12 @@ properties:
             type: integer
             description: |
               The period (in seconds) when the rate applies.
+            minimum: 0
           rate:
             type: integer
             description: |
               The maximum rate of bandwidth in bytes per second, averaged every 2 minutes.
+            minimum: 0
   webApplicationFirewall:
     type: object
     description: |
@@ -279,16 +345,19 @@ properties:
             type: integer
             description: |
               Uniquely identifies the rule evaluation configuration.
+            minimum: 0
           evaluationVersion:
             type: integer
             description: |
               The evaluation version. The version numbers start at `1` and increase on the first change to an evaluation configuration after its activation.
+            minimum: 0
           ruleActions:
             $ref: export-definitions.yaml#/definitions/ruleActions
           rulesetVersion:
             type: integer
             description: |
               Uniquely identifies the evaluated ruleset version.
+            minimum: 0
       ruleActions:
         $ref: export-definitions.yaml#/definitions/ruleActions
       threatIntel:
@@ -296,5 +365,5 @@ properties:
         description: |
           Set to `on` so our network analyzes a request and dynamically modifies protection methods to fit the detected threat level. Set to `off` to manually fine-tune your rule sets.
         enum:
-        - on
-        - off
+        - true
+        - false

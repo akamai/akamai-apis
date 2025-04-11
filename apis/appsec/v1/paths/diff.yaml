@@ -1,0 +1,36 @@
+x-akamai:
+  file-path: paths/diff.yaml
+  path-info: /configs/{configId}/versions/diff
+parameters:
+- $ref: ../parameters/config-id-path.yaml
+post:
+  operationId: post-config-versions-diff
+  summary: Compare two versions
+  tags:
+  - Configuration version diff
+  description: |
+    This operation shows you differences between configuration versions. The `to` version is relative to the `from` version, and the versions you compare can be non-sequential. This means the `from` value can be more a more recent version than the `to` value. For more information, see [Diff configuration versions](ref:diff-configuration-versions).
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/diff-request.json
+        schema:
+          $ref: ../schemas/diff-request.yaml
+  responses:
+    200:
+      description: |
+        The response object represents much the same data as the [Export a configuration version](ref:get-export-config-version) operation, but substituting additional objects that represent diffs. The structure of these diffs vary when comparing different types of data: simple values, simple arrays, objects, and object arrays.  For details on the diff format, see [Diff configuration versions](ref:diff-configuration-versions).
+      content:
+        application/json:
+          example:
+            $ref: ../examples/diff.json
+          schema:
+            $ref: ../schemas/export-diff-summary.yaml
+    400:
+      $ref: ../errors/400.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml

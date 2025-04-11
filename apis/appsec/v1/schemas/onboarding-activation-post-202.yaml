@@ -1,0 +1,73 @@
+type: object
+description: |-
+  Describes the response for activating an onboarding on the staging or production networks.
+  
+x-akamai:
+  file-path: schemas/onboarding-activation-post-202.yaml
+additionalProperties: false
+required:
+- activationId
+- activationStatus
+- network
+- createdDate
+- createdBy
+- activationStatusLink
+- onboardingLink
+properties:
+  activationId:
+    type: integer
+    description: |
+      The unique identifier for an activation.
+  activationStatus:
+    type: string
+    description: |
+      __Read-only__ The status of the activation. When the status is Activation can take about 20 minutes. A value of `ACTIVE` means activation succeeded and your site is ready for validation. A value of `FAILED` means the onboarding failed to activate and specific information about the failure is returned in the error response. When `PENDING`, the activation partially completed and the response shows you what additional steps you need to complete to finish your activation.
+    readOnly: true
+    enum:
+    - PENDING
+    - ACTIVE
+    - FAILED
+    minLength: 1
+  activationStatusLink:
+    type: string
+    description: |
+      The URL for the operation to request the activation status.
+    format: uri
+  completedDate:
+    type: string
+    description: |
+      The ISO 8601 timestamp when the activation reaches a steady state and validates across the Akamai network.
+    format: date-time
+  createdBy:
+    type: string
+    description: |
+      __Read-only__ The user who created the activation request.
+    readOnly: true
+    minLength: 1
+  createdDate:
+    type: string
+    description: |
+      __Read-only__ The ISO 8601 timestamp when the activation request was submitted.
+    readOnly: true
+    format: date-time
+  network:
+    type: string
+    description: |
+      Specifies the network where you are activating your onboarding, either `STAGING`, or `PRODUCTION`.
+    enum:
+    - STAGING
+    - PRODUCTION
+    minLength: 1
+  onboardingLink:
+    type: string
+    description: |
+      The URL to get the onboarding's details.
+    minLength: 1
+  percentComplete:
+    type: integer
+    description: |
+      The percentage of the activation that is complete.
+  retryAfter:
+    type: integer
+    description: |
+      The time remaining, in seconds, until the activation finishes. If your activation fails and you need to try activating again, you won't be able to until this value reaches `0`.

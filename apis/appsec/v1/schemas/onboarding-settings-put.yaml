@@ -1,0 +1,217 @@
+type: object
+description: |-
+  Describes the delivery, certificate, and security settings for onboarding.
+  
+x-akamai:
+  file-path: schemas/onboarding-settings-put.yaml
+additionalProperties: false
+required:
+- delivery
+- certificate
+- security
+- settingsLink
+- onboardingLink
+properties:
+  certificate:
+    type: object
+    description: |
+      The certificate settings to secure your site.
+    additionalProperties: false
+    required:
+    - certificateType
+    - adminContact
+    properties:
+      adminContact:
+        type: object
+        description: |
+          Contact information for the certificate administrator that you want to use as a contact at your company.
+        additionalProperties: false
+        required:
+        - firstName
+        - lastName
+        - phone
+        - email
+        properties:
+          email:
+            type: string
+            description: |
+              Your contact's email address.
+            minLength: 1
+          firstName:
+            type: string
+            description: |
+              Your contact's given name.
+            minLength: 1
+          lastName:
+            type: string
+            description: |
+              Your contact's family name.
+            minLength: 1
+          phone:
+            type: string
+            description: |
+              Your contact's the phone number.
+            minLength: 1
+      certificateType:
+        type: string
+        description: |
+          A value of `CUSTOM_EXISTING` means the certificate already exists on your account. If you want to create a new certificate, choose `CUSTOM_NEW`. Note that your certificate is created when you activate your onboarding. Your account may have limits for how many certificates you can create. If, for example, your account is limited to 5 certificates and your account already has 5, then you won't be able to create a new one.
+        enum:
+        - CUSTOM_EXISTING
+        - CUSTOM_NEW
+        minLength: 1
+      commonName:
+        type: string
+        description: |
+          The domain name to use for the certificate, also known as the common name.
+        minLength: 1
+      enrollmentId:
+        type: integer
+        description: |
+          A unique identifier for an enrollment in the Certificate Provisioning System (CPS).
+      enrollmentLink:
+        type: string
+        description: |
+          The URL to call the enrollment. Note this URL is for the [Certificate Provisioning System (CPS) API](https://techdocs.akamai.com/cps/reference/api).
+        format: uri
+  delivery:
+    type: object
+    description: |
+      The delivery settings for your site traffic.
+    additionalProperties: false
+    required:
+    - origins
+    properties:
+      origins:
+        type: array
+        description: |
+          List of hostnames and proposed origin hostnames. If you choose not to use an origin hostname suggested to you, you can edit it to the value you want with a request to [Update onboarding settings](ref:put-onboarding-settings).
+        minItems: 1
+        uniqueItems: true
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - hostname
+          - origin
+          properties:
+            hostname:
+              type: string
+              description: |
+                The hostname for your site. You can add up to 100 hostnames.
+              minLength: 1
+            origin:
+              type: string
+              description: |
+                The origin server hostname.
+              minLength: 1
+  onboardingLink:
+    type: string
+    description: |
+      The URL to call when you want to access this onboarding at a later time.
+    format: uri
+  security:
+    type: object
+    description: |
+      The security settings for your site.
+    additionalProperties: false
+    required:
+    - configType
+    - policyType
+    - protections
+    properties:
+      cloneVersion:
+        type: integer
+        description: |
+          The configuration version that is cloned to make a new configuration for onboarding.
+      configId:
+        type: integer
+        description: |
+          The identifier for the existing configuration.
+      configLink:
+        type: string
+        description: |
+          The URL to make a call for the specific configuration. For example, [Get a configuration](doc:get-config).
+        format: uri
+      configName:
+        type: string
+        description: |
+          The name of configuration.
+        minLength: 1
+      configType:
+        type: string
+        description: |
+          Specifies whether the security configuration is `NEW`, or you're using an `EXISTING` one. Note than when you use an existing configuration, the onboarding process creates a new version of the configuration from _the version that is currently active_ on the production network. If no version is active on production, the clone will be the most recent version of the configuration. For example, if you have version 14 active on production out of 23 versions, version 14 is the version that is cloned when you create a new onboarding. If there is no active version on production and there are 23 versions of the configuration, it is version 23 that's cloned.
+        enum:
+        - NEW
+        - EXISTING
+        minLength: 1
+      evalRequired:
+        type: boolean
+        description: |
+          If `TRUE`, adds the hostnames to evaluation mode for the policy. This applies to AAP only.
+      policyId:
+        type: string
+        description: |
+          If `securityPolicy` is `EXISTING`, lists the unique identifier for the policy.
+        minLength: 1
+      policyLink:
+        type: string
+        description: |
+          The URL to make a call for the specific policy. For example, the URL in [Update a policy](doc:put-policy).
+        format: uri
+      policyName:
+        type: string
+        description: |
+          The name of the security policy.
+        minLength: 1
+      policyType:
+        type: string
+        description: |
+          Specifies whether the security policy is `NEW`, or you're using an `EXISTING` one. Note that you can only edit policy settings if `"policyType": "NEW"` because editing existing, active policies could disrupt service to your site.
+        enum:
+        - NEW
+        - EXISTING
+        minLength: 1
+      protections:
+        type: object
+        description: |
+          The set of protections in the security policy.
+        additionalProperties: false
+        required:
+        - applyApplicationLayerControls
+        - applyBotmanControls
+        - applyNetworkLayerControls
+        - applyRateControls
+        - applySlowPostControls
+        properties:
+          applyApplicationLayerControls:
+            type: boolean
+            description: |
+              When enabled, your security policy applies the Web Application Firewall controls to your traffic.
+          applyBotmanControls:
+            type: boolean
+            description: |
+              When enabled, your security policy applies Bot Manager controls to your traffic.
+          applyNetworkLayerControls:
+            type: boolean
+            description: |
+              When enabled, your security policy applies the network layer control settings to your traffic.
+          applyRateControls:
+            type: boolean
+            description: |
+              When enabled, your security policy applies the rate control settings to your traffic. Rate controls monitor and flag traffic too fast to be from a human.
+          applyReputationControls:
+            type: boolean
+            description: |
+              When enabled, your security policy applies the reputation profile settings to your traffic. Reputation profile analyses IP addresses based on their prior interactions with Akamai customers, then alerts on or blocks potentially malicious IP addresses from issuing requests.
+              Applicable for ASM accounts.
+          applySlowPostControls:
+            type: boolean
+            description: |
+              When enabled, your security policy applies slow POST controls to your traffic.
+  settingsLink:
+    type: string
+    description: |
+      The URL to call to manage onboarding settings after you finishing the initial creation.
+    format: uri

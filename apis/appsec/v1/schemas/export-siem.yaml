@@ -7,7 +7,7 @@ x-akamai:
 additionalProperties: false
 required:
 - enableSiem
-- enabledBotmanSiemEvents
+- exceptions
 - firewallPolicyIds
 - siemDefinitionId
 - enableForAllPolicies
@@ -23,14 +23,66 @@ properties:
   enabledBotmanSiemEvents:
     type: boolean
     description: |
-      Whether you enabled SIEM for the Bot Manager events.
+      __Deprecated__ Whether you enabled SIEM for the Bot Manager events. Use the `exceptions` field instead to set Botman SIEM events exception.
+    x-akamai:
+      status: DEPRECATED
+  exceptions:
+    type: array
+    description: |
+      Describes all attack types and its actions that will be excluded in SIEM events.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - actionTypes
+      - protection
+      properties:
+        actionTypes:
+          type: array
+          description: |
+            Describes actions to be excluded for a particular attack type. A `*` value means all actions.
+          minItems: 0
+          items:
+            type: string
+            enum:
+            - '*'
+            - alert
+            - deny
+            - all_custom
+            - abort
+            - allow
+            - delay
+            - ignore
+            - monitor
+            - slow
+            - tarpit
+        protection:
+          type: string
+          description: |
+            Describes attack type to be excluded from SIEM events.
+          enum:
+          - ipgeo
+          - rate
+          - urlProtection
+          - slowpost
+          - customrules
+          - waf
+          - apirequestconstraints
+          - clientrep
+          - malwareprotection
+          - botmanagement
+          - aprProtection
   firewallPolicyIds:
     type: array
     description: |
       The list of security policy identifiers for which to enable the SIEM integration.
+    minItems: 0
     items:
       type: string
+      minLength: 1
   siemDefinitionId:
     type: integer
     description: |
       Uniquely identifies the SIEM settings.
+    minimum: 1

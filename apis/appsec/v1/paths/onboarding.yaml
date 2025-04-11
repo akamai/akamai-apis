@@ -1,0 +1,51 @@
+x-akamai:
+  file-path: paths/onboarding.yaml
+  path-info: /onboardings/{onboardingId}
+parameters:
+- $ref: ../parameters/onboarding-id-path.yaml
+get:
+  operationId: get-onboarding
+  summary: Get an onboarding
+  tags:
+  - 'Onboarding: Creation and settings'
+  description: |
+    Get an onboarding's details. Once you've completed all steps in the onboarding process, run this call again to verify `onboardingStatus: "COMPLETE"`.   _Products:_ App & API Protector, App & API Protector with the Advanced Security module.
+  responses:
+    200:
+      description: |
+        Successful response.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboarding-200.json
+          schema:
+            $ref: ../schemas/onboarding-get.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). Onboarding wasn't found.
+      $ref: ../errors/404.yaml
+delete:
+  operationId: delete-onboarding
+  summary: Delete an onboarding
+  tags:
+  - 'Onboarding: Creation and settings'
+  description: |
+    Delete a specific onboarding. You can't delete an onboarding that has an activation in progress. To delete an onboarding that's activating, wait for the activation to complete, then run this operation. _Products:_ App & API Protector, App & API Protector with the Advanced Security module.
+  responses:
+    204:
+      description: |
+        Successfully deleted the onboarding.
+    400:
+      description: |
+        [Invalid](ref:400). This onboarding object is activating on a network and not editable.
+      $ref: ../errors/400.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to this onboarding object.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). Onboarding object wasn't found.
+      $ref: ../errors/404.yaml

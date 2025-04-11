@@ -1,0 +1,63 @@
+x-akamai:
+  file-path: paths/rapid-rules-status.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/rapid-rules/status
+parameters:
+- $ref: ../parameters/config-id-path.yaml
+- $ref: ../parameters/version-number-path.yaml
+- $ref: ../parameters/policy-id-path.yaml
+get:
+  operationId: get-policy-rapid-rules-status
+  summary: Get rapid rules' status
+  tags:
+  - 'WAF rules: Rapid rules'
+  description: |
+    Returns whether rapid rules are enabled or disabled. 
+  responses:
+    200:
+      description: |
+        Successfully retrieved rapid rules status.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/rapid-rules-status.json
+          schema:
+            $ref: ../schemas/rapid-rules-status.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+put:
+  operationId: put-policy-rapid-rules-status
+  summary: Update rapid rules' status
+  tags:
+  - 'WAF rules: Rapid rules'
+  description: |
+    Enable or disable all rapid rules.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/rapid-rules-status.json
+        schema:
+          $ref: ../schemas/rapid-rules-status.yaml
+  responses:
+    200:
+      description: |
+        Successfully enabled or disabled rapid rules.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/rapid-rules-status.json
+          schema:
+            $ref: ../schemas/rapid-rules-status.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    403:
+      $ref: ../errors/403-client-write-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

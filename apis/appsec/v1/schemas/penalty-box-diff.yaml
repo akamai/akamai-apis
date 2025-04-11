@@ -1,0 +1,65 @@
+type: object
+description: |-
+  Contains action settings for penalty box protection.
+  
+x-akamai:
+  file-path: schemas/penalty-box-diff.yaml
+additionalProperties: false
+properties:
+  action:
+    oneOf:
+    - description: |
+        The action to take when penalty box protection is triggered: `alert` to record the trigger event, `abort` to block the request, or `none` to take no action. Ignored if `penaltyBoxProtection` is set to `false`. (This object [represents a diff](doc:diff-configuration-versions)).
+      type: object
+      title: action
+      properties:
+        from:
+          type: string
+          description: |
+            Value from the version assigned as `from`.
+          nullable: true
+        outcome:
+          $ref: outcome-diff.yaml
+        to:
+          type: string
+          description: |
+            Value from the version assigned as `to`.
+          nullable: true
+    - description: |
+        The custom deny action to take when penalty box protection is triggered: `deny_custom_{custom_deny_id}` to execute a custom deny action. Ignored if `penaltyBoxProtection` is set to `false`. (This object [represents a diff](doc:diff-configuration-versions)).
+      type: object
+      title: custom action
+      properties:
+        from:
+          type: string
+          description: |
+            Value from the version assigned as `from`.
+          nullable: true
+        outcome:
+          $ref: outcome-diff.yaml
+        to:
+          type: string
+          description: |
+            Value from the version assigned as `to`.
+          nullable: true
+  changesCount:
+    $ref: changes-count-diff.yaml
+  outcome:
+    $ref: outcome-diff.yaml
+  penaltyBoxProtection:
+    type: object
+    description: |
+      Specifies whether penalty box protection is enabled for the security policy. When set to `true` the `action` occurs if triggered by a request. (This object [represents a diff](doc:diff-configuration-versions)).
+    properties:
+      from:
+        type: boolean
+        description: |
+          Value from the version assigned as `from`.
+        nullable: true
+      outcome:
+        $ref: outcome-diff.yaml
+      to:
+        type: boolean
+        description: |
+          Value from the version assigned as `to`.
+        nullable: true

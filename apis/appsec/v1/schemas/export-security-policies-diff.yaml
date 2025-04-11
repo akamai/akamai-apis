@@ -1,0 +1,1339 @@
+type: object
+description: |-
+  Contains settings for custom rule actions.
+  
+x-akamai:
+  file-path: schemas/export-security-policies-diff.yaml
+additionalProperties: false
+properties:
+  id:
+    type: string
+    description: |
+      Uniquely identifies the security policy. (This data helps refine [comparisons between objects](doc:diff-configuration-versions).)
+  name:
+    type: object
+    description: |
+      The name of the security policy. (This object [represents a diff](doc:diff-configuration-versions)).
+    properties:
+      from:
+        type: string
+        description: |
+          Value from the version assigned as `from`.
+        nullable: true
+      outcome:
+        $ref: outcome-diff.yaml
+      to:
+        type: string
+        description: |
+          Value from the version assigned as `to`.
+        nullable: true
+  requestBody:
+    description: |
+      Contains policy level settings for request body inspection limit.
+    $ref: request-body-diff.yaml
+  apiRequestConstraints:
+    type: object
+    description: |
+      The API request constraint action set in this policy. The action applies to the APIs associated with this policy via the API match targets.
+    additionalProperties: false
+    properties:
+      action:
+        type: object
+        description: |
+          The action will be returned in the `apiEndpoints` array on a per-API basis. This is retained for backward compatibility. (This object [represents a diff](doc:diff-configuration-versions)).
+        properties:
+          from:
+            type: string
+            description: |
+              Value from the version assigned as `from`.
+            nullable: true
+          outcome:
+            $ref: outcome-diff.yaml
+          to:
+            type: string
+            description: |
+              Value from the version assigned as `to`.
+            nullable: true
+      apiEndpoints:
+        type: object
+        description: |
+          The list of APIs covered by match target set in the security policy. (This object [represents a diff](doc:diff-configuration-versions) of array data.)
+        properties:
+          added:
+            type: array
+            description: |
+              Data added between the two versions.
+            items:
+              type: object
+              additionalProperties: false
+              properties:
+                id:
+                  type: integer
+                  description: |
+                    Uniquely identifies the API match target.
+                action:
+                  type: object
+                  description: |
+                    The action to take for the requests that violate the constraints. (This object [represents a diff](doc:diff-configuration-versions)).
+                  properties:
+                    from:
+                      type: string
+                      description: |
+                        Value from the version assigned as `from`.
+                      nullable: true
+                    outcome:
+                      $ref: outcome-diff.yaml
+                    to:
+                      type: string
+                      description: |
+                        Value from the version assigned as `to`.
+                      nullable: true
+                changesCount:
+                  $ref: changes-count-diff.yaml
+                outcome:
+                  $ref: outcome-diff.yaml
+          modified:
+            type: array
+            description: |
+              Data modified between the two versions.
+            items:
+              type: object
+              additionalProperties: false
+              properties:
+                id:
+                  type: integer
+                  description: |
+                    Uniquely identifies the API match target.
+                action:
+                  type: object
+                  description: |
+                    The action to take for the requests that violate the constraints. (This object [represents a diff](doc:diff-configuration-versions)).
+                  properties:
+                    from:
+                      type: string
+                      description: |
+                        Value from the version assigned as `from`.
+                      nullable: true
+                    outcome:
+                      $ref: outcome-diff.yaml
+                    to:
+                      type: string
+                      description: |
+                        Value from the version assigned as `to`.
+                      nullable: true
+                changesCount:
+                  $ref: changes-count-diff.yaml
+                outcome:
+                  $ref: outcome-diff.yaml
+          outcome:
+            $ref: outcome-diff.yaml
+          removed:
+            type: array
+            description: |
+              Data removed between the two versions.
+            items:
+              type: object
+              additionalProperties: false
+              properties:
+                id:
+                  type: integer
+                  description: |
+                    Uniquely identifies the API match target.
+                action:
+                  type: object
+                  description: |
+                    The action to take for the requests that violate the constraints. (This object [represents a diff](doc:diff-configuration-versions)).
+                  properties:
+                    from:
+                      type: string
+                      description: |
+                        Value from the version assigned as `from`.
+                      nullable: true
+                    outcome:
+                      $ref: outcome-diff.yaml
+                    to:
+                      type: string
+                      description: |
+                        Value from the version assigned as `to`.
+                      nullable: true
+                changesCount:
+                  $ref: changes-count-diff.yaml
+                outcome:
+                  $ref: outcome-diff.yaml
+          unmodified:
+            type: array
+            description: |
+              Data that doesn't change between the two versions. This appears only when the diff request specifies to include `UNMODIFIED` data.
+            items:
+              type: object
+              additionalProperties: false
+              properties:
+                id:
+                  type: integer
+                  description: |
+                    Uniquely identifies the API match target.
+                action:
+                  type: object
+                  description: |
+                    The action to take for the requests that violate the constraints. (This object [represents a diff](doc:diff-configuration-versions)).
+                  properties:
+                    from:
+                      type: string
+                      description: |
+                        Value from the version assigned as `from`.
+                      nullable: true
+                    outcome:
+                      $ref: outcome-diff.yaml
+                    to:
+                      type: string
+                      description: |
+                        Value from the version assigned as `to`.
+                      nullable: true
+                changesCount:
+                  $ref: changes-count-diff.yaml
+                outcome:
+                  $ref: outcome-diff.yaml
+      changesCount:
+        $ref: changes-count-diff.yaml
+      outcome:
+        $ref: outcome-diff.yaml
+  changesCount:
+    $ref: changes-count-diff.yaml
+  clientReputation:
+    type: object
+    description: |
+      Contains details about the reputation profile actions.
+    additionalProperties: false
+    properties:
+      changesCount:
+        $ref: changes-count-diff.yaml
+      outcome:
+        $ref: outcome-diff.yaml
+      reputationProfileActions:
+        type: object
+        description: |
+          The list of reputation profile actions set in the security policy. (This object [represents a diff](doc:diff-configuration-versions) of array data.)
+        properties:
+          added:
+            type: array
+            description: |
+              Data added between the two versions.
+            items:
+              type: object
+              additionalProperties: false
+              properties:
+                id:
+                  type: integer
+                  description: |
+                    Uniquely identifies the reputation profile.
+                action:
+                  type: object
+                  description: |
+                    The action to take when the request exceeds the threshold set in the reputation profile. (This object [represents a diff](doc:diff-configuration-versions)).
+                  properties:
+                    from:
+                      type: string
+                      description: |
+                        Value from the version assigned as `from`.
+                      nullable: true
+                    outcome:
+                      $ref: outcome-diff.yaml
+                    to:
+                      type: string
+                      description: |
+                        Value from the version assigned as `to`.
+                      nullable: true
+                changesCount:
+                  $ref: changes-count-diff.yaml
+                outcome:
+                  $ref: outcome-diff.yaml
+          modified:
+            type: array
+            description: |
+              Data modified between the two versions.
+            items:
+              type: object
+              additionalProperties: false
+              properties:
+                id:
+                  type: integer
+                  description: |
+                    Uniquely identifies the reputation profile.
+                action:
+                  type: object
+                  description: |
+                    The action to take when the request exceeds the threshold set in the reputation profile. (This object [represents a diff](doc:diff-configuration-versions)).
+                  properties:
+                    from:
+                      type: string
+                      description: |
+                        Value from the version assigned as `from`.
+                      nullable: true
+                    outcome:
+                      $ref: outcome-diff.yaml
+                    to:
+                      type: string
+                      description: |
+                        Value from the version assigned as `to`.
+                      nullable: true
+                changesCount:
+                  $ref: changes-count-diff.yaml
+                outcome:
+                  $ref: outcome-diff.yaml
+          outcome:
+            $ref: outcome-diff.yaml
+          removed:
+            type: array
+            description: |
+              Data removed between the two versions.
+            items:
+              type: object
+              additionalProperties: false
+              properties:
+                id:
+                  type: integer
+                  description: |
+                    Uniquely identifies the reputation profile.
+                action:
+                  type: object
+                  description: |
+                    The action to take when the request exceeds the threshold set in the reputation profile. (This object [represents a diff](doc:diff-configuration-versions)).
+                  properties:
+                    from:
+                      type: string
+                      description: |
+                        Value from the version assigned as `from`.
+                      nullable: true
+                    outcome:
+                      $ref: outcome-diff.yaml
+                    to:
+                      type: string
+                      description: |
+                        Value from the version assigned as `to`.
+                      nullable: true
+                changesCount:
+                  $ref: changes-count-diff.yaml
+                outcome:
+                  $ref: outcome-diff.yaml
+          unmodified:
+            type: array
+            description: |
+              Data that doesn't change between the two versions. This appears only when the diff request specifies to include `UNMODIFIED` data.
+            items:
+              type: object
+              additionalProperties: false
+              properties:
+                id:
+                  type: integer
+                  description: |
+                    Uniquely identifies the reputation profile.
+                action:
+                  type: object
+                  description: |
+                    The action to take when the request exceeds the threshold set in the reputation profile. (This object [represents a diff](doc:diff-configuration-versions)).
+                  properties:
+                    from:
+                      type: string
+                      description: |
+                        Value from the version assigned as `from`.
+                      nullable: true
+                    outcome:
+                      $ref: outcome-diff.yaml
+                    to:
+                      type: string
+                      description: |
+                        Value from the version assigned as `to`.
+                      nullable: true
+                changesCount:
+                  $ref: changes-count-diff.yaml
+                outcome:
+                  $ref: outcome-diff.yaml
+  customRuleActions:
+    type: object
+    description: |
+      The list of custom rule actions set in the security policy. (This object [represents a diff](doc:diff-configuration-versions) of array data.)
+    properties:
+      added:
+        type: array
+        description: |
+          Data added between the two versions.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: object
+              description: |
+                Uniquely identifies the custom rule. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            action:
+              type: object
+              description: |
+                The action to take when a request meets the custom rule conditions. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            changesCount:
+              $ref: changes-count-diff.yaml
+            outcome:
+              $ref: outcome-diff.yaml
+      modified:
+        type: array
+        description: |
+          Data modified between the two versions.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: object
+              description: |
+                Uniquely identifies the custom rule. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            action:
+              type: object
+              description: |
+                The action to take when a request meets the custom rule conditions. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            changesCount:
+              $ref: changes-count-diff.yaml
+            outcome:
+              $ref: outcome-diff.yaml
+      outcome:
+        $ref: outcome-diff.yaml
+      removed:
+        type: array
+        description: |
+          Data removed between the two versions.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: object
+              description: |
+                Uniquely identifies the custom rule. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            action:
+              type: object
+              description: |
+                The action to take when a request meets the custom rule conditions. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            changesCount:
+              $ref: changes-count-diff.yaml
+            outcome:
+              $ref: outcome-diff.yaml
+      unmodified:
+        type: array
+        description: |
+          Data that doesn't change between the two versions. This appears only when the diff request specifies to include `UNMODIFIED` data.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: object
+              description: |
+                Uniquely identifies the custom rule. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            action:
+              type: object
+              description: |
+                The action to take when a request meets the custom rule conditions. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            changesCount:
+              $ref: changes-count-diff.yaml
+            outcome:
+              $ref: outcome-diff.yaml
+  evaluationPenaltyBox:
+    $ref: penalty-box-diff.yaml
+  hasRatePolicyWithApiKey:
+    type: object
+    description: |
+      Whether the security policy has a rate policy with an `API_KEY` client identifier. You can manage APIs using the [API Endpoint Definition API](https://techdocs.akamai.com/api-gateway/reference/api). (This object [represents a diff](doc:diff-configuration-versions)).
+    properties:
+      from:
+        type: boolean
+        description: |
+          Value from the version assigned as `from`.
+        nullable: true
+      outcome:
+        $ref: outcome-diff.yaml
+      to:
+        type: boolean
+        description: |
+          Value from the version assigned as `to`.
+        nullable: true
+  ipGeoFirewall:
+    description: |
+      The status of IP and geographic controls defined in the security policy.
+    $ref: network-layer-controls-diff.yaml
+  loggingOverrides:
+    description: |
+      The header logging settings that override the config version level settings.
+    $ref: header-logging-diff.yaml
+  malwarePolicyActions:
+    type: object
+    description: |
+      The list of malware policy actions set in the security policy. (This object [represents a diff](doc:diff-configuration-versions) of array data.)
+    properties:
+      added:
+        type: array
+        description: |
+          Data added between the two versions.
+        items:
+          type: object
+          description: |
+            The actions for a malware policy. Only files up to 5 MB are scanned. When files are larger than 5 MB, you can set an `unscannedAction`, which is the action you want the network to take for files outside the scan limit.
+          additionalProperties: false
+          properties:
+            id:
+              type: object
+              description: |
+                Uniquely identifies the malware policy. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            action:
+              type: object
+              description: |
+                The action to take when malware is detected. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            changesCount:
+              $ref: changes-count-diff.yaml
+            outcome:
+              $ref: outcome-diff.yaml
+            unscannedAction:
+              type: object
+              description: |
+                The action to take when a file is outside the 5 MB scan limit and isn't scanned. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+      modified:
+        type: array
+        description: |
+          Data modified between the two versions.
+        items:
+          type: object
+          description: |
+            The actions for a malware policy. Only files up to 5 MB are scanned. When files are larger than 5 MB, you can set an `unscannedAction`, which is the action you want the network to take for files outside the scan limit.
+          additionalProperties: false
+          properties:
+            id:
+              type: object
+              description: |
+                Uniquely identifies the malware policy. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            action:
+              type: object
+              description: |
+                The action to take when malware is detected. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            changesCount:
+              $ref: changes-count-diff.yaml
+            outcome:
+              $ref: outcome-diff.yaml
+            unscannedAction:
+              type: object
+              description: |
+                The action to take when a file is outside the 5 MB scan limit and isn't scanned. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+      outcome:
+        $ref: outcome-diff.yaml
+      removed:
+        type: array
+        description: |
+          Data removed between the two versions.
+        items:
+          type: object
+          description: |
+            The actions for a malware policy. Only files up to 5 MB are scanned. When files are larger than 5 MB, you can set an `unscannedAction`, which is the action you want the network to take for files outside the scan limit.
+          additionalProperties: false
+          properties:
+            id:
+              type: object
+              description: |
+                Uniquely identifies the malware policy. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            action:
+              type: object
+              description: |
+                The action to take when malware is detected. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            changesCount:
+              $ref: changes-count-diff.yaml
+            outcome:
+              $ref: outcome-diff.yaml
+            unscannedAction:
+              type: object
+              description: |
+                The action to take when a file is outside the 5 MB scan limit and isn't scanned. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+      unmodified:
+        type: array
+        description: |
+          Data that doesn't change between the two versions. This appears only when the diff request specifies to include `UNMODIFIED` data.
+        items:
+          type: object
+          description: |
+            The actions for a malware policy. Only files up to 5 MB are scanned. When files are larger than 5 MB, you can set an `unscannedAction`, which is the action you want the network to take for files outside the scan limit.
+          additionalProperties: false
+          properties:
+            id:
+              type: object
+              description: |
+                Uniquely identifies the malware policy. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: integer
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            action:
+              type: object
+              description: |
+                The action to take when malware is detected. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            changesCount:
+              $ref: changes-count-diff.yaml
+            outcome:
+              $ref: outcome-diff.yaml
+            unscannedAction:
+              type: object
+              description: |
+                The action to take when a file is outside the 5 MB scan limit and isn't scanned. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+  outcome:
+    $ref: outcome-diff.yaml
+  penaltyBox:
+    $ref: penalty-box-diff.yaml
+  pragmaHeader:
+    description: |
+      Contains policy level settings for the `Pragma` header.
+    $ref: pragma-header-diff.yaml
+  ratePolicyActions:
+    type: object
+    description: |
+      The list of rate policy actions set in the security policy. (This object [represents a diff](doc:diff-configuration-versions) of array data.)
+    properties:
+      added:
+        type: array
+        description: |
+          Data added between the two versions.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: integer
+              description: |
+                Uniquely identifies the rate policy.
+            changesCount:
+              $ref: changes-count-diff.yaml
+            ipv4Action:
+              type: object
+              description: |
+                The action to take for the IPv4 traffic when the limits set in the rate policy are exceeded. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            ipv6Action:
+              type: object
+              description: |
+                The action to take for the IPv6 traffic when the limits set in the rate policy are exceeded. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            outcome:
+              $ref: outcome-diff.yaml
+      modified:
+        type: array
+        description: |
+          Data modified between the two versions.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: integer
+              description: |
+                Uniquely identifies the rate policy.
+            changesCount:
+              $ref: changes-count-diff.yaml
+            ipv4Action:
+              type: object
+              description: |
+                The action to take for the IPv4 traffic when the limits set in the rate policy are exceeded. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            ipv6Action:
+              type: object
+              description: |
+                The action to take for the IPv6 traffic when the limits set in the rate policy are exceeded. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            outcome:
+              $ref: outcome-diff.yaml
+      outcome:
+        $ref: outcome-diff.yaml
+      removed:
+        type: array
+        description: |
+          Data removed between the two versions.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: integer
+              description: |
+                Uniquely identifies the rate policy.
+            changesCount:
+              $ref: changes-count-diff.yaml
+            ipv4Action:
+              type: object
+              description: |
+                The action to take for the IPv4 traffic when the limits set in the rate policy are exceeded. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            ipv6Action:
+              type: object
+              description: |
+                The action to take for the IPv6 traffic when the limits set in the rate policy are exceeded. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            outcome:
+              $ref: outcome-diff.yaml
+      unmodified:
+        type: array
+        description: |
+          Data that doesn't change between the two versions. This appears only when the diff request specifies to include `UNMODIFIED` data.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: integer
+              description: |
+                Uniquely identifies the rate policy.
+            changesCount:
+              $ref: changes-count-diff.yaml
+            ipv4Action:
+              type: object
+              description: |
+                The action to take for the IPv4 traffic when the limits set in the rate policy are exceeded. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            ipv6Action:
+              type: object
+              description: |
+                The action to take for the IPv6 traffic when the limits set in the rate policy are exceeded. (This object [represents a diff](doc:diff-configuration-versions)).
+              properties:
+                from:
+                  type: string
+                  description: |
+                    Value from the version assigned as `from`.
+                  nullable: true
+                outcome:
+                  $ref: outcome-diff.yaml
+                to:
+                  type: string
+                  description: |
+                    Value from the version assigned as `to`.
+                  nullable: true
+            outcome:
+              $ref: outcome-diff.yaml
+  securityControls:
+    type: object
+    description: |
+      Contains details about the security controls defined in the security policy.
+    additionalProperties: false
+    properties:
+      applyApplicationLayerControls:
+        type: object
+        description: |
+          Whether you enabled the application layer controls. (This object [represents a diff](doc:diff-configuration-versions)).
+        properties:
+          from:
+            type: boolean
+            description: |
+              Value from the version assigned as `from`.
+            nullable: true
+          outcome:
+            $ref: outcome-diff.yaml
+          to:
+            type: boolean
+            description: |
+              Value from the version assigned as `to`.
+            nullable: true
+      applyMalwareControls:
+        type: object
+        description: |
+          Whether you enabled the malware protection. (This object [represents a diff](doc:diff-configuration-versions)).
+        properties:
+          from:
+            type: boolean
+            description: |
+              Value from the version assigned as `from`.
+            nullable: true
+          outcome:
+            $ref: outcome-diff.yaml
+          to:
+            type: boolean
+            description: |
+              Value from the version assigned as `to`.
+            nullable: true
+      applyNetworkLayerControls:
+        type: object
+        description: |
+          Whether you enabled the network layer controls. (This object [represents a diff](doc:diff-configuration-versions)).
+        properties:
+          from:
+            type: boolean
+            description: |
+              Value from the version assigned as `from`.
+            nullable: true
+          outcome:
+            $ref: outcome-diff.yaml
+          to:
+            type: boolean
+            description: |
+              Value from the version assigned as `to`.
+            nullable: true
+      applyRateControls:
+        type: object
+        description: |
+          Whether you enabled the rate controls. (This object [represents a diff](doc:diff-configuration-versions)).
+        properties:
+          from:
+            type: boolean
+            description: |
+              Value from the version assigned as `from`.
+            nullable: true
+          outcome:
+            $ref: outcome-diff.yaml
+          to:
+            type: boolean
+            description: |
+              Value from the version assigned as `to`.
+            nullable: true
+      applyReputationControls:
+        type: object
+        description: |
+          Whether you enabled the reputation controls. (This object [represents a diff](doc:diff-configuration-versions)).
+        properties:
+          from:
+            type: boolean
+            description: |
+              Value from the version assigned as `from`.
+            nullable: true
+          outcome:
+            $ref: outcome-diff.yaml
+          to:
+            type: boolean
+            description: |
+              Value from the version assigned as `to`.
+            nullable: true
+      changesCount:
+        $ref: changes-count-diff.yaml
+      outcome:
+        $ref: outcome-diff.yaml
+  slowPost:
+    type: object
+    description: |
+      Contains details about the slow POST protection. Lets you set thresholds to control slow traffic. The duration threshold takes precedence over the slow rate threshold.
+    additionalProperties: false
+    properties:
+      action:
+        type: object
+        description: |
+          The action to take for a request that exceeds the threshold. Either `alert` to send an alert notification, or `abort` to deny the request. (This object [represents a diff](doc:diff-configuration-versions)).
+        properties:
+          from:
+            type: string
+            description: |
+              Value from the version assigned as `from`.
+            nullable: true
+          outcome:
+            $ref: outcome-diff.yaml
+          to:
+            type: string
+            description: |
+              Value from the version assigned as `to`.
+            nullable: true
+      changesCount:
+        $ref: changes-count-diff.yaml
+      durationThreshold:
+        type: object
+        description: |
+          The settings based on the first 8 kilobytes of the POST body transfer.
+        additionalProperties: false
+        properties:
+          changesCount:
+            $ref: changes-count-diff.yaml
+          outcome:
+            $ref: outcome-diff.yaml
+          timeout:
+            type: object
+            description: |
+              The time (in seconds) when the first 8 kilobytes of the POST body should be processed to avoid flagging the request. (This object [represents a diff](doc:diff-configuration-versions)).
+            properties:
+              from:
+                type: integer
+                description: |
+                  Value from the version assigned as `from`.
+                nullable: true
+              outcome:
+                $ref: outcome-diff.yaml
+              to:
+                type: integer
+                description: |
+                  Value from the version assigned as `to`.
+                nullable: true
+      outcome:
+        $ref: outcome-diff.yaml
+      slowRateThreshold:
+        type: object
+        description: |
+          The settings based on the request body transfer speed.
+        additionalProperties: false
+        properties:
+          changesCount:
+            $ref: changes-count-diff.yaml
+          outcome:
+            $ref: outcome-diff.yaml
+          period:
+            type: object
+            description: |
+              The period (in seconds) when the rate applies. (This object [represents a diff](doc:diff-configuration-versions)).
+            properties:
+              from:
+                type: integer
+                description: |
+                  Value from the version assigned as `from`.
+                nullable: true
+              outcome:
+                $ref: outcome-diff.yaml
+              to:
+                type: integer
+                description: |
+                  Value from the version assigned as `to`.
+                nullable: true
+          rate:
+            type: object
+            description: |
+              The maximum rate of bandwidth in bytes per second, averaged every 2 minutes. (This object [represents a diff](doc:diff-configuration-versions)).
+            properties:
+              from:
+                type: integer
+                description: |
+                  Value from the version assigned as `from`.
+                nullable: true
+              outcome:
+                $ref: outcome-diff.yaml
+              to:
+                type: integer
+                description: |
+                  Value from the version assigned as `to`.
+                nullable: true
+  webApplicationFirewall:
+    type: object
+    description: |
+      Contains information about the rule and attack group actions.
+    additionalProperties: false
+    properties:
+      attackGroupActions:
+        $ref: export-definitions-diff.yaml#/definitions/attackGroupActions
+      changesCount:
+        $ref: changes-count-diff.yaml
+      evaluation:
+        type: object
+        description: |
+          Specifies the ruleset version evaluated as part of the policy.
+        additionalProperties: false
+        properties:
+          attackGroupActions:
+            $ref: export-definitions-diff.yaml#/definitions/attackGroupActions
+          changesCount:
+            $ref: changes-count-diff.yaml
+          evaluationId:
+            type: object
+            description: |
+              Uniquely identifies the rule evaluation configuration. (This object [represents a diff](doc:diff-configuration-versions)).
+            properties:
+              from:
+                type: integer
+                description: |
+                  Value from the version assigned as `from`.
+                nullable: true
+              outcome:
+                $ref: outcome-diff.yaml
+              to:
+                type: integer
+                description: |
+                  Value from the version assigned as `to`.
+                nullable: true
+          evaluationVersion:
+            type: object
+            description: |
+              The evaluation version. The version numbers start at `1` and increase on the first change to an evaluation configuration after its activation. (This object [represents a diff](doc:diff-configuration-versions)).
+            properties:
+              from:
+                type: integer
+                description: |
+                  Value from the version assigned as `from`.
+                nullable: true
+              outcome:
+                $ref: outcome-diff.yaml
+              to:
+                type: integer
+                description: |
+                  Value from the version assigned as `to`.
+                nullable: true
+          outcome:
+            $ref: outcome-diff.yaml
+          ruleActions:
+            $ref: export-definitions-diff.yaml#/definitions/ruleActions
+          rulesetVersion:
+            type: object
+            description: |
+              Uniquely identifies the evaluated ruleset version. (This object [represents a diff](doc:diff-configuration-versions)).
+            properties:
+              from:
+                type: integer
+                description: |
+                  Value from the version assigned as `from`.
+                nullable: true
+              outcome:
+                $ref: outcome-diff.yaml
+              to:
+                type: integer
+                description: |
+                  Value from the version assigned as `to`.
+                nullable: true
+      outcome:
+        $ref: outcome-diff.yaml
+      ruleActions:
+        $ref: export-definitions-diff.yaml#/definitions/ruleActions
+      threatIntel:
+        type: object
+        description: |
+          Set to `on` so our network analyzes a request and dynamically modifies protection methods to fit the detected threat level. Set to `off` to manually fine-tune your rule sets. (This object [represents a diff](doc:diff-configuration-versions)).
+        properties:
+          from:
+            type: string
+            description: |
+              Value from the version assigned as `from`.
+            nullable: true
+          outcome:
+            $ref: outcome-diff.yaml
+          to:
+            type: string
+            description: |
+              Value from the version assigned as `to`.
+            nullable: true

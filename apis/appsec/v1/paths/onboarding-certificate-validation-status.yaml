@@ -1,0 +1,34 @@
+x-akamai:
+  file-path: paths/onboarding-certificate-validation-status.yaml
+  path-info: /onboardings/{onboardingId}/certificate-validation
+parameters:
+- $ref: ../parameters/onboarding-id-path.yaml
+get:
+  operationId: get-onboarding-certificate-validation
+  summary: List onboarding certificate challenges
+  tags:
+  - 'Onboarding: Post-activation validation'
+  description: |
+    Returns the information you need to validate your certificate. Add the `TXT` DNS record listed in the  response to your DNS record. Adding the `TXT` record won't affect your website. Once you've added the `TXT` record, and before the token expires, run [Validate onboarding certificate](doc:post-onboarding-certificate-validation) to validate the certificate.
+  responses:
+    200:
+      description: |
+        Successfully retrieved certificate Challenges.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboarding-certificate-validation.json
+          schema:
+            $ref: ../schemas/onboarding-certificate-validation.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You are not authorized to use this API.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The `onboardingId` was not found.
+      $ref: ../errors/404.yaml
+    500:
+      description: |
+        [Conflict](ref:500). Failure to retrieve certificate challenges.
+      $ref: ../errors/500.yaml

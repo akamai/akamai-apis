@@ -1,0 +1,44 @@
+x-akamai:
+  file-path: paths/onboarding-activations-status.yaml
+  path-info: /onboardings/{onboardingId}/activations/{activationId}
+parameters:
+- $ref: ../parameters/onboarding-id-path.yaml
+- $ref: ../parameters/activation-id-path.yaml
+get:
+  operationId: get-onboarding-activation-status
+  summary: Get an onboarding activation
+  tags:
+  - 'Onboarding: Activations and status'
+  description: |
+    Returns the status of an activation. Activations can take about 20 minutes. If an activation fails, this API  responds with the underlying error status. _Products:_ App & API Protector, App & API Protector with the Advanced Security module.
+  responses:
+    200:
+      description: |
+        Onboarding Activation is completed.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboarding-activation-get-200.json
+          schema:
+            $ref: ../schemas/onboarding-activation-post-202.yaml
+    202:
+      description: |
+        Onboarding activation is in progress.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboarding-activation-get-202.json
+          schema:
+            $ref: ../schemas/onboarding-activation-post-202.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You are not authorized to use this API.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The `onboardingId` or `activationId` was not found.
+      $ref: ../errors/404.yaml
+    500:
+      description: |
+        [Conflict](ref:500). Onboarding activation failed.
+      $ref: ../errors/500-onboarding-activation.yaml

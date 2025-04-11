@@ -4,7 +4,7 @@
   "version": 2,
   "basedOn": 1,
   "createDate": "2017-09-08T22:24:41Z",
-  "createdBy": "tyamada",
+  "createdBy": "mrossi",
   "selectableHosts": [
     "www.example1.com",
     "www.example2.com"
@@ -148,11 +148,28 @@
     ]
   },
   "siem": {
-    "configId": 77653,
-    "configVersion": 22,
     "enableForAllPolicies": false,
     "enableSiem": true,
     "enabledBotmanSiemEvents": false,
+    "exceptions":[
+      {
+        "actionTypes": [
+            "*"
+        ],
+        "protection": "botmanagement"
+      },
+      {
+          "actionTypes": [
+              "alert"
+          ],
+          "protection": "ipgeo"
+      },
+      {
+          "actionTypes": [
+              "alert"
+          ],
+          "protection": "rate"
+      }],
     "siemDefinitionId": 1,
     "firewallPolicyIds": [
       "qik2_38799",
@@ -225,6 +242,59 @@
           ]
         }
       ]
+    }
+  },
+  "advancedSettings" : {
+    "userRiskResponseStrategySettings": {
+      "traffic": {
+        "standard": {
+          "cautious": {
+            "threshold": 0
+          },
+          "strict": {
+            "threshold": 51
+          },
+          "aggressive": {
+            "threshold": 76
+          }
+        },
+        "inline": {
+          "cautious": {
+            "threshold": 0
+          },
+          "strict": {
+            "threshold": 51
+          },
+          "aggressive": {
+            "threshold": 76
+          }
+        },
+        "nativeSdkIos": {
+          "cautious": {
+            "threshold": 0
+          },
+          "strict": {
+            "threshold": 51
+          },
+          "aggressive": {
+            "threshold": 76
+          }
+        },
+        "nativeSdkAndroid": {
+          "cautious": {
+            "threshold": 0
+          },
+          "strict": {
+            "threshold": 51
+          },
+          "aggressive": {
+            "threshold": 76
+          }
+        }
+      }
+    },
+    "userAllowListIdSettings": {
+      "userAllowListId": "82004_APRE2ENLDONOTDELETE"
     }
   },
   "errorHosts": [
@@ -328,7 +398,7 @@
           "positiveMatch": true,
           "type": "NetworkListCondition",
           "values": [
-            "25620_REPUTATIONWHITELIST174",
+            "25620_REPUTATIONALLOWLIST174",
             "11212_BYPASSURR"
           ]
         },
@@ -501,7 +571,8 @@
             "GET"
           ]
         }
-      ]
+      ],
+      "stagingOnly": true
     },
     {
       "configId": 77653,
@@ -774,10 +845,105 @@
             "period": 60
           }
         },
+        "accountProtection": {
+          "generalSettings": {
+            "accountProtectionEnabled": true,
+            "originSignalHeaderEnabled": true,
+            "usernameInRequestHeaderEnabled": false,
+            "originUserIdInRequestHeaderEnabled": false
+          },
+          "transactionalEndpoints": [
+            {
+              "operationId": "d7cf5676-5e30-4682-aa8d-2f181a139213",
+              "apiEndPointId": 784844,
+              "telemetryTypeStates": {
+                "standard": {
+                  "enabled": true,
+                  "disabledAction": "monitor",
+                  "ajaxSupportEnabled": false
+                },
+                "inline": {
+                  "enabled": true,
+                  "disabledAction": "none",
+                  "ajaxSupportEnabled": false
+                },
+                "nativeSdk": {
+                  "enabled": true,
+                  "disabledAction": "none",
+                  "ajaxSupportEnabled": false
+                }
+              },
+              "traffic": {
+                "standard": {
+                  "overrideThresholds": true,
+                  "cautious": {
+                    "threshold": 0,
+                    "action": "monitor"
+                  },
+                  "strict": {
+                    "threshold": 63,
+                    "action": "monitor"
+                  },
+                  "aggressive": {
+                    "threshold": 100,
+                    "action": "monitor"
+                  }
+                },
+                "inline": {
+                  "overrideThresholds": true,
+                  "cautious": {
+                    "threshold": 0,
+                    "action": "monitor"
+                  },
+                  "strict": {
+                    "threshold": 51,
+                    "action": "monitor"
+                  },
+                  "aggressive": {
+                    "threshold": 100,
+                    "action": "monitor"
+                  }
+                },
+                "nativeSdkIos": {
+                  "overrideThresholds": true,
+                  "cautious": {
+                    "threshold": 0,
+                    "action": "monitor"
+                  },
+                  "strict": {
+                    "threshold": 51,
+                    "action": "monitor"
+                  },
+                  "aggressive": {
+                    "threshold": 100,
+                    "action": "monitor"
+                  },
+                  "bypassPreSdkVersion": true
+                },
+                "nativeSdkAndroid": {
+                  "overrideThresholds": true,
+                  "cautious": {
+                    "threshold": 0,
+                    "action": "monitor"
+                  },
+                  "strict": {
+                    "threshold": 51,
+                    "action": "monitor"
+                  },
+                  "aggressive": {
+                    "threshold": 100,
+                    "action": "monitor"
+                  },
+                  "bypassPreSdkVersion": true
+                }
+              }
+            }
+          ]
+        },
         "ipControls": {
           "allowedIPNetworkLists": {
             "additional": [
-              "192.0.2.205"
+              "192.0.2.86"
             ],
             "networkList": [
               "12801_25000",
