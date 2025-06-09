@@ -1,0 +1,34 @@
+x-akamai:
+  file-path: paths/zone-create-requests.yaml
+  path-info: /zones/create-requests
+post:
+  operationId: post-zones-create-requests
+  summary: Submit a bulk zone create request
+  tags:
+  - Create requests
+  description: |
+    Submits a request to create one or more new Zones asynchronously. The request body contains a JSON array. Each object in the array contains the data necessary to create a zone. All zones are created on the same contract and group.  An offline task creates the new zones. You can use the response's `requestId` to check the task's status and view its results once it completes.
+  parameters:
+  - $ref: ../parameters/contract-id-query.yaml
+  - $ref: ../parameters/group-aware-gid.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/create-request-post-request.json
+        schema:
+          $ref: ../schemas/create-request-post.yaml
+  responses:
+    201:
+      description: |
+        Resource successfully created.
+      headers:
+        Location:
+          $ref: ../headers/location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/async-request-post-response.json
+          schema:
+            $ref: ../schemas/async-request-id.yaml

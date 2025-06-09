@@ -1,0 +1,31 @@
+x-akamai:
+  file-path: paths/zone-convert-secondary-requests.yaml
+  path-info: /zones/convert-requests/secondary
+post:
+  operationId: post-zones-convert-secondary-requests
+  summary: Submit a bulk zone convert secondary request
+  tags:
+  - Convert requests
+  description: |
+    Submits an asynchronous request to convert one or more DNS zones to secondary. The request body must be a JSON array, with each object containing the required data for the conversion. All zones must belong to the same contract and group. The conversion is handled by an offline task. Use the `requestId` returned in the response to monitor the task's progress and retrieve the results when complete.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/convert-request-secondary-post-request.json
+        schema:
+          $ref: ../schemas/convert-request-secondary-post.yaml
+  responses:
+    201:
+      description: |
+        Resource successfully created.
+      headers:
+        Location:
+          $ref: ../headers/location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/async-request-post-response.json
+          schema:
+            $ref: ../schemas/async-request-id.yaml

@@ -1,0 +1,41 @@
+x-akamai:
+  file-path: paths/zone-file.yaml
+  path-info: /zones/{zone}/zone-file
+parameters:
+- $ref: ../parameters/zone-path.yaml
+post:
+  operationId: post-zones-zone-zone-file
+  summary: Upload a master zone file
+  tags:
+  - Master zone file
+  description: |
+    Upload new record set data for this zone in master zone file format. Replaces any existing record sets. This operation applies to primary zones and secondary zones. See [RFC 1035](http://tools.ietf.org/html/rfc1035) section 5 and [RFC 1034](http://tools.ietf.org/html/rfc1034) section 3.6.1 for more information.  Zone files can contain only US-ASCII characters 0&ndash;127. Where allowed, you can encode high-order ASCII characters, 128+, with a backslash plus a three-digit decimal number representing the byte value. For example, `\233` instead of `&eacute;`.  `AKAMAICDN` and `AKAMAITLC` records can't be represented in this format. Uploading a zone file doesn't affect these records.
+  requestBody:
+    required: true
+    content:
+      text/dns:
+        example:
+          $ref: ../examples/db.example.com
+        schema:
+          type: string
+  responses:
+    204:
+      description: |
+        Successful operation.
+get:
+  operationId: get-zones-zone-zone-file
+  summary: Get a master zone file
+  tags:
+  - Master zone file
+  description: |
+    Download this zone's record set data in master zone file format. Use the recipe below to get the master zone file. This operation applies to primary zones and secondary zones. See [RFC 1035](http://tools.ietf.org/html/rfc1035) section 5 and [RFC 1034](http://tools.ietf.org/html/rfc1034) section 3.6.1 for more information.  `AKAMAICDN` and `AKAMAITLC` records can't be represented in this format, so they're displayed as comment lines.
+  responses:
+    200:
+      description: |
+        Successful operation.
+      content:
+        text/dns:
+          example:
+            $ref: ../examples/db.example.com
+          schema:
+            type: string

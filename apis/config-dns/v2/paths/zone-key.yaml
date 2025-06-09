@@ -1,0 +1,52 @@
+x-akamai:
+  file-path: paths/zone-key.yaml
+  path-info: /zones/{zone}/key
+parameters:
+- $ref: ../parameters/zone-path.yaml
+get:
+  operationId: get-zones-zone-key
+  summary: Get a zone's TSIG key
+  tags:
+  - TSIG keys
+  description: |
+    Retrieves the TSIG Key data for this zone. Includes a count of zones that use this key. Returns a 404 error if the zone doesn't have a TSIG key.
+  responses:
+    200:
+      description: |
+        Successful operation.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/tsigkey-get.json
+          schema:
+            $ref: ../schemas/tsigkey-get.yaml
+put:
+  operationId: put-zones-zone-key
+  summary: Update a zone's TSIG key
+  tags:
+  - TSIG keys
+  description: |
+    Creates or replaces the current TSIG Key for this zone. If other zones use the same key, doesn't modify those zones.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/tsigkey-post.json
+        schema:
+          $ref: ../schemas/tsigkey-post.yaml
+  responses:
+    204:
+      description: |
+        The operation was successful. No response data is returned.
+delete:
+  operationId: delete-zones-zone-key
+  summary: Delete a zone's TSIG key
+  tags:
+  - TSIG keys
+  description: |
+    Removes the TSIG Key for this zone. This action doesn't affect any other zone, even if they share the same TSIG key as this zone. If the zone doesn't currently have a key, no actions are taken and no error is thrown.
+  responses:
+    204:
+      description: |
+        The operation was successful. No response data is returned.

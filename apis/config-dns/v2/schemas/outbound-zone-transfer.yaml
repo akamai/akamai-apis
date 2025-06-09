@@ -1,0 +1,53 @@
+type: object
+description: |-
+  Outbound zone transfer properties. When enabling outbound zone transfer, all the fields are required. Set `tsigKey` to null if you don't use it.
+  
+x-akamai:
+  file-path: schemas/outbound-zone-transfer.yaml
+additionalProperties: false
+properties:
+  ACL:
+    type: array
+    description: |
+      The access control list, defined as IPv4 and IPv6 CIDR blocks.
+    items:
+      type: string
+  enabled:
+    type: boolean
+    description: |
+      Enables outbound zone transfer.
+  notifyTargets:
+    type: array
+    description: |
+      Customer secondary nameservers to notify, if `NOTIFY` requests are desired. Up to 64 IPv4 or IPv6 addresses. If no targets are specified, you can manually request zone transfer updates as needed.
+    minItems: 0
+    maxItems: 64
+    items:
+      type: string
+  tsigKey:
+    type: object
+    description: |
+      The TSIG key used for outbound zone transfers.
+    additionalProperties: false
+    nullable: true
+    properties:
+      name:
+        type: string
+        description: |
+          The zone name.
+      algorithm:
+        type: string
+        description: |
+          The algorithm used to encode the TSIG key's secret data. Possible values are: `hmac-md5`, `hmac-sha1`, `hmac-sha224`, `hmac-sha256`, `hmac-sha384`, `hmac-sha512`, or `HMAC-MD5.SIG-ALG.REG.INT`.
+        enum:
+        - hmac-md5
+        - hmac-sha1
+        - hmac-sha224
+        - hmac-sha256
+        - hmac-sha384
+        - hmac-sha512
+        - HMAC-MD5.SIG-ALG.REG.INT
+      secret:
+        type: string
+        description: |
+          A Base64-encoded string of data. When decoded, it needs to contain the correct number of bits for the chosen algorithm. If the input isn't correctly padded, the server applies the padding.

@@ -1,0 +1,67 @@
+x-akamai:
+  file-path: paths/zone-record-sets.yaml
+  path-info: /zones/{zone}/recordsets
+parameters:
+- $ref: ../parameters/zone-path.yaml
+post:
+  operationId: post-zones-zone-recordsets
+  summary: Create record sets
+  tags:
+  - Record sets
+  description: |
+    Creates multiple new record sets on this Zone. If any record set fails to create, for example, because a record set with that name and type already exists, the entire operation fails.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/recordsets-post.json
+        schema:
+          $ref: ../schemas/post-zones-zone-recordsets-request.yaml
+  responses:
+    204:
+      description: |
+        Successful operation.
+get:
+  operationId: get-zones-zone-recordsets
+  summary: Get a zone's record sets
+  tags:
+  - Record sets
+  description: |
+    Lists all record sets for this Zone. It works only for `PRIMARY` and `SECONDARY` zones. This operation is [paginated](https://techdocs.akamai.com/edge-dns/reference/use-pagination).
+  parameters:
+  - $ref: ../parameters/sort-by-name-type-query.yaml
+  - $ref: ../parameters/types-record-sets-query.yaml
+  - $ref: ../parameters/search-name-rdata-query.yaml
+  - $ref: ../parameters/pageable-page.yaml
+  - $ref: ../parameters/pageable-page-size.yaml
+  - $ref: ../parameters/pageable-show-all.yaml
+  responses:
+    200:
+      description: |
+        Successful operation.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/recordsets-report.json
+          schema:
+            $ref: ../schemas/get-zones-zone-versions-uuid-recordsets-response.yaml
+put:
+  operationId: put-zones-zone-recordsets
+  summary: Replace record sets
+  tags:
+  - Record sets
+  description: |
+    Replaces all record sets that currently exist with the list provided.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/recordsets-put.json
+        schema:
+          $ref: ../schemas/post-zones-zone-recordsets-request.yaml
+  responses:
+    204:
+      description: |
+        Successful operation.

@@ -1,0 +1,37 @@
+x-akamai:
+  file-path: paths/manage.yaml
+  path-info: /proxies/{proxyId}/zones/{name}/manual-filter-names/manage
+parameters:
+- $ref: ../parameters/proxy-id-path.yaml
+- $ref: ../parameters/proxy-zone-name-path.yaml
+post:
+  operationId: post-proxy-zone-manual-filter-names
+  summary: Manage manual filter names
+  tags:
+  - Proxy zones
+  description: |
+    Manage manual filter entries for a proxy zone that the current user has access to manage.
+  parameters:
+  - $ref: ../parameters/add-skip-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/post-proxy-zone-manual-filter-list.json
+        schema:
+          $ref: ../schemas/proxy-zone-manual-filter-list.yaml
+  responses:
+    200:
+      description: |
+        A proxy zone's manual config entry data on what was added, removed or skipped from being added as they already exist.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/get-proxy-zone-manual-filter-list-report-200.json
+          schema:
+            $ref: ../schemas/proxy-zone-manual-filter-list-report.yaml
+    400:
+      $ref: ../errors/400-proxy.yaml
+    409:
+      $ref: ../errors/409-proxy.yaml

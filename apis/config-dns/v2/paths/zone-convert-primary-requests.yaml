@@ -1,0 +1,31 @@
+x-akamai:
+  file-path: paths/zone-convert-primary-requests.yaml
+  path-info: /zones/convert-requests/primary
+post:
+  operationId: post-zones-convert-primary-requests
+  summary: Submit a bulk zone convert primary request
+  tags:
+  - Convert requests
+  description: |
+    Submits an asynchronous request to convert one or more DNS zones to primary. The request body must be a JSON array, where each object provides the required data for converting a zone. All zones included in the request must belong to the same contract and group. The conversion is performed as an offline task. Use the requestId returned in the response to track the task’s progress and retrieve the results upon completion.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/convert-request-primary-post-request.json
+        schema:
+          $ref: ../schemas/convert-request-primary-post.yaml
+  responses:
+    201:
+      description: |
+        Resource successfully created.
+      headers:
+        Location:
+          $ref: ../headers/location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/async-request-post-response.json
+          schema:
+            $ref: ../schemas/async-request-id.yaml

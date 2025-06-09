@@ -1,0 +1,35 @@
+x-akamai:
+  file-path: paths/proxy-delete-requests.yaml
+  path-info: /proxies/{proxyId}/zones/delete-requests
+parameters:
+- $ref: ../parameters/proxy-id-path.yaml
+post:
+  operationId: post-proxy-zones-delete-requests
+  summary: Submit a bulk proxy zone delete request
+  tags:
+  - Delete requests
+  description: |
+    Submits a request to delete one or more proxy zones asynchronously. Each element in the response array is the name of a proxy zone to be deleted.  Before deleting a zone from the Edge DNS system, the API makes sure Akamai servers aren't receiving DNS requests for that proxy zone. It also checks that the proxy zone isn't currently delegated to Akamai's name servers.  An offline task deletes the proxy zones. The result of this operation is a `requestId`, which you can use to check the task's status and view its results once it completes.
+  parameters:
+  - $ref: ../parameters/bypass-safety-checks-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/proxy-zone-name-list.json
+        schema:
+          $ref: ../schemas/proxy-zone-name-list.yaml
+  responses:
+    201:
+      description: |
+        Successful operation.
+      headers:
+        Location:
+          $ref: ../headers/location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/async-request-post-response.json
+          schema:
+            $ref: ../schemas/async-request-id.yaml

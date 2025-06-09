@@ -1,0 +1,31 @@
+x-akamai:
+  file-path: paths/proxy-zone-file.yaml
+  path-info: /proxies/{proxyId}/zones/{name}/manual-filter-names/zone-file
+parameters:
+- $ref: ../parameters/proxy-id-path.yaml
+- $ref: ../parameters/proxy-zone-name-path.yaml
+post:
+  operationId: post-proxy-zone-manual-filter-names-file
+  summary: Initialize manual filter names with a zone file
+  tags:
+  - Proxy zones
+  description: |
+    Initializes manual filter names for a proxy zone. Use [Manage manual filter names operation](https://techdocs.akamai.com/edge-dns/reference/post-proxy-zone-manual-filter-names) to update a proxy zone.
+  requestBody:
+    required: true
+    content:
+      text/dns:
+        example:
+          $ref: ../examples/db.example.com
+        schema:
+          type: string
+  responses:
+    200:
+      description: |
+        A proxy zone's manual config entry data on what was added, removed or skipped from being added as they already exist.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/get-proxy-zone-manual-filter-list-report-200.json
+          schema:
+            $ref: ../schemas/proxy-zone-manual-filter-list-report.yaml
