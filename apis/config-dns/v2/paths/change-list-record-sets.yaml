@@ -1,0 +1,48 @@
+x-akamai:
+  file-path: paths/change-list-record-sets.yaml
+  path-info: /changelists/{zone}/recordsets
+parameters:
+- $ref: ../parameters/zone-path.yaml
+post:
+  operationId: post-changelists-zone-recordsets
+  summary: Upload a master zone file to a change list
+  tags:
+  - Record sets
+  description: |
+    Replaces your change list's record sets with the contents of a master zone file.
+  requestBody:
+    required: true
+    content:
+      text/dns:
+        example:
+          $ref: ../examples/db.example.com
+        schema:
+          type: string
+  responses:
+    204:
+      description: |
+        Successful response.
+get:
+  operationId: get-changelists-zone-recordsets
+  summary: List record sets for a change list
+  tags:
+  - Record sets
+  description: |
+    Retrieves the current record sets based on the selected change list. The record sets returned reflect any Changes added to this change list. This call works even if the change list is stale. This operation is (paginated](ref:use-pagination).
+  parameters:
+  - $ref: ../parameters/sort-by-name-type-query.yaml
+  - $ref: ../parameters/types-record-sets-query.yaml
+  - $ref: ../parameters/search-name-rdata-query.yaml
+  - $ref: ../parameters/pageable-page.yaml
+  - $ref: ../parameters/pageable-page-size.yaml
+  - $ref: ../parameters/pageable-show-all.yaml
+  responses:
+    200:
+      description: |
+        Successful response.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/changelist-recordsets-report.json
+          schema:
+            $ref: ../schemas/get-changelists-zone-recordsets-response.yaml

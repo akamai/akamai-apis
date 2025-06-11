@@ -1,0 +1,54 @@
+type: object
+description: |-
+  Result of a bulk zone conversion operation. This object is available only after offline processing has completed.
+  
+x-akamai:
+  file-path: schemas/convert-request-result.yaml
+additionalProperties: false
+required:
+- requestId
+properties:
+  failedZones:
+    type: array
+    description: |
+      A list of zones that failed to convert.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - zone
+      - failureReason
+      properties:
+        failureReason:
+          type: string
+          description: |
+            The reason the zone conversion failed. For a complete list of possible values, refer to [Zone convert failure reasons](https://techdocs.akamai.com/edge-dns/reference/zone-convert-failure-vals).
+          enum:
+          - SOA_SERIAL_LOCK_MISMATCH
+          - INVALID_TARGET_ZONE_TYPE
+          - INVALID_SOURCE_ZONE_TYPE
+          - ZONE_NOT_FOUND
+          - ZONE_NOT_TRANSFERRED
+          - INTERNAL_ERROR
+          - INVALID_CONVERT_REQUEST
+          - EXHAUSTED_ALL_RETRIES
+          - EXPIRED_REQUEST
+          - MALFORMED_RECORDSETS
+          - INVALID_TARGET_ZONE_NAME
+          - INVALID_RECORDSETS_ZONE_NAME
+          - UNEXPECTED_CONVERT_FAILURE
+          - INTERNAL_CONVERSION_FAILURE
+        zone:
+          type: string
+          description: |
+            The name of a zone that failed to convert.
+  requestId:
+    type: string
+    description: |
+      The ID of the request.
+  successfullyConvertedZones:
+    type: array
+    description: |
+      A list of zone names that were successfully converted.
+    items:
+      type: string

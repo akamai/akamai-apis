@@ -1,0 +1,45 @@
+type: object
+description: |-
+  Proxy zone creation response. Available only after offline processing is complete.
+  
+x-akamai:
+  file-path: schemas/create-proxy-request-result.yaml
+additionalProperties: false
+required:
+- requestId
+properties:
+  failedZones:
+    type: array
+    description: |
+      The proxy zones that failed to be created.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - zone
+      - failureReason
+      properties:
+        failureReason:
+          type: string
+          description: |
+            The reason for the proxy zone creation failure. Either `MALFORMED_ZONE`, `INTERNAL_ERROR`, `PROXY_ZONE_LIMIT_EXCEEDED`, `PROXY_ZONE_ALREADY_EXISTS`, or `PROXY_DOES_NOT_EXIST`.
+          enum:
+          - MALFORMED_ZONE
+          - INTERNAL_ERROR
+          - PROXY_ZONE_LIMIT_EXCEEDED
+          - PROXY_ZONE_ALREADY_EXISTS
+          - PROXY_DOES_NOT_EXIST
+        zone:
+          type: string
+          description: |
+            The name of the proxy zone that failed to be created.
+  requestId:
+    type: string
+    description: |
+      The ID of the request.
+  successfullyCreatedZones:
+    type: array
+    description: |
+      Names of proxy zones that were successfully created.
+    items:
+      type: string

@@ -1,0 +1,33 @@
+x-akamai:
+  file-path: paths/zone-delete-requests.yaml
+  path-info: /zones/delete-requests
+post:
+  operationId: post-zones-delete-requests
+  summary: Submit a bulk zone delete request
+  tags:
+  - Delete requests
+  description: |
+    Submits a request to delete one or more new Zones asynchronously. The request body contains a JSON array. Each element in the array is the name of a zone to be deleted.  Before deleting a zone from the Edge DNS system, the API makes sure Akamai servers aren't receiving DNS requests for that zone. It also checks that the zone isn't currently delegated to Akamai's name servers.  An offline task deletes the new zones. The result of this operation is a `requestId`, which you can use to check the task's status and view its results once it completes.
+  parameters:
+  - $ref: ../parameters/bypass-safety-checks-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/zone-name-list.json
+        schema:
+          $ref: ../schemas/zone-name-list.yaml
+  responses:
+    201:
+      description: |
+        Successful operation.
+      headers:
+        Location:
+          $ref: ../headers/location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/async-request-post-response.json
+          schema:
+            $ref: ../schemas/async-request-id.yaml

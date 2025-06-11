@@ -1,0 +1,60 @@
+x-akamai:
+  file-path: paths/zones.yaml
+  path-info: /zones
+post:
+  operationId: post-zone
+  summary: Create a zone
+  tags:
+  - Zones
+  description: |
+    Creates a new zone. Carefully review the documentation for which fields are relevant to the type of zone you're creating.
+  parameters:
+  - $ref: ../parameters/contract-id-query.yaml
+  - $ref: ../parameters/group-aware-gid.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/zone-post-request.json
+        schema:
+          $ref: ../schemas/zone-post.yaml
+  responses:
+    201:
+      description: |
+        Successful response.
+      headers:
+        Location:
+          $ref: ../headers/location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/zone-get-secondary.json
+          schema:
+            $ref: ../schemas/zone-get.yaml
+get:
+  operationId: get-zones
+  summary: List zones
+  tags:
+  - Zones
+  description: |
+    All zones that the current user has access to manage. The response is [paginated](https://techdocs.akamai.com/edge-dns/reference/use-pagination).
+  parameters:
+  - $ref: ../parameters/contract-ids-zones-query.yaml
+  - $ref: ../parameters/search-zones-query.yaml
+  - $ref: ../parameters/sort-by-zones-query.yaml
+  - $ref: ../parameters/subzone-grant-query.yaml
+  - $ref: ../parameters/types-zones-query.yaml
+  - $ref: ../parameters/pageable-page.yaml
+  - $ref: ../parameters/pageable-page-size.yaml
+  - $ref: ../parameters/pageable-show-all.yaml
+  responses:
+    200:
+      description: |
+        Zones that you own.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/zone-report.json
+          schema:
+            $ref: ../schemas/get-zones-response.yaml
