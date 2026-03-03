@@ -1,9 +1,6 @@
 type: object
-description: |-
-  Contains information about the resources in the GTM domain.
-  
-x-akamai:
-  file-path: schemas/resource.yaml
+description: |
+  The resources in the GTM domain.
 additionalProperties: false
 required:
 - aggregationType
@@ -43,11 +40,6 @@ properties:
     - median
     - latest
     maxLength: 15
-  comments:
-    type: string
-    description: |
-      Provides information about the purpose of the property.
-    nullable: true
   constrainedProperty:
     type: string
     description: |
@@ -88,6 +80,7 @@ properties:
       $ref: link.yaml
   loadImbalancePercentage:
     type: number
+    # default: 10.0
     description: |
       Indicates the percent of load imbalance factor (LIF) for the domain. It lets GTM exceed the value configured for traffic distribution. For example, if the data center's traffic allocation is 25 percent and the LIF is 1.5, the demand can grow to 37.5 percent (25% &times; 1.5) before the load balancer starts shifting load away from it. If the LIF is `0`, no load imbalance is allowed. However, internally, GTM adds one to the LIF to allow its use as a multiplier. The default LIF is 1.1, which is displayed as `10.0` percent. The value ranges from `0` to `1000000` percent.
     nullable: true
@@ -102,7 +95,7 @@ properties:
   resourceInstances:
     type: array
     description: |
-      Contains information about the `resources` that constrain the `properties` within the data center.
+      The `resources` that constrain the `properties` within the data center.
     items:
       type: object
       additionalProperties: false
@@ -113,6 +106,17 @@ properties:
           type: integer
           description: |
             A unique identifier for an existing data center in the domain.
+        useDefaultLoadObject:
+          type: boolean
+          description: |
+            Indicates whether a default `loadObject` is used for the resources.
+        loadServers:
+          type: array
+          description: |
+            Specifies a list of servers from which to request the load object. The value needs to contain IPv4 or IPv6 addresses, or DNS names that contain A or AAAA records. If a DNS name has both A and AAAA records, then GTM picks one randomly. For IP addresses, don't use non-routable [RFC 1918](https://tools.ietf.org/html/rfc1918) addresses.
+          nullable: true
+          items:
+            type: string
         loadObject:
           type: string
           description: |
@@ -126,17 +130,6 @@ properties:
             Specifies the TCP port of the `loadObject`. The value ranges from `0` to `65535`. If the value is `0`, the default port is either `80` or `443`.
           minimum: 0
           maximum: 65535
-        loadServers:
-          type: array
-          description: |
-            Specifies a list of servers from which to request the load object. The value needs to contain IPv4 or IPv6 addresses, or DNS names that contain A or AAAA records. If a DNS name has both A and AAAA records, then GTM picks one randomly. For IP addresses, don't use non-routable [RFC 1918](https://tools.ietf.org/html/rfc1918) addresses.
-          nullable: true
-          items:
-            type: string
-        useDefaultLoadObject:
-          type: boolean
-          description: |
-            Indicates whether a default `loadObject` is used for the resources.
   upperBound:
     type: integer
     description: |
