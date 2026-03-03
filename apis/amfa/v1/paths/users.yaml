@@ -1,0 +1,66 @@
+x-akamai:
+  path-info: /users
+post:
+  operationId: post-user
+  summary: Add a user
+  tags:
+  - Users
+  description: |
+    Create a new user.
+  parameters:
+  - $ref: ../parameters/contract-id-required.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/user-post-request.json
+        schema:
+          $ref: ../schemas/add-user-request.yaml
+  responses:
+    200:
+      description: |
+        User successfully created.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/user-get-200.json
+          schema:
+            $ref: ../schemas/user-detail.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    500:
+      $ref: ../errors/500.yaml
+get:
+  operationId: get-users
+  summary: List users
+  tags:
+  - Users
+  description: |
+    List user accounts configured in Akamai MFA, optionally filtered and paginated.
+  parameters:
+  - $ref: ../parameters/page-query.yaml
+  - $ref: ../parameters/page-size-query-optional.yaml
+  - $ref: ../parameters/user-status-query-optional.yaml
+  - $ref: ../parameters/include-devices-optional.yaml
+  - $ref: ../parameters/policy-id-query-optional.yaml
+  - $ref: ../parameters/policy-name-query-optional.yaml
+  - $ref: ../parameters/contract-id-required.yaml
+  responses:
+    200:
+      description: |
+        The response provides a list of users.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/users-get-200.json
+          schema:
+            $ref: ../schemas/users-get-200.yaml
+    401:
+      $ref: ../errors/401.yaml
+    500:
+      $ref: ../errors/500.yaml

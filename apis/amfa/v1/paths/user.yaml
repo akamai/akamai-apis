@@ -1,0 +1,91 @@
+x-akamai:
+  path-info: /users/{userId}
+parameters:
+- $ref: ../parameters/user-id-path.yaml
+get:
+  operationId: get-user
+  summary: Get a user
+  tags:
+  - Users
+  description: |
+    Get details about a specific user account, including the `userId`, `status`, and `username`. It also lists the `alias` information and `groups` that the user belongs to.
+  parameters:
+  - $ref: ../parameters/contract-id-required.yaml
+  responses:
+    200:
+      description: |
+        The response provides data for a single user.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/user-get-200.json
+          schema:
+            $ref: ../schemas/user-detail.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    500:
+      $ref: ../errors/500.yaml
+put:
+  operationId: put-user
+  summary: Update a user
+  tags:
+  - Users
+  description: |
+    Modify a user's basic information. To add an alias or assign a group to a user, run the [Add an alias to a user](ref:post-alias-to-user) and [Assign groups](ref:post-assign-groups-to-user) operations.
+  parameters:
+  - $ref: ../parameters/contract-id-required.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/user-put-request.json
+        schema:
+          $ref: ../schemas/update-user-request.yaml
+  responses:
+    200:
+      description: |
+        The response provides data for a single user.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/user-get-200.json
+          schema:
+            $ref: ../schemas/user-detail.yaml
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    500:
+      $ref: ../errors/500.yaml
+delete:
+  operationId: delete-user
+  summary: Delete a user
+  tags:
+  - Users
+  description: |
+    Permanently delete a specific user account. You can delete any active user account from your Akamai MFA service. For manually added users, deleting means permanently removing the user accounts together with any enrolled authentication device. User accounts that still exist in the external source directory reappear after the next synchronization.
+  parameters:
+  - $ref: ../parameters/contract-id-required.yaml
+  responses:
+    204:
+      description: |
+        The user was successfully deleted.
+    400:
+      $ref: ../errors/400.yaml
+    401:
+      $ref: ../errors/401.yaml
+    403:
+      $ref: ../errors/403.yaml
+    404:
+      $ref: ../errors/404.yaml
+    500:
+      $ref: ../errors/500.yaml
