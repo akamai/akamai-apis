@@ -1,9 +1,6 @@
 type: object
-description: |-
+description: |
   Contains notification configuration details.
-  
-x-akamai:
-  file-path: schemas/notification-config-update-specific.yaml
 additionalProperties: false
 required:
 - type
@@ -28,11 +25,40 @@ properties:
     type: string
     description: |
       The email of the subscriber.
-    format: email
+  siteSelectionStrategy:
+    type: string
+    description: |
+      The location strategy adopted for notification, either `ALL` or `PARTIAL`.
+    enum:
+    - ALL
+    - PARTIAL
+  siteMappings:
+    type: array
+    description: |
+      Site details for the notification config.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - siteId
+      - siteName
+      properties:
+        siteId:
+          type: integer
+          description: |
+            The unique site ID for the notifications.
+          readOnly: true
+          minimum: 1
+        siteName:
+          type: string
+          description: |
+            The site name for the notifications.
+          minLength: 1
   attributes:
     type: array
     description: |
-      List of attributes for the notifications.
+      Notification attributes.
     minItems: 0
     items:
       type: object
@@ -63,33 +89,3 @@ properties:
           type: boolean
           description: |
             Enables the notification.
-  siteMappings:
-    type: array
-    description: |
-      List of site details for the notification config.
-    minItems: 0
-    items:
-      type: object
-      additionalProperties: false
-      required:
-      - siteId
-      - siteName
-      properties:
-        siteId:
-          type: integer
-          description: |
-            The unique site ID for the notifications.
-          readOnly: true
-          minimum: 1
-        siteName:
-          type: string
-          description: |
-            The site name for the notifications.
-          minLength: 1
-  siteSelectionStrategy:
-    type: string
-    description: |
-      The location strategy adopted for notification, either `ALL` or `PARTIAL`.
-    enum:
-    - ALL
-    - PARTIAL

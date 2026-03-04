@@ -1,0 +1,112 @@
+type: object
+description: |
+  The security policy to assign to a site. You can configure the accepted use policy (AUP) and set responses for known and suspected threats under specified categories.
+additionalProperties: false
+required:
+- description
+- name
+- aupSettings
+- securitySettings
+- basicSettings
+- sites
+properties:
+  name:
+    type: string
+    description: |
+      The name of the policy.
+    minLength: 1
+  description:
+    type: string
+    description: |
+      A description of the policy that you provide.
+    minLength: 1
+  aupSettings:
+    type: array
+    description: |
+      Contains the acceptable use policy settings.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - categoryId
+      - responseId
+      properties:
+        categoryId:
+          type: integer
+          description: |
+            A unique identifier for the category.
+          readOnly: true
+          minimum: 1
+        responseId:
+          type: integer
+          description: |
+            A unique identifier for the response.
+          readOnly: true
+          minimum: 1
+  basicSettings:
+    type: object
+    description: |
+      Specifies the basic policy settings.
+    additionalProperties: false
+    required:
+    - dnssec
+    - edns0ecs
+    properties:
+      dnssec:
+        type: boolean
+        description: |
+          Enables DNS security.
+      edns0ecs:
+        type: boolean
+        description: |
+          When enabled, optimizes CDN traffic using the EDNS-Client-Subnet extension.
+  securitySettings:
+    type: array
+    description: |
+      Lists the policy security settings.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - confirmedResponseId
+      - listId
+      - shouldNotifyConfirmed
+      - shouldNotifySuspected
+      - suspectedResponseId
+      properties:
+        confirmedResponseId:
+          type: integer
+          description: |
+            A unique identifier for the confirmed response.
+          readOnly: true
+          minimum: 1
+        listId:
+          type: integer
+          description: |
+            A unique identifier for the list.
+          readOnly: true
+          minimum: 1
+        shouldNotifyConfirmed:
+          type: boolean
+          description: |
+            Send alert on confirmed threat.
+        shouldNotifySuspected:
+          type: boolean
+          description: |
+            Send alert on suspected threat.
+        suspectedResponseId:
+          type: integer
+          description: |
+            A unique identifier for the suspected response.
+          readOnly: true
+          minimum: 1
+  sites:
+    type: array
+    description: |
+      Lists associated site IDs.
+    minItems: 0
+    items:
+      type: integer
+      minimum: 1

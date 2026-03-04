@@ -1,9 +1,6 @@
 type: object
-description: |-
-  Configures the set of deployed sites, policies, lists, and custom responses.
-  
-x-akamai:
-  file-path: schemas/deployment-post-crud-section.yaml
+description: |
+  The set of deployed sites, policies, lists, and custom responses.
 additionalProperties: false
 required:
 - sites
@@ -13,45 +10,72 @@ required:
 - customlists
 - customPatterns
 properties:
-  customPatterns:
+  sites:
     type: array
     description: |
-      The set of custom dictionary patterns in the deployment.
+      Site IDs in the deployment.
     minItems: 0
     items:
-      $ref: resourceIdOnly.yaml
+      $ref: resource-id-only.yaml
+  subLocations:
+    type: array
+    description: |
+      Sublocation IDs in the deployment.
+    minItems: 0
+    items:
+      $ref: resource-id-only.yaml
+  policies:
+    type: array
+    description: |
+      Policy IDs in the deployment.
+    minItems: 0
+    items:
+      $ref: resource-id-only.yaml
+  honeypots:
+    type: array
+    description: |
+      Custom response IDs in the deployment.
+    minItems: 0
+    items:
+      $ref: resource-id-only.yaml
   customlists:
     type: array
     description: |
       The set of custom list IDs in the deployment.
     minItems: 0
     items:
-      $ref: resourceIdOnly.yaml
-  honeypots:
+      $ref: resource-id-only.yaml
+  customPatterns:
     type: array
     description: |
-      List of custom response IDs in the deployment.
+      The set of custom dictionary patterns in the deployment.
     minItems: 0
     items:
-      $ref: resourceIdOnly.yaml
-  policies:
+      $ref: resource-id-only.yaml
+  globalSettings:
+    type: object
+    description: |
+      The global settings updated for the deployment.
+    additionalProperties: false
+    properties:
+      id:
+        type: integer
+        description: |
+          The unique ID for the global settings modified.
+        minimum: 0
+  whitelists:
     type: array
     description: |
-      List of policy IDs in the deployment.
+      The allowlists removed from the deployment.
     minItems: 0
     items:
-      $ref: resourceIdOnly.yaml
-  sites:
+      type: string
+      minLength: 1
+  blacklists:
     type: array
     description: |
-      List of site IDs in the deployment.
+      The blocklists removed from the deployment.
     minItems: 0
     items:
-      $ref: resourceIdOnly.yaml
-  subLocations:
-    type: array
-    description: |
-      List of sublocation IDs in the deployment.
-    minItems: 0
-    items:
-      $ref: resourceIdOnly.yaml
+      type: string
+      minLength: 1

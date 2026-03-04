@@ -1,0 +1,51 @@
+type: object
+description: |
+  Items to add or delete when performing a patch operation on a list.
+additionalProperties: true
+required:
+- add
+- delete
+properties:
+  delete:
+    type: array
+    description: |
+      An array of IP addresses, domains, URLs and file hashes to delete in the PATCH operation.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  add:
+    type: array
+    description: |
+      Contains details of the list item to add in the patch operation.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      - value
+      - confidenceLevelId
+      properties:
+        type:
+          type: string
+          description: |
+            The list item type. Either `LIST_TYPE_IP`, `LIST_TYPE_DOMAIN`, `LIST_TYPE_FILEHASH`, or `URL`.
+          enum:
+          - LIST_TYPE_IP
+          - LIST_TYPE_DOMAIN
+          - LIST_TYPE_FILEHASH
+          - URL
+        value:
+          type: string
+          description: |
+            The IP address or domain of the list item.
+          minLength: 1
+        confidenceLevelId:
+          type: integer
+          description: |
+            The threat confidence level of the list item. Use `1` for a suspected item and `2` for a known item. `0` indicates an unknown confidence level for this item.
+          enum:
+          - 1
+          - 2
+          - 0

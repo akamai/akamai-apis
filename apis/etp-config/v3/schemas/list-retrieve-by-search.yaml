@@ -1,0 +1,46 @@
+type: object
+description: |
+  Details of list items from the search result set.
+additionalProperties: true
+required:
+- items
+properties:
+  items:
+    type: array
+    description: |
+      Custom lists matching the search criteria.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      - value
+      - confidenceLevelId
+      properties:
+        type:
+          type: string
+          description: |
+            The list item type, either `LIST_TYPE_IP` for an IP address, or `LIST_TYPE_DOMAIN` for a domain.
+          enum:
+          - LIST_TYPE_IP
+          - LIST_TYPE_DOMAIN
+          minLength: 1
+        value:
+          type: string
+          description: |
+            The IP address or domain of the list item.
+          minLength: 1
+        confidenceLevelId:
+          type: integer
+          description: |
+            The list item's threat confidence level. `1` indicates a suspected item. `2` indicates a known item. `0` indicates an unknown confidence level. A confidence level of `1` supports all types of list items, while `2` supports only IP addresses and domain types.
+          enum:
+          - 1
+          - 2
+          - 0
+  totalCount:
+    type: integer
+    description: |
+      The total number of list items.
+    minimum: 0

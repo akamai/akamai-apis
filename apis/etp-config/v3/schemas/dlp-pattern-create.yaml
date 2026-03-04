@@ -1,32 +1,45 @@
 type: object
-description: |-
+description: |
   Creates a data loss protection (DLP) pattern.
-  
-x-akamai:
-  file-path: schemas/dlp-pattern-create.yaml
 additionalProperties: false
 required:
-- id
 - name
-- akamaiDefined
 - regexes
 properties:
-  id:
-    type: string
-    description: |
-      Unique identifier for the DLP pattern.
   name:
     type: string
     description: |
       Name of the DLP pattern.
+  description:
+    type: string
+    description: |
+      A description of the DLP pattern.
   akamaiDefined:
     type: boolean
     description: |
       Indicates an Akamai-defined pattern.
+  regexIds:
+    type: array
+    description: |
+      Unique identifier for the DLP pattern.
+    minItems: 0
+    items:
+      type: string
   regexes:
     type: array
     description: |
-      List of applicable regular expressions.
+      Applicable regular expressions.
     minItems: 1
     items:
-      $ref: regexSpecific.yaml
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: |
+            Unique ID for the regex pattern.
+        regex:
+          type: string
+          description: |
+            Contents of the regular expression entry.
+          minLength: 1

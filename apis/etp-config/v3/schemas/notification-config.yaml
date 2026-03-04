@@ -1,9 +1,6 @@
 type: object
-description: |-
+description: |
   Specifies notification configuration details.
-  
-x-akamai:
-  file-path: schemas/notification-config.yaml
 additionalProperties: false
 required:
 - type
@@ -23,54 +20,18 @@ properties:
   type:
     type: string
     description: |
-      The subscriber notification method. Either `alert`, `upgrade`, `vmUpgrade`, `scheduledReport`, or `system`.
+      The subscriber notification method. Either `alert`, `upgrade`, `vmUpgrade`, `scheduledReport`, `email`, or `system`.
     enum:
     - alert
     - upgrade
     - vmUpgrade
     - scheduledReport
     - system
+    - email
   value:
     type: string
     description: |
       The email of the subscriber.
-    format: email
-  attributes:
-    type: array
-    description: |
-      List of attributes for the notifications.
-    minItems: 0
-    items:
-      type: object
-      additionalProperties: false
-      required:
-      - category
-      - contentType
-      - enabled
-      properties:
-        category:
-          type: string
-          description: |
-            The category of notification. Either `alert`, `upgrade`, `vmUpgrade`, `scheduledReport`, or `system`.
-          enum:
-          - alert
-          - upgrade
-          - vmUpgrade
-          - scheduledReport
-          - system
-          minLength: 1
-        contentType:
-          type: string
-          description: |
-            The notification's MIME type, either `text/html` or `text/plain`.
-          enum:
-          - text/html
-          - text/plain
-          minLength: 1
-        enabled:
-          type: boolean
-          description: |
-            Enables the notification.
   createdBy:
     type: string
     description: |
@@ -93,10 +54,17 @@ properties:
       ISO 8601 timestamp marking this notification config's last modification.
     readOnly: true
     format: date-time
+  siteSelectionStrategy:
+    type: string
+    description: |
+      The location strategy adopted for notification, either `ALL` or `PARTIAL`.
+    enum:
+    - ALL
+    - PARTIAL
   siteMappings:
     type: array
     description: |
-      List of site mappings for the notification config.
+      Site mappings for the notification config.
     minItems: 0
     items:
       type: object
@@ -115,10 +83,40 @@ properties:
           description: |
             Name of site for the notifications.
           minLength: 1
-  siteSelectionStrategy:
-    type: string
+  attributes:
+    type: array
     description: |
-      The location strategy adopted for notification, either `ALL` or `PARTIAL`.
-    enum:
-    - ALL
-    - PARTIAL
+      Notification attributes.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - category
+      - contentType
+      - enabled
+      properties:
+        category:
+          type: string
+          description: |
+            The category of notification. Either `alert`, `upgrade`, `vmUpgrade`, `scheduledReport`, `email`, or `system`.
+          enum:
+          - alert
+          - upgrade
+          - vmUpgrade
+          - scheduledReport
+          - system
+          - email
+          minLength: 1
+        contentType:
+          type: string
+          description: |
+            The notification's MIME type, either `text/html` or `text/plain`.
+          enum:
+          - text/html
+          - text/plain
+          minLength: 1
+        enabled:
+          type: boolean
+          description: |
+            Enables the notification.
