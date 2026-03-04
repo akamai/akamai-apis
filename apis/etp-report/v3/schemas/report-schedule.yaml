@@ -1,10 +1,7 @@
 type: object
-description: |-
+description: |
   Report scheduling configuration, on a daily or weekly basis.
-  
-x-akamai:
-  file-path: schemas/report-schedule.yaml
-additionalProperties: false
+additionalProperties: true
 required:
 - recurrence
 - userTimeZone
@@ -19,14 +16,12 @@ properties:
   createdBy:
     type: string
     description: |
-      Identifies the user who initially created the report schedule configuration.
-    readOnly: true
+      The user who initially created the report schedule configuration.
     minLength: 1
   createdDate:
     type: string
     description: |
-      ISO 8601 timestamp string indicating when the report schedule configuration was initially created.
-    readOnly: true
+      ISO 8601 timestamp marking the report schedule configuration's creation.
     format: date-time
   criterias:
     type: object
@@ -39,7 +34,7 @@ properties:
       siteIds:
         type: array
         description: |
-          The siteIds applicable to the report.
+          The site IDs applicable to the report.
         minItems: 0
         items:
           type: string
@@ -47,11 +42,11 @@ properties:
   daily:
     type: boolean
     description: |
-      Indicates if reports are scheduled daily.
+      Indicates a daily report schedule.
   dayOfWeek:
     type: string
     description: |
-      Specifies the day of the week the report generates. Refer to [Report scheduling](ref:report-scheduling) for details.
+      Specifies the day of the week to generate the report. Refer to [Report scheduling](ref:report-scheduling) for details.
     nullable: true
     enum:
     - MONDAY
@@ -72,31 +67,52 @@ properties:
   enable:
     type: boolean
     description: |
-      Indicates if the report is enabled.
+      Enables the report schedule.
   filters:
     type: object
     description: |
-      Specifies filters to apply while generating the report. See the [Filters](ref:filters) object type.
-    nullable: true
+      Specifies filters to apply while generating the report.
+    additionalProperties: true
+    properties:
+      filters:
+        type: string
+        description: |
+          Filter strings to exclude or include report data. Refer to [Filters object](ref:filters) for a complete list.
+        enum:
+        - INTERNALIP
+        - SOURCEPORT
+        - DESTINATIONPORT
+        - SINKHOLEID
+        - SINKHOLEIP
+        - HOSTNAME
+        - MACHINENAME
+        - UUID
+        - DESTINATIONIP
+        - SITE
+        - LIST
+        - POLICY
+        - ACTION
+        - CATEGORY
+        - ISALERT
+        - CONFIDENCE
+        - DOMAIN
   isHtml:
     type: boolean
     description: |
-      Indicates if the report is in HTML format.
+      Indicates an HTML formatted report.
   isNew:
     type: boolean
     description: |
-      Indicates if the report is new report.
+      Indicates a new report.
   modifiedBy:
     type: string
     description: |
-      Identifies the last user who modified the report schedule configuration.
-    readOnly: true
+      The user who last modified the report schedule configuration.
     minLength: 1
   modifiedDate:
     type: string
     description: |
-      ISO 8601 timestamp string indicating when the report schedule configuration was last modified.
-    readOnly: true
+      ISO 8601 timestamp string marking the report schedule configuration's last modification.
     format: date-time
   recurrence:
     type: string
@@ -115,13 +131,11 @@ properties:
     type: integer
     description: |
       A unique identifier for the report schedule configuration.
-    readOnly: true
     minimum: 0
   status:
     type: string
     description: |
       Specifies the status of the report schedule configuration, either `ENABLED` or `DISABLED`.
-    readOnly: true
     enum:
     - ENABLED
     - DISABLED
@@ -132,5 +146,5 @@ properties:
   userTimeZone:
     type: string
     description: |
-      Specifies a user-timezone-offset for generating the report. For example, `-05:00`.
+      Specifies a user timezone offset for generating the report. For example, `-05:00`.
     minLength: 1

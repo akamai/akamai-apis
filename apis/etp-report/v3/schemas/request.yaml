@@ -1,13 +1,9 @@
 type: object
-description: |-
+description: |
   The details about the web request.
-  
-x-akamai:
-  file-path: schemas/request.yaml
 additionalProperties: false
 required:
-- startTimeSec
-- endTimeSec
+- startTime
 - connectionId
 - domain
 - uri
@@ -34,43 +30,59 @@ properties:
           description: |
             The value of the HTTP request header.
           minLength: 1
-  clientIP:
-    type: string
-    description: |
-      The IP address of the source NAT branch or machine.
-    format: ipv4
-  clientPort:
+  startTime:
     type: integer
     description: |
-      The TCP port used by the client machine to connect the destination.
+      The start time for report data, in epoch seconds.
+    minimum: 1
+  endTimeSec:
+    type: integer
+    description: |
+      The end time for report data, in epoch seconds.
     minimum: 0
   connectionId:
     type: string
     description: |
       The unique identifier of the TCP connection created.
     minLength: 1
-  destinationIP:
-    type: string
-    description: |
-      The IP address of the target machine to send the request.
-    format: ipv4
-  destinationPort:
-    type: integer
-    description: |
-      The TCP port used to connect the destination machine.
-    minimum: 0
   domain:
     type: string
     description: |
       The requested domain address.
     minLength: 1
-  endTimeSec:
-    $ref: endTimeSec.yaml
+  uri:
+    type: string
+    description: |
+      The path part of the URL.
+    minLength: 1
   method:
     type: string
     description: |
       The HTTP action used to interact with the destination.
     minLength: 1
+  clientIp:
+    type: string
+    description: |
+      The IP address of the source NAT branch or machine.
+  clientPort:
+    type: integer
+    description: |
+      The TCP port used by the client machine to connect the destination.
+    minimum: 0
+  destinationIP:
+    type: string
+    description: |
+      The IP address of the target machine to send the request.
+  destinationPort:
+    type: integer
+    description: |
+      The TCP port used to connect the destination machine.
+    minimum: 0
+  endTime:
+    type: integer
+    description: |
+      The end time for report data, in epoch seconds.
+    minimum: 0
   queryStrings:
     type: array
     description: |
@@ -92,11 +104,8 @@ properties:
           type: string
           description: |
             The value of the query parameter.
-          minLength: 1
-  startTimeSec:
-    $ref: startTimeSec.yaml
-  uri:
+          minLength: 0
+  uuid:
     type: string
     description: |
-      The path part of the URL.
-    minLength: 1
+      A unique ID for the request.

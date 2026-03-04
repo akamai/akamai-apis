@@ -1,0 +1,131 @@
+type: object
+description: |
+  Configures daily or weekly scheduled reports.
+additionalProperties: false
+required:
+- recurrence
+- userTimeZone
+- emails
+- reportTemplate
+properties:
+  format:
+    type: string
+    description: |
+      Format of the report.
+    minLength: 1
+  criterias:
+    type: object
+    description: |
+      The report criteria.
+    additionalProperties: false
+    required:
+    - siteIds
+    properties:
+      siteIds:
+        type: array
+        description: |
+          The site IDs for the report.
+        minItems: 0
+        items:
+          type: string
+          minLength: 1
+  daily:
+    type: boolean
+    description: |
+      Indicates a daily report schedule.
+  dayOfWeek:
+    type: string
+    description: |
+      Specifies the day of the week to generate the report. Refer to [Report scheduling](ref:report-scheduling) for details.
+    nullable: true
+    enum:
+    - MONDAY
+    - TUESDAY
+    - WEDNESDAY
+    - THURSDAY
+    - FRIDAY
+    - SATURDAY
+    - SUNDAY
+  emails:
+    type: array
+    description: |
+      Specifies the email addresses to send generated reports.
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  enable:
+    type: boolean
+    description: |
+      Enables the report schedule.
+  filters:
+    type: object
+    description: |
+      Optional filters to apply while generating the report.
+    additionalProperties: false
+    properties:
+      filters:
+        type: string
+        description: |
+          Filter strings to exclude or include report data. See the [Filters](ref:filters) object for a complete list.
+        enum:
+        - INTERNALIP
+        - SOURCEPORT
+        - DESTINATIONPORT
+        - SINKHOLEID
+        - SINKHOLEIP
+        - HOSTNAME
+        - MACHINENAME
+        - UUID
+        - DESTINATIONIP
+        - SITE
+        - LIST
+        - POLICY
+        - ACTION
+        - CATEGORY
+        - ISALERT
+        - CONFIDENCE
+        - DOMAIN
+  isHtml:
+    type: boolean
+    description: |
+      Indicates an HTML formatted report.
+  isNew:
+    type: boolean
+    description: |
+      Indicates a new report schedule.
+  recurrence:
+    type: string
+    description: |
+      The report schedule frequency, either `DAILY`, or `WEEKLY`. Refer to [Report scheduling](ref:report-scheduling) for details.
+    enum:
+    - DAILY
+    - WEEKLY
+  reportTemplate:
+    type: string
+    description: |
+      The report template. The only currently supported syntax is `THREAT_EVENTS_BY_LOCATION_AND_DOMAIN`.
+    enum:
+    - THREAT_EVENTS_BY_LOCATION_AND_DOMAIN
+  scheduleId:
+    type: integer
+    description: |
+      A unique identifier for the report schedule configuration.
+    readOnly: true
+    minimum: 0
+  status:
+    type: string
+    description: |
+      The report schedule configuration status, either `ENABLED` or `DISABLED`.
+    enum:
+    - ENABLED
+    - DISABLED
+  useFilters:
+    type: boolean
+    description: |
+      Indicates if the report should use filters.
+  userTimeZone:
+    type: string
+    description: |
+      Specifies a user-timezone-offset for generating the report. For example, `-05:00`.
+    minLength: 1

@@ -1,9 +1,6 @@
 type: object
-description: |-
+description: |
   Requested DNS query information.
-  
-x-akamai:
-  file-path: schemas/query.yaml
 additionalProperties: false
 required:
 - time
@@ -12,11 +9,34 @@ required:
 - domain
 - queryType
 properties:
+  time:
+    type: string
+    description: |
+      Time of DNS request in ISO 8601 format.
+    format: date-time
   clientIp:
     type: string
     description: |
       The requesting client's IP address.
-    format: ipv4
+  dnsIp:
+    type: string
+    description: |
+      The DNS resolver IP address.
+  domain:
+    type: string
+    description: |
+      The requested domain address.
+    minLength: 1
+  uuid:
+    type: string
+    description: |
+      UUID value.
+    minLength: 1
+  queryType:
+    type: string
+    description: |
+      The DNS query type, such as `A` or `CNAME`.
+    minLength: 1
   deviceId:
     type: string
     description: |
@@ -26,25 +46,6 @@ properties:
     type: string
     description: |
       Name of device used.
-    minLength: 1
-  deviceOwnerId:
-    type: string
-    description: |
-      Unique identifier for the device owner.
-  dnsIp:
-    type: string
-    description: |
-      The DNS resolver IP address.
-    format: ipv4
-  domain:
-    type: string
-    description: |
-      The requested domain address.
-    minLength: 1
-  queryType:
-    type: string
-    description: |
-      The DNS query type, such as `A` or `CNAME`.
     minLength: 1
   resolved:
     type: array
@@ -64,28 +65,22 @@ properties:
           description: |
             DNS resolution type. For example: `A` or `CNAME`.
           minLength: 1
-        asName:
+        response:
           type: string
           description: |
-            Autonomous system name used for resolution.
+            Resolved domain or IP address.
           minLength: 1
         asn:
           type: string
           description: |
             Autonomous system number used for resolution.
           minLength: 1
-        response:
+        asname:
           type: string
           description: |
-            Resolved domain or IP address.
+            Autonomous system name used for resolution.
           minLength: 1
-  time:
+  deviceOwnerId:
     type: string
     description: |
-      Time of DNS request in ISO 8601 format.
-    format: date-time
-  uuid:
-    type: string
-    description: |
-      UUID value.
-    minLength: 1
+      Unique identifier for the device owner.
