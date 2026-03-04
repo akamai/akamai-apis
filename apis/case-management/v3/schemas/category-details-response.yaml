@@ -1,15 +1,22 @@
 type: object
-description: |-
+description: |
   Collects details about a case category.
-  
-x-akamai:
-  file-path: schemas/category-details-response.yaml
 additionalProperties: false
 properties:
   description:
     type: string
     description: |
       Overview of the category.
+  categoryId:
+    type: string
+    description: |
+      Identifier for the category. The possible options are `SECURITY`, `MANAGED_CLOUD`, `BUSINESS_SUPPORT`, `PROFESSIONAL_SERVICES`, `BILLING`, or `TECHNICAL`.
+    enum:
+      $ref: category-id-enum.yaml
+  categoryName:
+    type: string
+    description: |
+      Name of the category.
   account:
     type: object
     description: |
@@ -19,11 +26,41 @@ properties:
       accountId:
         type: string
         description: |
-          Identifier for the account. 
+          Identifier for the account.
       accountName:
         type: string
         description: |
           Name of the account.
+  products:
+    type: array
+    description: |
+      Lists available product and problem names and severity level combinations. It's an empty array for any `categoryId` other than `TECHNICAL` or `MANAGED_CLOUD`.
+    items:
+      type: object
+      description: |
+        Available combinations of product names, problem names, and severity levels.
+      additionalProperties: false
+      properties:
+        productName:
+          type: string
+          description: |
+            Name of the product.
+        problemNames:
+          type: array
+          description: |
+            Lists problem names available for `productName`.
+          items:
+            type: string
+            description: |
+              Name of the problem.
+        severities:
+          type: array
+          description: |
+            Lists available severity levels available for the product. To learn more about them, see [Severity levels](doc:about-case-management#severity-levels).
+          items:
+            type: string
+            description: |
+              Severity of the case.
   areas:
     type: array
     description: |
@@ -46,16 +83,6 @@ properties:
             type: string
             description: |
               Name of the service.
-  categoryId:
-    type: string
-    description: |
-      Identifier for the category. The possible options are `SECURITY`, `BUSINESS_SUPPORT`, `PROFESSIONAL_SERVICES`, `BILLING`, or `TECHNICAL`.
-    enum:
-      $ref: categoryId-enum.yaml
-  categoryName:
-    type: string
-    description: |
-      Name of the category.
   parentAccounts:
     type: array
     description: |
@@ -74,6 +101,22 @@ properties:
           type: string
           description: |
             Name of the parent account.
+  psPackageNames:
+    type: array
+    description: |
+      Lists available professional services packages. It's an empty array for any `categoryId` other than `PROFESSIONAL_SERVICES`.
+    items:
+      type: string
+      description: |
+        Names of professional services packages.
+  productSolutionNames:
+    type: array
+    description: |
+      Lists available product solutions. It's an empty array for any `categoryId` other than `PROFESSIONAL_SERVICES`.
+    items:
+      type: string
+      description: |
+        Name of the product solution.
   policyDomains:
     type: array
     description: |
@@ -98,6 +141,10 @@ properties:
               Available product.
             additionalProperties: false
             properties:
+              productName:
+                type: string
+                description: |
+                  Name of the product.
               problemNames:
                 type: array
                 description: |
@@ -106,56 +153,6 @@ properties:
                   type: string
                   description: |
                     Available product problem.
-              productName:
-                type: string
-                description: |
-                  Name of the product.
-  productSolutionNames:
-    type: array
-    description: |
-      Lists available product solutions. It's an empty array for any `categoryId` other than `PROFESSIONAL_SERVICES`.
-    items:
-      type: string
-      description: |
-        Name of the product solution.
-  products:
-    type: array
-    description: |
-      Lists available product and problem names and severity level combinations. It's an empty array for any `categoryId` other than `TECHNICAL`.
-    items:
-      type: object
-      description: |
-        Available combinations of product names, problem names, and severity levels.
-      additionalProperties: false
-      properties:
-        problemNames:
-          type: array
-          description: |
-            Lists problem names available for `productName`.
-          items:
-            type: string
-            description: |
-              Name of the problem.
-        productName:
-          type: string
-          description: |
-            Name of the product.
-        severities:
-          type: array
-          description: |
-            Lists available severity levels available for the product. To learn more about them, see [Severity levels](doc:about-case-management#severity-levels).
-          items:
-            type: string
-            description: |
-              Severity of the case.
-  psPackageNames:
-    type: array
-    description: |
-      Lists available professional services packages. It's an empty array for any `categoryId` other than `PROFESSIONAL_SERVICES`.
-    items:
-      type: string
-      description: |
-        Names of professional services packages.
   severities:
     type: array
     description: |

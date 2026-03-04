@@ -1,9 +1,6 @@
 type: object
-description: |-
+description: |
   Contains the list of cases matching the set filters.
-  
-x-akamai:
-  file-path: schemas/cases-list-response.yaml
 additionalProperties: false
 properties:
   cases:
@@ -20,6 +17,11 @@ properties:
       - category
       - contact
       properties:
+        caseId:
+          type: string
+          description: |
+            Identifier for each case.
+          minLength: 1
         account:
           type: object
           description: |
@@ -36,11 +38,11 @@ properties:
               description: |
                 Name of the account.
               minLength: 1
-        caseId:
+        policyDomainName:
           type: string
           description: |
-            Identifier for each case.
-          minLength: 1
+            Name of the policy domain the case refers to. It's `null` for any `categoryId` other than `SECURITY`.
+          nullable: true
         category:
           type: object
           description: |
@@ -50,9 +52,9 @@ properties:
             categoryId:
               type: string
               description: |
-                Identifier for the case category. The possible options are `SECURITY`, `BUSINESS_SUPPORT`, `PROFESSIONAL_SERVICES`, `BILLING`, or `TECHNICAL`.
+                Identifier for the case category. The possible options are `SECURITY`, `MANAGED_CLOUD`, `BUSINESS_SUPPORT`, `PROFESSIONAL_SERVICES`, `BILLING`, or `TECHNICAL`.
               enum:
-                $ref: categoryId-enum.yaml
+                $ref: category-id-enum.yaml
               minLength: 1
             categoryName:
               type: string
@@ -70,11 +72,6 @@ properties:
               description: |
                 Full name.
               minLength: 1
-            company:
-              type: string
-              description: |
-                Name of the company the user works for. It's `null` if the creator didn't provide this data in the request.
-              nullable: true
             email:
               type: string
               description: |
@@ -85,18 +82,16 @@ properties:
               description: |
                 Phone number. It's `null` if the creator didn't provide this data in the request.
               nullable: true
-        createdDate:
+            company:
+              type: string
+              description: |
+                Name of the company the user works for. It's `null` if the creator didn't provide this data in the request.
+              nullable: true
+        subject:
           type: string
           description: |
-            ISO 8601 timestamp indicating when the case was created.
-          format: date-time
-        links:
-          $ref: hypermedia.yaml
-        policyDomainName:
-          type: string
-          description: |
-            Name of the policy domain the case refers to. It's `null` for any `categoryId` other than `SECURITY`.
-          nullable: true
+            Title of the case.
+          minLength: 1
         severity:
           type: string
           description: |
@@ -109,15 +104,17 @@ properties:
           enum:
             $ref: status-enum.yaml
           minLength: 1
-        subject:
+        createdDate:
           type: string
           description: |
-            Title of the case.
-          minLength: 1
+            ISO 8601 timestamp indicating when the case was created.
+          format: date-time
         updatedDate:
           type: string
           description: |
             ISO 8601 timestamp indicating when the case was last modified.
           format: date-time
+        links:
+          $ref: hypermedia.yaml
   links:
     $ref: hypermedia.yaml
