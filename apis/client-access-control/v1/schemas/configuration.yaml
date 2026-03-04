@@ -1,23 +1,23 @@
 type: object
-description: |-
-  Encapsulates the Client Access Control (CAC) configurations that you have access to. These configurations let your origin communicate with the Akamai network.
-  
-x-akamai:
-  file-path: schemas/configuration.yaml
+description: |
+  Encapsulates the Client Access Control (CAC) configurations you can access. These configurations let your origin communicate with the Akamai network.
 additionalProperties: false
 properties:
   name:
     type: string
     description: |
       The name of the CAC configuration.
+    minLength: 1
   description:
     type: string
     description: |
       A description of the CAC configuration.
+    minLength: 1
   configurationId:
     type: integer
     description: |
-      The unique ID for the CAC configuration.
+      The unique identifier for the CAC configuration.
+    minimum: 1
   currentCidrs:
     type: object
     description: |
@@ -28,21 +28,25 @@ properties:
         type: integer
         description: |
           The current version of CIDR blocks serving the CAC configuration. The first version is always `0`.
+        minimum: 0
       acknowledgeDate:
         type: string
         description: |
-          An ISO-8601 timestamp for when your organization last acknowledged a proposed CIDR block version.
+          An ISO 8601 timestamp indicating when your organization last acknowledged a proposed CIDR block version.
         format: date-time
       cidrs:
         type: array
         description: |
           CIDR blocks used to provide this CAC configuration with access to the Akamai portal.
+        minItems: 0
         items:
           type: string
+          minLength: 1
   proposedCidrs:
     type: array
     description: |
       Encapsulates the set of CIDR blocks proposed by Akamai.
+    minItems: 0
     items:
       type: object
       additionalProperties: false
@@ -51,14 +55,16 @@ properties:
           type: integer
           description: |
             The latest version of CIDR blocks proposed.
+          minimum: 0
         cidrs:
           type: array
           description: |
             CIDR blocks used to provide this CAC configuration with access to the Akamai portal.
+          minItems: 0
           items:
             type: string
         proposedDate:
           type: string
           description: |
-            The time, in ISO-8601 format, that Akamai proposed the latest version of CIDR blocks.
+            An ISO 8601 timestamp indicating when Akamai proposed the latest version of CIDR blocks.
           format: date-time

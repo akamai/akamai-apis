@@ -1,177 +1,1563 @@
 {
-  "openapi": "3.0.0",
+  "components": {
+    "parameters": {
+      "configuration-id-path": {
+        "description": "A unique identifier for a CAC configuration.",
+        "in": "path",
+        "name": "configurationId",
+        "required": true,
+        "schema": {
+          "example": 1234,
+          "type": "integer"
+        },
+        "x-akamai": {
+          "file-path": "parameters/configuration-id-path.yaml"
+        }
+      },
+      "version-path": {
+        "description": "The version of proposed CIDR blocks that you're acknowledging.",
+        "in": "path",
+        "name": "version",
+        "required": true,
+        "schema": {
+          "example": 1,
+          "type": "integer"
+        },
+        "x-akamai": {
+          "file-path": "parameters/version-path.yaml"
+        }
+      }
+    },
+    "responses": {
+      "400": {
+        "content": {
+          "application/problem+json": {
+            "example": {
+              "detail": "No CIDR found for version 2",
+              "instance": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+              "problemId": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+              "status": 400,
+              "title": "Bad Request",
+              "type": "bad-request"
+            },
+            "schema": {
+              "additionalProperties": true,
+              "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+              "properties": {
+                "detail": {
+                  "description": "Diagnostic instructions to locate and fix the problem.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "instance": {
+                  "description": "A unique value generated with each API call.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "problemId": {
+                  "description": "A unique identifier of the problem.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "status": {
+                  "description": "The HTTP status code that categorizes this error case.",
+                  "maximum": 600,
+                  "minimum": 100,
+                  "type": "integer"
+                },
+                "title": {
+                  "description": "A summary of each error case.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": {
+                  "description": "Identifies each error case.",
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "title",
+                "status",
+                "detail",
+                "instance"
+              ],
+              "type": "object",
+              "x-akamai": {
+                "file-path": "schemas/problem.yaml"
+              }
+            }
+          }
+        },
+        "description": "[Bad request](https://techdocs.akamai.com/client-access-control/reference/400).",
+        "x-akamai": {
+          "file-path": "errors/400.yaml"
+        }
+      },
+      "401": {
+        "content": {
+          "application/problem+json": {
+            "example": {
+              "clientIp": "12.3.45.678",
+              "detail": "Inactive client token",
+              "instance": "https://akab-12abc3def45g6h7i-8901-2jk3l4567mn.luna.akamaiapis.net/client-access-control/v1/configurations",
+              "method": "GET",
+              "requestId": "1abcde2",
+              "requestTime": "2025-04-08T10:02:26Z",
+              "serverIp": "12.345.67.89",
+              "status": 401,
+              "title": "Not authorized",
+              "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+            },
+            "schema": {
+              "additionalProperties": true,
+              "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+              "properties": {
+                "clientIp": {
+                  "description": "The client IP address.",
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "detail": {
+                  "description": "Diagnostic instructions to locate and fix the problem.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "instance": {
+                  "description": "A unique value generated with each API call.",
+                  "format": "uri",
+                  "type": "string"
+                },
+                "method": {
+                  "description": "An HTTP method used in a given API call.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "requestId": {
+                  "description": "A unique identifier of each API call.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "requestTime": {
+                  "description": "An ISO 8601 timestamp indicating when each API call was made.",
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "serverIp": {
+                  "description": "The server IP address.",
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "status": {
+                  "description": "The HTTP status code that categorizes this error case.",
+                  "maximum": 600,
+                  "minimum": 100,
+                  "type": "integer"
+                },
+                "title": {
+                  "description": "A summary of each error case.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": {
+                  "description": "Identifies each error case.",
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "title",
+                "status",
+                "instance",
+                "method",
+                "serverIp",
+                "clientIp",
+                "requestId",
+                "requestTime"
+              ],
+              "type": "object",
+              "x-akamai": {
+                "file-path": "schemas/system-problem.yaml"
+              }
+            }
+          }
+        },
+        "description": "[Not authorized](https://techdocs.akamai.com/client-access-control/reference/401).",
+        "x-akamai": {
+          "file-path": "errors/401.yaml"
+        }
+      },
+      "403": {
+        "content": {
+          "application/problem+json": {
+            "example": {
+              "detail": "User does not have access to resource",
+              "instance": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+              "problemId": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+              "status": 403,
+              "title": "Forbidden",
+              "type": "forbidden"
+            },
+            "schema": {
+              "additionalProperties": true,
+              "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+              "properties": {
+                "detail": {
+                  "description": "Diagnostic instructions to locate and fix the problem.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "instance": {
+                  "description": "A unique value generated with each API call.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "problemId": {
+                  "description": "A unique identifier of the problem.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "status": {
+                  "description": "The HTTP status code that categorizes this error case.",
+                  "maximum": 600,
+                  "minimum": 100,
+                  "type": "integer"
+                },
+                "title": {
+                  "description": "A summary of each error case.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": {
+                  "description": "Identifies each error case.",
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "title",
+                "status",
+                "detail",
+                "instance"
+              ],
+              "type": "object",
+              "x-akamai": {
+                "file-path": "schemas/problem.yaml"
+              }
+            }
+          }
+        },
+        "description": "[Forbidden](https://techdocs.akamai.com/client-access-control/reference/403).",
+        "x-akamai": {
+          "file-path": "errors/403.yaml"
+        }
+      },
+      "404": {
+        "content": {
+          "application/problem+json": {
+            "example": {
+              "detail": "No endpoint GET /cfw-api/v1/configurationss.",
+              "instance": "/cfw-api/v1/configurationss",
+              "status": 404,
+              "title": "Not Found",
+              "type": "about:blank"
+            },
+            "schema": {
+              "additionalProperties": true,
+              "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+              "properties": {
+                "detail": {
+                  "description": "Diagnostic instructions to locate and fix the problem.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "instance": {
+                  "description": "A unique value generated with each API call.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "problemId": {
+                  "description": "A unique identifier of the problem.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "status": {
+                  "description": "The HTTP status code that categorizes this error case.",
+                  "maximum": 600,
+                  "minimum": 100,
+                  "type": "integer"
+                },
+                "title": {
+                  "description": "A summary of each error case.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": {
+                  "description": "Identifies each error case.",
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "title",
+                "status",
+                "detail",
+                "instance"
+              ],
+              "type": "object",
+              "x-akamai": {
+                "file-path": "schemas/problem.yaml"
+              }
+            }
+          }
+        },
+        "description": "[Not found](https://techdocs.akamai.com/client-access-control/reference/404).",
+        "x-akamai": {
+          "file-path": "errors/404.yaml"
+        }
+      },
+      "405": {
+        "content": {
+          "application/problem+json": {
+            "example": {
+              "detail": "Method 'POST' is not supported.",
+              "instance": "/cfw-api/v1/configurations",
+              "status": 405,
+              "title": "Method Not Allowed",
+              "type": "about:blank"
+            },
+            "schema": {
+              "additionalProperties": true,
+              "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+              "properties": {
+                "detail": {
+                  "description": "Diagnostic instructions to locate and fix the problem.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "instance": {
+                  "description": "A unique value generated with each API call.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "problemId": {
+                  "description": "A unique identifier of the problem.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "status": {
+                  "description": "The HTTP status code that categorizes this error case.",
+                  "maximum": 600,
+                  "minimum": 100,
+                  "type": "integer"
+                },
+                "title": {
+                  "description": "A summary of each error case.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": {
+                  "description": "Identifies each error case.",
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "title",
+                "status",
+                "detail",
+                "instance"
+              ],
+              "type": "object",
+              "x-akamai": {
+                "file-path": "schemas/problem.yaml"
+              }
+            }
+          }
+        },
+        "description": "[Method not allowed](https://techdocs.akamai.com/client-access-control/reference/405).",
+        "x-akamai": {
+          "file-path": "errors/405.yaml"
+        }
+      },
+      "406": {
+        "content": {
+          "application/problem+json": {
+            "example": {
+              "detail": "Acceptable representations: [application/json].",
+              "instance": "/cfw-api/v1/configurations",
+              "status": 406,
+              "title": "Not Acceptable",
+              "type": "about:blank"
+            },
+            "schema": {
+              "additionalProperties": true,
+              "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+              "properties": {
+                "detail": {
+                  "description": "Diagnostic instructions to locate and fix the problem.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "instance": {
+                  "description": "A unique value generated with each API call.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "problemId": {
+                  "description": "A unique identifier of the problem.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "status": {
+                  "description": "The HTTP status code that categorizes this error case.",
+                  "maximum": 600,
+                  "minimum": 100,
+                  "type": "integer"
+                },
+                "title": {
+                  "description": "A summary of each error case.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": {
+                  "description": "Identifies each error case.",
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "title",
+                "status",
+                "detail",
+                "instance"
+              ],
+              "type": "object",
+              "x-akamai": {
+                "file-path": "schemas/problem.yaml"
+              }
+            }
+          }
+        },
+        "description": "[Not acceptable](https://techdocs.akamai.com/client-access-control/reference/406).",
+        "x-akamai": {
+          "file-path": "errors/406.yaml"
+        }
+      },
+      "500": {
+        "content": {
+          "application/problem+json": {
+            "example": {
+              "clientIp": "12.3.45.678",
+              "instance": "https://akab-12abc3def45g6h7i-8901-2jk3l4567mn.luna.akamaiapis.net/client-access-control/v12/configurations",
+              "method": "GET",
+              "requestId": "1abcde2",
+              "requestTime": "2025-04-08T09:59:01Z",
+              "serverIp": "12.345.67.89",
+              "status": 500,
+              "title": "Server Error",
+              "type": "https://problems.luna.akamaiapis.net/-/resource-impl/forward-origin-error"
+            },
+            "schema": {
+              "additionalProperties": true,
+              "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+              "properties": {
+                "clientIp": {
+                  "description": "The client IP address.",
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "detail": {
+                  "description": "Diagnostic instructions to locate and fix the problem.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "instance": {
+                  "description": "A unique value generated with each API call.",
+                  "format": "uri",
+                  "type": "string"
+                },
+                "method": {
+                  "description": "An HTTP method used in a given API call.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "requestId": {
+                  "description": "A unique identifier of each API call.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "requestTime": {
+                  "description": "An ISO 8601 timestamp indicating when each API call was made.",
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "serverIp": {
+                  "description": "The server IP address.",
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "status": {
+                  "description": "The HTTP status code that categorizes this error case.",
+                  "maximum": 600,
+                  "minimum": 100,
+                  "type": "integer"
+                },
+                "title": {
+                  "description": "A summary of each error case.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": {
+                  "description": "Identifies each error case.",
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "title",
+                "status",
+                "instance",
+                "method",
+                "serverIp",
+                "clientIp",
+                "requestId",
+                "requestTime"
+              ],
+              "type": "object",
+              "x-akamai": {
+                "file-path": "schemas/system-problem.yaml"
+              }
+            }
+          }
+        },
+        "description": "[Server error](https://techdocs.akamai.com/client-access-control/reference/500).",
+        "x-akamai": {
+          "file-path": "errors/500.yaml"
+        }
+      }
+    },
+    "schemas": {
+      "configuration": {
+        "additionalProperties": false,
+        "description": "Encapsulates the Client Access Control (CAC) configurations you can access. These configurations let your origin communicate with the Akamai network.",
+        "properties": {
+          "configurationId": {
+            "description": "The unique identifier for the CAC configuration.",
+            "minimum": 1,
+            "type": "integer"
+          },
+          "currentCidrs": {
+            "additionalProperties": false,
+            "description": "Encapsulates the current set of CIDR blocks.",
+            "properties": {
+              "acknowledgeDate": {
+                "description": "An ISO 8601 timestamp indicating when your organization last acknowledged a proposed CIDR block version.",
+                "format": "date-time",
+                "type": "string"
+              },
+              "cidrs": {
+                "description": "CIDR blocks used to provide this CAC configuration with access to the Akamai portal.",
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "minItems": 0,
+                "type": "array"
+              },
+              "version": {
+                "description": "The current version of CIDR blocks serving the CAC configuration. The first version is always `0`.",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "description": {
+            "description": "A description of the CAC configuration.",
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "description": "The name of the CAC configuration.",
+            "minLength": 1,
+            "type": "string"
+          },
+          "proposedCidrs": {
+            "description": "Encapsulates the set of CIDR blocks proposed by Akamai.",
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "cidrs": {
+                  "description": "CIDR blocks used to provide this CAC configuration with access to the Akamai portal.",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 0,
+                  "type": "array"
+                },
+                "proposedDate": {
+                  "description": "An ISO 8601 timestamp indicating when Akamai proposed the latest version of CIDR blocks.",
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "version": {
+                  "description": "The latest version of CIDR blocks proposed.",
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            },
+            "minItems": 0,
+            "type": "array"
+          }
+        },
+        "type": "object",
+        "x-akamai": {
+          "file-path": "schemas/configuration.yaml"
+        }
+      },
+      "configurations": {
+        "description": "The Client Access Control (CAC) configuration collection.",
+        "items": {
+          "additionalProperties": false,
+          "description": "Encapsulates the Client Access Control (CAC) configurations you can access. These configurations let your origin communicate with the Akamai network.",
+          "properties": {
+            "configurationId": {
+              "description": "The unique identifier for the CAC configuration.",
+              "minimum": 1,
+              "type": "integer"
+            },
+            "currentCidrs": {
+              "additionalProperties": false,
+              "description": "Encapsulates the current set of CIDR blocks.",
+              "properties": {
+                "acknowledgeDate": {
+                  "description": "An ISO 8601 timestamp indicating when your organization last acknowledged a proposed CIDR block version.",
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "cidrs": {
+                  "description": "CIDR blocks used to provide this CAC configuration with access to the Akamai portal.",
+                  "items": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "minItems": 0,
+                  "type": "array"
+                },
+                "version": {
+                  "description": "The current version of CIDR blocks serving the CAC configuration. The first version is always `0`.",
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            },
+            "description": {
+              "description": "A description of the CAC configuration.",
+              "minLength": 1,
+              "type": "string"
+            },
+            "name": {
+              "description": "The name of the CAC configuration.",
+              "minLength": 1,
+              "type": "string"
+            },
+            "proposedCidrs": {
+              "description": "Encapsulates the set of CIDR blocks proposed by Akamai.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "cidrs": {
+                    "description": "CIDR blocks used to provide this CAC configuration with access to the Akamai portal.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 0,
+                    "type": "array"
+                  },
+                  "proposedDate": {
+                    "description": "An ISO 8601 timestamp indicating when Akamai proposed the latest version of CIDR blocks.",
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "version": {
+                    "description": "The latest version of CIDR blocks proposed.",
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "type": "object"
+              },
+              "minItems": 0,
+              "type": "array"
+            }
+          },
+          "type": "object",
+          "x-akamai": {
+            "file-path": "schemas/configuration.yaml"
+          }
+        },
+        "minItems": 0,
+        "type": "array",
+        "x-akamai": {
+          "file-path": "schemas/configurations.yaml"
+        }
+      },
+      "problem": {
+        "additionalProperties": true,
+        "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+        "properties": {
+          "detail": {
+            "description": "Diagnostic instructions to locate and fix the problem.",
+            "minLength": 1,
+            "type": "string"
+          },
+          "instance": {
+            "description": "A unique value generated with each API call.",
+            "minLength": 1,
+            "type": "string"
+          },
+          "problemId": {
+            "description": "A unique identifier of the problem.",
+            "minLength": 1,
+            "type": "string"
+          },
+          "status": {
+            "description": "The HTTP status code that categorizes this error case.",
+            "maximum": 600,
+            "minimum": 100,
+            "type": "integer"
+          },
+          "title": {
+            "description": "A summary of each error case.",
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": {
+            "description": "Identifies each error case.",
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "title",
+          "status",
+          "detail",
+          "instance"
+        ],
+        "type": "object",
+        "x-akamai": {
+          "file-path": "schemas/problem.yaml"
+        }
+      },
+      "system-problem": {
+        "additionalProperties": true,
+        "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+        "properties": {
+          "clientIp": {
+            "description": "The client IP address.",
+            "format": "ipv4",
+            "type": "string"
+          },
+          "detail": {
+            "description": "Diagnostic instructions to locate and fix the problem.",
+            "minLength": 1,
+            "type": "string"
+          },
+          "instance": {
+            "description": "A unique value generated with each API call.",
+            "format": "uri",
+            "type": "string"
+          },
+          "method": {
+            "description": "An HTTP method used in a given API call.",
+            "minLength": 1,
+            "type": "string"
+          },
+          "requestId": {
+            "description": "A unique identifier of each API call.",
+            "minLength": 1,
+            "type": "string"
+          },
+          "requestTime": {
+            "description": "An ISO 8601 timestamp indicating when each API call was made.",
+            "format": "date-time",
+            "type": "string"
+          },
+          "serverIp": {
+            "description": "The server IP address.",
+            "format": "ipv4",
+            "type": "string"
+          },
+          "status": {
+            "description": "The HTTP status code that categorizes this error case.",
+            "maximum": 600,
+            "minimum": 100,
+            "type": "integer"
+          },
+          "title": {
+            "description": "A summary of each error case.",
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": {
+            "description": "Identifies each error case.",
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "title",
+          "status",
+          "instance",
+          "method",
+          "serverIp",
+          "clientIp",
+          "requestId",
+          "requestTime"
+        ],
+        "type": "object",
+        "x-akamai": {
+          "file-path": "schemas/system-problem.yaml"
+        }
+      }
+    }
+  },
   "externalDocs": {
     "description": "See documentation for Akamai's Client Access Control API",
     "url": "https://techdocs.akamai.com/client-access-control/reference"
   },
   "info": {
-    "title": "Akamai: Client Access Control API",
-    "version": "1",
+    "description": "Restrict access between your origin infrastructure and\nAkamai edge servers based on CIDR blocks.\n",
     "license": {
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
-    }
+    },
+    "title": "Akamai: Client Access Control API",
+    "version": "1"
   },
+  "openapi": "3.0.0",
   "paths": {
     "/configurations": {
       "get": {
-        "description": "Get the list of all Client Access Control (CAC) configurations to which you have access.",
-        "operationId": "get-configurations",
-        "summary": "List CAC configurations",
-        "tags": [
-          "CAC configurations"
-        ],
+        "description": "Lists all Client Access Control (CAC) configurations you can access.",
         "externalDocs": {
           "description": "See documentation for this operation in Akamai's Client Access Control API",
           "url": "https://techdocs.akamai.com/client-access-control/reference/get-configurations"
         },
+        "operationId": "get-configurations",
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Successful response.",
             "content": {
               "application/json": {
-                "schema": {
-                  "description": "Configuration collection.",
-                  "type": "array",
-                  "items": {
-                    "additionalProperties": false,
-                    "description": "Encapsulates the Client Access Control (CAC) configurations that you have access to. These configurations let your origin communicate with the Akamai network.",
-                    "type": "object",
-                    "properties": {
-                      "configurationId": {
-                        "description": "The unique ID for the CAC configuration.",
-                        "type": "integer"
-                      },
-                      "currentCidrs": {
-                        "additionalProperties": false,
-                        "description": "Encapsulates the current set of CIDR blocks.",
-                        "type": "object",
-                        "properties": {
-                          "acknowledgeDate": {
-                            "description": "An ISO-8601 timestamp for when your organization last acknowledged a proposed CIDR block version.",
-                            "format": "date-time",
-                            "type": "string"
-                          },
-                          "cidrs": {
-                            "description": "CIDR blocks used to provide this CAC configuration with access to the Akamai portal.",
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            }
-                          },
-                          "version": {
-                            "description": "The current version of CIDR blocks serving the CAC configuration. The first version is always `0`.",
-                            "type": "integer"
-                          }
-                        }
-                      },
-                      "description": {
-                        "description": "A description of the CAC configuration.",
-                        "type": "string"
-                      },
-                      "name": {
-                        "description": "The name of the CAC configuration.",
-                        "type": "string"
-                      },
-                      "proposedCidrs": {
-                        "description": "Encapsulates the set of CIDR blocks proposed by Akamai.",
-                        "type": "array",
-                        "items": {
-                          "additionalProperties": false,
-                          "type": "object",
-                          "properties": {
-                            "cidrs": {
-                              "description": "CIDR blocks used to provide this CAC configuration with access to the Akamai portal.",
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              }
-                            },
-                            "proposedDate": {
-                              "description": "The time, in ISO-8601 format, that Akamai proposed the latest version of CIDR blocks.",
-                              "format": "date-time",
-                              "type": "string"
-                            },
-                            "version": {
-                              "description": "The latest version of CIDR blocks proposed.",
-                              "type": "integer"
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "x-akamai": {
-                      "file-path": "schemas/configuration.yaml"
-                    }
-                  },
-                  "x-akamai": {
-                    "file-path": "schemas/configurations.yaml"
-                  }
-                },
                 "example": [
                   {
                     "configurationId": 1060,
-                    "description": "The CAC configuration for an example application.",
-                    "name": "Example-CAC-Config",
                     "currentCidrs": {
                       "acknowledgeDate": "2021-12-08T16:42:49+0000",
-                      "version": 1,
                       "cidrs": [
                         "1.2.0.0/0"
-                      ]
+                      ],
+                      "version": 1
                     },
+                    "description": "The CAC configuration for an example application.",
+                    "name": "Example-CAC-Config",
                     "proposedCidrs": [
                       {
-                        "proposedDate": "2021-12-08T17:13:41+0000",
-                        "version": 2,
                         "cidrs": [
-                          "192.0.2.158/24",
-                          "192.0.2.161/24",
-                          "192.0.2.44/24",
-                          "192.0.2.169/24",
-                          "192.0.2.109/24",
-                          "192.0.2.117/24",
-                          "192.0.2.133/24"
-                        ]
+                          "192.0.2.228/24",
+                          "192.0.2.97/24",
+                          "192.0.2.2/24",
+                          "192.0.2.25/24",
+                          "192.0.2.238/24",
+                          "192.0.2.134/24",
+                          "192.0.2.102/24"
+                        ],
+                        "proposedDate": "2021-12-08T17:13:41+0000",
+                        "version": 2
                       }
                     ]
                   },
                   {
                     "configurationId": 1062,
-                    "description": "CAC configuration type 2",
-                    "name": "CAC configuration type 2",
                     "currentCidrs": {
                       "acknowledgeDate": "2021-12-08T16:42:49+0000",
-                      "version": 2,
                       "cidrs": [
-                        "192.0.2.151/24",
-                        "192.0.2.172/24",
-                        "192.0.2.127/24",
-                        "192.0.2.86/24",
-                        "192.0.2.238/24"
-                      ]
+                        "192.0.2.181/24",
+                        "192.0.2.189/24",
+                        "192.0.2.6/24",
+                        "192.0.2.155/24",
+                        "192.0.2.230/24"
+                      ],
+                      "version": 2
                     },
+                    "description": "CAC configuration type 2",
+                    "name": "CAC configuration type 2",
                     "proposedCidrs": [
                       {
-                        "proposedDate": "2021-12-08T17:13:41+0000",
-                        "version": 3,
                         "cidrs": [
-                          "192.0.2.43/24",
-                          "192.0.2.216/24",
-                          "192.0.2.60/24"
-                        ]
+                          "192.0.2.201/24",
+                          "192.0.2.35/24",
+                          "192.0.2.147/24"
+                        ],
+                        "proposedDate": "2021-12-08T17:13:41+0000",
+                        "version": 3
                       }
                     ]
                   }
-                ]
+                ],
+                "schema": {
+                  "description": "The Client Access Control (CAC) configuration collection.",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "Encapsulates the Client Access Control (CAC) configurations you can access. These configurations let your origin communicate with the Akamai network.",
+                    "properties": {
+                      "configurationId": {
+                        "description": "The unique identifier for the CAC configuration.",
+                        "minimum": 1,
+                        "type": "integer"
+                      },
+                      "currentCidrs": {
+                        "additionalProperties": false,
+                        "description": "Encapsulates the current set of CIDR blocks.",
+                        "properties": {
+                          "acknowledgeDate": {
+                            "description": "An ISO 8601 timestamp indicating when your organization last acknowledged a proposed CIDR block version.",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "cidrs": {
+                            "description": "CIDR blocks used to provide this CAC configuration with access to the Akamai portal.",
+                            "items": {
+                              "minLength": 1,
+                              "type": "string"
+                            },
+                            "minItems": 0,
+                            "type": "array"
+                          },
+                          "version": {
+                            "description": "The current version of CIDR blocks serving the CAC configuration. The first version is always `0`.",
+                            "minimum": 0,
+                            "type": "integer"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "description": {
+                        "description": "A description of the CAC configuration.",
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "The name of the CAC configuration.",
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "proposedCidrs": {
+                        "description": "Encapsulates the set of CIDR blocks proposed by Akamai.",
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "cidrs": {
+                              "description": "CIDR blocks used to provide this CAC configuration with access to the Akamai portal.",
+                              "items": {
+                                "type": "string"
+                              },
+                              "minItems": 0,
+                              "type": "array"
+                            },
+                            "proposedDate": {
+                              "description": "An ISO 8601 timestamp indicating when Akamai proposed the latest version of CIDR blocks.",
+                              "format": "date-time",
+                              "type": "string"
+                            },
+                            "version": {
+                              "description": "The latest version of CIDR blocks proposed.",
+                              "minimum": 0,
+                              "type": "integer"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "minItems": 0,
+                        "type": "array"
+                      }
+                    },
+                    "type": "object",
+                    "x-akamai": {
+                      "file-path": "schemas/configuration.yaml"
+                    }
+                  },
+                  "minItems": 0,
+                  "type": "array",
+                  "x-akamai": {
+                    "file-path": "schemas/configurations.yaml"
+                  }
+                }
               }
+            },
+            "description": "The response returns CAC configurations."
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "No CIDR found for version 2",
+                  "instance": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+                  "problemId": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+                  "status": 400,
+                  "title": "Bad Request",
+                  "type": "bad-request"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "description": "A unique identifier of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Bad request](https://techdocs.akamai.com/client-access-control/reference/400).",
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "12.3.45.678",
+                  "detail": "Inactive client token",
+                  "instance": "https://akab-12abc3def45g6h7i-8901-2jk3l4567mn.luna.akamaiapis.net/client-access-control/v1/configurations",
+                  "method": "GET",
+                  "requestId": "1abcde2",
+                  "requestTime": "2025-04-08T10:02:26Z",
+                  "serverIp": "12.345.67.89",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "clientIp": {
+                      "description": "The client IP address.",
+                      "format": "ipv4",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "An HTTP method used in a given API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "A unique identifier of each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "An ISO 8601 timestamp indicating when each API call was made.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "The server IP address.",
+                      "format": "ipv4",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "instance",
+                    "method",
+                    "serverIp",
+                    "clientIp",
+                    "requestId",
+                    "requestTime"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/system-problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Not authorized](https://techdocs.akamai.com/client-access-control/reference/401).",
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "User does not have access to resource",
+                  "instance": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+                  "problemId": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+                  "status": 403,
+                  "title": "Forbidden",
+                  "type": "forbidden"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "description": "A unique identifier of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Forbidden](https://techdocs.akamai.com/client-access-control/reference/403).",
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "No endpoint GET /cfw-api/v1/configurationss.",
+                  "instance": "/cfw-api/v1/configurationss",
+                  "status": 404,
+                  "title": "Not Found",
+                  "type": "about:blank"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "description": "A unique identifier of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Not found](https://techdocs.akamai.com/client-access-control/reference/404).",
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          },
+          "405": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Method 'POST' is not supported.",
+                  "instance": "/cfw-api/v1/configurations",
+                  "status": 405,
+                  "title": "Method Not Allowed",
+                  "type": "about:blank"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "description": "A unique identifier of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Method not allowed](https://techdocs.akamai.com/client-access-control/reference/405).",
+            "x-akamai": {
+              "file-path": "errors/405.yaml"
+            }
+          },
+          "406": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Acceptable representations: [application/json].",
+                  "instance": "/cfw-api/v1/configurations",
+                  "status": 406,
+                  "title": "Not Acceptable",
+                  "type": "about:blank"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "description": "A unique identifier of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Not acceptable](https://techdocs.akamai.com/client-access-control/reference/406).",
+            "x-akamai": {
+              "file-path": "errors/406.yaml"
+            }
+          },
+          "500": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "12.3.45.678",
+                  "instance": "https://akab-12abc3def45g6h7i-8901-2jk3l4567mn.luna.akamaiapis.net/client-access-control/v12/configurations",
+                  "method": "GET",
+                  "requestId": "1abcde2",
+                  "requestTime": "2025-04-08T09:59:01Z",
+                  "serverIp": "12.345.67.89",
+                  "status": 500,
+                  "title": "Server Error",
+                  "type": "https://problems.luna.akamaiapis.net/-/resource-impl/forward-origin-error"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "clientIp": {
+                      "description": "The client IP address.",
+                      "format": "ipv4",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "An HTTP method used in a given API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "A unique identifier of each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "An ISO 8601 timestamp indicating when each API call was made.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "The server IP address.",
+                      "format": "ipv4",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "instance",
+                    "method",
+                    "serverIp",
+                    "clientIp",
+                    "requestId",
+                    "requestTime"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/system-problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Server error](https://techdocs.akamai.com/client-access-control/reference/500).",
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
             }
           }
         },
+        "summary": "List CAC configurations",
+        "tags": [
+          "CAC configurations"
+        ]
+      },
+      "x-akamai": {
+        "file-path": "paths/configurations.yaml",
+        "path-info": "/configurations"
+      }
+    },
+    "/configurations/{configurationId}": {
+      "get": {
+        "description": "Returns the Client Access Control (CAC) configuration for a specific `configurationId`.",
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Client Access Control API",
+          "url": "https://techdocs.akamai.com/client-access-control/reference/get-configuration"
+        },
+        "operationId": "get-configuration",
         "parameters": [
           {
             "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
-            "example": "{{accountSwitchKey}}",
             "in": "query",
             "name": "accountSwitchKey",
             "required": false,
@@ -180,146 +1566,645 @@
               "type": "string"
             }
           }
-        ]
-      }
-    },
-    "/configurations/{configurationId}": {
-      "get": {
-        "description": "Returns the CAC configuration for a specific `configurationId`.",
-        "operationId": "get-configuration",
-        "summary": "Get a CAC configuration",
-        "tags": [
-          "CAC configurations"
         ],
-        "externalDocs": {
-          "description": "See documentation for this operation in Akamai's Client Access Control API",
-          "url": "https://techdocs.akamai.com/client-access-control/reference/get-configuration"
-        },
         "responses": {
           "200": {
-            "description": "Successful response.",
             "content": {
               "application/json": {
                 "example": {
                   "configurationId": 1060,
-                  "description": "The CAC configuration for an example application.",
-                  "name": "Example-CAC-Config",
                   "currentCidrs": {
                     "acknowledgeDate": "2021-12-08T16:42:49+0000",
-                    "version": 1,
                     "cidrs": [
                       "1.2.0.0/0"
-                    ]
+                    ],
+                    "version": 1
                   },
+                  "description": "The CAC configuration for an example application.",
+                  "name": "Example-CAC-Config",
                   "proposedCidrs": [
                     {
-                      "proposedDate": "2021-12-08T17:13:41+0000",
-                      "version": 2,
                       "cidrs": [
-                        "192.0.2.223/24",
-                        "192.0.2.97/24",
-                        "192.0.2.83/24",
-                        "192.0.2.210/24",
-                        "192.0.2.49/24",
-                        "192.0.2.42/24",
-                        "192.0.2.150/24"
-                      ]
+                        "192.0.2.153/24",
+                        "192.0.2.104/24",
+                        "192.0.2.53/24",
+                        "192.0.2.84/24",
+                        "192.0.2.113/24",
+                        "192.0.2.36/24",
+                        "192.0.2.199/24"
+                      ],
+                      "proposedDate": "2021-12-08T17:13:41+0000",
+                      "version": 2
                     }
                   ]
                 },
                 "schema": {
                   "additionalProperties": false,
-                  "description": "Encapsulates the Client Access Control (CAC) configurations that you have access to. These configurations let your origin communicate with the Akamai network.",
-                  "type": "object",
+                  "description": "Encapsulates the Client Access Control (CAC) configurations you can access. These configurations let your origin communicate with the Akamai network.",
                   "properties": {
                     "configurationId": {
-                      "description": "The unique ID for the CAC configuration.",
+                      "description": "The unique identifier for the CAC configuration.",
+                      "minimum": 1,
                       "type": "integer"
                     },
                     "currentCidrs": {
                       "additionalProperties": false,
                       "description": "Encapsulates the current set of CIDR blocks.",
-                      "type": "object",
                       "properties": {
                         "acknowledgeDate": {
-                          "description": "An ISO-8601 timestamp for when your organization last acknowledged a proposed CIDR block version.",
+                          "description": "An ISO 8601 timestamp indicating when your organization last acknowledged a proposed CIDR block version.",
                           "format": "date-time",
                           "type": "string"
                         },
                         "cidrs": {
                           "description": "CIDR blocks used to provide this CAC configuration with access to the Akamai portal.",
-                          "type": "array",
                           "items": {
+                            "minLength": 1,
                             "type": "string"
-                          }
+                          },
+                          "minItems": 0,
+                          "type": "array"
                         },
                         "version": {
                           "description": "The current version of CIDR blocks serving the CAC configuration. The first version is always `0`.",
+                          "minimum": 0,
                           "type": "integer"
                         }
-                      }
+                      },
+                      "type": "object"
                     },
                     "description": {
                       "description": "A description of the CAC configuration.",
+                      "minLength": 1,
                       "type": "string"
                     },
                     "name": {
                       "description": "The name of the CAC configuration.",
+                      "minLength": 1,
                       "type": "string"
                     },
                     "proposedCidrs": {
                       "description": "Encapsulates the set of CIDR blocks proposed by Akamai.",
-                      "type": "array",
                       "items": {
                         "additionalProperties": false,
-                        "type": "object",
                         "properties": {
                           "cidrs": {
                             "description": "CIDR blocks used to provide this CAC configuration with access to the Akamai portal.",
-                            "type": "array",
                             "items": {
                               "type": "string"
-                            }
+                            },
+                            "minItems": 0,
+                            "type": "array"
                           },
                           "proposedDate": {
-                            "description": "The time, in ISO-8601 format, that Akamai proposed the latest version of CIDR blocks.",
+                            "description": "An ISO 8601 timestamp indicating when Akamai proposed the latest version of CIDR blocks.",
                             "format": "date-time",
                             "type": "string"
                           },
                           "version": {
                             "description": "The latest version of CIDR blocks proposed.",
+                            "minimum": 0,
                             "type": "integer"
                           }
-                        }
-                      }
+                        },
+                        "type": "object"
+                      },
+                      "minItems": 0,
+                      "type": "array"
                     }
                   },
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/configuration.yaml"
                   }
                 }
               }
+            },
+            "description": "The response returns a CAC configuration."
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "No CIDR found for version 2",
+                  "instance": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+                  "problemId": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+                  "status": 400,
+                  "title": "Bad Request",
+                  "type": "bad-request"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "description": "A unique identifier of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Bad request](https://techdocs.akamai.com/client-access-control/reference/400).",
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "12.3.45.678",
+                  "detail": "Inactive client token",
+                  "instance": "https://akab-12abc3def45g6h7i-8901-2jk3l4567mn.luna.akamaiapis.net/client-access-control/v1/configurations",
+                  "method": "GET",
+                  "requestId": "1abcde2",
+                  "requestTime": "2025-04-08T10:02:26Z",
+                  "serverIp": "12.345.67.89",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "clientIp": {
+                      "description": "The client IP address.",
+                      "format": "ipv4",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "An HTTP method used in a given API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "A unique identifier of each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "An ISO 8601 timestamp indicating when each API call was made.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "The server IP address.",
+                      "format": "ipv4",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "instance",
+                    "method",
+                    "serverIp",
+                    "clientIp",
+                    "requestId",
+                    "requestTime"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/system-problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Not authorized](https://techdocs.akamai.com/client-access-control/reference/401).",
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "User does not have access to resource",
+                  "instance": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+                  "problemId": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+                  "status": 403,
+                  "title": "Forbidden",
+                  "type": "forbidden"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "description": "A unique identifier of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Forbidden](https://techdocs.akamai.com/client-access-control/reference/403).",
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "No endpoint GET /cfw-api/v1/configurationss.",
+                  "instance": "/cfw-api/v1/configurationss",
+                  "status": 404,
+                  "title": "Not Found",
+                  "type": "about:blank"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "description": "A unique identifier of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Not found](https://techdocs.akamai.com/client-access-control/reference/404).",
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          },
+          "405": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Method 'POST' is not supported.",
+                  "instance": "/cfw-api/v1/configurations",
+                  "status": 405,
+                  "title": "Method Not Allowed",
+                  "type": "about:blank"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "description": "A unique identifier of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Method not allowed](https://techdocs.akamai.com/client-access-control/reference/405).",
+            "x-akamai": {
+              "file-path": "errors/405.yaml"
+            }
+          },
+          "406": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Acceptable representations: [application/json].",
+                  "instance": "/cfw-api/v1/configurations",
+                  "status": 406,
+                  "title": "Not Acceptable",
+                  "type": "about:blank"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "description": "A unique identifier of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Not acceptable](https://techdocs.akamai.com/client-access-control/reference/406).",
+            "x-akamai": {
+              "file-path": "errors/406.yaml"
+            }
+          },
+          "500": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "12.3.45.678",
+                  "instance": "https://akab-12abc3def45g6h7i-8901-2jk3l4567mn.luna.akamaiapis.net/client-access-control/v12/configurations",
+                  "method": "GET",
+                  "requestId": "1abcde2",
+                  "requestTime": "2025-04-08T09:59:01Z",
+                  "serverIp": "12.345.67.89",
+                  "status": 500,
+                  "title": "Server Error",
+                  "type": "https://problems.luna.akamaiapis.net/-/resource-impl/forward-origin-error"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "clientIp": {
+                      "description": "The client IP address.",
+                      "format": "ipv4",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "An HTTP method used in a given API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "A unique identifier of each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "An ISO 8601 timestamp indicating when each API call was made.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "The server IP address.",
+                      "format": "ipv4",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "instance",
+                    "method",
+                    "serverIp",
+                    "clientIp",
+                    "requestId",
+                    "requestTime"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/system-problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Server error](https://techdocs.akamai.com/client-access-control/reference/500).",
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
             }
           }
         },
-        "parameters": [
-          {
-            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
-            "example": "{{accountSwitchKey}}",
-            "in": "query",
-            "name": "accountSwitchKey",
-            "required": false,
-            "schema": {
-              "example": "1-5C0YLB:1-8BYUX",
-              "type": "string"
-            }
-          }
+        "summary": "Get a CAC configuration",
+        "tags": [
+          "CAC configurations"
         ]
       },
       "parameters": [
         {
           "description": "A unique identifier for a CAC configuration.",
-          "example": "{{configurationId}}",
           "in": "path",
           "name": "configurationId",
           "required": true,
@@ -328,35 +2213,26 @@
             "type": "integer"
           },
           "x-akamai": {
-            "file-path": "parameters/configurationId-path.yaml"
+            "file-path": "parameters/configuration-id-path.yaml"
           }
         }
-      ]
+      ],
+      "x-akamai": {
+        "file-path": "paths/configuration.yaml",
+        "path-info": "/configurations/{configurationId}"
+      }
     },
     "/configurations/{configurationId}/acknowledge/{version}": {
       "put": {
-        "description": "Once you review the `proposedCidrs` from Akamai and update your Access Control List (ACL) accordingly, use this operation to acknowledge the change.",
-        "operationId": "put-configuration-acknowledge-version",
-        "summary": "Acknowledge proposed CIDR blocks",
-        "tags": [
-          "CIDR blocks"
-        ],
+        "description": "Acknowledges the change. Use it once you review the `proposedCidrs` from Akamai and update your Access Control List (ACL) accordingly.",
         "externalDocs": {
           "description": "See documentation for this operation in Akamai's Client Access Control API",
           "url": "https://techdocs.akamai.com/client-access-control/reference/put-configuration-acknowledge-version"
         },
-        "responses": {
-          "200": {
-            "description": "Successful response.",
-            "content": {
-              "*/*": {}
-            }
-          }
-        },
+        "operationId": "put-configuration-acknowledge-version",
         "parameters": [
           {
             "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
-            "example": "{{accountSwitchKey}}",
             "in": "query",
             "name": "accountSwitchKey",
             "required": false,
@@ -365,12 +2241,470 @@
               "type": "string"
             }
           }
+        ],
+        "responses": {
+          "200": {
+            "content": {},
+            "description": "The response returns an empty success message."
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "No CIDR found for version 2",
+                  "instance": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+                  "problemId": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+                  "status": 400,
+                  "title": "Bad Request",
+                  "type": "bad-request"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "description": "A unique identifier of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Bad request](https://techdocs.akamai.com/client-access-control/reference/400).",
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "12.3.45.678",
+                  "detail": "Inactive client token",
+                  "instance": "https://akab-12abc3def45g6h7i-8901-2jk3l4567mn.luna.akamaiapis.net/client-access-control/v1/configurations",
+                  "method": "GET",
+                  "requestId": "1abcde2",
+                  "requestTime": "2025-04-08T10:02:26Z",
+                  "serverIp": "12.345.67.89",
+                  "status": 401,
+                  "title": "Not authorized",
+                  "type": "https://problems.luna.akamaiapis.net/-/pep-authn/deny"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "clientIp": {
+                      "description": "The client IP address.",
+                      "format": "ipv4",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "An HTTP method used in a given API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "A unique identifier of each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "An ISO 8601 timestamp indicating when each API call was made.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "The server IP address.",
+                      "format": "ipv4",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "instance",
+                    "method",
+                    "serverIp",
+                    "clientIp",
+                    "requestId",
+                    "requestTime"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/system-problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Not authorized](https://techdocs.akamai.com/client-access-control/reference/401).",
+            "x-akamai": {
+              "file-path": "errors/401.yaml"
+            }
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "User does not have access to resource",
+                  "instance": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+                  "problemId": "1a234b56-7890-1cde-23f4-gh56ij789kl",
+                  "status": 403,
+                  "title": "Forbidden",
+                  "type": "forbidden"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "description": "A unique identifier of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Forbidden](https://techdocs.akamai.com/client-access-control/reference/403).",
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "No endpoint GET /cfw-api/v1/configurationss.",
+                  "instance": "/cfw-api/v1/configurationss",
+                  "status": 404,
+                  "title": "Not Found",
+                  "type": "about:blank"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "description": "A unique identifier of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Not found](https://techdocs.akamai.com/client-access-control/reference/404).",
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          },
+          "405": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "detail": "Method 'POST' is not supported.",
+                  "instance": "/cfw-api/v1/configurations",
+                  "status": 405,
+                  "title": "Method Not Allowed",
+                  "type": "about:blank"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "problemId": {
+                      "description": "A unique identifier of the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "detail",
+                    "instance"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Method not allowed](https://techdocs.akamai.com/client-access-control/reference/405).",
+            "x-akamai": {
+              "file-path": "errors/405.yaml"
+            }
+          },
+          "500": {
+            "content": {
+              "application/problem+json": {
+                "example": {
+                  "clientIp": "12.3.45.678",
+                  "instance": "https://akab-12abc3def45g6h7i-8901-2jk3l4567mn.luna.akamaiapis.net/client-access-control/v12/configurations",
+                  "method": "GET",
+                  "requestId": "1abcde2",
+                  "requestTime": "2025-04-08T09:59:01Z",
+                  "serverIp": "12.345.67.89",
+                  "status": 500,
+                  "title": "Server Error",
+                  "type": "https://problems.luna.akamaiapis.net/-/resource-impl/forward-origin-error"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Represents error data in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Problem Details format.",
+                  "properties": {
+                    "clientIp": {
+                      "description": "The client IP address.",
+                      "format": "ipv4",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Diagnostic instructions to locate and fix the problem.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "instance": {
+                      "description": "A unique value generated with each API call.",
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "method": {
+                      "description": "An HTTP method used in a given API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "A unique identifier of each API call.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "requestTime": {
+                      "description": "An ISO 8601 timestamp indicating when each API call was made.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "serverIp": {
+                      "description": "The server IP address.",
+                      "format": "ipv4",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "The HTTP status code that categorizes this error case.",
+                      "maximum": 600,
+                      "minimum": 100,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "description": "A summary of each error case.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "description": "Identifies each error case.",
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "title",
+                    "status",
+                    "instance",
+                    "method",
+                    "serverIp",
+                    "clientIp",
+                    "requestId",
+                    "requestTime"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/system-problem.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Server error](https://techdocs.akamai.com/client-access-control/reference/500).",
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
+            }
+          }
+        },
+        "summary": "Acknowledge proposed CIDR blocks",
+        "tags": [
+          "CIDR blocks"
         ]
       },
       "parameters": [
         {
-          "description": "The version of proposed CIDR blocks that you are acknowledging.",
-          "example": "{{version}}",
+          "description": "The version of proposed CIDR blocks that you're acknowledging.",
           "in": "path",
           "name": "version",
           "required": true,
@@ -384,7 +2718,6 @@
         },
         {
           "description": "A unique identifier for a CAC configuration.",
-          "example": "{{configurationId}}",
           "in": "path",
           "name": "configurationId",
           "required": true,
@@ -393,22 +2726,37 @@
             "type": "integer"
           },
           "x-akamai": {
-            "file-path": "parameters/configurationId-path.yaml"
+            "file-path": "parameters/configuration-id-path.yaml"
           }
         }
-      ]
+      ],
+      "x-akamai": {
+        "file-path": "paths/version.yaml",
+        "path-info": "/configurations/{configurationId}/acknowledge/{version}"
+      }
     }
-  },
-  "x-readme": {
-    "samples-languages": [
-      "curl",
-      "python",
-      "node"
-    ]
   },
   "servers": [
     {
       "url": "https://{hostname}/client-access-control/v1"
     }
-  ]
+  ],
+  "tags": [
+    {
+      "description": "Get information about your Client Access Control (CAC) configurations.",
+      "name": "CAC configurations"
+    },
+    {
+      "description": "Acknowledge proposed CIDR blocks.",
+      "name": "CIDR blocks"
+    }
+  ],
+  "x-readme": {
+    "explorer-enabled": false,
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  }
 }
