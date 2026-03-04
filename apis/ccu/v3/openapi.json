@@ -1,32 +1,609 @@
 {
-  "openapi": "3.0.0",
+  "components": {
+    "headers": {
+      "x-ratelimit-limit": {
+        "description": "The burst limit that specifies how many requests you can make in excess of the imposed rate limit. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+        "schema": {
+          "example": 100,
+          "type": "integer"
+        },
+        "x-akamai": {
+          "file-path": "headers/x-ratelimit-limit.yaml"
+        }
+      },
+      "x-ratelimit-limit-objects": {
+        "description": "The burst limit that specifies how many objects you can add to a request in excess of the imposed rate limit. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+        "schema": {
+          "example": 10000,
+          "type": "integer"
+        },
+        "x-akamai": {
+          "file-path": "headers/x-ratelimit-limit-objects.yaml"
+        }
+      },
+      "x-ratelimit-limit-per-second": {
+        "description": "Maximum sustainable number of requests allowed each second per account. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+        "schema": {
+          "example": 50,
+          "type": "number"
+        },
+        "x-akamai": {
+          "file-path": "headers/x-ratelimit-limit-per-second.yaml"
+        }
+      },
+      "x-ratelimit-limit-per-second-objects": {
+        "description": "Maximum sustainable number of objects allowed each second per request. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+        "schema": {
+          "example": 200,
+          "type": "number"
+        },
+        "x-akamai": {
+          "file-path": "headers/x-ratelimit-limit-per-second-objects.yaml"
+        }
+      },
+      "x-ratelimit-remaining": {
+        "description": "The number of requests left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+        "schema": {
+          "example": 99,
+          "type": "integer"
+        },
+        "x-akamai": {
+          "file-path": "headers/x-ratelimit-remaining.yaml"
+        }
+      },
+      "x-ratelimit-remaining-objects": {
+        "description": "The number of objects left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+        "schema": {
+          "example": 10000,
+          "type": "integer"
+        },
+        "x-akamai": {
+          "file-path": "headers/x-ratelimit-remaining-objects.yaml"
+        }
+      },
+      "x-ratelimit-seconds-to-refresh-limit": {
+        "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+        "schema": {
+          "example": 0.02,
+          "type": "number"
+        },
+        "x-akamai": {
+          "file-path": "headers/x-ratelimit-seconds-to-refresh-limit.yaml"
+        }
+      },
+      "x-ratelimit-seconds-to-refresh-limit-objects": {
+        "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit-Objects`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+        "schema": {
+          "example": 0,
+          "type": "number"
+        },
+        "x-akamai": {
+          "file-path": "headers/x-ratelimit-seconds-to-refresh-limit-objects.yaml"
+        }
+      }
+    },
+    "parameters": {
+      "network-path": {
+        "description": "The network on which you want to invalidate or delete content, either `staging` or the default `production` network. If omitting this optional parameter, also omit any trailing slash from the shortened URL.",
+        "in": "path",
+        "name": "network",
+        "required": true,
+        "schema": {
+          "default": "production",
+          "enum": [
+            "staging",
+            "production"
+          ],
+          "example": "production",
+          "type": "string"
+        },
+        "x-akamai": {
+          "file-path": "parameters/network-path.yaml"
+        }
+      }
+    },
+    "responses": {
+      "400": {
+        "content": {
+          "application/api-problem+json": {
+            "example": {
+              "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+              "detail": "Invalid or malformed hostname",
+              "httpStatus": 400,
+              "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+              "title": "bad URL hostname"
+            },
+            "schema": {
+              "additionalProperties": true,
+              "description": "V3 Purge response schema.",
+              "properties": {
+                "describedBy": {
+                  "description": "A URL that describes the API's error response.",
+                  "type": "string"
+                },
+                "detail": {
+                  "description": "Detailed information about the HTTP status code returned with the response.",
+                  "type": "string"
+                },
+                "estimatedSeconds": {
+                  "description": "The estimated number of seconds before the purge is to complete.",
+                  "type": "integer"
+                },
+                "httpStatus": {
+                  "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                  "type": "integer"
+                },
+                "purgeId": {
+                  "description": "Unique identifier for the purge request.",
+                  "type": "string"
+                },
+                "supportId": {
+                  "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                  "type": "string"
+                },
+                "title": {
+                  "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "httpStatus",
+                "supportId",
+                "detail"
+              ],
+              "type": "object",
+              "x-akamai": {
+                "file-path": "schemas/response.yaml"
+              }
+            }
+          }
+        },
+        "description": "[Bad request](https://techdocs.akamai.com/purge-cache/reference/400).",
+        "x-akamai": {
+          "file-path": "errors/400.yaml"
+        }
+      },
+      "403": {
+        "content": {
+          "application/api-problem+json": {
+            "example": {
+              "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+              "detail": "http://fpj-test.bad-ideas2.org/",
+              "httpStatus": 403,
+              "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+              "title": "unauthorized arl"
+            },
+            "schema": {
+              "additionalProperties": true,
+              "description": "V3 Purge response schema.",
+              "properties": {
+                "describedBy": {
+                  "description": "A URL that describes the API's error response.",
+                  "type": "string"
+                },
+                "detail": {
+                  "description": "Detailed information about the HTTP status code returned with the response.",
+                  "type": "string"
+                },
+                "estimatedSeconds": {
+                  "description": "The estimated number of seconds before the purge is to complete.",
+                  "type": "integer"
+                },
+                "httpStatus": {
+                  "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                  "type": "integer"
+                },
+                "purgeId": {
+                  "description": "Unique identifier for the purge request.",
+                  "type": "string"
+                },
+                "supportId": {
+                  "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                  "type": "string"
+                },
+                "title": {
+                  "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "httpStatus",
+                "supportId",
+                "detail"
+              ],
+              "type": "object",
+              "x-akamai": {
+                "file-path": "schemas/response.yaml"
+              }
+            }
+          }
+        },
+        "description": "[Forbidden](https://techdocs.akamai.com/purge-cache/reference/403).",
+        "x-akamai": {
+          "file-path": "errors/403.yaml"
+        }
+      },
+      "429-cpcode": {
+        "content": {
+          "application/api-problem+json": {
+            "example": {
+              "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+              "detail": "",
+              "httpStatus": 429,
+              "rateLimit": 300,
+              "rateLimitCurrentRequestSize": 5,
+              "rateLimitRemaining": 1,
+              "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+              "title": "CPCODE Rate Limit exceeded"
+            },
+            "schema": {
+              "additionalProperties": true,
+              "description": "V3 Purge response schema.",
+              "properties": {
+                "describedBy": {
+                  "description": "A URL that describes the API's error response.",
+                  "type": "string"
+                },
+                "detail": {
+                  "description": "Detailed information about the HTTP status code returned with the response.",
+                  "type": "string"
+                },
+                "estimatedSeconds": {
+                  "description": "The estimated number of seconds before the purge is to complete.",
+                  "type": "integer"
+                },
+                "httpStatus": {
+                  "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                  "type": "integer"
+                },
+                "purgeId": {
+                  "description": "Unique identifier for the purge request.",
+                  "type": "string"
+                },
+                "supportId": {
+                  "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                  "type": "string"
+                },
+                "title": {
+                  "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "httpStatus",
+                "supportId",
+                "detail"
+              ],
+              "type": "object",
+              "x-akamai": {
+                "file-path": "schemas/response.yaml"
+              }
+            }
+          }
+        },
+        "description": "[Too many requests](https://techdocs.akamai.com/purge-cache/reference/429).",
+        "x-akamai": {
+          "file-path": "errors/429-cpcode.yaml"
+        }
+      },
+      "429-tag": {
+        "content": {
+          "application/api-problem+json": {
+            "example": {
+              "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+              "detail": "",
+              "httpStatus": 429,
+              "rateLimit": 5000,
+              "rateLimitCurrentRequestSize": 45,
+              "rateLimitRemaining": 34,
+              "supportId": "edtp-NZbXzFpHBjcJeryhw6PVgG",
+              "title": "TAG Rate Limit exceeded"
+            },
+            "schema": {
+              "additionalProperties": true,
+              "description": "V3 Purge response schema.",
+              "properties": {
+                "describedBy": {
+                  "description": "A URL that describes the API's error response.",
+                  "type": "string"
+                },
+                "detail": {
+                  "description": "Detailed information about the HTTP status code returned with the response.",
+                  "type": "string"
+                },
+                "estimatedSeconds": {
+                  "description": "The estimated number of seconds before the purge is to complete.",
+                  "type": "integer"
+                },
+                "httpStatus": {
+                  "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                  "type": "integer"
+                },
+                "purgeId": {
+                  "description": "Unique identifier for the purge request.",
+                  "type": "string"
+                },
+                "supportId": {
+                  "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                  "type": "string"
+                },
+                "title": {
+                  "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "httpStatus",
+                "supportId",
+                "detail"
+              ],
+              "type": "object",
+              "x-akamai": {
+                "file-path": "schemas/response.yaml"
+              }
+            }
+          }
+        },
+        "description": "[Too many requests](https://techdocs.akamai.com/purge-cache/reference/429).",
+        "x-akamai": {
+          "file-path": "errors/429-tag.yaml"
+        }
+      },
+      "429-url": {
+        "content": {
+          "application/api-problem+json": {
+            "example": {
+              "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+              "detail": "",
+              "httpStatus": 429,
+              "rateLimit": 10000,
+              "rateLimitCurrentRequestSize": 110,
+              "rateLimitRemaining": 94,
+              "supportId": "edup-NZbXzFpHBjcJeryhw6PVgG",
+              "title": "URL Rate Limit exceeded"
+            },
+            "schema": {
+              "additionalProperties": true,
+              "description": "V3 Purge response schema.",
+              "properties": {
+                "describedBy": {
+                  "description": "A URL that describes the API's error response.",
+                  "type": "string"
+                },
+                "detail": {
+                  "description": "Detailed information about the HTTP status code returned with the response.",
+                  "type": "string"
+                },
+                "estimatedSeconds": {
+                  "description": "The estimated number of seconds before the purge is to complete.",
+                  "type": "integer"
+                },
+                "httpStatus": {
+                  "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                  "type": "integer"
+                },
+                "purgeId": {
+                  "description": "Unique identifier for the purge request.",
+                  "type": "string"
+                },
+                "supportId": {
+                  "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                  "type": "string"
+                },
+                "title": {
+                  "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "httpStatus",
+                "supportId",
+                "detail"
+              ],
+              "type": "object",
+              "x-akamai": {
+                "file-path": "schemas/response.yaml"
+              }
+            }
+          }
+        },
+        "description": "[Too many requests](https://techdocs.akamai.com/purge-cache/reference/429).",
+        "x-akamai": {
+          "file-path": "errors/429-url.yaml"
+        }
+      },
+      "500": {
+        "content": {
+          "application/api-problem+json": {
+            "example": {
+              "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+              "detail": "If problem persists over multiple requests, please contact Customer Care",
+              "httpStatus": 500,
+              "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+              "title": "internal error"
+            },
+            "schema": {
+              "additionalProperties": true,
+              "description": "V3 Purge response schema.",
+              "properties": {
+                "describedBy": {
+                  "description": "A URL that describes the API's error response.",
+                  "type": "string"
+                },
+                "detail": {
+                  "description": "Detailed information about the HTTP status code returned with the response.",
+                  "type": "string"
+                },
+                "estimatedSeconds": {
+                  "description": "The estimated number of seconds before the purge is to complete.",
+                  "type": "integer"
+                },
+                "httpStatus": {
+                  "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                  "type": "integer"
+                },
+                "purgeId": {
+                  "description": "Unique identifier for the purge request.",
+                  "type": "string"
+                },
+                "supportId": {
+                  "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                  "type": "string"
+                },
+                "title": {
+                  "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "httpStatus",
+                "supportId",
+                "detail"
+              ],
+              "type": "object",
+              "x-akamai": {
+                "file-path": "schemas/response.yaml"
+              }
+            }
+          }
+        },
+        "description": "[Internal server error](https://techdocs.akamai.com/purge-cache/reference/500).",
+        "x-akamai": {
+          "file-path": "errors/500.yaml"
+        }
+      }
+    },
+    "schemas": {
+      "post-cpcode": {
+        "additionalProperties": false,
+        "description": "Specifies a list of CP codes to invalidate or delete.",
+        "properties": {
+          "objects": {
+            "description": "For CP code-based operations, an array of the CP codes you want to purge.",
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "objects"
+        ],
+        "type": "object",
+        "x-akamai": {
+          "file-path": "schemas/post-cpcode.yaml"
+        }
+      },
+      "post-tag": {
+        "additionalProperties": false,
+        "description": "Specifies a list of cache tags to invalidate or delete.",
+        "properties": {
+          "objects": {
+            "description": "An array of cache tag strings you want to purge.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "objects"
+        ],
+        "type": "object",
+        "x-akamai": {
+          "file-path": "schemas/post-tag.yaml"
+        }
+      },
+      "post-url": {
+        "additionalProperties": false,
+        "description": "Specifies a list of URLs or ARLs to invalidate or delete. You can submit URLs and ARLs in the same purge request.",
+        "properties": {
+          "objects": {
+            "description": "Lists URLs or ARLs to purge. Purges content for both `http` and `https` schemes.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "objects"
+        ],
+        "type": "object",
+        "x-akamai": {
+          "file-path": "schemas/post-url.yaml"
+        }
+      },
+      "response": {
+        "additionalProperties": true,
+        "description": "V3 Purge response schema.",
+        "properties": {
+          "describedBy": {
+            "description": "A URL that describes the API's error response.",
+            "type": "string"
+          },
+          "detail": {
+            "description": "Detailed information about the HTTP status code returned with the response.",
+            "type": "string"
+          },
+          "estimatedSeconds": {
+            "description": "The estimated number of seconds before the purge is to complete.",
+            "type": "integer"
+          },
+          "httpStatus": {
+            "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+            "type": "integer"
+          },
+          "purgeId": {
+            "description": "Unique identifier for the purge request.",
+            "type": "string"
+          },
+          "supportId": {
+            "description": "Identifier to provide Akamai Technical Support if issues arise.",
+            "type": "string"
+          },
+          "title": {
+            "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "httpStatus",
+          "supportId",
+          "detail"
+        ],
+        "type": "object",
+        "x-akamai": {
+          "file-path": "schemas/response.yaml"
+        }
+      }
+    }
+  },
   "externalDocs": {
     "description": "See documentation for Akamai's Fast Purge API",
     "url": "https://techdocs.akamai.com/purge-cache/reference"
   },
   "info": {
-    "title": "Akamai: Fast Purge API",
-    "version": "1",
+    "description": "Refresh or remove specific cached objects, by URLs, content\nprovider (CP) codes, or cache tags.\n",
     "license": {
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
-    }
+    },
+    "title": "Akamai: Fast Purge API",
+    "version": "v3"
   },
+  "openapi": "3.0.0",
   "paths": {
     "/delete/cpcode/{network}": {
       "post": {
-        "description": "Deletes content on the selected CP code for the selected `network`. In most cases, you should [invalidate](https://techdocs.akamai.com/purge-cache/reference/invalidate-cpcode) rather than delete content. Invalidation keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable.",
-        "operationId": "post-delete-cpcode",
-        "summary": "Delete by CP code",
-        "tags": [
-          "CP code"
-        ],
+        "description": "Deletes content on the selected CP code for the selected `network`. In most cases, you should [invalidate](https://techdocs.akamai.com/purge-cache/reference/post-invalidate-cpcode) rather than delete content. Invalidation keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable.",
         "externalDocs": {
           "description": "See documentation for this operation in Akamai's Fast Purge API",
           "url": "https://techdocs.akamai.com/purge-cache/reference/post-delete-cpcode"
         },
+        "operationId": "post-delete-cpcode",
+        "parameters": [],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "example": {
@@ -38,29 +615,29 @@
               "schema": {
                 "additionalProperties": false,
                 "description": "Specifies a list of CP codes to invalidate or delete.",
-                "type": "object",
-                "required": [
-                  "objects"
-                ],
                 "properties": {
                   "objects": {
                     "description": "For CP code-based operations, an array of the CP codes you want to purge.",
-                    "type": "array",
                     "items": {
                       "type": "integer"
-                    }
+                    },
+                    "type": "array"
                   }
                 },
+                "required": [
+                  "objects"
+                ],
+                "type": "object",
                 "x-akamai": {
                   "file-path": "schemas/post-cpcode.yaml"
                 }
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
-            "description": "Successful POST of a purge request.",
             "content": {
               "application/json": {
                 "example": {
@@ -73,12 +650,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -109,26 +680,115 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
+                }
+              }
+            },
+            "description": "Successful POST of a purge request.",
+            "headers": {
+              "X-Ratelimit-Limit": {
+                "description": "The burst limit that specifies how many requests you can make in excess of the imposed rate limit. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 100,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Objects": {
+                "description": "The burst limit that specifies how many objects you can add to a request in excess of the imposed rate limit. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 10000,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Per-Second": {
+                "description": "Maximum sustainable number of requests allowed each second per account. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 50,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-per-second.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Per-Second-Objects": {
+                "description": "Maximum sustainable number of objects allowed each second per request. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 200,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-per-second-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Remaining": {
+                "description": "The number of requests left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 99,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-remaining.yaml"
+                }
+              },
+              "X-Ratelimit-Remaining-Objects": {
+                "description": "The number of objects left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 10000,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-remaining-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Seconds-To-Refresh-Limit": {
+                "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 0.02,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-seconds-to-refresh-limit.yaml"
+                }
+              },
+              "X-Ratelimit-Seconds-To-Refresh-Limit-Objects": {
+                "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit-Objects`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 0,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-seconds-to-refresh-limit-objects.yaml"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request.",
             "content": {
-              "application/problem+json": {
+              "application/api-problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "Invalid or malformed hostname",
+                  "httpStatus": 400,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "bad URL hostname"
+                },
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -159,17 +819,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Bad request](https://techdocs.akamai.com/purge-cache/reference/400).",
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
             }
           },
           "403": {
-            "description": "Forbidden request.",
             "content": {
-              "application/problem+json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "http://fpj-test.bad-ideas2.org/",
@@ -180,12 +849,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -216,17 +879,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Forbidden](https://techdocs.akamai.com/purge-cache/reference/403).",
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
             }
           },
           "429": {
-            "description": "Too many requests.",
             "content": {
-              "application/json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "",
@@ -240,12 +912,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -276,17 +942,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Too many requests](https://techdocs.akamai.com/purge-cache/reference/429).",
+            "x-akamai": {
+              "file-path": "errors/429-cpcode.yaml"
             }
           },
           "500": {
-            "description": "Internal server error.",
             "content": {
-              "application/json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "If problem persists over multiple requests, please contact Customer Care",
@@ -297,12 +972,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -333,64 +1002,67 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Internal server error](https://techdocs.akamai.com/purge-cache/reference/500).",
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
             }
           }
         },
-        "parameters": [
-          {
-            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
-            "example": "{{accountSwitchKey}}",
-            "in": "query",
-            "name": "accountSwitchKey",
-            "required": false,
-            "schema": {
-              "example": "1-5C0YLB:1-8BYUX",
-              "type": "string"
-            }
-          }
-        ]
+        "summary": "Delete by CP code",
+        "tags": [
+          "CP code"
+        ],
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
       },
       "parameters": [
         {
           "description": "__Enum__ The network on which you want to invalidate or delete content, either `staging` or the default `production` network. If omitting this optional parameter, also omit any trailing slash from the shortened URL.",
-          "example": "{{network}}",
           "in": "path",
           "name": "network",
           "required": true,
           "schema": {
             "default": "production",
-            "example": "production",
-            "type": "string",
             "enum": [
               "staging",
               "production"
-            ]
+            ],
+            "example": "production",
+            "type": "string"
           },
           "x-akamai": {
             "file-path": "parameters/network-path.yaml"
           }
         }
-      ]
+      ],
+      "x-akamai": {
+        "file-path": "paths/delete-cpcode.yaml",
+        "path-info": "/delete/cpcode/{network}"
+      }
     },
     "/delete/tag/{network}": {
       "post": {
-        "description": "Deletes content on the selected set of cache tags for the selected `network`. In most cases, you should [invalidate](https://techdocs.akamai.com/purge-cache/reference/invalidate-tag) rather than delete content. Invalidation keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable.",
-        "operationId": "post-delete-tag",
-        "summary": "Delete by cache tag",
-        "tags": [
-          "Cache tag"
-        ],
+        "description": "Deletes content on the selected set of cache tags for the selected `network`. In most cases, you should [invalidate](https://techdocs.akamai.com/purge-cache/reference/post-invalidate-tag) rather than delete content. Invalidation keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable.",
         "externalDocs": {
           "description": "See documentation for this operation in Akamai's Fast Purge API",
           "url": "https://techdocs.akamai.com/purge-cache/reference/post-delete-tag"
         },
+        "operationId": "post-delete-tag",
+        "parameters": [],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "example": {
@@ -404,29 +1076,29 @@
               "schema": {
                 "additionalProperties": false,
                 "description": "Specifies a list of cache tags to invalidate or delete.",
-                "type": "object",
-                "required": [
-                  "objects"
-                ],
                 "properties": {
                   "objects": {
                     "description": "An array of cache tag strings you want to purge.",
-                    "type": "array",
                     "items": {
                       "type": "string"
-                    }
+                    },
+                    "type": "array"
                   }
                 },
+                "required": [
+                  "objects"
+                ],
+                "type": "object",
                 "x-akamai": {
                   "file-path": "schemas/post-tag.yaml"
                 }
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
-            "description": "Successful POST of a purge request.",
             "content": {
               "application/json": {
                 "example": {
@@ -439,12 +1111,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -475,26 +1141,115 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
+                }
+              }
+            },
+            "description": "Successful POST of a purge request.",
+            "headers": {
+              "X-Ratelimit-Limit": {
+                "description": "The burst limit that specifies how many requests you can make in excess of the imposed rate limit. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 100,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Objects": {
+                "description": "The burst limit that specifies how many objects you can add to a request in excess of the imposed rate limit. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 10000,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Per-Second": {
+                "description": "Maximum sustainable number of requests allowed each second per account. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 50,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-per-second.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Per-Second-Objects": {
+                "description": "Maximum sustainable number of objects allowed each second per request. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 200,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-per-second-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Remaining": {
+                "description": "The number of requests left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 99,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-remaining.yaml"
+                }
+              },
+              "X-Ratelimit-Remaining-Objects": {
+                "description": "The number of objects left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 10000,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-remaining-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Seconds-To-Refresh-Limit": {
+                "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 0.02,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-seconds-to-refresh-limit.yaml"
+                }
+              },
+              "X-Ratelimit-Seconds-To-Refresh-Limit-Objects": {
+                "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit-Objects`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 0,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-seconds-to-refresh-limit-objects.yaml"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request.",
             "content": {
-              "application/problem+json": {
+              "application/api-problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "Invalid or malformed hostname",
+                  "httpStatus": 400,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "bad URL hostname"
+                },
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -525,17 +1280,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Bad request](https://techdocs.akamai.com/purge-cache/reference/400).",
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
             }
           },
           "403": {
-            "description": "Forbidden request.",
             "content": {
-              "application/problem+json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "http://fpj-test.bad-ideas2.org/",
@@ -546,12 +1310,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -582,17 +1340,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Forbidden](https://techdocs.akamai.com/purge-cache/reference/403).",
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
             }
           },
           "429": {
-            "description": "Too many requests.",
             "content": {
-              "application/json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "",
@@ -606,12 +1373,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -642,17 +1403,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Too many requests](https://techdocs.akamai.com/purge-cache/reference/429).",
+            "x-akamai": {
+              "file-path": "errors/429-tag.yaml"
             }
           },
           "500": {
-            "description": "Internal server error.",
             "content": {
-              "application/json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "If problem persists over multiple requests, please contact Customer Care",
@@ -663,12 +1433,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -699,64 +1463,67 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Internal server error](https://techdocs.akamai.com/purge-cache/reference/500).",
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
             }
           }
         },
-        "parameters": [
-          {
-            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
-            "example": "{{accountSwitchKey}}",
-            "in": "query",
-            "name": "accountSwitchKey",
-            "required": false,
-            "schema": {
-              "example": "1-5C0YLB:1-8BYUX",
-              "type": "string"
-            }
-          }
-        ]
+        "summary": "Delete by cache tag",
+        "tags": [
+          "Cache tag"
+        ],
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
       },
       "parameters": [
         {
           "description": "__Enum__ The network on which you want to invalidate or delete content, either `staging` or the default `production` network. If omitting this optional parameter, also omit any trailing slash from the shortened URL.",
-          "example": "{{network}}",
           "in": "path",
           "name": "network",
           "required": true,
           "schema": {
             "default": "production",
-            "example": "production",
-            "type": "string",
             "enum": [
               "staging",
               "production"
-            ]
+            ],
+            "example": "production",
+            "type": "string"
           },
           "x-akamai": {
             "file-path": "parameters/network-path.yaml"
           }
         }
-      ]
+      ],
+      "x-akamai": {
+        "file-path": "paths/delete-tag.yaml",
+        "path-info": "/delete/tag/{network}"
+      }
     },
     "/delete/url/{network}": {
       "post": {
-        "description": "Deletes content on the selected URL or ARL  for the selected `network`.  URLs and ARLs can be submitted in the same request. In most cases, you should [invalidate](https://techdocs.akamai.com/purge-cache/reference/invalidate-url) rather than delete content. Invalidation keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable.",
-        "operationId": "post-delete-url",
-        "summary": "Delete by URL or ARL",
-        "tags": [
-          "URL/ARL"
-        ],
+        "description": "Deletes content on the selected URL or ARL  for the selected `network`.  URLs and ARLs can be submitted in the same request. In most cases, you should [invalidate](https://techdocs.akamai.com/purge-cache/reference/post-invalidate-url) rather than delete content. Invalidation keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable.",
         "externalDocs": {
           "description": "See documentation for this operation in Akamai's Fast Purge API",
           "url": "https://techdocs.akamai.com/purge-cache/reference/post-delete-url"
         },
+        "operationId": "post-delete-url",
+        "parameters": [],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "example": {
@@ -768,29 +1535,29 @@
               "schema": {
                 "additionalProperties": false,
                 "description": "Specifies a list of URLs or ARLs to invalidate or delete. You can submit URLs and ARLs in the same purge request.",
-                "type": "object",
-                "required": [
-                  "objects"
-                ],
                 "properties": {
                   "objects": {
                     "description": "Lists URLs or ARLs to purge. Purges content for both `http` and `https` schemes.",
-                    "type": "array",
                     "items": {
                       "type": "string"
-                    }
+                    },
+                    "type": "array"
                   }
                 },
+                "required": [
+                  "objects"
+                ],
+                "type": "object",
                 "x-akamai": {
                   "file-path": "schemas/post-url.yaml"
                 }
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
-            "description": "Successful POST of a purge request.",
             "content": {
               "application/json": {
                 "example": {
@@ -803,12 +1570,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -839,26 +1600,115 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
+                }
+              }
+            },
+            "description": "Successful POST of a purge request.",
+            "headers": {
+              "X-Ratelimit-Limit": {
+                "description": "The burst limit that specifies how many requests you can make in excess of the imposed rate limit. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 100,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Objects": {
+                "description": "The burst limit that specifies how many objects you can add to a request in excess of the imposed rate limit. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 10000,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Per-Second": {
+                "description": "Maximum sustainable number of requests allowed each second per account. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 50,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-per-second.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Per-Second-Objects": {
+                "description": "Maximum sustainable number of objects allowed each second per request. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 200,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-per-second-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Remaining": {
+                "description": "The number of requests left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 99,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-remaining.yaml"
+                }
+              },
+              "X-Ratelimit-Remaining-Objects": {
+                "description": "The number of objects left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 10000,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-remaining-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Seconds-To-Refresh-Limit": {
+                "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 0.02,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-seconds-to-refresh-limit.yaml"
+                }
+              },
+              "X-Ratelimit-Seconds-To-Refresh-Limit-Objects": {
+                "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit-Objects`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 0,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-seconds-to-refresh-limit-objects.yaml"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request.",
             "content": {
-              "application/problem+json": {
+              "application/api-problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "Invalid or malformed hostname",
+                  "httpStatus": 400,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "bad URL hostname"
+                },
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -889,17 +1739,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Bad request](https://techdocs.akamai.com/purge-cache/reference/400).",
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
             }
           },
           "403": {
-            "description": "Forbidden request.",
             "content": {
-              "application/problem+json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "http://fpj-test.bad-ideas2.org/",
@@ -910,12 +1769,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -946,17 +1799,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Forbidden](https://techdocs.akamai.com/purge-cache/reference/403).",
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
             }
           },
           "429": {
-            "description": "Too many requests.",
             "content": {
-              "application/json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "",
@@ -970,12 +1832,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -1006,17 +1862,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Too many requests](https://techdocs.akamai.com/purge-cache/reference/429).",
+            "x-akamai": {
+              "file-path": "errors/429-url.yaml"
             }
           },
           "500": {
-            "description": "Internal server error.",
             "content": {
-              "application/json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "If problem persists over multiple requests, please contact Customer Care",
@@ -1027,12 +1892,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -1063,64 +1922,67 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Internal server error](https://techdocs.akamai.com/purge-cache/reference/500).",
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
             }
           }
         },
-        "parameters": [
-          {
-            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
-            "example": "{{accountSwitchKey}}",
-            "in": "query",
-            "name": "accountSwitchKey",
-            "required": false,
-            "schema": {
-              "example": "1-5C0YLB:1-8BYUX",
-              "type": "string"
-            }
-          }
-        ]
+        "summary": "Delete by URL or ARL",
+        "tags": [
+          "URL/ARL"
+        ],
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
       },
       "parameters": [
         {
           "description": "__Enum__ The network on which you want to invalidate or delete content, either `staging` or the default `production` network. If omitting this optional parameter, also omit any trailing slash from the shortened URL.",
-          "example": "{{network}}",
           "in": "path",
           "name": "network",
           "required": true,
           "schema": {
             "default": "production",
-            "example": "production",
-            "type": "string",
             "enum": [
               "staging",
               "production"
-            ]
+            ],
+            "example": "production",
+            "type": "string"
           },
           "x-akamai": {
             "file-path": "parameters/network-path.yaml"
           }
         }
-      ]
+      ],
+      "x-akamai": {
+        "file-path": "paths/delete-url.yaml",
+        "path-info": "/delete/url/{network}"
+      }
     },
     "/invalidate/cpcode/{network}": {
       "post": {
         "description": "Invalidates content on the selected CP code for the selected `network`. You should consider invalidating content by default. This keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable.",
-        "operationId": "post-invalidate-cpcode",
-        "summary": "Invalidate by CP code",
-        "tags": [
-          "CP code"
-        ],
         "externalDocs": {
           "description": "See documentation for this operation in Akamai's Fast Purge API",
           "url": "https://techdocs.akamai.com/purge-cache/reference/post-invalidate-cpcode"
         },
+        "operationId": "post-invalidate-cpcode",
+        "parameters": [],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "example": {
@@ -1132,29 +1994,29 @@
               "schema": {
                 "additionalProperties": false,
                 "description": "Specifies a list of CP codes to invalidate or delete.",
-                "type": "object",
-                "required": [
-                  "objects"
-                ],
                 "properties": {
                   "objects": {
                     "description": "For CP code-based operations, an array of the CP codes you want to purge.",
-                    "type": "array",
                     "items": {
                       "type": "integer"
-                    }
+                    },
+                    "type": "array"
                   }
                 },
+                "required": [
+                  "objects"
+                ],
+                "type": "object",
                 "x-akamai": {
                   "file-path": "schemas/post-cpcode.yaml"
                 }
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
-            "description": "Successful response.",
             "content": {
               "application/json": {
                 "example": {
@@ -1167,12 +2029,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -1203,26 +2059,115 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
+                }
+              }
+            },
+            "description": "Successful response.",
+            "headers": {
+              "X-Ratelimit-Limit": {
+                "description": "The burst limit that specifies how many requests you can make in excess of the imposed rate limit. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 100,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Objects": {
+                "description": "The burst limit that specifies how many objects you can add to a request in excess of the imposed rate limit. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 10000,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Per-Second": {
+                "description": "Maximum sustainable number of requests allowed each second per account. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 50,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-per-second.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Per-Second-Objects": {
+                "description": "Maximum sustainable number of objects allowed each second per request. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 200,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-per-second-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Remaining": {
+                "description": "The number of requests left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 99,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-remaining.yaml"
+                }
+              },
+              "X-Ratelimit-Remaining-Objects": {
+                "description": "The number of objects left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 10000,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-remaining-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Seconds-To-Refresh-Limit": {
+                "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 0.02,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-seconds-to-refresh-limit.yaml"
+                }
+              },
+              "X-Ratelimit-Seconds-To-Refresh-Limit-Objects": {
+                "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit-Objects`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 0,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-seconds-to-refresh-limit-objects.yaml"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request.",
             "content": {
-              "application/problem+json": {
+              "application/api-problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "Invalid or malformed hostname",
+                  "httpStatus": 400,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "bad URL hostname"
+                },
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -1253,17 +2198,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Bad request](https://techdocs.akamai.com/purge-cache/reference/400).",
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
             }
           },
           "403": {
-            "description": "Unauthorized request.",
             "content": {
-              "application/problem+json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "http://fpj-test.bad-ideas2.org/",
@@ -1274,12 +2228,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -1310,17 +2258,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Forbidden](https://techdocs.akamai.com/purge-cache/reference/403).",
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
             }
           },
           "429": {
-            "description": "Too many requests.",
             "content": {
-              "application/json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "",
@@ -1334,12 +2291,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -1370,17 +2321,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Too many requests](https://techdocs.akamai.com/purge-cache/reference/429).",
+            "x-akamai": {
+              "file-path": "errors/429-cpcode.yaml"
             }
           },
           "500": {
-            "description": "Internal server error.",
             "content": {
-              "application/json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "If problem persists over multiple requests, please contact Customer Care",
@@ -1391,12 +2351,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -1427,64 +2381,67 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Internal server error](https://techdocs.akamai.com/purge-cache/reference/500).",
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
             }
           }
         },
-        "parameters": [
-          {
-            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
-            "example": "{{accountSwitchKey}}",
-            "in": "query",
-            "name": "accountSwitchKey",
-            "required": false,
-            "schema": {
-              "example": "1-5C0YLB:1-8BYUX",
-              "type": "string"
-            }
-          }
-        ]
+        "summary": "Invalidate by CP code",
+        "tags": [
+          "CP code"
+        ],
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
       },
       "parameters": [
         {
           "description": "__Enum__ The network on which you want to invalidate or delete content, either `staging` or the default `production` network. If omitting this optional parameter, also omit any trailing slash from the shortened URL.",
-          "example": "{{network}}",
           "in": "path",
           "name": "network",
           "required": true,
           "schema": {
             "default": "production",
-            "example": "production",
-            "type": "string",
             "enum": [
               "staging",
               "production"
-            ]
+            ],
+            "example": "production",
+            "type": "string"
           },
           "x-akamai": {
             "file-path": "parameters/network-path.yaml"
           }
         }
-      ]
+      ],
+      "x-akamai": {
+        "file-path": "paths/invalidate-cpcode.yaml",
+        "path-info": "/invalidate/cpcode/{network}"
+      }
     },
     "/invalidate/tag/{network}": {
       "post": {
         "description": "Invalidates content on the selected set of cache tags for the selected `network`. You should consider invalidating content by default. This keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable.",
-        "operationId": "post-invalidate-tag",
-        "summary": "Invalidate by cache tag",
-        "tags": [
-          "Cache tag"
-        ],
         "externalDocs": {
           "description": "See documentation for this operation in Akamai's Fast Purge API",
           "url": "https://techdocs.akamai.com/purge-cache/reference/post-invalidate-tag"
         },
+        "operationId": "post-invalidate-tag",
+        "parameters": [],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "example": {
@@ -1498,29 +2455,29 @@
               "schema": {
                 "additionalProperties": false,
                 "description": "Specifies a list of cache tags to invalidate or delete.",
-                "type": "object",
-                "required": [
-                  "objects"
-                ],
                 "properties": {
                   "objects": {
                     "description": "An array of cache tag strings you want to purge.",
-                    "type": "array",
                     "items": {
                       "type": "string"
-                    }
+                    },
+                    "type": "array"
                   }
                 },
+                "required": [
+                  "objects"
+                ],
+                "type": "object",
                 "x-akamai": {
                   "file-path": "schemas/post-tag.yaml"
                 }
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
-            "description": "Successful POST of a purge request.",
             "content": {
               "application/json": {
                 "example": {
@@ -1533,12 +2490,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -1569,26 +2520,115 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
+                }
+              }
+            },
+            "description": "Successful POST of a purge request.",
+            "headers": {
+              "X-Ratelimit-Limit": {
+                "description": "The burst limit that specifies how many requests you can make in excess of the imposed rate limit. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 100,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Objects": {
+                "description": "The burst limit that specifies how many objects you can add to a request in excess of the imposed rate limit. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 10000,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Per-Second": {
+                "description": "Maximum sustainable number of requests allowed each second per account. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 50,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-per-second.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Per-Second-Objects": {
+                "description": "Maximum sustainable number of objects allowed each second per request. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 200,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-per-second-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Remaining": {
+                "description": "The number of requests left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 99,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-remaining.yaml"
+                }
+              },
+              "X-Ratelimit-Remaining-Objects": {
+                "description": "The number of objects left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 10000,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-remaining-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Seconds-To-Refresh-Limit": {
+                "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 0.02,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-seconds-to-refresh-limit.yaml"
+                }
+              },
+              "X-Ratelimit-Seconds-To-Refresh-Limit-Objects": {
+                "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit-Objects`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 0,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-seconds-to-refresh-limit-objects.yaml"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request.",
             "content": {
-              "application/problem+json": {
+              "application/api-problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "Invalid or malformed hostname",
+                  "httpStatus": 400,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "bad URL hostname"
+                },
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -1619,17 +2659,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Bad request](https://techdocs.akamai.com/purge-cache/reference/400).",
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
             }
           },
           "403": {
-            "description": "Forbidden request.",
             "content": {
-              "application/problem+json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "http://fpj-test.bad-ideas2.org/",
@@ -1640,12 +2689,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -1676,17 +2719,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Forbidden](https://techdocs.akamai.com/purge-cache/reference/403).",
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
             }
           },
           "429": {
-            "description": "Too many requests.",
             "content": {
-              "application/json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "",
@@ -1700,12 +2752,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -1736,17 +2782,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Too many requests](https://techdocs.akamai.com/purge-cache/reference/429).",
+            "x-akamai": {
+              "file-path": "errors/429-tag.yaml"
             }
           },
           "500": {
-            "description": "Internal server error.",
             "content": {
-              "application/json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "If problem persists over multiple requests, please contact Customer Care",
@@ -1757,12 +2812,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -1793,64 +2842,67 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Internal server error](https://techdocs.akamai.com/purge-cache/reference/500).",
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
             }
           }
         },
-        "parameters": [
-          {
-            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
-            "example": "{{accountSwitchKey}}",
-            "in": "query",
-            "name": "accountSwitchKey",
-            "required": false,
-            "schema": {
-              "example": "1-5C0YLB:1-8BYUX",
-              "type": "string"
-            }
-          }
-        ]
+        "summary": "Invalidate by cache tag",
+        "tags": [
+          "Cache tag"
+        ],
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
       },
       "parameters": [
         {
           "description": "__Enum__ The network on which you want to invalidate or delete content, either `staging` or the default `production` network. If omitting this optional parameter, also omit any trailing slash from the shortened URL.",
-          "example": "{{network}}",
           "in": "path",
           "name": "network",
           "required": true,
           "schema": {
             "default": "production",
-            "example": "production",
-            "type": "string",
             "enum": [
               "staging",
               "production"
-            ]
+            ],
+            "example": "production",
+            "type": "string"
           },
           "x-akamai": {
             "file-path": "parameters/network-path.yaml"
           }
         }
-      ]
+      ],
+      "x-akamai": {
+        "file-path": "paths/invalidate-tag.yaml",
+        "path-info": "/invalidate/tag/{network}"
+      }
     },
     "/invalidate/url/{network}": {
       "post": {
         "description": "Invalidates content on the selected URL or ARL for the selected `network`. You should consider invalidating content by default. This keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable. URLs and ARLs can be submitted in the same request.",
-        "operationId": "post-invalidate-url",
-        "summary": "Invalidate by URL or ARL",
-        "tags": [
-          "URL/ARL"
-        ],
         "externalDocs": {
           "description": "See documentation for this operation in Akamai's Fast Purge API",
           "url": "https://techdocs.akamai.com/purge-cache/reference/post-invalidate-url"
         },
+        "operationId": "post-invalidate-url",
+        "parameters": [],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "example": {
@@ -1862,29 +2914,29 @@
               "schema": {
                 "additionalProperties": false,
                 "description": "Specifies a list of URLs or ARLs to invalidate or delete. You can submit URLs and ARLs in the same purge request.",
-                "type": "object",
-                "required": [
-                  "objects"
-                ],
                 "properties": {
                   "objects": {
                     "description": "Lists URLs or ARLs to purge. Purges content for both `http` and `https` schemes.",
-                    "type": "array",
                     "items": {
                       "type": "string"
-                    }
+                    },
+                    "type": "array"
                   }
                 },
+                "required": [
+                  "objects"
+                ],
+                "type": "object",
                 "x-akamai": {
                   "file-path": "schemas/post-url.yaml"
                 }
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
-            "description": "Successful POST of a purge request.",
             "content": {
               "application/json": {
                 "example": {
@@ -1897,12 +2949,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -1933,26 +2979,115 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
+                }
+              }
+            },
+            "description": "Successful POST of a purge request.",
+            "headers": {
+              "X-Ratelimit-Limit": {
+                "description": "The burst limit that specifies how many requests you can make in excess of the imposed rate limit. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 100,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Objects": {
+                "description": "The burst limit that specifies how many objects you can add to a request in excess of the imposed rate limit. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 10000,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Per-Second": {
+                "description": "Maximum sustainable number of requests allowed each second per account. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 50,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-per-second.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Per-Second-Objects": {
+                "description": "Maximum sustainable number of objects allowed each second per request. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 200,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-per-second-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Remaining": {
+                "description": "The number of requests left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 99,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-remaining.yaml"
+                }
+              },
+              "X-Ratelimit-Remaining-Objects": {
+                "description": "The number of objects left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 10000,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-remaining-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Seconds-To-Refresh-Limit": {
+                "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 0.02,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-seconds-to-refresh-limit.yaml"
+                }
+              },
+              "X-Ratelimit-Seconds-To-Refresh-Limit-Objects": {
+                "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit-Objects`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 0,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-seconds-to-refresh-limit-objects.yaml"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request.",
             "content": {
-              "application/problem+json": {
+              "application/api-problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "Invalid or malformed hostname",
+                  "httpStatus": 400,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "bad URL hostname"
+                },
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -1983,17 +3118,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Bad request](https://techdocs.akamai.com/purge-cache/reference/400).",
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
             }
           },
           "403": {
-            "description": "Forbidden request.",
             "content": {
-              "application/problem+json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "http://fpj-test.bad-ideas2.org/",
@@ -2004,12 +3148,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -2040,17 +3178,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Forbidden](https://techdocs.akamai.com/purge-cache/reference/403).",
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
             }
           },
           "429": {
-            "description": "Too many requests.",
             "content": {
-              "application/json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "",
@@ -2064,12 +3211,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -2100,17 +3241,26 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Too many requests](https://techdocs.akamai.com/purge-cache/reference/429).",
+            "x-akamai": {
+              "file-path": "errors/429-url.yaml"
             }
           },
           "500": {
-            "description": "Internal error.",
             "content": {
-              "application/json": {
+              "application/api-problem+json": {
                 "example": {
                   "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
                   "detail": "If problem persists over multiple requests, please contact Customer Care",
@@ -2121,12 +3271,6 @@
                 "schema": {
                   "additionalProperties": true,
                   "description": "V3 Purge response schema.",
-                  "type": "object",
-                  "required": [
-                    "httpStatus",
-                    "supportId",
-                    "detail"
-                  ],
                   "properties": {
                     "describedBy": {
                       "description": "A URL that describes the API's error response.",
@@ -2157,61 +3301,517 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/response.yaml"
                   }
                 }
               }
+            },
+            "description": "[Internal server error](https://techdocs.akamai.com/purge-cache/reference/500).",
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
             }
           }
         },
-        "parameters": [
-          {
-            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
-            "example": "{{accountSwitchKey}}",
-            "in": "query",
-            "name": "accountSwitchKey",
-            "required": false,
-            "schema": {
-              "example": "1-5C0YLB:1-8BYUX",
-              "type": "string"
-            }
-          }
-        ]
+        "summary": "Invalidate by URL or ARL",
+        "tags": [
+          "URL/ARL"
+        ],
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
       },
       "parameters": [
         {
           "description": "__Enum__ The network on which you want to invalidate or delete content, either `staging` or the default `production` network. If omitting this optional parameter, also omit any trailing slash from the shortened URL.",
-          "example": "{{network}}",
           "in": "path",
           "name": "network",
           "required": true,
           "schema": {
             "default": "production",
-            "example": "production",
-            "type": "string",
             "enum": [
               "staging",
               "production"
-            ]
+            ],
+            "example": "production",
+            "type": "string"
           },
           "x-akamai": {
             "file-path": "parameters/network-path.yaml"
           }
         }
-      ]
+      ],
+      "x-akamai": {
+        "file-path": "paths/invalidate-url.yaml",
+        "path-info": "/invalidate/url/{network}"
+      }
+    },
+    "/rate-limit-status/{purge-type}": {
+      "post": {
+        "description": "The Fast Purge API uses a token bucket model for [rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) to protect itself from inadvertent or malicious overuse. For each Akamai account, there's a rate limit shared by all object types (CP codes, cache tags, and URL/ARLs), and three separate resource limits for each object type. Each purge request uses one rate limit token from the requests bucket. Each purge object in a request takes up a token from the resource bucket.\nThis operation fetches information on the remaining number of requests and objects for a specific account. You can use these details to monitor the request consumption or throttle requests to prevent exceeding the limits, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error.",
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Fast Purge API",
+          "url": "https://techdocs.akamai.com/purge-cache/reference/post-rate-limit-status"
+        },
+        "operationId": "post-rate-limit-status",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Request accepted",
+                  "estimatedSeconds": 5,
+                  "httpStatus": 201,
+                  "purgeId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "Rate limit status response.",
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the rate limit status request. Successful requests yield a 201 response code.",
+                      "type": "integer"
+                    },
+                    "rateLimit": {
+                      "description": "The maximum number of requests allowed each second per account. Unlike the response header, this JSON response body field only appears if the request exceeded the rate limit and got rejected with the [429](https://techdocs.akamai.com/purge-cache/reference/429) error.",
+                      "type": "integer"
+                    },
+                    "rateLimitCurrentRequestSize": {
+                      "description": "The size of the request. For the request limit, this usually equals 1. For the resource limit, this depends on the number of purge objects included in the request, such as CP codes, cache tags, and URL/ARLs. Unlike the response header, this JSON response body field only appears if a request exceeded the rate limit and was rejected with the [429](https://techdocs.akamai.com/purge-cache/reference/429) error.",
+                      "type": "integer"
+                    },
+                    "rateLimitRemaining": {
+                      "description": "The number of requests or objects remaining in the token bucket before the rate limit is exceeded. Unlike the response header, this field only appears if a request exceeded the rate limit and was rejected with the [429](https://techdocs.akamai.com/purge-cache/reference/429) error.",
+                      "type": "integer"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/rate-limit-status-response.yaml"
+                  }
+                }
+              }
+            },
+            "description": "Successful POST of a rate limit status request.",
+            "headers": {
+              "X-Ratelimit-Limit": {
+                "description": "The burst limit that specifies how many requests you can make in excess of the imposed rate limit. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 100,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Objects": {
+                "description": "The burst limit that specifies how many objects you can add to a request in excess of the imposed rate limit. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 10000,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Per-Second": {
+                "description": "Maximum sustainable number of requests allowed each second per account. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 50,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-per-second.yaml"
+                }
+              },
+              "X-Ratelimit-Limit-Per-Second-Objects": {
+                "description": "Maximum sustainable number of objects allowed each second per request. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 200,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-limit-per-second-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Remaining": {
+                "description": "The number of requests left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 99,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-remaining.yaml"
+                }
+              },
+              "X-Ratelimit-Remaining-Objects": {
+                "description": "The number of objects left before exceeding the limit, which results in the [429](https://techdocs.akamai.com/purge-cache/reference/429) error. This depends on the object type in the given request. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 10000,
+                  "type": "integer"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-remaining-objects.yaml"
+                }
+              },
+              "X-Ratelimit-Seconds-To-Refresh-Limit": {
+                "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 0.02,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-seconds-to-refresh-limit.yaml"
+                }
+              },
+              "X-Ratelimit-Seconds-To-Refresh-Limit-Objects": {
+                "description": "The minimum number of seconds to wait before you can send a request burst of size `X-Ratelimit-Limit-Objects`. See [Rate limiting](https://techdocs.akamai.com/purge-cache/reference/rate-limiting) for details.",
+                "schema": {
+                  "example": 0,
+                  "type": "number"
+                },
+                "x-akamai": {
+                  "file-path": "headers/x-ratelimit-seconds-to-refresh-limit-objects.yaml"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/api-problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "Invalid or malformed hostname",
+                  "httpStatus": 400,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "bad URL hostname"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Bad request](https://techdocs.akamai.com/purge-cache/reference/400).",
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
+            }
+          },
+          "403": {
+            "content": {
+              "application/api-problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "http://fpj-test.bad-ideas2.org/",
+                  "httpStatus": 403,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "unauthorized arl"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Forbidden](https://techdocs.akamai.com/purge-cache/reference/403).",
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
+            }
+          },
+          "429": {
+            "content": {
+              "application/api-problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "",
+                  "httpStatus": 429,
+                  "rateLimit": 10000,
+                  "rateLimitCurrentRequestSize": 110,
+                  "rateLimitRemaining": 94,
+                  "supportId": "edup-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "URL Rate Limit exceeded"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Too many requests](https://techdocs.akamai.com/purge-cache/reference/429).",
+            "x-akamai": {
+              "file-path": "errors/429-url.yaml"
+            }
+          },
+          "500": {
+            "content": {
+              "application/api-problem+json": {
+                "example": {
+                  "describedBy": "https://techdocs.akamai.com/purge-cache/reference/api-errors",
+                  "detail": "If problem persists over multiple requests, please contact Customer Care",
+                  "httpStatus": 500,
+                  "supportId": "edcp-NZbXzFpHBjcJeryhw6PVgG",
+                  "title": "internal error"
+                },
+                "schema": {
+                  "additionalProperties": true,
+                  "description": "V3 Purge response schema.",
+                  "properties": {
+                    "describedBy": {
+                      "description": "A URL that describes the API's error response.",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "description": "Detailed information about the HTTP status code returned with the response.",
+                      "type": "string"
+                    },
+                    "estimatedSeconds": {
+                      "description": "The estimated number of seconds before the purge is to complete.",
+                      "type": "integer"
+                    },
+                    "httpStatus": {
+                      "description": "The HTTP code that indicates the status of the request to invalidate or purge content. Successful requests yield a `201` code.",
+                      "type": "integer"
+                    },
+                    "purgeId": {
+                      "description": "Unique identifier for the purge request.",
+                      "type": "string"
+                    },
+                    "supportId": {
+                      "description": "Identifier to provide Akamai Technical Support if issues arise.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Describes the response type, for example, `Rate Limit exceeded`.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "httpStatus",
+                    "supportId",
+                    "detail"
+                  ],
+                  "type": "object",
+                  "x-akamai": {
+                    "file-path": "schemas/response.yaml"
+                  }
+                }
+              }
+            },
+            "description": "[Internal server error](https://techdocs.akamai.com/purge-cache/reference/500).",
+            "x-akamai": {
+              "file-path": "errors/500.yaml"
+            }
+          }
+        },
+        "summary": "Check rate and object limit statuses",
+        "tags": [
+          "Rate limits"
+        ],
+        "x-akamai": {
+          "supports-account-switch-key": false
+        }
+      },
+      "parameters": [
+        {
+          "description": "__Enum__ A single item within a purge request that identifies the content you want to purge. You can identify your content by a URL or ARL (Akamai resource locator), content provider (CP) code, or cache tag.",
+          "in": "path",
+          "name": "purge-type",
+          "required": true,
+          "schema": {
+            "enum": [
+              "cpcode",
+              "tag",
+              "url"
+            ],
+            "example": "cpcode",
+            "type": "string"
+          },
+          "x-akamai": {
+            "file-path": "parameters/purge-type.yaml"
+          }
+        }
+      ],
+      "x-akamai": {
+        "file-path": "paths/rate-limit-status.yaml",
+        "path-info": "/rate-limit-status/{purge-type}"
+      }
     }
-  },
-  "x-readme": {
-    "samples-languages": [
-      "curl",
-      "python",
-      "node"
-    ]
   },
   "servers": [
     {
       "url": "https://{hostname}/ccu/v3"
     }
-  ]
+  ],
+  "tags": [
+    {
+      "description": "Purge by cache tag.",
+      "name": "Cache tag"
+    },
+    {
+      "description": "Purge by URL or by Akamai resource locator (ARL).",
+      "name": "URL/ARL"
+    },
+    {
+      "description": "Purge by content provider (CP) code.",
+      "name": "CP code"
+    },
+    {
+      "description": "Groups operations that let you control rate limits.",
+      "name": "Rate limits"
+    }
+  ],
+  "x-readme": {
+    "explorer-enabled": false,
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  }
 }

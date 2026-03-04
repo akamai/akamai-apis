@@ -1,0 +1,56 @@
+x-akamai:
+  path-info: /delete/url/{network}
+parameters:
+- $ref: ../parameters/network-path.yaml
+post:
+  operationId: post-delete-url
+  summary: Delete by URL or ARL
+  tags:
+  - URL/ARL
+  description: |
+    Deletes content on the selected URL or ARL  for the selected `network`.  URLs and ARLs can be submitted in the same request. In most cases, you should [invalidate](ref:post-invalidate-url) rather than delete content. Invalidation keeps each object in cache until the version on your origin server is newer. Deletion retrieves the object regardless, which can dramatically increase the load on your origin server and would prevent Akamai from serving the old content if your origin is unreachable.
+  x-akamai:
+    supports-account-switch-key: false
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/post-url.json
+        schema:
+          $ref: ../schemas/post-url.yaml
+  responses:
+    201:
+      description: |
+        Successful POST of a purge request.
+      headers:
+        X-Ratelimit-Limit:
+          $ref: ../headers/x-ratelimit-limit.yaml
+        X-Ratelimit-Limit-Objects:
+          $ref: ../headers/x-ratelimit-limit-objects.yaml
+        X-Ratelimit-Limit-Per-Second:
+          $ref: ../headers/x-ratelimit-limit-per-second.yaml
+        X-Ratelimit-Limit-Per-Second-Objects:
+          $ref: ../headers/x-ratelimit-limit-per-second-objects.yaml
+        X-Ratelimit-Remaining:
+          $ref: ../headers/x-ratelimit-remaining.yaml
+        X-Ratelimit-Remaining-Objects:
+          $ref: ../headers/x-ratelimit-remaining-objects.yaml
+        X-Ratelimit-Seconds-To-Refresh-Limit:
+          $ref: ../headers/x-ratelimit-seconds-to-refresh-limit.yaml
+        X-Ratelimit-Seconds-To-Refresh-Limit-Objects:
+          $ref: ../headers/x-ratelimit-seconds-to-refresh-limit-objects.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/201.json
+          schema:
+            $ref: ../schemas/response.yaml
+    400:
+      $ref: ../errors/400.yaml
+    403:
+      $ref: ../errors/403.yaml
+    429:
+      $ref: ../errors/429-url.yaml
+    500:
+      $ref: ../errors/500.yaml
