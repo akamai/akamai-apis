@@ -1,9 +1,6 @@
 type: object
-description: |-
+description: |
   Represents a configuration of either an availability test or a performance test. You an use a test object to add a new test configuration, update an existing one, or get the settings of a specified configuration.
-  
-x-akamai:
-  file-path: schemas/schema-get-test-config-200.yaml
 additionalProperties: false
 required:
 - slaTestId
@@ -27,23 +24,23 @@ properties:
     - PERFORMANCE
     - AVAILABILITY
     minLength: 1
-  agentGroupId:
+  slaTestId:
     type: integer
     description: |
-      Code representing the agent group (also called a region or regional SLA) for the test configuration. See [agentGroupId values](ref:agentgroupid-values).
+      Identifies each test configuration.
   contractId:
     type: string
     description: |
       The contract associated with the test configuration.
     minLength: 1
+  agentGroupId:
+    type: integer
+    description: |
+      Code representing the agent group (also called a region or regional SLA) for the test configuration. See [agentGroupId values](ref:agentgroupid-values).
   performanceSlaTarget:
     type: number
     description: |
       The target performance as specified in the SLA, expressed as a decimal greater than or equal to 1.0. For a target performance improvement of 20%, specify 1.2.
-  slaTestId:
-    type: integer
-    description: |
-      Identifies each test configuration.
   testDetails:
     type: object
     description: |
@@ -54,6 +51,11 @@ properties:
     - akamaiUrl
     - originDnsHostnameOverride
     properties:
+      originUrl:
+        type: string
+        description: |
+          The URL of the test object for the origin portion of the test. Use the outward-facing hostname if `originDnsHostnameOverride` is included, otherwise  use the origin hostname.
+        minLength: 1
       akamaiUrl:
         type: string
         description: |
@@ -63,9 +65,4 @@ properties:
         type: string
         description: |
           Replaces the hostname in `originUrl` for the purposes of DNS lookup to obtain the IP address of the origin server. Use this if requests sent directly to your origin hostname redirect to the CDN.
-        minLength: 1
-      originUrl:
-        type: string
-        description: |
-          The URL of the test object for the origin portion of the test. Use the outward-facing hostname if `originDnsHostnameOverride` is included, otherwise  use the origin hostname.
         minLength: 1

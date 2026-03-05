@@ -1,9 +1,6 @@
 type: object
-description: |-
+description: |
   Represents a configuration of either an availability test or a performance test. You can use a test object to add a new test configuration, update an existing one, or get the settings of a specified configuration.
-  
-x-akamai:
-  file-path: schemas/schema-put-test-config.yaml
 additionalProperties: false
 required:
 - contractId
@@ -24,14 +21,14 @@ properties:
     enum:
     - PERFORMANCE
     - AVAILABILITY
-  agentGroupId:
-    type: integer
-    description: |
-      Code representing the agent group (also called a region or regional SLA) for the test configuration. See [agentGroupId values](ref:agentgroupid-values).
   contractId:
     type: string
     description: |
       The contract associated with the test configuration.
+  agentGroupId:
+    type: integer
+    description: |
+      Code representing the agent group (also called a region or regional SLA) for the test configuration. See [agentGroupId values](ref:agentgroupid-values).
   performanceSlaTarget:
     type: number
     description: |
@@ -46,6 +43,10 @@ properties:
     - akamaiUrl
     - originDnsHostnameOverride
     properties:
+      originUrl:
+        type: string
+        description: |
+          The URL of the test object for the origin portion of the test. Use the outward-facing hostname if `originDnsHostnameOverride` is included, otherwise  use the origin hostname.
       akamaiUrl:
         type: string
         description: |
@@ -54,7 +55,3 @@ properties:
         type: string
         description: |
           Replaces the hostname in `originUrl` for the purposes of DNS lookup to obtain the IP address of the origin server. Use this if requests sent directly to your origin hostname redirect to the CDN.
-      originUrl:
-        type: string
-        description: |
-          The URL of the test object for the origin portion of the test. Use the outward-facing hostname if `originDnsHostnameOverride` is included, otherwise  use the origin hostname.
