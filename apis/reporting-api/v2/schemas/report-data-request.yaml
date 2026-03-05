@@ -1,0 +1,56 @@
+anyOf:
+  - type: object
+    title: Data request
+    description: |
+      Specifies a report's data request.
+    minProperties: 1
+    additionalProperties: false
+    properties:
+      metrics:
+        type: array
+        description: |
+          Metrics to include in the report.
+        minItems: 0
+        uniqueItems: true
+        items:
+          type: string
+          minLength: 1
+      dimensions:
+        type: array
+        description: |
+          Dimensions to include in the report.
+        minItems: 0
+        uniqueItems: true
+        items:
+          type: string
+          minLength: 1
+      filters:
+        type: array
+        description: |
+          Filters to narrow down the report data. You can filter by metrics and dimensions. Support for specific filter types may vary by report type. See the report documentation under [Available reports](ref:available-reports).
+        minItems: 0
+        uniqueItems: true
+        items:
+          anyOf:
+            - $ref: metric-filter.yaml
+              title: Metric filter
+            - $ref: dimension-filter.yaml
+              title: Dimension filter
+      sortBys:
+        type: array
+        description: |
+          Specifies metrics or dimensions for sorting the report data.
+        minItems: 0
+        uniqueItems: true
+        items:
+          $ref: sort-by.yaml
+      limit:
+        type: integer
+        description: |
+          Limits the number of records returned in the response.
+        minimum: 0
+  - type: object
+    title: Empty data request
+    description:
+      Uses default values to generate a report for both an empty object ({}) and an omitted data request. Run the [Get report options](ref:get-report-options) operation to check the default values for metrics, dimensions, time range, and sorting.
+    maxProperties: 0

@@ -1,0 +1,82 @@
+type: object
+description: |
+  Encapsulates the report's data response.
+additionalProperties: false
+required:
+- data
+- metadata
+properties:
+  data:
+    $ref: data.yaml
+  metadata:
+    type: object
+    description: |
+      Contains information about the request and the response.
+    additionalProperties: false
+    required:
+    - name
+    - start
+    - end
+    - links
+    - hasMoreRows
+    properties:
+      name:
+        type: string
+        description: |
+          Report name.
+        minLength: 1
+      start:
+        type: string
+        description: |
+          Start date used in the request.
+        format: date-time
+      end:
+        type: string
+        description: |
+          End date used in the request.
+        format: date-time
+      metrics:
+        type: array
+        description: |
+          Metrics to include in the report.
+        minItems: 0
+        items:
+          $ref: metric.yaml
+      dimensions:
+        type: array
+        description: |
+          Dimensions to include in the report.
+        minItems: 0
+        items:
+          $ref: dimension.yaml
+      filters:
+        type: array
+        description: |
+          Filters to narrow down the report data.
+        minItems: 0
+        uniqueItems: true
+        items:
+          anyOf:
+          - $ref: metric-filter.yaml
+            title: Metric filter
+          - $ref: dimension-filter.yaml
+            title: Dimension filter
+      sortBys:
+        type: array
+        description: |
+          Specifies metrics or dimensions for sorting the report data.
+        minItems: 0
+        uniqueItems: true
+        items:
+          $ref: sort-by.yaml
+      limit:
+        type: integer
+        description: |
+          Limits the number of records returned in the response.
+        minimum: 1
+      links:
+        $ref: links.yaml
+      hasMoreRows:
+        type: boolean
+        description: |
+          Indicates if there are more records meeting the criteria from the request than the list returned in the response, which is limited to the number set by the `limit` property.
