@@ -1,0 +1,34 @@
+type: object
+description: |
+  ACL versions with deployment status. 
+properties:
+  rulesDeployStats:
+    $ref: ../schemas/acl-deployment-status-rules-deploy-stats.yaml
+  version:
+    type: integer
+    description: | 
+      ACL version number.
+  hash:
+    type: string
+    description: | 
+      The ACL version's hash value used to track updates.
+  deploymentStatus:
+    type: string
+    description: | 
+      The ACL version's deployment status. Either `PRODUCTION` for a rule set deployed to the network, `PROCESSING` for a version currently being prepared or staged, or `FAILED` when every rule in the rule set failed to deploy. Check `ruleSet` for the status of each rule set within the version.
+    enum:
+      - PRODUCTION
+      - PROCESSING
+      - FAILED
+  ruleSet:
+    description: | 
+      Rule set contents and status of the rules within the set. 
+    type: array
+    items:
+      $ref: ../schemas/acl-deployment-status-rule-set.yaml
+  statusRetrievalTimestamp:
+    type: string
+    format: date-time
+    description: | 
+      ISO 8601 timestamp of the status retrieval.
+additionalProperties: false

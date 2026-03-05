@@ -1,0 +1,396 @@
+type: object
+description: |
+  Extended ACL version and rule set traffic data.
+additionalProperties: false
+required:
+- description
+- version
+- accountId
+- state
+- ruleSet
+- createdBy
+- createdTimestamp
+- updatedBy
+- updatedTimestamp
+- links
+properties:
+  description:
+    type: string
+    description: |
+      User description of the version.
+    minLength: 1
+  version:
+    type: integer
+    description: |
+      Version number.
+    minimum: 0
+  accountId:
+    type: string
+    description: |
+      Account ID.
+    minLength: 1
+  state:
+    type: string
+    description: |
+      ACL version state. Either `CONFIGURATION`, `DEPLOYED`, or `DEPRECATED`.
+    enum:
+    - CONFIGURATION
+    - DEPLOYED
+    - DEPRECATED
+  ruleSet:
+    type: array
+    description: |
+      Rules within the rule set.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - index
+      - aclText
+      - ruleUuid
+      - ipVersion
+      - comment
+      properties:
+        index:
+          type: integer
+          description: |
+            ACL rule set order.
+          minimum: 0
+        aclText:
+          type: string
+          description: |
+            ACL user text.
+          minLength: 1
+        ruleUuid:
+          type: string
+          description: |
+            The ACL rule ID.
+          minLength: 1
+        ipVersion:
+          type: string
+          description: |
+            The IP version, either `V4` or `V6`.
+          enum:
+          - V4
+          - V6
+        comment:
+          type: string
+          description: |
+            User provided comments.
+          minLength: 1
+        parsed:
+          type: object
+          description: |
+            Parsed rule details for every rule.
+          additionalProperties: false
+          required:
+          - name
+          - description
+          - oid
+          - action
+          - protocol
+          - sourceAddress
+          - destinationAddress
+          - ipVersion
+          - ttl
+          - packetLength
+          - fragments
+          - established
+          - tcp
+          - udp
+          - icmp
+          - log
+          - locations
+          properties:
+            name:
+              type: string
+              description: |
+                Rule name.
+              minLength: 1
+            description:
+              type: string
+              description: |
+                Rule description.
+              minLength: 1
+            oid:
+              type: string
+              description: |
+                Rule ID.
+              minLength: 1
+            action:
+              type: string
+              description: |
+                Rule action.
+              minLength: 1
+            protocol:
+              type: object
+              description: |
+                Rule protocol.
+              additionalProperties: false
+              required:
+              - min
+              - max
+              properties:
+                min:
+                  type: integer
+                  description: |
+                    Minimum acceptable number.
+                  minimum: 0
+                max:
+                  type: integer
+                  description: |
+                    Maximum acceptable number.
+                  minimum: 0
+            sourceAddress:
+              type: string
+              description: |
+                Rule source address.
+              minLength: 1
+            destinationAddress:
+              type: string
+              description: |
+                Rule destination address.
+              minLength: 1
+            ipVersion:
+              type: string
+              description: |
+                The IP version, either `v4` or `v6`.
+              enum:
+              - v4
+              - v6
+            ttl:
+              type: object
+              description: |
+                A rule's time to live data.
+              additionalProperties: false
+              required:
+              - min
+              - max
+              nullable: true
+              properties:
+                min:
+                  type: integer
+                  description: |
+                    The minimum acceptable TTL number.
+                  minimum: 0
+                max:
+                  type: integer
+                  description: |
+                    The maximum acceptable TTL number.
+                  minimum: 0
+            packetLength:
+              type: object
+              description: |
+                Packet length.
+              additionalProperties: false
+              required:
+              - min
+              - max
+              nullable: true
+              properties:
+                min:
+                  type: integer
+                  description: |
+                    The minimum packet length.
+                  minimum: 0
+                max:
+                  type: integer
+                  description: |
+                    The maximum packet length.
+                  minimum: 0
+            fragments:
+              type: boolean
+              description: |
+                Whether fragments exist.
+            established:
+              type: boolean
+              description: |
+                Whether the rule is established.
+            tcp:
+              type: object
+              description: |
+                TCP details.
+              additionalProperties: false
+              required:
+              - sourcePort
+              - destinationPort
+              nullable: true
+              properties:
+                sourcePort:
+                  type: object
+                  description: |
+                    The source port.
+                  additionalProperties: false
+                  required:
+                  - min
+                  - max
+                  properties:
+                    min:
+                      type: integer
+                      description: |
+                        The minimum source port number.
+                      minimum: 0
+                    max:
+                      type: integer
+                      description: |
+                        The maximum source port number.
+                      minimum: 0
+                destinationPort:
+                  type: object
+                  description: |
+                    Destination port.
+                  additionalProperties: false
+                  required:
+                  - min
+                  - max
+                  properties:
+                    min:
+                      type: integer
+                      description: |
+                        The minimum destination port number.
+                      minimum: 0
+                    max:
+                      type: integer
+                      description: |
+                        The maximum destination port number.
+                      minimum: 0
+            udp:
+              type: object
+              description: |
+                UDP details.
+              additionalProperties: false
+              required:
+              - sourcePort
+              - destinationPort
+              nullable: true
+              properties:
+                sourcePort:
+                  type: object
+                  description: |
+                    Source port.
+                  additionalProperties: false
+                  required:
+                  - min
+                  - max
+                  properties:
+                    min:
+                      type: integer
+                      description: |
+                        The minimum source port number.
+                      minimum: 0
+                    max:
+                      type: integer
+                      description: |
+                        The maximum source port number.
+                      minimum: 0
+                destinationPort:
+                  type: object
+                  description: |
+                    Destination port.
+                  additionalProperties: false
+                  required:
+                  - min
+                  - max
+                  properties:
+                    min:
+                      type: integer
+                      description: |
+                        The minimum destination port number.
+                      minimum: 0
+                    max:
+                      type: integer
+                      description: |
+                        The maximum destination port number.
+                      minimum: 0
+            icmp:
+              type: object
+              description: |
+                ICMP details.
+              additionalProperties: false
+              required:
+              - icmpType
+              - icmpCode
+              nullable: true
+              properties:
+                icmpType:
+                  type: integer
+                  description: |
+                    ICMP type.
+                  minimum: 0
+                icmpCode:
+                  type: integer
+                  description: |
+                    ICMP code.
+                  minimum: 0
+            log:
+              type: object
+              description: |
+                Logging details.
+              additionalProperties: false
+              required:
+              - level
+              - interval
+              nullable: true
+              properties:
+                level:
+                  type: integer
+                  description: |
+                    Logging level number.
+                  minimum: 0
+                interval:
+                  type: integer
+                  description: |
+                    Logging interval.
+                  minimum: 0
+            locations:
+              type: array
+              description: |
+                Version locations.
+              minItems: 0
+              items:
+                type: string
+                minLength: 1
+  createdBy:
+    type: string
+    description: |
+      The user who created the version.
+    minLength: 1
+  createdTimestamp:
+    type: string
+    description: |
+      ISO 8601 timestamp marking the version's creation.
+    minLength: 1
+  updatedBy:
+    type: string
+    description: |
+      The user who updated the version.
+    nullable: true
+    minLength: 1
+  updatedTimestamp:
+    type: string
+    description: |
+      ISO 8601 timestamp marking the version's last update.
+    nullable: true
+    minLength: 1
+  links:
+    type: array
+    description: |
+      Links to related version resources.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - rel
+      - href
+      properties:
+        rel:
+          type: string
+          description: |
+            The relationship of the link to the version.
+        href:
+          type: string
+          description: |
+            The version URI.
+          minLength: 1

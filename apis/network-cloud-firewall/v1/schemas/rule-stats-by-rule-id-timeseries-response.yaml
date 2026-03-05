@@ -1,0 +1,86 @@
+type: object
+additionalProperties: false
+description: | 
+  Rule hit statistics timeseries data. Maximum granularity per time range:
+  - 0-7 days: `5m`
+  - 8-31 days: `1h`
+  - 32-365 days: `1d`
+properties:
+  accountId:
+    type: string
+    description: |
+      Account ID of the customer.
+  ruleUuid:
+    type: string
+    description: | 
+      Unique rule identifier.
+  startTime:
+    type: string
+    format: date-time
+    description: | 
+      Start time of the data range in ISO 8601 format, inclusive.
+  endTime:
+    type: string
+    format: date-time
+    description: | 
+      End time of the data range in ISO 8601 format, inclusive.
+  resolution:
+    type: string
+    enum:
+      - 5m
+      - 1h
+      - 1d
+    description: |
+      Time interval granularity based on the number of days in the range. Either `5m`, `1h`, or `1d`.
+  totalMatches:
+    type: integer
+    minimum: 0
+    description: |
+      Total matches for queried time range. Defaults to 0 if no data is available.
+  peakMatches:
+    type: integer
+    minimum: 1
+    description: |
+      Highest match count in queried time range. Defaults to 0 if no data is available.
+  averageMatches:
+    type: number
+    minimum: 1
+    description: |
+      Average matches for queried time range. Defaults to 0 if no data is available.
+  timeSeries:
+    type: array
+    description: | 
+      Time series data points for the selected time range.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: | 
+            ISO 8601 timestamp of the rule hit data point.
+        bytes:
+          type: integer
+          minimum: 0
+          description: |
+            Bytes since last timestamp, or `startTime` for first entry.
+        matches:
+          type: integer
+          minimum: 0
+          description: |
+            Matches since last timestamp,or`startTime` for first entry.
+      required:
+        - timestamp
+        - bytes
+        - matches
+required:
+  - accountId
+  - ruleUuid
+  - startTime
+  - endTime
+  - resolution
+  - totalMatches
+  - peakMatches
+  - averageMatches
+  - timeSeries

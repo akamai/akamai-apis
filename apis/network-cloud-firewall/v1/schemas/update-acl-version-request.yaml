@@ -1,0 +1,57 @@
+type: object
+description: |
+  ACL version update properties.
+additionalProperties: false
+required:
+- deploy
+- description
+- ruleSet
+properties:
+  description:
+    minLength: 1
+    type: string
+    description: |
+      Version description.
+  deploy:
+    type: boolean
+    description: |
+      Whether the ACL config version needs to be deployed. When `false`, creates a new version in `CONFIGURATION` state. When `true`, creates a version in `DEPLOYED` state.
+  ruleSet:
+    minItems: 0
+    type: array
+    description: |
+      The rules within the rule set.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - index
+      - aclText
+      properties:
+        index:
+          minimum: 1
+          type: integer
+          description: |
+            ACL rules ordering.
+        aclText:
+          minLength: 1
+          type: string
+          description: |
+            ACL user text.
+        ruleUuid:
+          minLength: 1
+          type: string
+          description: |
+            A unique rule ID.
+        ipVersion:
+          type: string
+          description: |
+            The IP version, either `V4` or `V6`.
+          enum:
+          - V4
+          - V6
+        comment:
+          minLength: 1
+          type: string
+          description: |
+            Comments.

@@ -1,0 +1,37 @@
+type: object
+additionalProperties: false
+required:
+- aliasName
+- aliasListType
+- ipVersion
+- entries
+properties:
+  aliasName:
+    type: string
+    description: |
+      Alias name needs to be unique to an account. An alias needs to start with a lowercase letter and can't have any uppercase letters. Allowed characters are letters, numbers, dashes, and underscores.
+    minLength: 3
+    maxLength: 50
+    pattern: (^[a-z][a-z0-9-_]+$)
+  aliasListType:
+    type: string
+    description: |
+      Alias list type. Either `SOURCE`, less than 50 source IP entries or more source IP entries, or `DIPA`, fewer than 50 destination IP entries.
+    enum:
+    - SOURCE
+    - DIPA
+  ipVersion:
+    type: string
+    description: |
+      The IP version, either `V4` or `V6`.
+    enum:
+    - V4
+    - V6
+  entries:
+    minItems: 0
+    type: array
+    description: |
+      Entries within the alias. Only allowed values are IP subnets belonging to the account and ISO standard country codes. If a subnet mask isn't included, defaults /32 for IPv4 or /128 for IPv6.
+    items:
+      minLength: 1
+      type: string

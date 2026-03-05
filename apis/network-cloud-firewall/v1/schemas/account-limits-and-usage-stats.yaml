@@ -1,0 +1,96 @@
+type: object
+description: |
+  Account statistics for ACL rules, aliases, and trust or block lists.
+additionalProperties: false
+required:
+- aclRules
+- aliases
+- trustBlockLists
+properties:
+  aclRules:
+    type: object
+    description: |
+      ACL rule statistics.
+    additionalProperties: false
+    required:
+    - limit
+    - enabledCount
+    - disabledCount
+    properties:
+      limit:
+        type: integer
+        description: |
+          Maximum number of ACL rules allowed for an account.
+        minimum: 0
+      enabledCount:
+        type: integer
+        description: |
+          Count of enabled ACL rules excluding remarks for an account.
+        minimum: 0
+      disabledCount:
+        type: integer
+        description: |
+          Count of disabled ACL rules excluding remarks for an account.
+        minimum: 0
+  aliases:
+    type: array
+    description: |
+      Aliases statistics.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      - limit
+      - enabledCount
+      - disabledCount
+      properties:
+        type:
+          type: string
+          description: |
+            Alias list type. Either `SOURCE`, less than 50 source IP entries, `BIG`, 50 or more source IP entries, or `DIPA`, fewer than 50 destination IP entries.
+          enum:
+          - SOURCE
+          - BIG
+          - DIPA
+        limit:
+          type: integer
+          description: |
+            Maximum limit allowed for specific alias type for an account.
+          minimum: 0
+        enabledCount:
+          type: integer
+          description: |
+            Count of enabled aliases for a specific alias type for an account.
+          minimum: 0
+        disabledCount:
+          type: integer
+          description: |
+            Count of disabled aliases for a specific alias type for an account.
+          minimum: 0
+  trustBlockLists:
+    type: object
+    description: |
+      Trust and block lists stats.
+    additionalProperties: false
+    required:
+    - limit
+    - enabledCount
+    - disabledCount
+    properties:
+      limit:
+        type: integer
+        description: |
+          Maximum number of trust or block lists allowed for an account.
+        minimum: 0
+      enabledCount:
+        type: integer
+        description: |
+          Count of enabled trust or block lists for an account.
+        minimum: 0
+      disabledCount:
+        type: integer
+        description: |
+          Count of disabled trust or block lists for an account.
+        minimum: 0

@@ -1,0 +1,102 @@
+required:
+- description
+- version
+- accountId
+- state
+- ruleSet
+- createdBy
+- createdTimestamp
+- updatedBy
+- updatedTimestamp
+type: object
+description: |
+  ACL version and rule set traffic data.
+additionalProperties: false
+properties:
+  description:
+    minLength: 1
+    type: string
+    description: |
+      A description of the version.
+  version:
+    minimum: 1
+    type: integer
+    description: |
+      Version number.
+  accountId:
+    minLength: 1
+    type: string
+    description: |
+      Account ID.
+  state:
+    type: string
+    description: |
+      ACL version state. Either `CONFIGURATION`, `DEPLOYED`, or `DEPRECATED`.
+    enum:
+    - CONFIGURATION
+    - DEPLOYED
+    - DEPRECATED
+  ruleSet:
+    minItems: 0
+    type: array
+    description: |
+      The rules within the rule set.
+    items:
+      required:
+      - index
+      - aclText
+      - ruleUuid
+      - ipVersion
+      - comment
+      type: object
+      additionalProperties: false
+      properties:
+        index:
+          minimum: 1
+          type: integer
+          description: |
+            The ACL rule order.
+        aclText:
+          minLength: 1
+          type: string
+          description: |
+            ACL user text.
+        ruleUuid:
+          minLength: 1
+          type: string
+          description: |
+            A unique rule ID.
+        ipVersion:
+          type: string
+          description: |
+            The IP version, either `V4` or `V6`.
+          enum:
+          - V4
+          - V6
+        comment:
+          minLength: 1
+          type: string
+          description: |
+            User-provided comments.
+  createdBy:
+    minLength: 1
+    type: string
+    description: |
+      The user who created the version.
+  createdTimestamp:
+    minLength: 1
+    type: string
+    description: |
+      ISO 8601 timestamp marking the version's creation.
+  updatedBy:
+    minLength: 1
+    type: string
+    description: |
+      The user who updated the version.
+    nullable: true
+  updatedTimestamp:
+    minLength: 1
+    type: string
+    description: |
+      ISO 8601 timestamp marking the version's last update.
+    nullable: true
