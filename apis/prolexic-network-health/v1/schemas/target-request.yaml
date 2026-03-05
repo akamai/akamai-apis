@@ -1,0 +1,56 @@
+type: object
+description: | 
+  Network monitoring targets.
+additionalProperties: false
+properties:
+  accountId: 
+    type: string
+    description: | 
+      The account ID.
+    minLength: 1
+  targetName:
+    type: string
+    description: | 
+      The target name.
+    minLength: 1
+  testType:
+    type: string
+    description: |  
+      The traffic type to test, either `TCP` or `HTTP`.
+    enum:
+      - TCP
+      - HTTP
+  targetIp:
+    type: string
+    description: | 
+      Single IP Address, v4 /32 or v6 /128 for the `TCP` test type. Specify `null` for the `HTTP` test type.
+    minLength: 1
+    nullable: true
+  targetDomain:
+    type: string
+    description: | 
+      The domain name to monitor for the `HTTP` test type. Specify `null` for the TCP test type.
+    minLength: 1
+    nullable: true
+  ports:
+    type: array
+    description: | 
+      The TCP ports to monitor.
+    items:
+      type: integer
+      minimum: 1
+      maximum: 65535
+    minItems: 1
+  testIds:
+    type: array
+    description: | 
+      The test IDs used by the target.
+    items:
+      type: integer
+      minimum: 1
+    minItems: 0
+required:
+  - accountId
+  - targetName
+  - testType
+  - ports

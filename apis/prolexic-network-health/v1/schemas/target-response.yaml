@@ -1,0 +1,83 @@
+type: object
+description: Target details.
+additionalProperties: false
+properties:
+  accountId:
+    type: string
+    description: | 
+      The account ID.
+    minLength: 1
+  targetId:
+    type: string
+    description: | 
+      The target's unique identifier.
+    readOnly: true
+  targetName:
+    type: string
+    description: The target name.
+    minLength: 1
+  testType:
+    type: string
+    description: | 
+      The traffic type to test, either `TCP` or `HTTP`.
+    enum:
+      - TCP
+      - HTTP
+  targetIp:
+    type: string
+    description: | 
+      Single IP Address, v4 /32 or v6 /128 for `TCP` test type. Specify `null` for HTTP test type.
+    minLength: 0
+    nullable: true
+  targetDomain:
+    type: string
+    description: | 
+      Domain name to monitor for `HTTP` test type. Specify `null` for TCP test type.
+    minLength: 0
+    nullable: true
+  ports:
+    type: array
+    description: | 
+      The TCP ports to monitor.
+    items:
+      type: integer
+      minimum: 1
+      maximum: 65535
+    minItems: 1
+  testIds:
+    type: array
+    description: | 
+      The test IDs used by the target.
+    items:
+      type: integer
+      minimum: 1
+    minItems: 0
+  createdTime:
+    type: string
+    format: date-time
+    description: 
+      ISO 8601 timestamp of the target's creation.
+    readOnly: true
+  modifiedTime:
+    type: string
+    format: date-time
+    description: | 
+      ISO 8601 timestamp of the target's last update.
+    readOnly: true
+  createdBy:
+    type: string
+    description: | 
+      The user who created the configuration.
+    minLength: 1
+    readOnly: true
+  modifiedBy:
+    type: string
+    description: | 
+      The user who updated the configuration last.
+    minLength: 1
+    readOnly: true
+required:
+  - accountId
+  - targetName
+  - testType
+  - ports
