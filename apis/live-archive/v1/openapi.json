@@ -1,33 +1,308 @@
 {
-  "openapi": "3.0.0",
+  "components": {
+    "parameters": {
+      "eid-path": {
+        "description": "A unique ID assigned to the export.",
+        "in": "path",
+        "name": "EID",
+        "required": true,
+        "schema": {
+          "example": "809269_8749e87de8bbf429e5486b41ca6f9f87",
+          "type": "string"
+        },
+        "x-akamai": {
+          "file-path": "parameters/eid-path.yaml"
+        }
+      },
+      "end-time-query": {
+        "description": "End time of the required time range in Unix epoch time.",
+        "in": "query",
+        "name": "endTime",
+        "schema": {
+          "example": 1524997933,
+          "type": "integer"
+        },
+        "x-akamai": {
+          "file-path": "parameters/end-time-query.yaml"
+        }
+      },
+      "endpoint-path": {
+        "description": "The URL path for which all objects need to be deleted. This is URL-encoded.",
+        "in": "path",
+        "name": "endpoint",
+        "required": true,
+        "schema": {
+          "example": "609993/streamcat",
+          "type": "string"
+        },
+        "x-akamai": {
+          "file-path": "parameters/endpoint-path.yaml"
+        }
+      },
+      "start-time-query": {
+        "description": "Start time of the required time range in Unix epoch time.",
+        "in": "query",
+        "name": "startTime",
+        "schema": {
+          "example": 1524997000,
+          "type": "integer"
+        },
+        "x-akamai": {
+          "file-path": "parameters/start-time-query.yaml"
+        }
+      },
+      "stream-id-path": {
+        "description": "Uniquely identifies the stream from which this archive derives.",
+        "in": "path",
+        "name": "streamId",
+        "required": true,
+        "schema": {
+          "example": 609993,
+          "type": "integer"
+        },
+        "x-akamai": {
+          "file-path": "parameters/stream-id-path.yaml"
+        }
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "[Bad request](https://techdocs.akamai.com/live-archive-management/reference/400). The URL isn't formed correctly.",
+        "x-akamai": {
+          "file-path": "errors/400.yaml"
+        }
+      },
+      "403": {
+        "description": "[Forbidden](https://techdocs.akamai.com/live-archive-management/reference/403). The API isn't enabled for this stream, or the API isn't globally enabled.",
+        "x-akamai": {
+          "file-path": "errors/403.yaml"
+        }
+      },
+      "404": {
+        "description": "[Not found](https://techdocs.akamai.com/live-archive-management/reference/404).",
+        "x-akamai": {
+          "file-path": "errors/404.yaml"
+        }
+      },
+      "405": {
+        "description": "[Method not allowed](https://techdocs.akamai.com/live-archive-management/reference/405).",
+        "x-akamai": {
+          "file-path": "errors/405.yaml"
+        }
+      },
+      "500-export": {
+        "description": "[Internal server error](https://techdocs.akamai.com/live-archive-management/reference/500). The export ID does not exist or isn't valid.",
+        "x-akamai": {
+          "file-path": "errors/500-export.yaml"
+        }
+      },
+      "500-hostname": {
+        "description": "[Internal server error](https://techdocs.akamai.com/live-archive-management/reference/500). The CP code or originshield hostname is not available for the stream ID. There is an error initiating the VOD job.",
+        "x-akamai": {
+          "file-path": "errors/500-hostname.yaml"
+        }
+      }
+    },
+    "schemas": {
+      "archives-200": {
+        "additionalProperties": false,
+        "description": "Response to a request for all the archives for a stream ID or archives within a specified time range.",
+        "properties": {
+          "archives": {
+            "description": "A collection of archives.",
+            "items": {
+              "additionalProperties": false,
+              "description": "An archive on storage for the specified stream ID and name.",
+              "properties": {
+                "archiveEndTime": {
+                  "description": "Time at which the stream is not archived, \"End of Stream\" detected from manifests. The value is a Unix epoch timestamp.",
+                  "type": "string"
+                },
+                "archiveStartTime": {
+                  "description": "Time at which the stream starts to be archived. The value is a Unix epoch timestamp.",
+                  "type": "string"
+                },
+                "manifestUpdateTimes": {
+                  "description": "Unix epoch timestamps representing when MSL updated and published the master manifest file during the live stream.",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "type": "array"
+                },
+                "name": {
+                  "description": "The name of the manifest.",
+                  "type": "string"
+                },
+                "uri": {
+                  "description": "The URL path used to fetch the bit rates published for this master playlist. For example, this could be `{event_name}/master.m3u8`.",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object",
+        "x-akamai": {
+          "file-path": "schemas/archives-200.yaml"
+        }
+      },
+      "endpoints-200": {
+        "additionalProperties": false,
+        "description": "Details about an endpoint.",
+        "properties": {
+          "endpoints": {
+            "description": "The set of URL paths available for each stream for the specified time range.",
+            "items": {
+              "title": "Endpoint",
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object",
+        "x-akamai": {
+          "file-path": "schemas/endpoints-200.yaml"
+        }
+      },
+      "post-vod": {
+        "additionalProperties": false,
+        "description": "When you enable archiving for an MSL live stream, you can tell Akamai to keep the live archive for a maximum of 31 days. A VOD Asset is physical on-demand video content that you create from a live archive and store in Akamai NetStorage. This lets you preserve live archive content for longer than 31 days.",
+        "properties": {
+          "URI": {
+            "description": "This is the URL for the live stream archive, using the form `/{format}/{streamId}/{eventName}/{manifestName}`. In it, `format` is either `hls` or `dash`, `streamId` is the unique, numeric identifier that's been assigned to the stream, `eventName` is the name of the event that you've assigned to the stream, and `manifestName` is the manifest filename. For example, `/hls/708976/helloworld/master.m3u8` is an HLS master manifest URL and `/dash/708976/helloworld/hello.mpd` is a DASH manifest URL.",
+            "type": "string"
+          },
+          "assetId": {
+            "description": "This is a unique identifier you set for a VOD asset. Start it with four alphanumeric characters followed by 16 numeric characters.",
+            "type": "string"
+          },
+          "endTime": {
+            "description": "The Unix epoch timestamp that marks the end time of the VOD clip. The value needs to be greater than the `startTime` by at least 30 seconds and no more than 43200 seconds, representing the clip's maximum allowed duration of 12 hours. There is a 30 minute latency. So, this needs to be less than the current epoch time by at least 1800 seconds.",
+            "type": "integer"
+          },
+          "maxFileSize": {
+            "description": "The maximum exported segment size in MB. The default value is 100 MB. This only applies to HLS VOD assets.",
+            "type": "integer"
+          },
+          "preserveKeys": {
+            "default": false,
+            "description": "When set to `true`, MSL won't export keys and won't change key metadata in the manifests. When set to `false`, MSL exports keys and may change metadata in the manifests to accommodate. The default value is `false`. This only applies to HLS VOD assets.",
+            "type": "boolean"
+          },
+          "startTime": {
+            "description": "The Unix epoch timestamp that marks the start time of the VOD clip.",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "URI",
+          "startTime",
+          "endTime",
+          "assetId"
+        ],
+        "type": "object",
+        "x-akamai": {
+          "file-path": "schemas/post-vod.yaml"
+        }
+      },
+      "post-vod-202": {
+        "additionalProperties": false,
+        "description": "Create VOD asset response body.",
+        "properties": {
+          "EID": {
+            "description": "This is a unique identifier that Akamai applies to a request to create a new VOD asset.",
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "x-akamai": {
+          "file-path": "schemas/post-vod-202.yaml"
+        }
+      },
+      "vod-status-200": {
+        "additionalProperties": false,
+        "description": "Status of a VOD job.",
+        "properties": {
+          "status": {
+            "description": "The status of a request to create a new VOD asset. It can be `ready`, `in_progress`, or `failed`.",
+            "enum": [
+              "in_progress",
+              "ready",
+              "failed"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "x-akamai": {
+          "file-path": "schemas/vod-status-200.yaml"
+        }
+      }
+    }
+  },
   "externalDocs": {
     "description": "See documentation for Akamai's Live Archive Management API",
     "url": "https://techdocs.akamai.com/live-archive-management/reference"
   },
   "info": {
-    "title": "Akamai: Live Archive Management API",
-    "version": "1.0",
+    "description": "Archive live streams in HLS and DASH formats for use as\nvideo on demand (VOD) content.\n",
     "license": {
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
-    }
+    },
+    "title": "Akamai: Live Archive Management API",
+    "version": "1.0"
   },
+  "openapi": "3.0.0",
   "paths": {
     "/streams/{streamId}/archives": {
       "get": {
         "description": "Lists all archives, or optionally those created within a specified time range.",
-        "operationId": "get-stream-archives",
-        "summary": "List archives",
-        "tags": [
-          "Archives"
-        ],
         "externalDocs": {
           "description": "See documentation for this operation in Akamai's Live Archive Management API",
           "url": "https://techdocs.akamai.com/live-archive-management/reference/get-stream-archives"
         },
+        "operationId": "get-stream-archives",
+        "parameters": [
+          {
+            "description": "Start time of the required time range in Unix epoch time.",
+            "in": "query",
+            "name": "startTime",
+            "schema": {
+              "example": 1524997000,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/start-time-query.yaml"
+            }
+          },
+          {
+            "description": "End time of the required time range in Unix epoch time.",
+            "in": "query",
+            "name": "endTime",
+            "schema": {
+              "example": 1524997933,
+              "type": "integer"
+            },
+            "x-akamai": {
+              "file-path": "parameters/end-time-query.yaml"
+            }
+          },
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Successful response.",
             "content": {
               "application/json": {
                 "example": {
@@ -35,34 +310,31 @@
                     {
                       "archiveEndTime": "1523371284",
                       "archiveStartTime": "1523371274",
+                      "manifestUpdateTimes": [],
                       "name": "master.m3u8",
-                      "uri": "609993/1523371274.347/master.m3u8",
-                      "manifestUpdateTimes": []
+                      "uri": "609993/1523371274.347/master.m3u8"
                     },
                     {
                       "archiveEndTime": "0",
                       "archiveStartTime": "1523371482",
-                      "name": "master.m3u8",
-                      "uri": "609993/1523371482.096/master.m3u8",
                       "manifestUpdateTimes": [
                         1523371492,
                         1523371502
-                      ]
+                      ],
+                      "name": "master.m3u8",
+                      "uri": "609993/1523371482.096/master.m3u8"
                     }
                   ]
                 },
                 "schema": {
                   "additionalProperties": false,
                   "description": "Response to a request for all the archives for a stream ID or archives within a specified time range.",
-                  "type": "object",
                   "properties": {
                     "archives": {
                       "description": "A collection of archives.",
-                      "type": "array",
                       "items": {
                         "additionalProperties": false,
                         "description": "An archive on storage for the specified stream ID and name.",
-                        "type": "object",
                         "properties": {
                           "archiveEndTime": {
                             "description": "Time at which the stream is not archived, \"End of Stream\" detected from manifests. The value is a Unix epoch timestamp.",
@@ -74,10 +346,10 @@
                           },
                           "manifestUpdateTimes": {
                             "description": "Unix epoch timestamps representing when MSL updated and published the master manifest file during the live stream.",
-                            "type": "array",
                             "items": {
                               "type": "integer"
-                            }
+                            },
+                            "type": "array"
                           },
                           "name": {
                             "description": "The name of the manifest.",
@@ -87,46 +359,58 @@
                             "description": "The URL path used to fetch the bit rates published for this master playlist. For example, this could be `{event_name}/master.m3u8`.",
                             "type": "string"
                           }
-                        }
-                      }
+                        },
+                        "type": "object"
+                      },
+                      "type": "array"
                     }
                   },
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/archives-200.yaml"
                   }
                 }
               }
-            }
+            },
+            "description": "Successful response."
           }
         },
+        "summary": "List archives",
+        "tags": [
+          "Archives"
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Uniquely identifies the stream from which this archive derives.",
+          "in": "path",
+          "name": "streamId",
+          "required": true,
+          "schema": {
+            "example": 609993,
+            "type": "integer"
+          },
+          "x-akamai": {
+            "file-path": "parameters/stream-id-path.yaml"
+          }
+        }
+      ],
+      "x-akamai": {
+        "file-path": "paths/archives.yaml",
+        "path-info": "/streams/{streamId}/archives"
+      }
+    },
+    "/streams/{streamId}/endpoints": {
+      "get": {
+        "description": "Lists all the endpoints per stream.",
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Live Archive Management API",
+          "url": "https://techdocs.akamai.com/live-archive-management/reference/get-stream-endpoints"
+        },
+        "operationId": "get-stream-endpoints",
         "parameters": [
           {
-            "description": "Start time of the required time range in Unix epoch time.",
-            "example": "{{startTime}}",
-            "in": "query",
-            "name": "startTime",
-            "schema": {
-              "type": "integer"
-            },
-            "x-akamai": {
-              "file-path": "parameters/startTime-query.yaml"
-            }
-          },
-          {
-            "description": "End time of the required time range in Unix epoch time.",
-            "example": "{{endTime}}",
-            "in": "query",
-            "name": "endTime",
-            "schema": {
-              "type": "integer"
-            },
-            "x-akamai": {
-              "file-path": "parameters/endTime-query.yaml"
-            }
-          },
-          {
             "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
-            "example": "{{accountSwitchKey}}",
             "in": "query",
             "name": "accountSwitchKey",
             "required": false,
@@ -135,39 +419,9 @@
               "type": "string"
             }
           }
-        ]
-      },
-      "parameters": [
-        {
-          "description": "Uniquely identifies the stream from which this archive derives.",
-          "example": "{{streamId}}",
-          "in": "path",
-          "name": "streamId",
-          "required": true,
-          "schema": {
-            "type": "integer"
-          },
-          "x-akamai": {
-            "file-path": "parameters/streamId-path.yaml"
-          }
-        }
-      ]
-    },
-    "/streams/{streamId}/endpoints": {
-      "get": {
-        "description": "Lists all the endpoints per stream.",
-        "operationId": "get-stream-endpoints",
-        "summary": "List endpoints",
-        "tags": [
-          "Endpoints"
         ],
-        "externalDocs": {
-          "description": "See documentation for this operation in Akamai's Live Archive Management API",
-          "url": "https://techdocs.akamai.com/live-archive-management/reference/get-stream-endpoints"
-        },
         "responses": {
           "200": {
-            "description": "Successful response.",
             "content": {
               "application/json": {
                 "example": {
@@ -183,85 +437,62 @@
                 "schema": {
                   "additionalProperties": false,
                   "description": "Details about an endpoint.",
-                  "type": "object",
                   "properties": {
                     "endpoints": {
                       "description": "The set of URL paths available for each stream for the specified time range.",
-                      "type": "array",
                       "items": {
                         "title": "Endpoint",
                         "type": "string"
-                      }
+                      },
+                      "type": "array"
                     }
                   },
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/endpoints-200.yaml"
                   }
                 }
               }
-            }
+            },
+            "description": "Successful response."
           }
         },
-        "parameters": [
-          {
-            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
-            "example": "{{accountSwitchKey}}",
-            "in": "query",
-            "name": "accountSwitchKey",
-            "required": false,
-            "schema": {
-              "example": "1-5C0YLB:1-8BYUX",
-              "type": "string"
-            }
-          }
+        "summary": "List endpoints",
+        "tags": [
+          "Endpoints"
         ]
       },
       "parameters": [
         {
           "description": "Uniquely identifies the stream from which this archive derives.",
-          "example": "{{streamId}}",
           "in": "path",
           "name": "streamId",
           "required": true,
           "schema": {
+            "example": 609993,
             "type": "integer"
           },
           "x-akamai": {
-            "file-path": "parameters/streamId-path.yaml"
+            "file-path": "parameters/stream-id-path.yaml"
           }
         }
-      ]
+      ],
+      "x-akamai": {
+        "file-path": "paths/endpoints.yaml",
+        "path-info": "/streams/{streamId}/endpoints"
+      }
     },
     "/streams/{streamId}/endpoints/{endpoint}": {
       "delete": {
         "description": "Delete all objects under this endpoint.",
-        "operationId": "delete-stream-endpoint",
-        "summary": "Remove objects",
-        "tags": [
-          "Endpoints"
-        ],
         "externalDocs": {
           "description": "See documentation for this operation in Akamai's Live Archive Management API",
           "url": "https://techdocs.akamai.com/live-archive-management/reference/delete-stream-endpoint"
         },
-        "responses": {
-          "200": {
-            "description": "All objects were successfully deleted.",
-            "content": {
-              "*/*": {}
-            }
-          },
-          "404": {
-            "description": "The endpoint was not found.",
-            "content": {
-              "*/*": {}
-            }
-          }
-        },
+        "operationId": "delete-stream-endpoint",
         "parameters": [
           {
             "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
-            "example": "{{accountSwitchKey}}",
             "in": "query",
             "name": "accountSwitchKey",
             "required": false,
@@ -270,16 +501,33 @@
               "type": "string"
             }
           }
+        ],
+        "responses": {
+          "200": {
+            "content": {},
+            "description": "All objects were successfully deleted."
+          },
+          "404": {
+            "content": {},
+            "description": "[Not found](https://techdocs.akamai.com/live-archive-management/reference/404).",
+            "x-akamai": {
+              "file-path": "errors/404.yaml"
+            }
+          }
+        },
+        "summary": "Remove objects",
+        "tags": [
+          "Endpoints"
         ]
       },
       "parameters": [
         {
           "description": "The URL path for which all objects need to be deleted. This is URL-encoded.",
-          "example": "{{endpoint}}",
           "in": "path",
           "name": "endpoint",
           "required": true,
           "schema": {
+            "example": "609993/streamcat",
             "type": "string"
           },
           "x-akamai": {
@@ -288,33 +536,44 @@
         },
         {
           "description": "Uniquely identifies the stream from which this archive derives.",
-          "example": "{{streamId}}",
           "in": "path",
           "name": "streamId",
           "required": true,
           "schema": {
+            "example": 609993,
             "type": "integer"
           },
           "x-akamai": {
-            "file-path": "parameters/streamId-path.yaml"
+            "file-path": "parameters/stream-id-path.yaml"
           }
         }
-      ]
+      ],
+      "x-akamai": {
+        "file-path": "paths/endpoint.yaml",
+        "path-info": "/streams/{streamId}/endpoints/{endpoint}"
+      }
     },
     "/vod": {
       "post": {
         "description": "**For beta customers only.** _Akamai is no longer accepting new members for this beta program._ When you enable archiving for an MSL live stream, you can retain it for a maximum of 31 days. To retain archived content beyond 31 days, use this operation to create a separate VOD asset that MSL stores in Akamai NetStorage. You need to set up the desired NetStorage storage group using the [Live-to-VOD Export](https://learn.akamai.com/en-us/webhelp/media-services-live/media-services-live-4-user-guide/GUID-039CB50F-CB56-49D8-BBDF-E6675E159023.html) option in Akamai Control Center.",
-        "operationId": "post-vod",
-        "summary": "Create a VOD asset",
-        "tags": [
-          "VOD assets"
-        ],
         "externalDocs": {
           "description": "See documentation for this operation in Akamai's Live Archive Management API",
           "url": "https://techdocs.akamai.com/live-archive-management/reference/post-vod"
         },
+        "operationId": "post-vod",
+        "parameters": [
+          {
+            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
+            "in": "query",
+            "name": "accountSwitchKey",
+            "required": false,
+            "schema": {
+              "example": "1-5C0YLB:1-8BYUX",
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "example": {
@@ -328,56 +587,50 @@
               "schema": {
                 "additionalProperties": false,
                 "description": "When you enable archiving for an MSL live stream, you can tell Akamai to keep the live archive for a maximum of 31 days. A VOD Asset is physical on-demand video content that you create from a live archive and store in Akamai NetStorage. This lets you preserve live archive content for longer than 31 days.",
-                "type": "object",
+                "properties": {
+                  "URI": {
+                    "description": "This is the URL for the live stream archive, using the form `/{format}/{streamId}/{eventName}/{manifestName}`. In it, `format` is either `hls` or `dash`, `streamId` is the unique, numeric identifier that's been assigned to the stream, `eventName` is the name of the event that you've assigned to the stream, and `manifestName` is the manifest filename. For example, `/hls/708976/helloworld/master.m3u8` is an HLS master manifest URL and `/dash/708976/helloworld/hello.mpd` is a DASH manifest URL.",
+                    "type": "string"
+                  },
+                  "assetId": {
+                    "description": "This is a unique identifier you set for a VOD asset. Start it with four alphanumeric characters followed by 16 numeric characters.",
+                    "type": "string"
+                  },
+                  "endTime": {
+                    "description": "The Unix epoch timestamp that marks the end time of the VOD clip. The value needs to be greater than the `startTime` by at least 30 seconds and no more than 43200 seconds, representing the clip's maximum allowed duration of 12 hours. There is a 30 minute latency. So, this needs to be less than the current epoch time by at least 1800 seconds.",
+                    "type": "integer"
+                  },
+                  "maxFileSize": {
+                    "description": "The maximum exported segment size in MB. The default value is 100 MB. This only applies to HLS VOD assets.",
+                    "type": "integer"
+                  },
+                  "preserveKeys": {
+                    "default": false,
+                    "description": "When set to `true`, MSL won't export keys and won't change key metadata in the manifests. When set to `false`, MSL exports keys and may change metadata in the manifests to accommodate. The default value is `false`. This only applies to HLS VOD assets.",
+                    "type": "boolean"
+                  },
+                  "startTime": {
+                    "description": "The Unix epoch timestamp that marks the start time of the VOD clip.",
+                    "type": "integer"
+                  }
+                },
                 "required": [
                   "URI",
                   "startTime",
                   "endTime",
                   "assetId"
                 ],
-                "properties": {
-                  "URI": {
-                    "description": "This is the URL for the live stream archive, using the form `/{format}/{streamId}/{eventName}/{manifestName}`. In it, `format` is either `hls` or `dash`, `streamId` is the unique, numeric identifier that's been assigned to the stream, `eventName` is the name of the event that you've assigned to the stream, and `manifestName` is the manifest filename. For example, `/hls/708976/helloworld/master.m3u8` is an HLS master manifest URL and `/dash/708976/helloworld/hello.mpd` is a DASH manifest URL.",
-                    "example": "{{URI}}",
-                    "type": "string"
-                  },
-                  "assetId": {
-                    "description": "This is a unique identifier you set for a VOD asset. Start it with four alphanumeric characters followed by 16 numeric characters.",
-                    "example": "{{assetId}}",
-                    "type": "string"
-                  },
-                  "endTime": {
-                    "description": "The Unix epoch timestamp that marks the end time of the VOD clip. The value needs to be greater than the `startTime` by at least 30 seconds and no more than 43200 seconds, representing the clip's maximum allowed duration of 12 hours. There is a 30 minute latency. So, this needs to be less than the current epoch time by at least 1800 seconds.",
-                    "example": "{{endTime}}",
-                    "type": "integer"
-                  },
-                  "maxFileSize": {
-                    "description": "The maximum exported segment size in MB. The default value is 100 MB. This only applies to HLS VOD assets.",
-                    "example": "{{maxFileSize}}",
-                    "type": "integer"
-                  },
-                  "preserveKeys": {
-                    "default": false,
-                    "description": "When set to `true`, MSL won't export keys and won't change key metadata in the manifests. When set to `false`, MSL exports keys and may change metadata in the manifests to accommodate. The default value is `false`. This only applies to HLS VOD assets.",
-                    "example": "{{preserveKeys}}",
-                    "type": "boolean"
-                  },
-                  "startTime": {
-                    "description": "The Unix epoch timestamp that marks the start time of the VOD clip.",
-                    "example": "{{startTime}}",
-                    "type": "integer"
-                  }
-                },
+                "type": "object",
                 "x-akamai": {
                   "file-path": "schemas/post-vod.yaml"
                 }
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "202": {
-            "description": "The VOD job is successfully created. Returns an export ID (EID).",
             "content": {
               "application/json": {
                 "example": {
@@ -386,49 +639,71 @@
                 "schema": {
                   "additionalProperties": false,
                   "description": "Create VOD asset response body.",
-                  "type": "object",
                   "properties": {
                     "EID": {
                       "description": "This is a unique identifier that Akamai applies to a request to create a new VOD asset.",
                       "type": "string"
                     }
                   },
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/post-vod-202.yaml"
                   }
                 }
               }
-            }
+            },
+            "description": "The VOD job is successfully created. Returns an export ID (EID)."
           },
           "400": {
-            "description": "The URL is not formed correctly. The POST body is not valid.",
-            "content": {
-              "*/*": {}
+            "content": {},
+            "description": "[Bad request](https://techdocs.akamai.com/live-archive-management/reference/400). The URL isn't formed correctly.",
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
             }
           },
           "403": {
-            "description": "The VOD Management API is not enabled for this stream. The VOD Management API is not enabled globally.",
-            "content": {
-              "*/*": {}
+            "content": {},
+            "description": "[Forbidden](https://techdocs.akamai.com/live-archive-management/reference/403). The API isn't enabled for this stream, or the API isn't globally enabled.",
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
             }
           },
           "405": {
-            "description": "HTTP method error.",
-            "content": {
-              "*/*": {}
+            "content": {},
+            "description": "[Method not allowed](https://techdocs.akamai.com/live-archive-management/reference/405).",
+            "x-akamai": {
+              "file-path": "errors/405.yaml"
             }
           },
           "500": {
-            "description": "The CP code or originshield hostname is not available for the stream ID. There is an error initiating the VOD job.",
-            "content": {
-              "*/*": {}
+            "content": {},
+            "description": "[Internal server error](https://techdocs.akamai.com/live-archive-management/reference/500). The CP code or originshield hostname is not available for the stream ID. There is an error initiating the VOD job.",
+            "x-akamai": {
+              "file-path": "errors/500-hostname.yaml"
             }
           }
         },
+        "summary": "Create a VOD asset",
+        "tags": [
+          "VOD assets"
+        ]
+      },
+      "x-akamai": {
+        "file-path": "paths/vod.yaml",
+        "path-info": "/vod"
+      }
+    },
+    "/vod/{EID}": {
+      "get": {
+        "description": "**For beta customers only.** _Akamai is no longer accepting new members for this beta program._ Use this to query the status of a VOD asset creation operation, using its export ID (`EID`).",
+        "externalDocs": {
+          "description": "See documentation for this operation in Akamai's Live Archive Management API",
+          "url": "https://techdocs.akamai.com/live-archive-management/reference/get-vod-eid"
+        },
+        "operationId": "get-vod-eid",
         "parameters": [
           {
             "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
-            "example": "{{accountSwitchKey}}",
             "in": "query",
             "name": "accountSwitchKey",
             "required": false,
@@ -437,24 +712,9 @@
               "type": "string"
             }
           }
-        ]
-      }
-    },
-    "/vod/{EID}": {
-      "get": {
-        "description": "**For beta customers only.** _Akamai is no longer accepting new members for this beta program._ Use this to query the status of a VOD asset creation operation, using its export ID (`EID`).",
-        "operationId": "get-vod-eid",
-        "summary": "Get VOD status",
-        "tags": [
-          "VOD assets"
         ],
-        "externalDocs": {
-          "description": "See documentation for this operation in Akamai's Live Archive Management API",
-          "url": "https://techdocs.akamai.com/live-archive-management/reference/get-vod-eid"
-        },
         "responses": {
           "200": {
-            "description": "The status of a VOD job is returned.",
             "content": {
               "application/json": {
                 "example": {
@@ -463,91 +723,93 @@
                 "schema": {
                   "additionalProperties": false,
                   "description": "Status of a VOD job.",
-                  "type": "object",
                   "properties": {
                     "status": {
                       "description": "The status of a request to create a new VOD asset. It can be `ready`, `in_progress`, or `failed`.",
-                      "type": "string",
                       "enum": [
                         "in_progress",
                         "ready",
                         "failed"
-                      ]
+                      ],
+                      "type": "string"
                     }
                   },
+                  "type": "object",
                   "x-akamai": {
                     "file-path": "schemas/vod-status-200.yaml"
                   }
                 }
               }
-            }
+            },
+            "description": "The status of a VOD job is returned."
           },
           "400": {
-            "description": "The URL isn't formed correctly.",
-            "content": {
-              "*/*": {}
+            "content": {},
+            "description": "[Bad request](https://techdocs.akamai.com/live-archive-management/reference/400). The URL isn't formed correctly.",
+            "x-akamai": {
+              "file-path": "errors/400.yaml"
             }
           },
           "403": {
-            "description": "The VOD Management API isn't enabled for this stream. The VOD Management API is not enabled globally.",
-            "content": {
-              "*/*": {}
+            "content": {},
+            "description": "[Forbidden](https://techdocs.akamai.com/live-archive-management/reference/403). The API isn't enabled for this stream, or the API isn't globally enabled.",
+            "x-akamai": {
+              "file-path": "errors/403.yaml"
             }
           },
           "405": {
-            "description": "HTTP method error.",
-            "content": {
-              "*/*": {}
+            "content": {},
+            "description": "[Method not allowed](https://techdocs.akamai.com/live-archive-management/reference/405).",
+            "x-akamai": {
+              "file-path": "errors/405.yaml"
             }
           },
           "500": {
-            "description": "The export ID does not exist or isn't valid. JSON status error.",
-            "content": {
-              "*/*": {}
+            "content": {},
+            "description": "[Internal server error](https://techdocs.akamai.com/live-archive-management/reference/500). The export ID does not exist or isn't valid.",
+            "x-akamai": {
+              "file-path": "errors/500-export.yaml"
             }
           }
         },
-        "parameters": [
-          {
-            "description": "For customers who manage more than one account, this [runs the operation from another account](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client). The Identity and Access Management API provides a [list of available account switch keys](https://techdocs.akamai.com/iam-api/reference/get-client-account-switch-keys).",
-            "example": "{{accountSwitchKey}}",
-            "in": "query",
-            "name": "accountSwitchKey",
-            "required": false,
-            "schema": {
-              "example": "1-5C0YLB:1-8BYUX",
-              "type": "string"
-            }
-          }
+        "summary": "Get VOD status",
+        "tags": [
+          "VOD assets"
         ]
       },
       "parameters": [
         {
           "description": "A unique ID assigned to the export.",
-          "example": "{{EID}}",
           "in": "path",
           "name": "EID",
           "required": true,
           "schema": {
+            "example": "809269_8749e87de8bbf429e5486b41ca6f9f87",
             "type": "string"
           },
           "x-akamai": {
-            "file-path": "parameters/EID-path.yaml"
+            "file-path": "parameters/eid-path.yaml"
           }
         }
-      ]
+      ],
+      "x-akamai": {
+        "file-path": "paths/eid.yaml",
+        "path-info": "/vod/{EID}"
+      }
     }
-  },
-  "x-readme": {
-    "samples-languages": [
-      "curl",
-      "python",
-      "node"
-    ]
   },
   "servers": [
     {
       "url": "https://{hostname}/live-archive/v1"
     }
-  ]
+  ],
+  "tags": [],
+  "x-readme": {
+    "explorer-enabled": false,
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  }
 }
