@@ -1,0 +1,78 @@
+type: object
+properties:
+  version:
+    type: integer
+  configVersionId:
+    type: integer
+  pdName:
+    type: string
+  createdBy:
+    type: string
+  createdTimestamp:
+    type: string
+    format: date-time
+  updatedBy:
+    type: string
+    nullable: true
+  updatedTimestamp:
+    type: string
+    format: date-time
+  status:
+    type: string
+  deployState:
+    type: string
+    description: |
+      Current deployment state of the configuration version. The value `edited` indicates that changes have been made to policy domain, but that those changes haven't been deployed. `deploying` indicates that the configuration is in the midst of the deployment process, while `deployed` indicates that there are no outstanding changes that need deploying.
+    enum:
+    - deployed
+    - deploying
+    - edited
+  ipsAllocated:
+    type: integer
+  ipsConfigured:
+    type: integer
+  pdSubnets:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        pdSubnetId:
+          type: integer
+        pdSubnet:
+          type: string
+        legacyPdSubnet:
+          type: boolean
+        vips:
+          type: array
+          items:
+            properties:
+              type:
+                type: string
+                description: |
+                  The type of IP address or subnet service configured.
+              vipId:
+                type: integer
+              ports:
+                type: string
+              customerBackend:
+                type: string
+              akamaiFrontend:
+                type: string
+                description: |
+                  The Akamai virtual IP address that's been mapped to a back-end server or subnet.
+              sourceIpProtocol:
+                type: string
+                description: |
+                  This field is used to manage Source IP data on their VIPs. CIP, Proxy Protocol(V1 & V2) and OPTION_28 are available only when VIP is running over TCP. NAT46 option is available if the VIP has an IPv4 front end, with an IPv6 back end. NA is used as a default option when source IP data is not available for a particular VIP.
+                enum:
+                - CIP
+                - PROXY_PROTOCOL_V1
+                - PROXY_PROTOCOL_V2
+                - OPTION_28
+                - NAT46
+                - NA
+              legacyVip:
+                type: boolean
+                description: |
+                  Indicates whether Prolexic Proxy created the virtual IP address.

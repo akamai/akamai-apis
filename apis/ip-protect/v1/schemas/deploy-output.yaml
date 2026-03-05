@@ -1,0 +1,76 @@
+type: object
+additionalProperties: false
+required:
+- vips
+- version
+properties:
+  version:
+    type: integer
+  createdTimestamp:
+    type: string
+    format: date-time
+  createdBy:
+    type: string
+  updatedTimestamp:
+    type: string
+    format: date-time
+  updatedBy:
+    type: string
+    nullable: true
+  pdName:
+    type: string
+  status:
+    type: string
+  deployState:
+    type: string
+    description: |
+      Current deployment state of the configuration version. The value `edited` indicates that changes have been made to policy domain, but that those changes haven't been deployed. `deploying` indicates that the configuration is in the midst of the deployment process, while `deployed` indicates that there are no outstanding changes that need deploying.
+    enum:
+    - deployed
+    - deploying
+    - edited
+  pdSubnets:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - pdSubnet
+      properties:
+        pdSubnetId:
+          type: integer
+        pdSubnet:
+          type: string
+        legacyPdSubnet:
+          type: boolean
+        vips:
+          type: array
+          nullable: true
+          items:
+            additionalProperties: false
+            required:
+            - ports
+            - akamaiFrontend
+            - configVersionId
+            - customerBackend
+            - type
+            - legacyVip
+            properties:
+              type:
+                type: string
+                description: |
+                  The type of IP address or subnet service configured.
+              vipId:
+                type: integer
+              ports:
+                type: string
+              customerBackend:
+                type: string
+              akamaiFrontend:
+                type: string
+                description: |
+                  The Akamai virtual IP address that's been mapped to a back-end server or subnet.
+              legacyVip:
+                type: boolean
+                description: |
+                  Indicates whether Prolexic Proxy created the virtual IP address.

@@ -1,0 +1,108 @@
+type: object
+description: |
+  Policy domain.
+additionalProperties: false
+properties:
+  createdTimestamp:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating the creation time of the policy domain.
+    format: date-time
+  createdBy:
+    type: string
+    description: |
+      Username of the person responsible for creating the policy domain.
+  updatedTimestamp:
+    type: string
+    description: |
+      ISO 8601 timestamp indicating the most recent update time for the policy domain.
+    format: date-time
+  updatedBy:
+    type: string
+    description: |
+      Username of the person responsible for the most recent updating of the policy domain.
+    nullable: true
+  pdName:
+    type: string
+    description: |
+      Unique name of the policy domain.
+  deployState:
+    type: string
+    description: |
+      Current deployment state of the configuration version. The value `edited` indicates that changes have been made to policy domain, but that those changes haven't been deployed. `deploying` indicates that the configuration is in the midst of the deployment process, while `deployed` indicates that there are no outstanding changes that need deploying.
+    enum:
+    - deployed
+    - deploying
+    - edited
+  pdSubnets:
+    type: array
+    description: |
+      Subnets.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - pdSubnet
+      properties:
+        pdSubnetId:
+          type: integer
+          description: |
+            Unique identifier of the subnet.
+        pdSubnet:
+          type: string
+          description: |
+            IP address of the subnet.
+        legacyPdSubnet:
+          type: boolean
+          description: |
+            Indicates whether Prolexic Proxy created the subnet.
+        vips:
+          type: array
+          description: |
+            Virtual IP addresses.
+          nullable: true
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - ports
+            - akamaiFrontend
+            - customerBackend
+            - sourceIpProtocol
+            - legacyVip
+            properties:
+              type:
+                type: string
+                description: |
+                  The type of IP address or subnet service configured.
+              vipId:
+                type: integer
+                description: |
+                  Unique identifier of the virtual IP address.
+              ports:
+                type: string
+                description: |
+                  Comma-delimited string of virtual IO address ports open to Internet traffic.
+              customerBackend:
+                type: string
+                description: |
+                  IP address of a customer's server or subnet mapped to a virtual IP address.
+              akamaiFrontend:
+                type: string
+                description: |
+                  IP address of an Akamai virtual IP address that's been mapped to a back-end IP.
+              sourceIpProtocol:
+                type: string
+                description: |
+                  Specifies the source IP for network packets received at a customer's back-end server or subnet. By default, packets are set to `NA`, identifying Akamai as the source IP. Other source IP options are `NAT46`, `CIP`, `PROXY_PROTOCOL_V1`, `PROXY_PROTOCOL_V2`, and `OPTION_28`. `NAT46` is only available if the virtual IP address has an IPv4 address and the back-end IP has an IPv6 address. The remaining options require the virtual IP address to be running on a TCP network.
+                enum:
+                - CIP
+                - PROXY_PROTOCOL_V1
+                - PROXY_PROTOCOL_V2
+                - OPTION_28
+                - NAT46
+                - NA
+              legacyVip:
+                type: boolean
+                description: |
+                  Indicates whether Prolexic Proxy created the virtual IP address.
