@@ -1,0 +1,126 @@
+type: object
+description: |-
+  Application service information.
+  
+x-akamai:
+  file-path: schemas/list-application-services-response.yaml
+additionalProperties: false
+required:
+- resource
+- service
+- app
+- resource_uri
+properties:
+  app:
+    type: object
+    description: |
+      Application details.
+    additionalProperties: false
+    required:
+    - name
+    - app_uuid_url
+    properties:
+      name:
+        type: string
+        description: |
+          The application's name.
+        minLength: 1
+      app_uuid_url:
+        type: string
+        description: |
+          The application's UUID URL.
+        minLength: 1
+  resource:
+    type: string
+    description: |
+      The resource details for the application.
+    minLength: 1
+  resource_uri:
+    type: object
+    description: |
+      The unique resource URI.
+    additionalProperties: false
+    required:
+    - services
+    - href
+    - apps
+    properties:
+      apps:
+        type: string
+        description: |
+          Applications assigned to this resource.
+        minLength: 1
+      href:
+        type: string
+        description: |
+          The href URL for the resource.
+        minLength: 1
+      services:
+        type: string
+        description: |
+          The services assigned to the resource.
+        minLength: 1
+  service:
+    type: object
+    description: |
+      Service details for the application.
+    additionalProperties: false
+    required:
+    - service_type
+    - settings
+    - description
+    - name
+    - uuid_url
+    - status
+    properties:
+      name:
+        type: string
+        description: |
+          A unique name for the service.
+        minLength: 1
+      description:
+        type: string
+        description: |
+          A brief description for this service. Specify `null` if you want to name it later.
+        nullable: true
+        minLength: 1
+      service_type:
+        type: integer
+        description: |
+          The service type. Either `1` for WAF, `2` for Acceleration, `3` for ICAP, `4` for IPS, `5` for SLB, `6` for access control, `7` for rewrite, or `8` for group rewrite.
+        default: 1
+        enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+      settings:
+        $ref: service-settings.yaml
+      status:
+        type: string
+        description: |
+          The service status. Either `off` or `on`.
+        enum:
+        - off
+        - on
+      uuid_url:
+        type: string
+        description: |
+          A unique identifier for this service.
+        minLength: 1
+  status:
+    type: integer
+    description: |
+      The service status. Either `0` for off or `1` for on.
+    enum:
+    - 0
+    - 1
+  uuid_url:
+    type: string
+    description: |
+      A unique identifier for this service.
+    minLength: 1

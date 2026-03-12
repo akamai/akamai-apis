@@ -1,0 +1,94 @@
+type: object
+description: |-
+  Configurable risk rules.
+  
+x-akamai:
+  file-path: schemas/risk-rule.yaml
+additionalProperties: false
+required:
+- id
+- name
+- rules
+- version
+properties:
+  id:
+    type: integer
+    description: |
+      A unique identifier for this risk rule.
+    minimum: 0
+  name:
+    type: string
+    description: |
+      The name of the risk rule.
+    minLength: 1
+  version:
+    type: string
+    description: |
+      Risk rule schema version.
+    minLength: 1
+  rank:
+    type: integer
+    description: |
+      The rank of the risk rule. Present only in tiers.
+    minimum: 0
+  rules:
+    type: array
+    description: |
+      Available risk assessment criteria rules.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - os
+      - signals
+      properties:
+        os:
+          type: array
+          description: |
+            Operating systems.
+          minItems: 0
+          items:
+            type: string
+            minLength: 1
+        signals:
+          type: array
+          description: |
+            Available risk assessment signals.
+          minItems: 1
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - name
+            - value
+            properties:
+              name:
+                type: string
+                description: |
+                  The name of the signal.
+                minLength: 1
+              value:
+                description: |
+                  The signal value. Either a single value with a type of string, integer, or boolean, or an array of similar type values.
+                oneOf:
+                - minLength: 1
+                  type: string
+                  title: String
+                - title: Boolean
+                  type: boolean
+                - minimum: 0
+                  type: integer
+                  title: Integer
+                - items:
+                    oneOf:
+                    - minLength: 1
+                      type: string
+                      title: String
+                    - title: Boolean
+                      type: boolean
+                    - title: Integer
+                      type: integer
+                  type: array
+                  title: Array
+                  minItems: 0

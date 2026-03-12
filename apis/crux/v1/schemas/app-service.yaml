@@ -1,0 +1,87 @@
+type: object
+description: |-
+  Application service information.
+  
+x-akamai:
+  file-path: schemas/app-service.yaml
+required:
+- app
+- resource
+- resource_uri
+- service
+- status
+- uuid_url
+properties:
+  app:
+    type: object
+    required:
+    - app_uuid_url
+    - name
+    properties:
+      name:
+        type: string
+        description: |
+          The application's name.
+      app_uuid_url:
+        type: string
+        description: |
+          The application's uuid_url value.
+  resource:
+    type: string
+  resource_uri:
+    type: object
+    required:
+    - apps
+    - href
+    - services
+    properties:
+      apps:
+        type: string
+      href:
+        type: string
+      services:
+        type: string
+  service:
+    type: object
+    required:
+    - description
+    - name
+    - service_type
+    - settings
+    properties:
+      name:
+        type: string
+        description: |
+          A unique name for the service.
+      description:
+        type: string
+        description: |
+          A brief description for this service.
+      service_type:
+        type: integer
+        description: |
+          `1` for WAF, `2` for acceleration, `3` for ICAP, `4` for IPS, `5` for SLB, `6` for access control, `7` for rewrite, or `8` for group rewrite.
+        default: 1
+        enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+      settings:
+        $ref: service-settings.yaml
+  status:
+    type: integer
+    description: |
+      `0` (Disabled), `1` (Enabled).
+    default: 0
+    enum:
+    - 0
+    - 1
+  uuid_url:
+    type: string
+    description: |
+      A unique identifier for this service.

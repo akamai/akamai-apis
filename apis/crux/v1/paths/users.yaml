@@ -1,0 +1,53 @@
+x-akamai:
+  file-path: paths/users.yaml
+  path-info: /mgmt-pop/directories/{directory_id}/users
+parameters:
+- $ref: ../parameters/directory-id-path.yaml
+post:
+  operationId: post-directory-user
+  summary: Invite an user to a directory group
+  tags:
+  - User administration
+  description: |
+    Invite an user to a cloud directory.
+  parameters:
+  - $ref: ../parameters/contract-id-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/invite-directory-users-body.json
+        schema:
+          $ref: ../schemas/invite-dir-users.yaml
+  responses:
+    200:
+      description: |
+        Successful response.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/reinvite-directory-users-200.json
+          schema:
+            $ref: ../schemas/cmdid.yaml
+get:
+  operationId: get-directory-users
+  summary: List directory users
+  tags:
+  - User administration
+  description: |
+    Lists users for a directory. Returns a maximum of 1000 users per request. Use the `limit` and `offset` parameters to request the next 1000 users.
+  parameters:
+  - $ref: ../parameters/contract-id-query.yaml
+  - $ref: ../parameters/pageable-limit.yaml
+  - $ref: ../parameters/pageable-offset.yaml
+  responses:
+    200:
+      description: |
+        Successful response.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/get-directory-users-200.json
+          schema:
+            $ref: ../schemas/users.yaml

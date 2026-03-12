@@ -1,21 +1,18 @@
 type: object
 description: |-
-  Properties to create and assign rules to restrict access to an application based on username, group name, time, or other conditions.
+  Properties to create and assign rules to restrict access to an application. Filters are based on username, group name, time, or other conditions.
   
 x-akamai:
   file-path: schemas/access-rule.yaml
 additionalProperties: false
 required:
-- action
 - description
 - global_rule
 - merge_global
 - name
-- resource_uri
 - rule_type
 - settings
 - status
-- uuid_url
 properties:
   name:
     type: string
@@ -31,7 +28,7 @@ properties:
   action:
     type: integer
     description: |
-      The action the rule takes. Refer to [Rule types & actions](ref:rule-types-actions) for more information. In case of access rules rule type will always be 1.
+      The action the rule takes. Refer to [Rule types & actions](https://techdocs.akamai.com/eaa-api/reference/rule-types-actions) for more information. Use `1` for access rules.
     enum:
     - 1
     - 2
@@ -47,7 +44,6 @@ properties:
     type: string
     description: |
       ISO 8601 timestamp marking the rule's creation.
-    format: date-time
   global_rule:
     type: boolean
     description: |
@@ -60,7 +56,15 @@ properties:
     type: string
     description: |
       ISO 8601 timestamp marking the rule's last modification.
-    format: date-time
+    nullable: true
+  partner_uuid:
+    type: string
+    description: |
+      The unique partner ID.
+  partner_uuid_url:
+    type: string
+    description: |
+      The unique partner URI.
   resource_uri:
     type: object
     description: |
@@ -81,23 +85,26 @@ properties:
   rule_type:
     type: integer
     description: |
-      The action the rule takes. Refer to [Rule types & actions](ref:rule-types-actions) for more information. In case of access rules rule type will always be 1.
+      The action the rule takes. Refer to [Rule types & actions](https://techdocs.akamai.com/eaa-api/reference/rule-types-actions) for more information. For access rules, rule type is `1`.
     enum:
     - 1
+  service:
+    type: string
+    description: |
+      The unique service ID.
   settings:
     type: array
     description: |
-      Array containing settings object for rules that have been defined. 
+      Defined rule settings, such as rule type, operator, and value.
+    minItems: 1
     items:
       type: object
-      description: |
-        The objects specify the rule definiton like the kind of rule, operator and value.
       additionalProperties: false
       properties:
         type:
           type: string
           description: |
-            The access control type. Either `method`, `group`, `client_IP`, `user`, `region`, `country`, and `time`.
+            The access control type. Either `method`, `group`, `client_IP`, `user`, `region`, `country`, `time` or `url`.
           enum:
           - method
           - group
@@ -106,6 +113,7 @@ properties:
           - region
           - country
           - time
+          - url
         value:
           type: string
           description: |
@@ -117,7 +125,7 @@ properties:
         operator:
           type: string
           description: |
-            The logical operator, either `==` for is, or `!=` for is not.
+            The logical operator, either `==` for equals, or `!=` for doesn't equal.
           enum:
           - ==
           - '!='
@@ -128,6 +136,10 @@ properties:
     enum:
     - 0
     - 1
+  tenant_uuid:
+    type: string
+    description: |
+      The unique ID of the tenant.
   uuid_url:
     type: string
     description: |

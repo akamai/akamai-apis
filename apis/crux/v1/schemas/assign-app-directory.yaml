@@ -1,0 +1,50 @@
+type: object
+description: |-
+  Properties for assigning applications to directory groups.
+  
+x-akamai:
+  file-path: schemas/assign-app-directory.yaml
+additionalProperties: false
+required:
+- data
+properties:
+  data:
+    type: array
+    description: |
+      Application directory details.
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - apps
+      - groups
+      properties:
+        apps:
+          type: array
+          description: |
+            The application ID to assign to a group.
+          minItems: 1
+          items:
+            type: string
+        groups:
+          type: array
+          description: |
+            The group ID and MFA settings to assign to the application.
+          minItems: 1
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              enable_mfa:
+                type: string
+                description: |
+                  Enables multifactor authentication. Either `enable` or use `inherit` to use the IDP's MFA settings.
+                enum:
+                - enable
+                - inherit
+              uuid_url:
+                type: string
+                description: |
+                  A unique identifier for the application rewrite group.
+                minLength: 1

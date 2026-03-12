@@ -22,6 +22,7 @@ properties:
     type: string
     description: |
       A description of the rule.
+    nullable: true
     minLength: 1
   action:
     type: integer
@@ -41,9 +42,8 @@ properties:
   created_at:
     type: string
     description: |
-      ISO 8601 timestamp marking the rule's creation.
+      __Read-only__ ISO 8601 timestamp marking the rule's creation.
     readOnly: true
-    format: date-time
   global_rule:
     type: boolean
     description: |
@@ -56,12 +56,24 @@ properties:
     type: string
     description: |
       ISO 8601 timestamp marking the rule's last modification.
-    format: date-time
+    nullable: true
   resource_uri:
-    type: string
+    type: object
     description: |
-      The rule's resource URL.
-    minLength: 1
+      A plural bundle of navigable hypermedia links to other API resources.
+    additionalProperties: false
+    required:
+    - href
+    - service
+    properties:
+      href:
+        type: string
+        description: |
+          The href resource URI.
+      service:
+        type: string
+        description: |
+          The service resource URI.
   rule_type:
     type: integer
     description: |

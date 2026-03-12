@@ -1,0 +1,309 @@
+type: object
+description: |-
+  Application connectors.
+  
+x-akamai:
+  file-path: schemas/list-app-agents.yaml
+additionalProperties: false
+required:
+- meta
+- objects
+properties:
+  meta:
+    $ref: pageable.yaml
+  objects:
+    type: array
+    description: |
+      Connector details.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: |
+            The connector name.
+        description:
+          type: string
+          description: |
+            The connector description.
+          nullable: true
+        advanced_settings:
+          type: object
+          description: |
+            Connector advanced network settings.
+          additionalProperties: false
+          properties:
+            network_info:
+              type: array
+              description: |
+                Network subnets for the connector.
+              items:
+                type: string
+        agent_type:
+          type: integer
+          description: |
+            The type of connector. Either `1` for VM, `2` for IPSEC, or `3` for GRE.
+          default: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        agent_upgrade_enabled:
+          type: boolean
+          description: |
+            Enables upgrades for the connector.
+        agent_upgrade_suspended:
+          type: boolean
+          description: |
+            Suspends upgrades for a connector.
+        agent_version:
+          type: string
+          description: |
+            The connector software version currently installed in the connector. For example, `AGENT-4.3.0-2449+`.
+          nullable: true
+        all_applications:
+          type: array
+          description: |
+            All applications using the connector.
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              name:
+                type: string
+                description: |
+                  Application name.
+              app_status:
+                type: integer
+                description: |
+                  The status of the application configuration. Either `1` for not ready, `2` for ready, `3` for pending, `4` for deployed, `5` for failed, `6` for cloud deployed, or `7` for connector deployed.
+                default: 1
+                enum:
+                - 1
+                - 2
+                - 3
+                - 4
+                - 5
+                - 6
+                - 7
+              uuid_url:
+                type: string
+                description: |
+                  The application's unique ID.
+        all_directories:
+          type: array
+          description: |
+            All directories used by the connector.
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              name:
+                type: string
+                description: |
+                  The directory name.
+              uuid_url:
+                type: string
+                description: |
+                  The directory's unique ID.
+        auth_service:
+          type: boolean
+          description: |
+            Enables the authorization service.
+        cpu:
+          type: string
+          description: |
+            CPU of the connector. Specify `null` if you want to provide this later.
+          nullable: true
+        created_at:
+          type: string
+          description: |
+            ISO 8601 timestamp marking the connector's creation.
+        data_service:
+          type: boolean
+          description: |
+            Enables the data service.
+        debug_channel_permitted:
+          type: boolean
+          description: |
+            Enables Akamai Support to run commands on the connector through the debug channel.
+        dhcp:
+          type: string
+          description: |
+            Enables DHCP for the connector. Either `enabled` or `disabled`.
+          enum:
+          - enabled
+          - disabled
+        disk_size:
+          type: integer
+          description: |
+            The disk size of the connector. Specify `null` if you want to provide this later.
+          nullable: true
+          minimum: 0
+        dns_server:
+          type: string
+          description: |
+            DNS Server of the connector. Specify `null` if you want to provide this later.
+          nullable: true
+          minLength: 1
+        download_url:
+          type: string
+          description: |
+            S3 URL to download the connector package. Specify `null` if you want to provide this later.
+          nullable: true
+        gateway:
+          type: string
+          description: |
+            Gateway of the connector. Specify `null` if you want to provide this later.
+          nullable: true
+        hostname:
+          type: string
+          description: |
+            Machine name of the connector. Specify `null` if you want to provide this later.
+          nullable: true
+        ip_addr:
+          type: string
+          description: |
+            IP address of the connector. Specify `null` if you want to provide this later.
+          nullable: true
+        last_checkin:
+          type: string
+          description: |
+            ISO 8601 timestamp marking when the connector last checked in with the server.
+          nullable: true
+        logging_settings:
+          type: string
+          description: |
+            JSON-formatted logging settings.
+        mac:
+          type: string
+          description: |
+            MAC address of the connector.
+          nullable: true
+        manual_override:
+          type: boolean
+          description: |
+            When `true`, the connector cannot be upgraded.
+        modified_at:
+          type: string
+          description: |
+            ISO 8601 timestamp marking the connector's last modification.
+        os_version:
+          type: string
+          description: |
+            OS version of the connector.
+          nullable: true
+        package:
+          type: integer
+          description: |
+            Type of package for the connector. Refer to [Connector package types](https://techdocs.akamai.com/eaa-api/reference/connector-package-types) for available values.
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+        policy:
+          type: string
+          description: |
+            The unique ID of the policy applied to the connector.
+        private_ip:
+          type: string
+          description: |
+            Public IP address of the connector. Specify `null` if you want to provide this later.
+          nullable: true
+        public_ip:
+          type: string
+          description: |
+            Public IP address of the connector. Specify `null` if you want to provide this later.
+          nullable: true
+        pwd_comments:
+          type: string
+          description: |
+            Status of the set password attempt on the connector. Either `Success` or `Failed`.
+          nullable: true
+          enum:
+          - Success
+          - Failed
+        pwdsyncflag:
+          type: boolean
+          description: |
+            Enables sync of the connector password with the back-end database.
+        ram_size:
+          type: string
+          description: |
+            RAM size of the connector. Specify `null` if you want to provide this later.
+          nullable: true
+        reach:
+          type: integer
+          description: |
+            Connector reachability status. Either `0` for unreachable or `1` for reachable.
+          default: 1
+          enum:
+          - 0
+          - 1
+        region:
+          type: string
+          description: |
+            The region of the connector. For example, `Central`. Specify `null` if you want to provide this later.
+          nullable: true
+          minLength: 1
+        resource_uri:
+          type: object
+          description: |
+            A plural bundle of navigable hypermedia links to other API resources.
+          additionalProperties: false
+          properties:
+            href:
+              type: string
+              description: |
+                The href resource URL.
+              minLength: 1
+        setpwd_attempt:
+          type: integer
+          description: |
+            The number of password entry attempts on the connector.
+        state:
+          type: integer
+          description: |
+            State of the connector. Either `0` for not created, `1` for created, `2` for not installed, `3` for not verified, `4` for verified, `5` for unenrolled, `6` for enrolled, `7` for not configured, or `8` for configured.
+          default: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+        status:
+          type: integer
+          description: |
+            Status of the connector. Either `0` for disabled or `1` for enabled.
+          enum:
+          - 0
+          - 1
+        subnet:
+          type: string
+          description: |
+            Subnet of the connector.
+          nullable: true
+        tz:
+          type: string
+          description: |
+            The connector's time zone.
+          nullable: true
+        uuid_url:
+          type: string
+          description: |
+            The connector's unique resource ID.

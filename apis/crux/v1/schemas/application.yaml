@@ -1,28 +1,21 @@
 type: object
 description: |-
-  Enterprise Access Application creation properties.
+  Enterprise Access Application properties.
   
 x-akamai:
   file-path: schemas/application.yaml
 additionalProperties: false
-required:
-- app_type
-- name
-- app_profile
 properties:
   servers:
     type: array
     description: |
-      EAA application server details.
-    minItems: 1
+      Origin server details of the internal application within your network.
+    minItems: 0
     items:
       type: object
-      description: |
-        Origin server details of the internal application within your network.
       additionalProperties: false
       required:
       - origin_protocol
-      - name
       - orig_tls
       - origin_host
       - origin_port
@@ -40,7 +33,7 @@ properties:
           type: string
           description: |
             The IP address or FQDN of the origin server.
-          minLength: 1
+          nullable: true
         origin_port:
           type: integer
           description: |
@@ -57,21 +50,21 @@ properties:
     type: string
     description: |
       The name of the application configuration.
-    minLength: 1
+    minLength: 0
   description:
     type: string
     description: |
       A description of the application.
     minLength: 1
+  advanced_settings:
+    $ref: appconfigversion-advanced-settings.yaml
   agents:
     type: array
     description: |
-      EAA application connector details.
+      Target connectors for deploying the application configuration.
     minItems: 1
     items:
       type: object
-      description: |
-        Specifies the target connectors for deploying the application configuration.
       additionalProperties: false
       required:
       - compatible
@@ -92,6 +85,25 @@ properties:
           description: |
             The UUID URL of the connector.
           minLength: 1
+  app:
+    type: object
+    description: |
+      Specifies the application for the application directory.
+    additionalProperties: false
+    required:
+    - name
+    - app_uuid_url
+    properties:
+      name:
+        type: string
+        description: |
+          The application name.
+        minLength: 1
+      app_uuid_url:
+        type: string
+        description: |
+          The application UUID URL.
+        minLength: 1
   app_category:
     type: object
     description: |
@@ -168,6 +180,7 @@ properties:
     type: string
     description: |
       The connector for the application.
+    nullable: true
     minLength: 1
   auth_enabled:
     type: string
@@ -188,7 +201,7 @@ properties:
     type: string
     description: |
       The Okta Bookmark app URL.
-    minLength: 1
+    minLength: 0
   cert:
     type: string
     description: |
@@ -207,27 +220,26 @@ properties:
     type: string
     description: |
       The upstream URL for a CNAME redirect.
+    nullable: true
     minLength: 1
   created_at:
     type: string
     description: |
-      ISO 8601 timestamp marking the application object's creation.
+      __Read-only__ ISO 8601 timestamp marking the application object's creation.
     readOnly: true
-    format: date-time
   data_agent:
     type: string
     description: |
       The data connector for the application.
+    nullable: true
     minLength: 1
   directories:
     type: array
     description: |
-      Application directory details.
+      Application directory details for validating user accounts.
     minItems: 1
     items:
       type: object
-      description: |
-        Specifies the directory for validating user accounts.
       additionalProperties: false
       required:
       - type
@@ -241,14 +253,14 @@ properties:
             The name of the directory.
           minLength: 1
         type:
-          type: string
+          type: integer
           description: |
             The type of directory. Select `1` for EAA Cloud Directory, `2` for Active Directory, `3` for LDAP, or `4` for Active Directory LDS.
           enum:
-          - '1'
-          - '2'
-          - '3'
-          - '4'
+          - 1
+          - 2
+          - 3
+          - 4
         user_count:
           type: integer
           description: |
@@ -259,6 +271,20 @@ properties:
           description: |
             The UUID URL of the directory.
           minLength: 1
+  directory:
+    type: object
+    description: |
+      Directory properties.
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        description: |
+          The directory name.
+      directory_uuid_url:
+        type: string
+        description: |
+          The directory's unique ID.
   domain:
     type: integer
     description: |
@@ -271,12 +297,19 @@ properties:
     type: string
     description: |
       The domain suffix. For example, `.com`.
-    minLength: 1
+    minLength: 0
+  enable_mfa:
+    type: string
+    description: |
+      Enables multifactor authentication. Either `enable` or use to `inherit` to use the IDP's MFA settings.
+    enum:
+    - inherit
+    - enable
   host:
     type: string
     description: |
       The external default hostname for the application.
-    format: hostname
+    nullable: true
   idp:
     type: object
     description: |
@@ -287,7 +320,7 @@ properties:
         type: string
         description: |
           The name of the IDP configuration.
-        minLength: 1
+        minLength: 0
       type:
         type: integer
         description: |
@@ -304,14 +337,17 @@ properties:
         - 8
         - 9
       client_cert_auth:
-        type: boolean
+        type: string
         description: |
-          Enables certificate-based authentication for the client.
+          Enables client certificate authorization. Either `true` or `false`.
+        enum:
+        - 'true'
+        - 'false'
       client_cert_user_param:
         type: string
         description: |
-          Relevant Cert based parameters for client authentication.
-        minLength: 1
+          Relevant cert based parameters for client authentication.
+        minLength: 0
       idp_id:
         type: string
         description: |
@@ -330,21 +366,30 @@ properties:
     description: |
       JSON settings to implement OIDC.
     $ref: app-oidc-settings.yaml
+  orig_tls:
+    type: string
+    description: |
+      Whether the origin host uses TLS encryption.
   origin_host:
     type: string
     description: |
       The IP address or FQDN of the application origin server.
+    nullable: true
     minLength: 1
+  origin_port:
+    type: integer
+    description: |
+      The application's origin port.
   pop:
     type: string
     description: |
       The identifier for the target region to deploy the application.
-    minLength: 1
+    minLength: 0
   popName:
     type: string
     description: |
       The target region to deploy the application. For example, `US-West` or `US-East`.
-    minLength: 1
+    minLength: 0
   rdp_version:
     type: string
     description: |
@@ -360,16 +405,14 @@ properties:
   resource_uri:
     type: object
     description: |
-      Resource URIs for the application.
+      Related resource URIs for the application.
     additionalProperties: false
-    required:
-    - directories
-    - groups
-    - href
-    - pop
-    - services
-    - sites
     properties:
+      apps:
+        type: string
+        description: |
+          The URI location of an associated application resource.
+        minLength: 1
       directories:
         type: string
         description: |
@@ -407,17 +450,14 @@ properties:
   saml_settings:
     description: |
       SAML configuration for an application.
-    minItems: 1
     $ref: app-saml-settings.yaml
   services:
     type: array
     description: |
-      EAA application service details.
+      Services enabled on the application configuration.
     minItems: 1
     items:
       type: object
-      description: |
-        A list of services enabled on the application configuration.
       additionalProperties: false
       properties:
         name:
@@ -425,14 +465,32 @@ properties:
           description: |
             The name of the service.
           minLength: 1
+        uuid_url:
+          type: string
+          description: |
+            The unique ID of the service.
+          minLength: 1
   sites:
     type: array
     description: |
-      List of associated site resources.
+      The application's site resources.
     minItems: 1
     items:
       type: string
       minLength: 1
+  status:
+    type: integer
+    description: |
+      The status of the application configuration. Either `1` for not ready, `2` for ready, `3` for pending, `4` for deployed, `5` for failed, `6` for cloud deployed, or `7` for connector deployed.
+    default: 1
+    enum:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
   uuid_url:
     type: string
     description: |
@@ -445,5 +503,4 @@ properties:
   wsfed_settings:
     description: |
       JSON settings to implement WSFED.
-    minItems: 1
     $ref: app-wsfed-settings.yaml

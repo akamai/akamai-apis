@@ -6,17 +6,15 @@ x-akamai:
   file-path: schemas/application-service.yaml
 additionalProperties: false
 required:
-- status
 - resource
 - service
 - app
-- uuid_url
 - resource_uri
 properties:
   app:
     type: object
     description: |
-      Contains application details.
+      Application details.
     additionalProperties: false
     required:
     - name
@@ -65,13 +63,15 @@ properties:
   service:
     type: object
     description: |
-      Contains service details for the application.
+      Service details for the application.
     additionalProperties: false
     required:
     - service_type
     - settings
     - description
     - name
+    - uuid_url
+    - status
     properties:
       name:
         type: string
@@ -100,16 +100,15 @@ properties:
         - 8
       settings:
         $ref: service-settings.yaml
-  status:
-    type: integer
-    description: |
-      `0` (Disabled), `1` (Enabled).
-    default: 0
-    enum:
-    - 0
-    - 1
-  uuid_url:
-    type: string
-    description: |
-      A unique identifier for this service.
-    minLength: 1
+      status:
+        type: string
+        description: |
+          The service status. Either `off` or `on`.
+        enum:
+        - off
+        - on
+      uuid_url:
+        type: string
+        description: |
+          A unique identifier for this service.
+        minLength: 1

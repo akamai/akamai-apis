@@ -1,0 +1,61 @@
+type: array
+description: |-
+  Signal definitions available in the product.
+  
+x-akamai:
+  file-path: schemas/signal-names.yaml
+minItems: 0
+items:
+  type: object
+  additionalProperties: false
+  required:
+  - type
+  - mobile
+  - name
+  - options
+  properties:
+    name:
+      type: string
+      description: |
+        The signal name.
+      minLength: 1
+    type:
+      type: string
+      description: |
+        Signal type. Either `boolean`, `age_lte`, `input`, `mselect`, or `select`.
+      enum:
+      - boolean
+      - age_lte
+      - input
+      - mselect
+      - select
+    options:
+      type: array
+      description: |
+        Available signal value options.
+      minItems: 0
+      items:
+        type: object
+        additionalProperties: false
+        required:
+        - value
+        properties:
+          name:
+            type: string
+            description: |
+              Option name (label).
+            minLength: 1
+          value:
+            description: |
+              Option value.
+            oneOf:
+            - minLength: 1
+              type: string
+              title: String
+            - title: Boolean
+              type: boolean
+    mobile:
+      type: boolean
+      description: |
+        Indicates a mobile operating system.
+      nullable: true

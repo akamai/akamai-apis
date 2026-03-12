@@ -1,0 +1,346 @@
+type: object
+description: |-
+  The application identity settings.
+  
+x-akamai:
+  file-path: schemas/appconfigversion-identity-data.yaml
+additionalProperties: false
+properties:
+  servers:
+    type: array
+    description: |
+      Application identity server properties.
+    nullable: true
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        orig_tls:
+          type: boolean
+          description: |
+            Whether the origin host uses TLS encryption.
+        origin_host:
+          type: string
+          description: |
+            The origin host IP address.
+        origin_port:
+          type: integer
+          description: |
+            The origin host port number.
+        origin_protocol:
+          type: string
+          description: |
+            The origin host protocol. 
+  name:
+    type: string
+    description: |
+      Application name.
+  description:
+    type: string
+    description: |
+      The application description.
+  app_bundle:
+    type: string
+    description: |
+      The application bundle name.
+  app_category:
+    type: object
+    description: |
+      Application category settings.
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        description: |
+          The name of the category.
+        minLength: 1
+      uuid_url:
+        type: string
+        description: |
+          The UUID of the category.
+  app_logo:
+    type: string
+    description: |
+      The application logo URL.
+  bookmark_url:
+    type: string
+    description: |
+      The application URL to bookmark.
+  cert:
+    type: string
+    description: |
+      The certificate contents.
+    nullable: true
+  client_app_mode:
+    type: integer
+    description: |
+      The client application mode. 
+  client_cert:
+    type: string
+    description: |
+      The client certificate. Specify `null` if not applicable.
+    nullable: true
+  cname:
+    type: string
+    description: |
+      The application's CNAME mapping.
+  custom_tls_suite_name:
+    type: string
+    description: |
+      The custom TLS suite name. Specify `null` if not applicable.
+    nullable: true
+  default_tls_suite:
+    type: boolean
+    description: |
+      Whether the application uses the default TLS suite.
+  dialin_server:
+    type: string
+    description: |
+      The dialin server hostname.
+  dialin_sni:
+    type: string
+    description: |
+      The dialin server SNI.
+  domain:
+    type: integer
+    description: |
+      The domain type. Defaults to `1`.
+  domain_suffix:
+    type: string
+    description: |
+      The domain suffix to add to the configured hostname.
+  encr_algo:
+    type: integer
+    description: |
+      The encryption algorithm.
+  etp_settings:
+    $ref: app-oidc-settings.yaml
+  host:
+    type: string
+    description: |
+      The hostname.
+  oidc_settings:
+    $ref: app-oidc-settings.yaml
+  orig_encr_algo:
+    type: integer
+    description: |
+      The origin's encryption algorithm.
+  orig_tls:
+    type: boolean
+    description: |
+      Whether the origin server uses TLS. 
+  origin_host:
+    type: string
+    description: |
+      The origin host IP address or name.
+    nullable: true
+  origin_keepalive:
+    type: integer
+    description: |
+      The origin's keepalive timeout in seconds.
+  origin_port:
+    type: integer
+    description: |
+      The origin port number.
+  port:
+    type: integer
+    description: |
+      The local port number.
+  saml_settings:
+    type: array
+    description: |
+      SAML settings.
+    nullable: true
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        attrmap:
+          type: array
+          description: |
+            User attribute mapping.
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              name:
+                type: string
+                description: |
+                  The attribute name.
+              fmt:
+                type: string
+                description: |
+                  The name format of the attribute. Either `email`, `basic`, `persistent`, `unspecified`, or `transient`.
+                enum:
+                - email
+                - basic
+                - unspecified
+                - persistent
+                - transient
+              fname:
+                type: string
+                description: |
+                  The format name.
+              src:
+                type: string
+                description: |
+                  The source of the subject.
+        idp:
+          type: object
+          description: |
+            SAML IdP settings.
+          additionalProperties: false
+          properties:
+            ecp_enable:
+              type: boolean
+              description: |
+                Enables enhanced client or proxy.
+            ecp_resp_signature:
+              type: boolean
+              description: |
+                The ECP response signature.
+            entity_id:
+              type: string
+              description: |
+                The IdP's SAML entity URL.
+            metadata:
+              type: string
+              description: |
+                SAML metadata file contents.
+            resp_bind:
+              type: string
+              description: |
+                The response binding for HTTP requests.
+            self_signed:
+              type: boolean
+              description: |
+                Whether the certificate is self-signed.
+            sign_algo:
+              type: string
+              description: |
+                The certificate signing algorithm.
+            sign_cert:
+              type: string
+              description: |
+                The self-signed certificate.
+            sign_key:
+              type: string
+              description: |
+                The certificate signing key.
+            slo_url:
+              type: string
+              description: |
+                The single logout URL.
+        sp:
+          type: object
+          description: |
+            SAML service provider settings.
+          additionalProperties: false
+          properties:
+            acs_url:
+              type: string
+              description: |
+                The SAML assertion consumer service URL.
+            default_relay_state:
+              type: string
+              description: |
+                A default status value passed between the IdP and the service provider. Specify `null` if you want to provide this later.
+              nullable: true
+            dst_url:
+              type: string
+              description: |
+                The destination URL for users to access the application.
+            encr_algo:
+              type: string
+              description: |
+                The response encryption algorithm.
+            encr_cert:
+              type: string
+              description: |
+                The encryption certificate.
+            entity_id:
+              type: string
+              description: |
+                The service provider's SAML entity URL.
+            force_auth:
+              type: boolean
+              description: |
+                Whether to force authentication. 
+            logout_bind:
+              type: string
+              description: |
+                The request binding for single logout requests.
+            metadata:
+              type: string
+              description: |
+                SAML metadata file contents.
+            req_bind:
+              type: string
+              description: |
+                The request binding for single logout requests.
+            req_verify:
+              type: boolean
+              description: |
+                Whether to verify requests.
+            resp_encr:
+              type: boolean
+              description: |
+                Whether to encrypt requests. 
+            sign_cert:
+              type: string
+              description: |
+                The signing certificate.
+            slo_bind:
+              type: string
+              description: |
+                The response binding for single logout requests.
+            slo_req_verify:
+              type: boolean
+              description: |
+                Whether to verify single logout requests.
+            slo_url:
+              type: string
+              description: |
+                The single logout URL.
+        subject:
+          type: object
+          description: |
+            Specifies the subject settings for the IdP configuration.
+          additionalProperties: false
+          properties:
+            fmt:
+              type: string
+              description: |
+                The name format of the attribute. Either `email`, `basic`, `persistent`, `unspecified`, or `transient`.
+              enum:
+              - email
+              - basic
+              - unspecified
+              - persistent
+              - transient
+            src:
+              type: string
+              description: |
+                The source of the subject.
+  sites:
+    type: array
+    description: |
+      Site IDs for the application.
+    items:
+      type: string
+  ssl_ca_cert:
+    type: string
+    description: |
+      The SSL CA-signed certificate. 
+  tunnel_internal_hosts:
+    type: array
+    description: |
+      THe internal hosts to allow tunnel application access.
+    items:
+      type: string
+  wsfed_settings:
+    type: array
+    description: |
+      [Web Services Federation](https://techdocs.akamai.com/eaa-api/reference/https://techdocs.akamai.com/eaa/docs/web-services-federation) settings.
+    items:
+      type: string

@@ -1,0 +1,137 @@
+type: object
+description: |-
+  The versions selected for different dimensions of device risk assessment.
+  
+x-akamai:
+  file-path: schemas/chosen-versions.yaml
+additionalProperties: false
+required:
+- browsers
+- client
+- os
+- eaaclient
+properties:
+  browsers:
+    type: array
+    description: |
+      The browser version details.
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - custom
+      - gracePeriod
+      - name
+      properties:
+        name:
+          type: string
+          description: |
+            The name of the web browser.
+          minLength: 1
+        custom:
+          type: array
+          description: |
+            Custom combinations of different browser versions.
+          minItems: 0
+          items:
+            type: string
+            minLength: 1
+        gracePeriod:
+          type: integer
+          description: |
+            The number of days the previous version is valid until it's deprecated.
+          minimum: 0
+  client:
+    type: object
+    description: |
+      The selected client versions.
+    additionalProperties: false
+    required:
+    - gracePeriod
+    - name
+    properties:
+      name:
+        type: string
+        description: |
+          The name of the client.
+        minLength: 1
+      gracePeriod:
+        type: integer
+        description: |
+          The number of days the previous version is valid until it's deprecated.
+        minimum: 0
+  eaaclient:
+    type: array
+    description: |
+      The per-OS version selections for EAA clients.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        custom:
+          type: array
+          description: |
+            Custom combinations of different OS versions.
+          minItems: 0
+          items:
+            type: string
+            minLength: 1
+        gracePeriod:
+          type: integer
+          description: |
+            The number of days the previous version is valid.
+          minimum: 0
+        platform:
+          type: string
+          description: |
+            The platform on which the EAA client runs.
+          minLength: 1
+        upToDate:
+          type: array
+          description: |
+            Latest up-to-date OS version. Required only for macOS or Windows platforms.
+          minItems: 1
+          items:
+            type: string
+            minLength: 1
+  os:
+    type: array
+    description: |
+      The selected operating system version details.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - custom
+      - gracePeriod
+      - name
+      properties:
+        name:
+          type: string
+          description: |
+            The name of the operating system.
+          minLength: 1
+        custom:
+          type: array
+          description: |
+            The OS version. For macOS this is the build number, such as `19H15` for macOS Catalina 10.15.7.
+          minItems: 0
+          items:
+            type: string
+            minLength: 1
+        gracePeriod:
+          type: integer
+          description: |
+            The number of days the previous version is valid until it's deprecated.
+          minimum: 0
+        upToDate:
+          type: array
+          description: |
+            Latest up-to-date OS version. Required only for macOS or Windows platforms.
+          minItems: 1
+          items:
+            type: string
+            minLength: 1

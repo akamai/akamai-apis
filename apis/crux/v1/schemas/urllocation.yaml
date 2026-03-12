@@ -38,11 +38,13 @@ definitions:
         $ref: pageable.yaml
       objects:
         type: array
+        description: |
+          URL locations.
         items:
           $ref: urllocation.yaml#/definitions/urllocation
   urllocation:
     description: |
-      Contains data and objects relating to URL location rules.
+      URL location rule details.
     additionalProperties: false
     required:
     - description
@@ -56,6 +58,11 @@ definitions:
         type: string
         description: |
           A description of the application.
+        nullable: true
+      url:
+        type: string
+        description: |
+          A unique location for an application.
       app_uuid_url:
         type: string
         description: |
@@ -73,11 +80,11 @@ definitions:
           anonymous_server_conn_limit:
             type: string
             description: |
-              The maximum number of anonymous server connections allowed. 
+              The maximum number of anonymous server connections allowed.
           anonymous_server_request_limit:
             type: string
             description: |
-              The maximum number of anonymous server requests allowed. 
+              The maximum number of anonymous server requests allowed.
           app_auth:
             type: string
             description: |
@@ -104,11 +111,11 @@ definitions:
           authenticated_server_conn_limit:
             type: string
             description: |
-              The maximum number of authenticated server connections allowed. 
+              The maximum number of authenticated server connections allowed.
           authenticated_server_request_limit:
             type: string
             description: |
-              The maximum number of authenticated server connections allowed. 
+              The maximum number of authenticated server connections allowed.
           authentication_enabled:
             type: string
             description: |
@@ -118,6 +125,11 @@ definitions:
             description: |
               The domain to use for cookies if your application uses iFrames. Specify `null` if you want to provide this later.
             nullable: true
+          disable_caching:
+            type: boolean
+            description: |
+              Disables caching for URL-path based policies.
+            default: false
           external_cookie_domain:
             type: string
             description: |
@@ -130,7 +142,7 @@ definitions:
           health_check_http_version:
             type: string
             description: |
-              The HTTP version to use for the health check. 
+              The HTTP version to use for the health check.
           health_check_interval:
             type: string
             description: |
@@ -138,7 +150,7 @@ definitions:
           health_check_rise:
             type: string
             description: |
-              The number of consecutive successful heartbeats that connector (or connectors) must receive before considering an application server to be healthy. The default is two.
+              The number of consecutive successful heartbeats that connector (or connectors) need to receive before considering an application server to be healthy. The default is two.
           health_check_timeout:
             type: string
             description: |
@@ -146,16 +158,15 @@ definitions:
           health_check_type:
             type: string
             description: |
-              The type of health check to perform on all the associated servers to verify service availability. Either `default`, `basic`, `http`, `https`, `tls`, `sslv3`, `tcp`, or `disable`.
+              The type of health check to perform on all the associated servers to verify service availability. Either `0` for default, `1` for http, `2` for https, `3` for tls, `4` for sslv3, `5` for tcp, or `6` for disable.
             enum:
-            - default
-            - basic
-            - http
-            - https
-            - tls
-            - sslv3
-            - tcp
-            - disable
+            - '0'
+            - '1'
+            - '2'
+            - '3'
+            - '4'
+            - '5'
+            - '6'
           hidden_app:
             type: string
             description: |
@@ -171,7 +182,7 @@ definitions:
           idle_close_time_seconds:
             type: string
             description: |
-              The number of seconds a session can remain idle before it is closed.
+              The number of seconds a session may remain idle before it's closed.
           idle_conn_ceil:
             type: string
             description: |
@@ -185,18 +196,21 @@ definitions:
             description: |
               The incremental number of TLS sessions launched by a given connector to enable user access to enterprise applications.
           idp_idle_expiry:
+            type: integer
             description: |
               The number of seconds before an idle session with the IDP expires. Specify `null` if you want to provide this later.
             nullable: true
           idp_max_expiry:
+            type: integer
             description: |
               The maximum number of seconds to maintain an IDP session. Specify `null` if you want to provide this later.
             nullable: true
           ignore_cname_resolution:
             type: string
             description: |
-              Configures to application to ignore CNAME DNS resolutions. Either `true` or `false`.
+              Configures the application to ignore CNAME DNS resolutions. Either `true` or `false`.
           internal_hostname:
+            type: string
             description: |
               The internal hostname to perform CNAME redirection on. Specify `null` if not applicable.
             nullable: true
@@ -224,17 +238,27 @@ definitions:
             description: |
               The number of seconds before a login attempt times out.
           login_url:
+            type: string
             description: |
               The URL for which authentication tokens need to be generated. Specify `null` if not applicable.
             nullable: true
           logout_url:
+            type: string
             description: |
               The single-sign out URL triggered when a user logs out of an SSO application. Specify `null` if not applicable.
             nullable: true
+          match_exact_url:
+            type: boolean
+            description: |
+              Configures URL path based rules for exact matches on URLs.
+            default: false
           mfa:
             type: string
             description: |
               Enables multi-factor authentication for the application. Either `enable` or `disable`.
+            enum:
+            - enable
+            - disable
           preauth_enforce_url:
             type: string
             description: |
@@ -242,7 +266,8 @@ definitions:
           proxy_buffer_size_kb:
             type: string
             description: |
-              The size of the proxy's buffer, in kilobytes. 
+              The size of the proxy's buffer, in kilobytes.
+            nullable: true
           proxy_disable_clipboard:
             type: string
             description: |
@@ -252,6 +277,7 @@ definitions:
             description: |
               Enables rate limiting for the application. Either `on` or `off`.
           rdp_initial_program:
+            type: string
             description: |
               The program that initializes when the user logs in to the remote environment. Specify `null` if not applicable.
             nullable: true
@@ -264,6 +290,7 @@ definitions:
             description: |
               Enables the application to rewrite request body data. Either `true` or `false`.
           request_parameters:
+            type: string
             description: |
               The HTTP request parameter to use. For example, `GET`. Specify `null` if not applicable.
             nullable: true
@@ -284,20 +311,26 @@ definitions:
             description: |
               The server request threshold for burst monitoring.
           service_principle_name:
+            type: string
             description: |
               The application's Kerberos service principal name (SPN). If your application uses a different service principal name, specify the configuration suitable for your application. Specify `null` if not applicable.
             nullable: true
           session_sticky:
+            type: string
             description: |
               Enables session stickiness to ensure that a given session always traverses the same connector when interacting with the application. Specify `null` if not applicable.
             nullable: true
+            enum:
+            - 'true'
+            - 'false'
           session_sticky_cookie_maxage:
             type: string
             description: |
               Sets the maximum age in seconds for the session stickiness cookie.
           session_sticky_server_cookie:
+            type: string
             description: |
-              Enables refresh of a sticky cookie to make sure that the content goes to the same connector to prevent session lag or content loss in a session. Even after the session length has passed, the session does not go to a new connector. Specify `null` if not applicable. 
+              Enables refresh of a sticky cookie to ensure that the content goes to the same connector to prevent session lag or content loss in a session, even after the session length has passed. Omit it if not applicable, and the value subsequently reflects back as `null`.
             nullable: true
           spdy_enabled:
             type: string
@@ -311,6 +344,9 @@ definitions:
             type: string
             description: |
               Enables SSO authentication for the application. Either `true` or `false`.
+            enum:
+            - 'true'
+            - 'false'
           use_internal_host:
             type: string
             description: |
@@ -318,7 +354,7 @@ definitions:
           user_name:
             type: string
             description: |
-              The user name to use for application authentication. Specify `null` if not applicable.
+              The username to use for application authentication. Specify `null` if not applicable.
             nullable: true
           wapp_auth:
             type: string
@@ -337,10 +373,6 @@ definitions:
         type: integer
         description: |
           The status of the application.
-      url:
-        type: string
-        description: |
-          A unique location for an application.
       uuid_url:
         type: string
         description: |

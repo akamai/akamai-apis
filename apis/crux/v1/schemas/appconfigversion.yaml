@@ -13,7 +13,6 @@ required:
 - deployment_started_at
 - name
 - note
-- resource_uri
 - status
 - uuid_url
 - version
@@ -22,7 +21,6 @@ properties:
     type: string
     description: |
       The name of application configuration version.
-    minLength: 1
   version:
     type: string
     description: |
@@ -32,12 +30,11 @@ properties:
     type: string
     description: |
       ISO 8601 timestamp marking the configuration version's deployment to the data path point of presence (DPOP).
-    format: date-time
+    nullable: true
   created_at:
     type: string
     description: |
       ISO 8601 timestamp marking the configuration version's creation.
-    format: date-time
   created_by:
     type: string
     description: |
@@ -47,43 +44,101 @@ properties:
     type: string
     description: |
       The email address of the user who created the application configuration version.
-    format: email
   deployed_at:
     type: string
     description: |
       ISO 8601 timestamp marking the application configuration version's deployment to connectors.
-    format: date-time
   deployment_started_at:
     type: string
     description: |
       ISO 8601 timestamp marking the application configuration version deployment began.
-    format: date-time
+    nullable: true
   modified_at:
     type: string
     description: |
       ISO 8601 timestamp marking the application configuration version's last modification.
-    format: date-time
   note:
     type: string
     description: |
       Custom text field for additional notes on the application configuration version.
-    minLength: 1
   resource_uri:
     type: string
     description: |
-      The application configuration version's resource URL.
-    minLength: 1
+      The path for the unique application config version resource.
   status:
     type: string
     description: |
-      The current status of the application configuration version. Either `New`, `Ready`, `Invalidated`, or `Archived`.
+      The current status of the application configuration version. Either `new`, `ready`, `invalidated`, or `archived`.
     enum:
-    - New
-    - Ready
-    - Invalidated
-    - Archived
+    - new
+    - ready
+    - invalidated
+    - archived
   uuid_url:
     type: string
     description: |
       A unique identifier for the application configuration version.
     minLength: 1
+  version_settings_data:
+    type: object
+    description: |
+      App config version settings.
+    additionalProperties: false
+    properties:
+      advanced_settings:
+        $ref: appconfigversion-advanced-settings.yaml
+      authentication:
+        type: object
+        description: |
+          App config version authentication settings.
+        additionalProperties: false
+        properties:
+          auth_enabled:
+            type: boolean
+            description: |
+              Enables authentication for this app config version.
+          directories:
+            type: array
+            description: |
+              The unique ID of the directories used for authentication.
+            items:
+              type: string
+          groups:
+            type: object
+            description: |
+              App config version groups.
+            additionalProperties:
+              type: string
+              description: |
+                Group IDs and their authentication settings. 
+          idp:
+            type: string
+            description: |
+              The unique ID of the IDP used for authentication.
+      identity_data:
+        $ref: appconfigversion-identity-data.yaml
+      location_data:
+        type: object
+        description: |
+          App config version location data.
+        additionalProperties: false
+        properties:
+          connector_data:
+            type: object
+            description: |
+              Connector data for the application.
+          pop_uuid_url:
+            type: string
+            description: |
+              Unique ID of the POP the application uses.
+      names:
+        $ref: appconfigversion-names.yaml
+      service_data:
+        $ref: appconfigversion-service-data.yaml
+      url_location_data:
+        type: array
+        description: |
+          The application location data, including the POP region and connector.
+        items:
+          type: string
+          nullable: true

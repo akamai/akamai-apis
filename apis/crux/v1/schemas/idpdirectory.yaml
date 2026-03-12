@@ -5,74 +5,6 @@ description: |-
 x-akamai:
   file-path: schemas/idpdirectory.yaml
 additionalProperties: false
-required:
-- admin_user
-- agents
-- api_key
-- attribute_map
-- auth_request_signed
-- auth_response_encrypt
-- chase_referral
-- cname
-- company_id
-- conf_state
-- description
-- dialin_sni
-- directory_status
-- directory_type
-- domains
-- global_catalog
-- group_base_dn
-- group_count
-- group_members
-- group_name
-- group_object_classes
-- group_search_filter
-- group_token
-- host
-- kerb_realms
-- last_sync
-- logout_url
-- metadata
-- mfa
-- name
-- nameidformat
-- ou_attr
-- ou_filter
-- ou_object_classes
-- password_change_allow
-- password_change_threshold
-- password_complexity_message
-- password_expire_warn_threshold
-- password_filter
-- password_policy_default
-- password_reset_allow
-- port
-- resource
-- resource_uri
-- root_dn
-- schema_attributes
-- server_cert_validate
-- service
-- signed_request
-- ssl
-- status
-- sync_interval
-- sync_state
-- user_base_dn
-- user_count
-- user_display_name
-- user_email
-- user_fname
-- user_lname
-- user_memberof
-- user_memberuid
-- user_object_classes
-- user_phone_num
-- user_principal
-- user_samaccountname
-- user_search_filter
-- user_upn
 properties:
   name:
     type: string
@@ -82,22 +14,27 @@ properties:
   description:
     type: string
     description: |
-      ISO 8601 timestamp marking the IDP directory object's creation.
-    format: date-time
+      A description of the directory object.
+    nullable: true
+  admin_pwd:
+    type: string
+    description: |
+      The administrator user password for the IDP directory.
+    nullable: true
+    minLength: 0
   admin_user:
     type: string
     description: |
       The administrator user account for the IDP directory.
-    minLength: 1
+    nullable: true
+    minLength: 0
   agents:
     type: array
     description: |
       Connectors assigned to this IDP directory.
-    minItems: 1
+    minItems: 0
     items:
       type: object
-      description: |
-        Connectors assigned to this IDP directory.
       additionalProperties: false
       required:
       - name
@@ -108,6 +45,66 @@ properties:
           description: |
             The name of the connector.
           minLength: 1
+        agent_infra_type:
+          type: integer
+          description: |
+            The type of connector. Either `1` for VM, `2` for IPSEC, or `3` for GRE.
+          default: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        created_at:
+          type: string
+          description: |
+            __Read-only__ ISO 8601 timestamp marking the connector's creation.
+          readOnly: true
+        package:
+          type: integer
+          description: |
+            Type of package for the connector. Refer to [Connector package types](https://techdocs.akamai.com/eaa-api/reference/connector-package-types) for available values.
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+        reach:
+          type: integer
+          description: |
+            Connector reachability status. Either `0` for unreachable or `1` for reachable.
+          default: 1
+          enum:
+          - 0
+          - 1
+        state:
+          type: integer
+          description: |
+            State of the connector. Either `0` for not created, `1` for created, `2` for not installed, `3` for not verified, `4` for verified, `5` for unenrolled, `6` for enrolled, `7` for not configured, or `8` for configured.
+          default: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+        status:
+          type: integer
+          description: |
+            Status of the connector. Either `0` for disabled or `1` for enabled.
+          enum:
+          - 0
+          - 1
         uuid_url:
           type: string
           description: |
@@ -117,7 +114,8 @@ properties:
     type: string
     description: |
       The API key of the IDP directory.
-    minLength: 1
+    nullable: true
+    minLength: 0
   attribute_map:
     type: object
     description: |
@@ -134,6 +132,14 @@ properties:
     - user.samAccountName
     - user.userPrincipleName
     properties:
+      eaa.demo:
+        type: string
+        description: |
+          The user's EAA demo name.
+      eaa.test:
+        type: string
+        description: |
+          The user's EAA test name.
       user.countryCode:
         type: string
         description: |
@@ -143,12 +149,15 @@ properties:
         type: string
         description: |
           The user's email address.
-        minLength: 1
       user.firstName:
         type: string
         description: |
           The user's first name.
         minLength: 1
+      user.groups:
+        type: string
+        description: |
+          The groups the user belongs to.
       user.lastName:
         type: string
         description: |
@@ -158,7 +167,7 @@ properties:
         type: string
         description: |
           The user's NetBIOS name.
-        minLength: 1
+        minLength: 0
       user.persistentId:
         type: string
         description: |
@@ -174,6 +183,10 @@ properties:
         description: |
           The user's Security Account Manager (SAM) account name.
         minLength: 1
+      user.userName:
+        type: string
+        description: |
+          The username.
       user.userPrincipleName:
         type: string
         description: |
@@ -182,25 +195,27 @@ properties:
   auth_request_signed:
     type: boolean
     description: |
-      Whether the authentication request is signed.
+      Indicates a signed authentication request.
   auth_response_encrypt:
     type: boolean
     description: |
-      Whether the authentication response is encrypted.
+      Enables authentication response encryption.
   chase_referral:
     type: boolean
     description: |
-      Whether to chase referral.
+      Enables referral chasing.
   cname:
     type: string
     description: |
       The IDP directory cname.
-    minLength: 1
+    nullable: true
+    minLength: 0
   company_id:
     type: string
     description: |
       The company ID of the IDP directory.
-    minLength: 1
+    nullable: true
+    minLength: 0
   conf_state:
     type: integer
     description: |
@@ -212,12 +227,19 @@ properties:
     type: string
     description: |
       ISO 8601 timestamp marking the IDP directory object's creation.
-    format: date-time
+    nullable: true
   dialin_sni:
     type: string
     description: |
       The dial-in SNI for the IDP directory.
-    minLength: 1
+    nullable: true
+    minLength: 0
+  directories:
+    type: array
+    description: |
+      The unique IDs of the directories for the IDP.
+    items:
+      type: string
   directory_status:
     type: integer
     description: |
@@ -243,13 +265,15 @@ properties:
   domains:
     type: array
     description: |
-      Contains a list of domains for a directory.
-    minItems: 1
+      The directory's domains.
     items:
-      type: string
-      description: |
-        The domain name.
-      minLength: 1
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: |
+            The domain name.
   global_catalog:
     type: boolean
     description: |
@@ -257,8 +281,9 @@ properties:
   group_base_dn:
     type: string
     description: |
-      The base Distinguished Name (DN) that identifies the group entry in an IDP directory. Contains a series of comma-delimited pairs formed as `key=value`.
-    minLength: 1
+      The base Distinguished Name (DN) that identifies the group entry in an IDP directory. A series of comma-delimited pairs formed as `key=value`.
+    nullable: true
+    minLength: 0
   group_count:
     type: integer
     description: |
@@ -278,23 +303,9 @@ properties:
     type: array
     description: |
       Group object classes that define custom LDAP mappings of users and groups.
-    minItems: 1
     items:
-      type: object
-      description: |
-        Group object classes for custom LDAP mappings of users and groups.
-      additionalProperties: false
-      properties:
-        group:
-          type: string
-          description: |
-            The groups synchronized with the IDP directory.
-          minLength: 1
-        groupOfNames:
-          type: string
-          description: |
-            All active directory groups.
-          minLength: 1
+      type: string
+      minLength: 0
   group_search_filter:
     type: string
     description: |
@@ -309,12 +320,17 @@ properties:
     type: string
     description: |
       The IDP directory host.
-    minLength: 1
+    nullable: true
+    minLength: 0
+  idp:
+    type: string
+    description: |
+      The unique ID of the IDP to assign to the directory.
   kerb_realms:
     type: array
     description: |
       Kerberos realms for the IDP directory.
-    minItems: 1
+    minItems: 0
     items:
       type: object
       additionalProperties: false
@@ -335,7 +351,6 @@ properties:
               type: string
               description: |
                 The IP address of the KDC.
-              format: ipv4
             port:
               type: integer
               description: |
@@ -350,17 +365,18 @@ properties:
     type: string
     description: |
       ISO 8601 timestamp marking the IDP directory's last synchronization.
-    format: date-time
   logout_url:
     type: string
     description: |
       The logout URL for the directory.
-    minLength: 1
+    nullable: true
+    minLength: 0
   metadata:
     type: string
     description: |
       The IDP directory metadata.
-    minLength: 1
+    nullable: true
+    minLength: 0
   mfa:
     type: string
     description: |
@@ -372,23 +388,24 @@ properties:
     type: string
     description: |
       ISO 8601 timestamp marking the directory's last modification.
-    format: date-time
   nameidformat:
     type: string
     description: |
       The name ID format.
-    minLength: 1
+    nullable: true
+    minLength: 0
   ou_attr:
     type: string
     description: |
       The organization unit's attributes.
-    minLength: 1
+    nullable: true
+    minLength: 0
   ou_filter:
     type: string
     description: |
       The organization unit to filter by. Specify `null` if you want to provide this later.
     nullable: true
-    minLength: 1
+    minLength: 0
   ou_object_classes:
     type: array
     description: |
@@ -396,13 +413,11 @@ properties:
     minItems: 1
     items:
       type: string
-      description: |
-        The organization unit's object classes.
       minLength: 1
   password_change_allow:
     type: boolean
     description: |
-      Whether password change is allowed.
+      Allows password changes.
   password_change_threshold:
     type: integer
     description: |
@@ -412,7 +427,8 @@ properties:
     type: string
     description: |
       The password complexity message.
-    minLength: 1
+    nullable: true
+    minLength: 0
   password_expire_warn_threshold:
     type: integer
     description: |
@@ -427,7 +443,7 @@ properties:
       min-char-groups:
         type: integer
         description: |
-          Minimum number of character groups for the password. 
+          Minimum number of character groups for the password.
         minimum: 2
       min-lower:
         type: integer
@@ -437,13 +453,13 @@ properties:
       min-num:
         type: integer
         description: |
-          Minimum number of numbers for the password. 
+          Minimum number of digits for the password.
         minimum: 2
       min-other:
         type: integer
         description: |
           Minimum number of other characters for the password.
-        minimum: 1
+        minimum: 0
       min-special:
         type: integer
         description: |
@@ -466,7 +482,7 @@ properties:
     type: string
     description: |
       The default password policy for the IDP directory.
-    minLength: 1
+    minLength: 0
   password_reset_allow:
     type: boolean
     description: |
@@ -501,6 +517,11 @@ properties:
         description: |
           The URL for IDP directory details.
         minLength: 1
+      idp:
+        type: string
+        description: |
+          The URL for the IDP.
+        minLength: 1
       users:
         type: string
         description: |
@@ -509,8 +530,9 @@ properties:
   root_dn:
     type: string
     description: |
-      The root distinguished name of the IDP directory. Contains a series of comma-delimited pairs formed as `key=value`.
-    minLength: 1
+      The root distinguished name of the IDP directory. A series of comma-delimited pairs formed as `key=value`.
+    nullable: true
+    minLength: 0
   schema_attributes:
     type: string
     description: |
@@ -523,7 +545,7 @@ properties:
   service:
     type: integer
     description: |
-      The type of directory service. Refer to [Directory service configuration](ref:directory-configuration) for available values.
+      The type of directory service. Refer to [Directory service configuration](https://techdocs.akamai.com/eaa-api/reference/directory-configuration) for available values.
     enum:
     - 1
     - 2
@@ -559,7 +581,7 @@ properties:
   sync_state:
     type: integer
     description: |
-      The IDP directory synchronization state. Refer to [Directory service configuration](ref:directory-configuration) for available values.
+      The IDP directory synchronization state. Refer to [Directory service configuration](https://techdocs.akamai.com/eaa-api/reference/directory-configuration) for available values.
     enum:
     - 1
     - 2
@@ -570,8 +592,9 @@ properties:
   user_base_dn:
     type: string
     description: |
-      The base distinguished name of a user. Contains a series of comma-delimited pairs formed as `key=value`.
-    minLength: 1
+      The base distinguished name of a user. A series of comma-delimited pairs formed as `key=value`.
+    nullable: true
+    minLength: 0
   user_count:
     type: integer
     description: |
@@ -586,7 +609,6 @@ properties:
     type: string
     description: |
       The email of a user.
-    minLength: 1
   user_fname:
     type: string
     description: |
@@ -614,8 +636,6 @@ properties:
     minItems: 1
     items:
       type: string
-      description: |
-        The object class of a user.
       minLength: 1
   user_phone_num:
     type: string

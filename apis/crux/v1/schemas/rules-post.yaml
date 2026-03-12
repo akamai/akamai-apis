@@ -6,14 +6,8 @@ x-akamai:
   file-path: schemas/rules-post.yaml
 additionalProperties: false
 required:
-- action
-- description
-- global_rule
-- merge_global
 - name
 - rule_type
-- status
-- uuid_url
 properties:
   name:
     type: string
@@ -24,11 +18,12 @@ properties:
     type: string
     description: |
       A description of the rule.
+    nullable: true
     minLength: 1
   action:
     type: integer
     description: |
-      The action the rule takes. Refer to [Rule types & actions](ref:rule-types-actions) for available values.
+      The action the rule takes. Refer to [Rule types & actions](https://techdocs.akamai.com/eaa-api/reference/rule-types-actions) for available values.
     enum:
     - 1
     - 2
@@ -44,7 +39,6 @@ properties:
     type: string
     description: |
       ISO 8601 timestamp marking the rule creation.
-    format: date-time
   global_rule:
     type: boolean
     description: |
@@ -57,11 +51,36 @@ properties:
     type: string
     description: |
       ISO 8601 timestamp marking the last rule modification.
-    format: date-time
+    nullable: true
+  partner_uuid:
+    type: string
+    description: |
+      The unique partner ID.
+  partner_uuid_url:
+    type: string
+    description: |
+      The unique partner URI.
+  resource_uri:
+    type: object
+    description: |
+      A plural bundle of navigable hypermedia links to other API resources.
+    additionalProperties: false
+    required:
+    - href
+    - service
+    properties:
+      href:
+        type: string
+        description: |
+          The href resource URI.
+      service:
+        type: string
+        description: |
+          The service resource URI.
   rule_type:
     type: integer
     description: |
-      The rule type. Refer to [Rule types & actions](ref:rule-types-actions) for available values.
+      The rule type. Refer to [Rule types & actions](https://techdocs.akamai.com/eaa-api/reference/rule-types-actions) for available values.
     enum:
     - 1
     - 2
@@ -69,6 +88,10 @@ properties:
     - 4
     - 5
     - 6
+  service:
+    type: string
+    description: |
+      The unique service ID.
   status:
     type: integer
     description: |
@@ -76,6 +99,10 @@ properties:
     enum:
     - 0
     - 1
+  tenant_uuid:
+    type: string
+    description: |
+      The unique ID of the tenant.
   uuid_url:
     type: string
     description: |

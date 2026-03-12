@@ -1,0 +1,286 @@
+type: object
+x-akamai:
+  file-path: schemas/device-inventory.yaml
+additionalProperties: false
+properties:
+  meta:
+    $ref: pageable.yaml
+  objects:
+    type: array
+    description: |
+      Device inventory data.
+    minItems: 1
+    items:
+      type: object
+      description: |
+        Device inventory anti-malware information.
+      additionalProperties: false
+      properties:
+        anti_malware_info:
+          type: array
+          description: |
+            The device's set of anti-malware software.
+          items:
+            type: object
+            description: |
+              The anti-malware name and status for a device.
+            additionalProperties: false
+            properties:
+              name:
+                type: string
+                description: |
+                  The name of the anti-malware software.
+                minLength: 1
+              passed:
+                type: boolean
+                description: |
+                  Whether the device passed anti-malware checks. 
+        anti_malware_running:
+          type: array
+          description: |
+            The devices currently active set of anti-malware software.
+          items:
+            type: string
+            minLength: 1
+        anti_malware_status:
+          type: array
+          description: |
+            Names and status of anti-malware software currently active on the device.
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              name:
+                type: string
+                description: |
+                  The name of the anti-malware profile.
+                minLength: 1
+              passed:
+                type: boolean
+                description: |
+                  Whether the device passed anti-malware checks. 
+        browsers:
+          type: array
+          description: |
+            Browsers active on the device.
+          minItems: 0
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              name:
+                type: string
+                description: |
+                  The name of the browser.
+                minLength: 1
+              version:
+                type: string
+                description: |
+                  The version of the browser.
+                minLength: 1
+        carbon_black:
+          type: object
+          description: |
+            Carbon Black anti-malware data for a device.
+          additionalProperties: false
+          properties:
+            last_contact:
+              type: string
+              description: |
+                ISO 8601 timestamp marking the last communication between the device's Carbon Black client and the Carbon Black server.
+              nullable: true
+            policy_id:
+              type: string
+              description: |
+                Identifies the Carbon Black policy assigned to the device.
+              minLength: 1
+            policy_name:
+              type: string
+              description: |
+                The name of the Carbon Black policy assigned to the device.
+              minLength: 1
+            sensor_version:
+              type: string
+              description: |
+                The version of Carbon Black installed on the device.
+              minLength: 1
+            status:
+              type: string
+              description: |
+                The status of the Carbon Black client as returned by the Carbon Black server. Either `Active` or `Inactive`.
+              enum:
+              - Active
+              - Inactive
+              minLength: 1
+        certificate_profile:
+          type: array
+          description: |
+            The certificate profile name and status for a device.
+          minItems: 1
+          items:
+            type: object
+            description: |
+              The certificate profile name and status for a device.
+            additionalProperties: false
+            properties:
+              name:
+                type: string
+                description: |
+                  The name of the certificate profile.
+                minLength: 1
+              passed:
+                type: boolean
+                description: |
+                  The status of the device for the certificate profile.
+        client_version:
+          type: string
+          description: |
+            The version of the client.
+          minLength: 1
+        crowdstrike:
+          type: object
+          description: |
+            CrowdStrike anti-malware sensor data for a device.
+          additionalProperties: false
+          properties:
+            agent_status:
+              type: string
+              description: |
+                The health status of the Crowdstrike Falcon Sensor as assessed by the Device Posture Service. Either `Healthy` or `Unhealthy`.
+              enum:
+              - Healthy
+              - Unhealthy
+            aid:
+              type: string
+              description: |
+                The connector ID of the unique CrowdStrike Falcon Sensor for every device of that organization.
+              minLength: 1
+            cid:
+              type: string
+              description: |
+                The Customer ID of the CrowdStrike Falcon Sensor used by all devices in an organization.
+              minLength: 1
+            last_contact:
+              type: string
+              description: |
+                ISO 8601 timestamp marking the last communication between the CrowdStrike Falcon Sensor and the CrowdStrike server.
+              nullable: true
+            sensor_version:
+              type: string
+              description: |
+                The version of CrowdStrike Falcon Sensor installed on the device.
+              minLength: 1
+            validity:
+              type: string
+              description: |
+                The validity of the agent ID and customer ID.
+              minLength: 1
+        device_biometric:
+          type: boolean
+          description: |
+            Enables biometrics on the device.
+        device_id:
+          type: string
+          description: |
+            A unique identifier for the device.
+          minLength: 1
+        device_jailbroken:
+          type: boolean
+          description: |
+            Whether the device is running a modified or unauthorized version of the operating system.
+        device_name:
+          type: string
+          description: |
+            The name of the device.
+          minLength: 1
+        device_screen_lock:
+          type: boolean
+          description: |
+            Enables the device's screen lock functionality.
+        etp_client_status:
+          type: string
+          description: |
+            Whether ETP client is `installed` or `not-installed`.
+          enum:
+          - installed
+          - not-installed
+        etp_signals:
+          type: object
+          description: |
+            Signal data from Secure Internet Access, formerly Enterprise Threat Protector.
+          additionalProperties: false
+          properties:
+            threat_detected:
+              type: boolean
+              description: |
+                Whether ETP threats have been detected for the device.
+        firewall_status:
+          type: string
+          description: |
+            The status of the firewall. Either `good` or `poor`.
+          enum:
+          - poor
+          - good
+        idp_username:
+          type: string
+          description: |
+            A unique identifier for the IDP username.
+          minLength: 1
+        mobile_device:
+          type: boolean
+          description: |
+            Whether the device is a mobile device.
+        os_auto_update:
+          type: boolean
+          description: |
+            Enables the device's operating system Auto Update feature.
+          nullable: true
+        os_build:
+          type: string
+          description: |
+            The build of the operating system version.
+          minLength: 1
+        os_name:
+          type: string
+          description: |
+            The name of the operating system.
+          minLength: 1
+        os_update_timestamp:
+          type: string
+          description: |
+            ISO 8601 timestamp marking when the last operating system update occurred.
+          nullable: true
+        os_version:
+          type: string
+          description: |
+            The version of the operating system.
+          nullable: true
+          minLength: 1
+        risk_posture_tags:
+          type: array
+          description: |
+            The device's pass or fail status and the available risk tags for the configuration.
+          minItems: 1
+          items:
+            $ref: device-summary-risk-assessment.yaml
+        risk_posture_tiers:
+          type: array
+          description: |
+            The device's pass or fail status and the available risk tiers for the configuration.
+          minItems: 1
+          items:
+            $ref: device-summary-risk-assessment.yaml
+        signal_timestamp:
+          type: string
+          description: |
+            ISO 8601 timestamp marking the latest signal received from the device.
+          format: date-time
+        system_disk_encryption:
+          type: boolean
+          description: |
+            Whether the device's disk is encrypted.
+        user_id:
+          type: string
+          description: |
+            The user for the device.
+          minLength: 0
