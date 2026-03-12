@@ -1,0 +1,53 @@
+type: object
+description: |-
+  Contains complete error data.
+  
+x-akamai:
+  file-path: schemas/problem.yaml
+additionalProperties: true
+required:
+- status
+- errorCode
+- data
+- args
+- errorPaths
+properties:
+  args:
+    type: array
+    description: |
+      The customer data sent in the request.
+    minItems: 1
+    items:
+      type: string
+  data:
+    type: string
+    description: |
+      A detailed message regarding the cause of the error.
+  errorCode:
+    type: string
+    description: |
+      A short description of the error.
+  errorPaths:
+    type: array
+    description: |
+      The data requested and a detailed error message.
+    minItems: 1
+    uniqueItems: true
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        message:
+          type: string
+          description: |
+            A detailed error message about the request.
+        path:
+          type: string
+          description: |
+            A concatenated string of the requested `customerName` and `name` attributes.
+  status:
+    type: integer
+    description: |
+      The error's HTTP response code.
+    minimum: 100
+    maximum: 600
