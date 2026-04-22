@@ -1,0 +1,86 @@
+x-akamai:
+  file-path: paths/challenge-actions.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/response-actions/challenge-actions
+parameters:
+- $ref: ../parameters/config-id-path.yaml
+- $ref: ../parameters/version-number-path.yaml
+post:
+  operationId: post-challenge-action
+  summary: Create a challenge action
+  tags:
+  - Challenge actions
+  description: |
+    Create a new challenge action. Use this action type to insert a challenge, like a CAPTCHA, into the user workflow. You can also apply your own branding to the action to match your website. See [Challenge actions](https://techdocs.akamai.com/app-api-protector/docs/challenge-actions) for more details.
+  requestBody:
+    content:
+      application/json:
+        example:
+          $ref: ../examples/challenge-action-post-request.json
+        schema:
+          $ref: ../schemas/challenge-action.yaml
+  responses:
+    201:
+      description: |
+        Successful response.
+      headers:
+        Location:
+          $ref: ../headers/location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/challenge-action-response.json
+          schema:
+            $ref: ../schemas/challenge-action.yaml
+    400:
+      description: |
+        The request body has invalid fields.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/challenge-action-400.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    403:
+      description: |
+        You don't have permission to create this resource.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/403.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+get:
+  operationId: get-challenge-actions
+  summary: List challenge actions
+  tags:
+  - Challenge actions
+  description: |
+    List all of your challenge actions along with their names, challenge types, and other summary information.
+  responses:
+    200:
+      description: |
+        Successful response.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/challenge-action-list.json
+          schema:
+            $ref: ../schemas/challenge-action-list.yaml
+    403:
+      description: |
+        You don't have permission to access the resource.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/403.json
+          schema:
+            $ref: ../schemas/problem-details.yaml
+    404:
+      description: |
+        The resource doesn't exist.
+      content:
+        application/problem+json:
+          example:
+            $ref: ../examples/404.json
+          schema:
+            $ref: ../schemas/problem-details.yaml

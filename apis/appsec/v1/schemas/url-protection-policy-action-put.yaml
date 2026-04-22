@@ -10,7 +10,7 @@ required:
 properties:
   action:
     description: |
-      The action to assign to this URL protection policy. Choose `alert`, `deny`, `none`, or `deny_custom_{custom_deny_id}`. Run [Modify a custom deny action](ref:put-custom-deny) to manage your custom deny actions. If the action is `none`, the URL protection policy is inactive in the policy.
+      The action to assign to this URL protection policy once the rate control threshold is reached. Choose `alert`, `deny`, `none`, `deny_custom_{custom_deny_id}` or `challenge_{id}`. Run [Modify a custom deny action](https://techdocs.akamai.com/application-security/reference/put-custom-deny) to manage your custom deny actions. If the action is `none`, the URL protection policy is inactive in the policy. Refer to [Challenge actions](https://techdocs.akamai.com/app-api-protector/docs/challenge-actions) for details.
     oneOf:
     - enum:
       - alert
@@ -21,4 +21,18 @@ properties:
     - minLength: 1
       type: string
       title: Custom actions
-      pattern: ^deny_custom_[0-9]+$
+      pattern: ^(deny_custom|challenge)_[0-9]+$
+  loadSheddingAction:
+    description: |
+      The action to assign to this URL protection policy once the intelligent load shedding threshold is reached. Choose `alert`, `deny`, `none`, `deny_custom_{custom_deny_id}` or `challenge_{id}`. Run [Modify a custom deny action](https://techdocs.akamai.com/application-security/reference/put-custom-deny) to manage your custom deny actions. If the action is `none`, the URL protection policy is inactive in the policy. Refer to [Challenge actions](https://techdocs.akamai.com/app-api-protector/docs/challenge-actions) for details.
+    oneOf:
+    - enum:
+      - alert
+      - deny
+      - none
+      type: string
+      title: Predefined actions
+    - minLength: 1
+      type: string
+      title: Custom actions
+      pattern: ^(deny_custom|challenge)_[0-9]+$

@@ -1,0 +1,114 @@
+type: object
+description: |-
+  Includes security policy rule set information such as the version, threat intelligence settings, and rule and attack group details with name, action, and condition exceptions.
+  
+x-akamai:
+  file-path: schemas/waf-policy-ruleset.yaml
+additionalProperties: false
+properties:
+  adaptiveIntelligence:
+    type: object
+    description: |
+      Settings for adaptive threat intelligence.
+    additionalProperties: false
+    required:
+    - threatIntelEnabled
+    properties:
+      threatIntelEnabled:
+        type: boolean
+        description: |
+          Enables adaptive threat intelligence.
+  attackGroups:
+    type: array
+    description: |
+      The security policy's attack groups with their actions and condition exceptions.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - group
+      - action
+      properties:
+        action:
+          type: string
+          description: |
+            The action set for the attack group, either `alert`, `deny`, or `none`. Use `deny_custom_{custom_deny_id}` syntax to apply a custom action instead of Akamai's default.
+          pattern: ^(deny|alert|none|deny_custom_\d+)$
+        conditionException:
+          type: object
+          description: |
+            An attack group's conditions and exceptions.
+          additionalProperties: false
+          minProperties: 0
+          properties:
+            advancedExceptions:
+              $ref: advanced-exception.yaml
+            conditions:
+              type: array
+              description: |
+                The attack group's conditions. When met, rules _aren't_ applied to the traffic.
+              items:
+                $ref: condition.yaml
+            exception:
+              $ref: exception.yaml
+        group:
+          type: string
+          description: |
+            The attack group's name.
+  ruleSetInfo:
+    type: object
+    description: |
+      Details about the rule set applied to the security policy.
+    additionalProperties: false
+    required:
+    - ruleSetVersion
+    properties:
+      ruleSetVersion:
+        type: number
+        description: |
+          The version of the rule set.
+  rules:
+    type: array
+    description: |
+      A web application firewall rule's name, action, and condition exceptions.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - ruleId
+      - ruleName
+      - action
+      properties:
+        action:
+          type: string
+          description: |
+            The action of a rule, either `alert`, `deny`, or `none`. Use `deny_custom_{custom_deny_id}` syntax to apply a custom action instead of Akamai's default.
+          pattern: ^(deny|alert|none|deny_custom_\d+)$
+        conditionException:
+          type: object
+          description: |
+            the conditions and exceptions of a rule.
+          additionalProperties: false
+          minProperties: 0
+          properties:
+            advancedExceptions:
+              $ref: advanced-exception.yaml
+            conditions:
+              type: array
+              description: |
+                The rule's conditions. When met, the action is not applied to the traffic.
+              items:
+                $ref: condition.yaml
+            exception:
+              $ref: exception.yaml
+        ruleId:
+          type: integer
+          description: |
+            The unique identifier for the rule.
+        ruleName:
+          type: string
+          description: |
+            The name of the rule.
+          example: CMD Injection Attack Detected (OS Commands 4)

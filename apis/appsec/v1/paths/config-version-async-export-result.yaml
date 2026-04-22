@@ -1,0 +1,35 @@
+x-akamai:
+  file-path: paths/config-version-async-export-result.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/export/{exportId}/result
+parameters:
+- $ref: ../parameters/config-id-path.yaml
+- $ref: ../parameters/version-number-path.yaml
+- $ref: ../parameters/asynchronous-export-id.yaml
+get:
+  operationId: get-export-config-version-async-result
+  summary: Get asynchronous export results
+  tags:
+  - Configuration version export
+  description: |
+    Get a security configuration version's export data from a previously completed asynchronous task. This is only available when the task status is `COMPLETED`.
+  x-akamai:
+    labels:
+    - All products
+  responses:
+    200:
+      description: |
+        Export data retrieved successfully.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/export.json
+          schema:
+            $ref: ../schemas/export.yaml
+    403:
+      description: |
+        [Forbidden](https://techdocs.akamai.com/application-security/reference/403). You are not authorized to run this operation.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](https://techdocs.akamai.com/application-security/reference/404). The export result wasn't found. Check that the `exportId` is correct and try again.
+      $ref: ../errors/404.yaml

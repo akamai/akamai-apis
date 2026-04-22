@@ -1,0 +1,38 @@
+x-akamai:
+  file-path: paths/config-version-async-export-status.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/export/{exportId}/status
+parameters:
+- $ref: ../parameters/config-id-path.yaml
+- $ref: ../parameters/version-number-path.yaml
+- $ref: ../parameters/asynchronous-export-id.yaml
+get:
+  operationId: get-export-config-version-async-task-status
+  summary: Get asynchronous export status
+  tags:
+  - Configuration version export
+  description: |
+    Get a security configuration version's export status. When `PENDING`, the task is still running. When `COMPLETED`, the task finished successfully and you can collect the results through the link in the response. A status of `FAILED` appears when the task can't complete.
+  x-akamai:
+    labels:
+    - All products
+  responses:
+    200:
+      description: |
+        The response shows the export status.
+      headers:
+        Retry-After:
+          $ref: ../headers/retry-after.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/200-export-async-status.json
+          schema:
+            $ref: ../schemas/export-async-status.yaml
+    403:
+      description: |
+        [Forbidden](https://techdocs.akamai.com/application-security/reference/403). You are not authorized to run this operation.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](https://techdocs.akamai.com/application-security/reference/404). The export task was not found.
+      $ref: ../errors/404.yaml

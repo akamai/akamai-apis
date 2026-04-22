@@ -21,10 +21,18 @@ properties:
   block:
     type: string
     description: |
-      The method by which you block or allow requests by IP or geographic location. In Control Center, this is called `mode`. Use `blockSpecificIPGeo` to block any IPs, subnets, geographies, or network lists you specify. Use `blockAllTrafficExceptAllowedIPs` to allow requests from IPs, subnets, geographies or networks lists in your `blockExceptions` that you maintain with the [Network Lists API](https://techdocs.akamai.com/network-lists/reference/api).
+      Prevents or allows requests by IP and geographic location. Value is one of:
+        - `blockSpecificIPGeo`. Blocks traffic based on the values in your allowed, blocked, and Ukraine control network lists.
+        - `blockAllTrafficExceptAllowedIPs`. Blocks all traffic except the values in your allowed network lists.
     enum:
     - blockSpecificIPGeo
     - blockAllTrafficExceptAllowedIPs
+  blockAllAction:
+    description: |
+      The type of deny action to take. Value is one of:
+        - `deny`. Default. Blocked traffic gets a `403` response.
+        - `deny_custom_{custom_deny_id}`. Blocked traffic gets a customized deny response.
+    $ref: ../schemas/ip-geo-action-schema.yml
   geoControls:
     type: object
     description: |
@@ -47,7 +55,4 @@ properties:
     type: object
     description: |
       The settings for requests to and from Ukraine.
-    additionalProperties: false
-    properties:
-      ukraineGeoControl:
-        $ref: ukraine-geo-control.yaml
+    $ref: ukraine-geo-control.yaml

@@ -1,0 +1,41 @@
+x-akamai:
+  file-path: paths/config-version-async-export.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/export
+parameters:
+- $ref: ../parameters/config-id-path.yaml
+- $ref: ../parameters/version-number-path.yaml
+post:
+  operationId: post-export-config-version-async-task
+  summary: Asynchronously export a configuration version
+  tags:
+  - Configuration version export
+  description: |
+    Start an asynchronous export of a security configuration version. The response contains an `exportId` you can use to monitor progress and get the export data once it's ready.
+  x-akamai:
+    labels:
+    - All products
+  responses:
+    202:
+      description: |
+        Successfully started exporting asynchronously.
+      headers:
+        Retry-After:
+          $ref: ../headers/retry-after.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/202-export-async-submit.json
+          schema:
+            $ref: ../schemas/export-async-status.yaml
+    403:
+      description: |
+        [Forbidden](https://techdocs.akamai.com/application-security/reference/403). You aren't authorized to run this operation.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](https://techdocs.akamai.com/application-security/reference/404). The security configuration version to export wasn't found.
+      $ref: ../errors/404.yaml
+    409:
+      description: |
+        [Conflict](https://techdocs.akamai.com/application-security/reference/409). Invalid export request. See the `details` field provided in the response for more information.
+      $ref: ../errors/409-export-task.yaml

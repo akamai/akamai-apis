@@ -1,6 +1,6 @@
 type: object
 description: |-
-  Describes reputaion profile objects when returned in the configuration export API's response.
+  Describes reputation profile objects when returned in the configuration export API's response.
   
 x-akamai:
   file-path: schemas/export-reputation-profiles.yaml
@@ -57,13 +57,36 @@ properties:
           type: object
           additionalProperties: false
           required:
-          - type
+          - className
           - positiveMatch
-          - valueWildcard
-          - valueCase
           - value
           properties:
-            type:
+            name:
+              description: |
+                The condition value of `name`. This only applies to the `RequestHeaderCondition`, and `RequestCookieCondition` condition `className`.
+              oneOf:
+              - title: Single name
+                type: string
+              - items:
+                  type: string
+                type: array
+                title: Array of names
+            value:
+              type: array
+              description: |
+                The list of values that trigger the condition.
+              minItems: 1
+              uniqueItems: true
+              items:
+                type: string
+            checkIps:
+              type: string
+              description: |
+                Use `both` to include the `X-Forwarded-For` (XFF) header and the client’s IP address. Use `connecting` to exclude the XFF header. The XFF header is easily spoofed, so only include it in rare cases.
+              enum:
+              - connecting
+              - both
+            className:
               type: string
               description: |
                 The condition type. Either `NetworkListCondition`, `AsNumberCondition`, `IpAddressCondition`, `RequestCookieCondition`, `RequestHeaderCondition`, `HostCondition`, or `UrlPatternCondition`.
@@ -75,14 +98,29 @@ properties:
               - RequestHeaderCondition
               - HostCondition
               - UrlPatternCondition
-            value:
+            host:
               type: array
               description: |
-                The list of values that trigger the condition.
+                A list of hostnames. This only applies to the `HostCondition` `className`.
               minItems: 1
               uniqueItems: true
               items:
                 type: string
+                description: |
+                  A hostname.
+                minLength: 1
+            index:
+              type: integer
+              description: |
+                The location of the parameter's data within the array.
+            nameCase:
+              type: boolean
+              description: |
+                Whether to consider the case sensitivity of the provided query names.
+            nameWildcard:
+              type: boolean
+              description: |
+                Whether the provided value of `name` is a wildcard. This only applies to the `RequestHeaderCondition`, and `RequestCookieCondition` condition `className`.
             positiveMatch:
               type: boolean
               description: |
@@ -97,10 +135,22 @@ properties:
               description: |
                 Whether to treat the asterisk (`*`) and question mark (`?`) as wildcards when comparing the value string with the request value. Note that setting this to `false` isn't supported by the host condition, and means that the value string must match exactly.
               default: true
+      canDelete:
+        type: boolean
+        description: |
+          Whether the condition can be deleted.
+      configVersionId:
+        type: integer
+        description: |
+          Unique identifier of the config version.
       positiveMatch:
         type: boolean
         description: |
           Whether the condition should trigger on a match (`true`) or a lack of match (`false`).
+      uuid:
+        type: string
+        description: |
+          The universally unique identifier (UUID) of the reputation profile condition.
   context:
     type: string
     description: |

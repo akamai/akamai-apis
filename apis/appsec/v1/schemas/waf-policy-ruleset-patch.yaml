@@ -1,0 +1,84 @@
+type: object
+description: |-
+  The PATCH request JSON supports updates to rule and attack group actions and condition exceptions.
+  
+x-akamai:
+  file-path: schemas/waf-policy-ruleset-patch.yaml
+additionalProperties: false
+properties:
+  attackGroups:
+    type: array
+    description: |
+      Attack groups in the security policy with their actions and condition exceptions.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - group
+      - action
+      properties:
+        action:
+          type: string
+          description: |
+            An attack group's action, either `alert`, `deny`, or `none`. Use `deny_custom_{custom_deny_id}` syntax to apply a custom action instead of Akamai's default.
+          pattern: ^(deny|alert|none|deny_custom_\d+)$
+        conditionException:
+          type: object
+          description: |
+            An attack group's conditions and exceptions.
+          additionalProperties: false
+          minProperties: 0
+          properties:
+            advancedExceptions:
+              $ref: advanced-exception.yaml
+            conditions:
+              type: array
+              description: |
+                The conditions list for an attack group.
+              items:
+                $ref: condition.yaml
+            exception:
+              $ref: exception.yaml
+        group:
+          type: string
+          description: |
+            The attack group's name.
+  rules:
+    type: array
+    description: |
+      The rules in security policy, including the rules' names, actions, and condition exceptions.
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - ruleId
+      - action
+      properties:
+        action:
+          type: string
+          description: |
+            The rule's action, either `alert`, `deny`, or `none`. Use `deny_custom_{custom_deny_id}` syntax to apply a custom action instead of Akamai's default.
+          pattern: ^(deny|alert|none|deny_custom_\d+)$
+        conditionException:
+          type: object
+          description: |
+            A rule's conditions and exceptions.
+          additionalProperties: false
+          minProperties: 0
+          properties:
+            advancedExceptions:
+              $ref: advanced-exception.yaml
+            conditions:
+              type: array
+              description: |
+                The conditions in a rule.
+              items:
+                $ref: condition.yaml
+            exception:
+              $ref: exception.yaml
+        ruleId:
+          type: integer
+          description: |
+            Uniquely identifies a rule.

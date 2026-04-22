@@ -1,0 +1,67 @@
+x-akamai:
+  file-path: paths/waf-policy-ruleset-composite.yaml
+  path-info: /configs/{configId}/versions/{versionNumber}/security-policies/{policyId}/web-application-firewall/ruleset
+parameters:
+- $ref: ../parameters/config-id-path.yaml
+- $ref: ../parameters/version-number-path.yaml
+- $ref: ../parameters/policy-id-path.yaml
+get:
+  operationId: get-waf-policy-ruleset-composite
+  summary: Get a security policy's rule set
+  tags:
+  - 'WAF rules: General settings'
+  description: |
+    Returns the security policy rule set, which includes the version, threat intelligence settings, rules, and attack group details.
+  x-akamai:
+    labels:
+    - All products
+  responses:
+    200:
+      description: |
+        The response provides the security policy rule set.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/composite-waf-rules-200.json
+          schema:
+            $ref: ../schemas/waf-policy-ruleset.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml
+patch:
+  operationId: patch-waf-policy-ruleset-composite
+  summary: Modify a security policy's rule set
+  tags:
+  - 'WAF rules: General settings'
+  description: |
+    Modify the security policy's rule set including its rule and attack group details.
+  x-akamai:
+    labels:
+    - All products
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/composite-waf-rules-patch-request.json
+        schema:
+          $ref: ../schemas/waf-policy-ruleset-patch.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated security policy ruleset information.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/composite-waf-rules-200.json
+          schema:
+            $ref: ../schemas/waf-policy-ruleset.yaml
+    400:
+      $ref: ../errors/400-client-read-errors.yaml
+    404:
+      $ref: ../errors/404-client-read-errors.yaml
+    500:
+      $ref: ../errors/500-server-errors.yaml

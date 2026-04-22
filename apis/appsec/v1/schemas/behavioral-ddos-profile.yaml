@@ -1,0 +1,110 @@
+type: object
+description: |-
+  Contains details about a Behavioral DDoS profile.
+  
+x-akamai:
+  file-path: schemas/behavioral-ddos-profile.yaml
+additionalProperties: false
+required:
+- name
+- sensitivity
+- hostnames
+properties:
+  name:
+    type: string
+    description: |
+      The profile's unique name.
+  description:
+    type: string
+    description: |
+      A description of the profile.
+  bypassCondition:
+    type: object
+    description: |
+      Exempts specific clients from being processed by the Behavioral DDoS profile.
+    additionalProperties: false
+    properties:
+      atomicConditions:
+        type: array
+        description: |
+          Specify one or more types of conditions to match on. You can match on client lists, request headers, or both.
+        minItems: 1
+        items:
+          oneOf:
+          - $ref: behavioral-ddos-bypass-request-header-condition.yaml
+          - $ref: behavioral-ddos-bypass-client-list-condition.yaml
+  configId:
+    type: integer
+    description: |
+      Uniquely identifies the security configuration.
+    format: int64
+  configVersion:
+    type: integer
+    description: |
+      The security configuration version.
+  createDate:
+    type: string
+    description: |
+      __Read-only__ The ISO 8601 timestamp when you created the Behavioral DDoS profile.
+    readOnly: true
+    format: date-time
+  createdBy:
+    type: string
+    description: |
+      __Read-only__ The username of the person who created the Behavioral DDoS profile.
+    readOnly: true
+  exceptions:
+    type: array
+    description: |
+      The hostname and path pairs excluded from Behavioral DDoS mitigation actions.
+    minItems: 0
+    items:
+      $ref: behavioral-ddos-host-path-exception.yaml
+  hostnames:
+    type: array
+    description: |
+      The hostnames that you want to be protected by the Behavioral DDoS profile.
+    minItems: 1
+    items:
+      type: string
+  profileId:
+    type: integer
+    description: |
+      __Read-only__ Uniquely identifies the Behavioral DDoS profile.
+    readOnly: true
+    format: int64
+  sensitivity:
+    type: string
+    description: |
+      Sensitivity level, specify `CONSERVATIVE` to provide tolerance for more substantial traffic deviations, `MODERATE` to provide tolerance for traffic fluctuations, or `STRICT` for high-security environments, where minor deviations in traffic might signal a potential DDoS attack.
+    enum:
+    - CONSERVATIVE
+    - MODERATE
+    - STRICT
+  sensitivityOverrides:
+    type: array
+    description: |
+      Sensitivity overrides for one or more hostname and path pairs.
+    minItems: 0
+    items:
+      $ref: behavioral-ddos-sensitivity-override.yaml
+  suspend:
+    description: |
+      Temporarily disable mitigation for a specific hostname, with the flexibility to choose the duration of its suspension.
+    $ref: behavioral-ddos-suspend.yaml
+  updateDate:
+    type: string
+    description: |
+      __Read-only__ The ISO 8601 timestamp when you last updated the Behavioral DDoS profile.
+    readOnly: true
+    format: date-time
+  updatedBy:
+    type: string
+    description: |
+      __Read-only__ Username who last updated the Behavioral DDoS profile.
+    readOnly: true
+  used:
+    type: boolean
+    description: |
+      __Read-only__ Whether you're currently using the Behavioral DDoS profile.
+    readOnly: true

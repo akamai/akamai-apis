@@ -1,0 +1,63 @@
+type: object
+description: |-
+  Describes the response for an asynchronous export task.
+  
+x-akamai:
+  file-path: schemas/export-async-status.yaml
+additionalProperties: false
+required:
+- exportId
+- exportStatus
+- createdDate
+- createdBy
+properties:
+  createdBy:
+    type: string
+    description: |
+      The user who launched the export task.
+    minLength: 1
+  createdDate:
+    type: string
+    description: |
+      __Read-only__ ISO 8601 timestamp when the export request begins.
+    readOnly: true
+    format: date-time
+  expiresDate:
+    type: string
+    description: |
+      ISO 8601 timestamp when the export result is deleted.
+    format: date-time
+  exportId:
+    type: string
+    description: |
+      Uniquely identifies each export task.
+  exportStatus:
+    type: string
+    description: |
+      "__Read-only__ The status of the export, which can take several minutes to complete. \n* `PENDING` indicates the task
+      is accepted and in progress. \n* `COMPLETED` means it finished successfully
+      and the result can be retrieved. \n* `FAILED` means the task could not be processed.\n"
+    readOnly: true
+    enum:
+    - PENDING
+    - COMPLETED
+    - FAILED
+    minLength: 1
+  message:
+    type: string
+    description: |
+      A message providing additional information about the export task.
+  resultLink:
+    type: string
+    description: |
+      The URL for the operation to request the task result.
+    format: uri
+  retryAfter:
+    type: integer
+    description: |
+      The estimated number of seconds until the task completes.
+  statusLink:
+    type: string
+    description: |
+      The URL for the operation to request the task status.
+    format: uri

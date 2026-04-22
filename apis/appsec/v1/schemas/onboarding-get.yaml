@@ -163,34 +163,7 @@ properties:
       The URL to call when you want to access this onboarding at a later time.
     format: uri
   onboardingStatus:
-    type: string
-    description: |
-      The onboarding state of your hostnames and settings.
-
-       * `CREATED`. Your object now exists but is not active on any networks.
-       * `STAGING_ACTIVE`. Your hostnames and settings are active on the staging network.
-       * `STAGING_ACTIVATION_PENDING`. Activation on the staging network is in progress.
-       * `STAGING_ACTIVATION_FAILED`. The activation could not complete on the staging network. The error messages returned for this call detail the specific error.
-       * `PRODUCTION_ACTIVE`. Your hostnames and settings are active on the production network.
-       * `PRODUCTION_ACTIVATION_PENDING`. Activation on the production network is in progress. This can take about 20 minutes.
-       * `PRODUCTION_ACTIVATION_FAILED`. The activation could not complete on the production network. The error messages returned for this call detail the specific error.
-       * `VALIDATION_PENDING`. Your site is ready to validate. You'll need to prove you own your site by performing a URL redirect, using an HTTP token, or a DNS token.
-       * `VALIDATION_COMPLETE`. You validated your site successfully.
-       * `CNAME_TO_AKAMAI_PENDING`. You are ready to CNAME to Akamai, or one of your CNAMEs failed and you need to correct the record.
-       * `COMPLETE`. Your site is live on the Akamai network and you are serving traffic.
-    enum:
-    - CREATED
-    - STAGING_ACTIVE
-    - STAGING_ACTIVATION_PENDING
-    - STAGING_ACTIVATION_FAILED
-    - PRODUCTION_ACTIVE
-    - PRODUCTION_ACTIVATION_PENDING
-    - PRODUCTION_ACTIVATION_FAILED
-    - VALIDATION_PENDING
-    - VALIDATION_COMPLETE
-    - CNAME_TO_AKAMAI_PENDING
-    - COMPLETE
-    minLength: 1
+    $ref: ../schemas/onboarding-status.yaml
   product:
     type: string
     description: |
@@ -250,8 +223,9 @@ properties:
           certificateType:
             type: string
             description: |
-              A value of `CUSTOM_EXISTING` means the certificate already exists on your account. If you want to create a new certificate, choose `CUSTOM_NEW`. Note that your certificate is created when you activate your onboarding. Your account may have limits for how many certificates you can create. If, for example, your account is limited to 5 certificates and your account already has 5, then you won't be able to create a new one.
+              A value of `DEFAULT` creates a new secure-by-default certificate. A value of `CUSTOM_EXISTING` means the certificate already exists on your account. If you want to create a new certificate, choose `CUSTOM_NEW`. Note that your certificate is created when you activate your onboarding. Your account may have limits for how many certificates you can create. If, for example, your account is limited to five certificates and your account already has five, then you won't be able to create a new one.
             enum:
+            - DEFAULT
             - CUSTOM_EXISTING
             - CUSTOM_NEW
             minLength: 1
@@ -280,7 +254,7 @@ properties:
           origins:
             type: array
             description: |
-              List of hostnames and proposed origin hostnames. If you choose not to use an origin hostname suggested to you, you can edit it to the value you want with a request to [Update onboarding settings](ref:put-onboarding-settings).
+              List of hostnames and proposed origin hostnames. If you choose not to use an origin hostname suggested to you, you can edit it to the value you want with a request to [Update onboarding settings](https://techdocs.akamai.com/application-security/reference/put-onboarding-settings).
             minItems: 1
             uniqueItems: true
             items:
@@ -321,7 +295,7 @@ properties:
           configLink:
             type: string
             description: |
-              The URL to make a call for the specific configuration. For example, [Get a configuration](doc:get-config).
+              The URL to make a call for the specific configuration. For example, [Get a configuration](https://techdocs.akamai.com/application-security/docs/get-config).
             format: uri
           configName:
             type: string
@@ -348,7 +322,7 @@ properties:
           policyLink:
             type: string
             description: |
-              The URL to make a call for the specific policy. For example, [Update a policy](doc:put-policy).
+              The URL to make a call for the specific policy. For example, [Update a policy](https://techdocs.akamai.com/application-security/docs/put-policy).
             format: uri
           policyName:
             type: string

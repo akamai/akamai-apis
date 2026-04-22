@@ -1,0 +1,82 @@
+type: object
+x-akamai:
+  file-path: schemas/challenge-action.yaml
+additionalProperties: false
+required:
+- actionName
+- challengeType
+- challengeIntervalInSeconds
+properties:
+  description:
+    type: string
+    description: |
+      An optional description of the action.
+    nullable: true
+    minLength: 1
+    maxLength: 250
+  actionId:
+    type: string
+    description: |
+      __Read-only__ Identifies the action.
+    readOnly: true
+  actionName:
+    type: string
+    description: |
+      The action's unique name.
+    minLength: 1
+    maxLength: 100
+  allowFullCpuUtilization:
+    type: boolean
+    description: |
+      Set to `true` to let the client use 100 percent CPU to resolve the challenge. If more humans than bots see this challenge, set to `false`.
+    nullable: true
+  challengeIntervalInSeconds:
+    type: integer
+    description: |
+      Time between challenges. Set according to how long users interact with the resource you're protecting. A short period interrupts users more often.
+    minimum: 1
+    maximum: 7200
+  challengeType:
+    type: string
+    description: |
+      Specify the type of challenge. Choose `GOOGLE_RECAPTCHA` to make users solve a CAPTCHA puzzle. You can also choose `AKAMAI_WEB_CRYPTO` or `AKAMAI_MOBILE_CRYPTO` to make web requesting clients or mobile requesting clients solve a proof-of-work cryptographic challenge.
+    enum:
+    - GOOGLE_RECAPTCHA
+    - AKAMAI_WEB_CRYPTO
+    - AKAMAI_MOBILE_CRYPTO
+  cryptoChallengeDurationInSeconds:
+    type: integer
+    description: |
+      Specify how many seconds the client machine should spend on the challenge. The longer the duration, the more difficult the challenge.
+    nullable: true
+    maximum: 120
+  customBrandingLegacyCssUrl:
+    type: string
+    description: |
+      The CSS page containing your custom spinner. Specify the page's fully qualified URL or root-relative path, like `http://example.com/pages/sample.html` or `/pages/sample.html`.
+    nullable: true
+    minLength: 1
+  customBrandingLegacyMessageUrl:
+    type: string
+    description: |
+      The web page containing the static HTML snippet with your custom message. Specify the page's fully qualified URL or root-relative path, like `http://example.com/pages/sample.html` or `/pages/sample.html`.
+    nullable: true
+    minLength: 1
+  customBrandingUrl:
+    type: string
+    description: |
+      The web page containing the static HTML snippet with your custom logo. Specify the page's fully qualified URL or root-relative path, like `http://example.com/pages/sample.html` or `/pages/sample.html`.
+    nullable: true
+    minLength: 1
+  googleReCaptchaSecretKey:
+    type: string
+    description: |
+      If the `challengeType` is `GOOGLE_RECAPTCHA`, specify the Google reCAPTCHA secret key. The secret key authorizes communication between your site and the reCAPTCHA server.
+    nullable: true
+    minLength: 1
+  googleReCaptchaSiteKey:
+    type: string
+    description: |
+      If the `challengeType` is `GOOGLE_RECAPTCHA`, specify the Google reCAPTCHA site key. The site key invokes the reCAPTCHA service on your site or application.
+    nullable: true
+    minLength: 1

@@ -1,0 +1,37 @@
+x-akamai:
+  file-path: paths/onboarding-domain-validation-status.yaml
+  path-info: /onboardings/{onboardingId}/domain-validation
+parameters:
+- $ref: ../parameters/onboarding-id-path.yaml
+get:
+  operationId: get-onboarding-domain-validation
+  summary: List onboarding domain challenges
+  tags:
+  - 'Onboarding: Post-activation validation'
+  description: |
+    Returns the information you need to validate your domains. Add the `TXT` or `CNAME` value listed in the response to your DNS record. Adding the record won't affect your website. Once you've added the record, and before the token expires, run [Validate onboarding domains](https://techdocs.akamai.com/application-security/docs/post-onboarding-domain-validation).
+  x-akamai:
+    labels:
+    - All products
+  responses:
+    200:
+      description: |
+        Successfully retrieved domain validation challenges.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboarding-domain-validation.json
+          schema:
+            $ref: ../schemas/onboarding-domain-validation.yaml
+    403:
+      description: |
+        [Forbidden](https://techdocs.akamai.com/application-security/reference/403). You aren't authorized to run this operation.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](https://techdocs.akamai.com/application-security/reference/404). The `onboardingId` wasn't found.
+      $ref: ../errors/404.yaml
+    500:
+      description: |
+        [Internal server error](https://techdocs.akamai.com/application-security/reference/500). Failure to retrieve domain challenges.
+      $ref: ../errors/500.yaml

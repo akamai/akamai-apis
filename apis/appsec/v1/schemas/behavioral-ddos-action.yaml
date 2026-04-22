@@ -1,0 +1,30 @@
+type: object
+description: |-
+  A Behavioral DDoS profile action.
+  
+x-akamai:
+  file-path: schemas/behavioral-ddos-action.yaml
+additionalProperties: false
+required:
+- action
+properties:
+  action:
+    description: |
+      The action to assign to this Behavioral DDoS profile. Choose `alert`, `deny`, `none`, or `deny_custom_{custom_deny_id}`. Run [Modify a custom deny action](https://techdocs.akamai.com/application-security/reference/put-custom-deny) to manage your custom deny actions. If the action is `none`, the Behavioral DDoS profile is inactive in the policy.
+    oneOf:
+    - enum:
+      - alert
+      - deny
+      - none
+      type: string
+      title: Predefined actions
+    - minLength: 1
+      type: string
+      title: Custom actions
+      pattern: ^deny_custom_[0-9]+$
+  profileId:
+    type: integer
+    description: |
+      __Read-only__ Uniquely identifies the Behavioral DDoS profile.
+    readOnly: true
+    format: int64

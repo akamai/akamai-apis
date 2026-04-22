@@ -51,7 +51,7 @@ properties:
         type:
           type: string
           description: |
-            The match condition type. The `RequestHeaderCondition` listed here is deprecated. Specify `RequestHeaderCondition` as an `atomicCondition` to match on request headers. See [Export match condition type values](ref:cndval).
+            The match condition type. The `RequestHeaderCondition` listed here is deprecated. Specify `RequestHeaderCondition` as an `atomicCondition` to match on request headers. See [Export match condition type values](https://techdocs.akamai.com/application-security/reference/cndval).
           enum:
           - IpAddressCondition
           - NetworkListCondition
@@ -148,12 +148,25 @@ properties:
   clientIdentifier:
     type: string
     description: |
-      The client identifier you want to use to identify and track request senders. The value is required only for WAF type, and `api-key` is supported only for API match criteria. Using `ip-useragent` is typically more specific than using `ip` alone when trying to identify a client. Tracking by `cookie:value` applies to requests per individual session, even if the IP address changes.
-    enum:
-    - api-key
-    - ip-useragent
-    - ip
-    - cookie:value
+      __Deprecated__ The client identifier you want to use to identify and track request senders. The value is required only for WAF type, and `api-key` is supported only for API match criteria. Using `ip-useragent` is typically more specific than using `ip` alone when trying to identify a client. Tracking by `cookie:value` applies to requests per individual session, even if the IP address changes. This field will be removed in future releases. Use `clientIdentifiers` instead.
+    x-akamai:
+      status: DEPRECATED
+    minLength: 0
+    deprecated: true
+  clientIdentifiers:
+    type: array
+    description: |
+      Client identifiers to track request senders. The value is required only for WAF type, and `api-key` is supported only for API match criteria. Using `ip-useragent` is typically more specific than using `ip` alone when trying to identify a client. Tracking by `cookie:value` applies to requests per individual session, even if the IP address changes. Specify `request-header:value` to track by a named request header, like `User-Agent`. Use `query-string:value` to track by a specific named query parameter. The `tls-fingerprint` identifier is available for traffic transmitted using secure transport (HTTPS).
+    minItems: 0
+    items:
+      type: string
+      enum:
+      - api-key
+      - cookie:value
+      - ip
+      - request-header:value
+      - tls-fingerprint
+      - query-string:value
   condition:
     type: object
     description: |
@@ -186,7 +199,7 @@ properties:
     type: string
     description: |
       __Read-only__ The time stamp when you created the rate policy.
-    example: '2016-07-22 18:57:08.0'
+    example: '2016-07-22T18:57:08.00Z'
     readOnly: true
     format: date-time
   evaluation:
@@ -274,7 +287,7 @@ properties:
   hostnames:
     type: array
     description: |
-      __Deprecated__. The hostnames to match. This array member is deprecated. Use the `hosts` object instead.
+      __Deprecated__. The hostnames to match. This array is deprecated. Use the `hosts` object instead.
     items:
       type: string
   hosts:
@@ -326,15 +339,29 @@ properties:
   pathMatchType:
     type: string
     description: |
-      The type of paths to match in incoming requests. Either `AllRequests` to match an empty path or any path that ends in a trailing slash (`/`), `TopLevel` to match top-level hostnames only, or `Custom` to match a specific path or path component. This applies only when the corresponding `matchType` member is `path`.
+      The type of paths to match in incoming requests. Either `AllRequests` to match an empty path or any path that ends in a trailing slash (`/`), `TopLevel` to match top-level hostnames only, or `Custom` to match a specific path or path component. This applies only when the corresponding `matchType` member is `path`. Specify `RequestDisabled` to bypass matching on a path.
     enum:
     - AllRequests
     - TopLevel
     - Custom
+    - RequestDisabled
   pathUriPositiveMatch:
     type: boolean
     description: |
       Whether the condition should trigger on a match (`true`) or a lack of match (`false`).
+  penaltyBoxDuration:
+    type: string
+    description: |
+      The duration of the penalty box. Either `TEN_MINUTES`, `THIRTY_MINUTES`, `ONE_HOUR`, `FOUR_HOURS`, `SIX_HOURS`, `TWELVE_HOURS`, or `TWENTY_FOUR_HOURS`. Only applicable when the `counterType` is `region_aggregated`.
+    default: TEN_MINUTES
+    enum:
+    - TEN_MINUTES
+    - THIRTY_MINUTES
+    - ONE_HOUR
+    - FOUR_HOURS
+    - SIX_HOURS
+    - TWELVE_HOURS
+    - TWENTY_FOUR_HOURS
   queryParameters:
     type: array
     description: |
@@ -382,7 +409,7 @@ properties:
     type: string
     description: |
       __Read-only__ The ISO 8601 timestamp when you last updated the rate policy.
-    example: '2017-02-22 00:05:41.0'
+    example: '2017-02-22T00:05:41.00Z'
     readOnly: true
     format: date-time
   useXForwardForHeaders:

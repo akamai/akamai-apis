@@ -11,10 +11,18 @@ get:
   - Configuration version export
   description: |
     Returns comprehensive details about a security configuration version. This operation returns more data than [Get configuration version details](https://techdocs.akamai.com/application-security/reference/get-version-number), including Bot Manager protections, rate and security policies, rules, hostnames, and numerous additional settings.
+  x-akamai:
+    labels:
+    - All products
   responses:
     200:
       description: |
         Successfully returned resource.
+      headers:
+        X-RateLimit-Limit:
+          $ref: ../headers/x-ratelimit-limit.yaml
+        X-RateLimit-Remaining:
+          $ref: ../headers/x-ratelimit-remaining-export.yaml
       content:
         application/json:
           example:
@@ -25,3 +33,5 @@ get:
       $ref: ../errors/403.yaml
     404:
       $ref: ../errors/404.yaml
+    429:
+      $ref: ../errors/429-export.yaml

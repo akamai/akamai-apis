@@ -1,0 +1,46 @@
+x-akamai:
+  file-path: paths/onboarding-domain-validation.yaml
+  path-info: /onboardings/{onboardingId}/domain-validation/validate
+parameters:
+- $ref: ../parameters/onboarding-id-path.yaml
+post:
+  operationId: post-onboarding-domain-validation
+  summary: Validate onboarding domains
+  tags:
+  - 'Onboarding: Post-activation validation'
+  description: |
+    Verifies the domain validation challenges. You can validate with HTTP token, DNS records, or URL redirect.
+  x-akamai:
+    labels:
+    - All products
+  responses:
+    200:
+      description: |
+        Successfully verified domain validation challenges.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboarding-domain-validation.json
+          schema:
+            $ref: ../schemas/onboarding-domain-validation.yaml
+    207:
+      description: |
+        Partially validated domain challenges.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/onboarding-domain-validation.json
+          schema:
+            $ref: ../schemas/onboarding-domain-validation.yaml
+    403:
+      description: |
+        [Forbidden](https://techdocs.akamai.com/application-security/reference/403). You aren't authorized to run this operation.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](https://techdocs.akamai.com/application-security/reference/404). The `onboardingId` was not found.
+      $ref: ../errors/404.yaml
+    500:
+      description: |
+        [Internal Server Error](https://techdocs.akamai.com/application-security/reference/500). Validating domain challenges failed.
+      $ref: ../errors/500.yaml
