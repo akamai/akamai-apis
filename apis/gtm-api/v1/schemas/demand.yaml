@@ -1,71 +1,100 @@
-type: object
-x-akamai:
-  file-path: schemas/demand.yaml
-additionalProperties: true
-required:
-- metadata
-- dataRows
-- links
+additionalProperties: false
 properties:
   dataRows:
-    type: array
+    description: |
+      The demand data rows for the reporting period.
     items:
-      type: object
       additionalProperties: false
       properties:
         datacenters:
-          type: array
+          description: |
+            The data centers included in this demand row.
           items:
-            type: object
             additionalProperties: false
+            properties:
+              datacenterId:
+                description: |
+                  The data center ID.
+                type: integer
+              nickname:
+                description: |
+                  The data center nickname.
+                type: string
+                minLength: 1
+              percentActual:
+                description: |
+                  The actual percentage of traffic directed to this data center.
+                type: number
+              percentProvisioned:
+                description: |
+                  The provisioned percentage of traffic for this data center.
+                type: number
+              trafficTargetName:
+                description: |
+                  The name of the traffic target for this data center.
+                type: string
+                minLength: 1
             required:
             - datacenterId
             - nickname
             - trafficTargetName
             - percentProvisioned
             - percentActual
-            properties:
-              datacenterId:
-                type: integer
-              nickname:
-                type: string
-              percentActual:
-                type: number
-              percentProvisioned:
-                type: number
-              trafficTargetName:
-                type: string
+            type: object
+          type: array
         timestamp:
+          description: |
+            An ISO 8601 timestamp indicating when this data row was recorded.
           type: string
-          format: date-time
+      type: object
+    type: array
   dataSummary:
+    description: |
+      Summary statistics for the report.
     type: object
   links:
+    items:
+      $ref: links.yaml
     type: array
     description: |
       Hypermedia links to help navigate through the result set, or to identify the current item whose `rel` is `self`.
-    items:
-      $ref: links.yaml
   metadata:
-    type: object
+    description: |
+      Report metadata describing the query parameters and resource URI.
     additionalProperties: false
+    properties:
+      domain:
+        description: |
+          The GTM domain name.
+        type: string
+        minLength: 1
+      end:
+        description: |
+          An ISO 8601 timestamp indicating when the reporting period ends.
+        type: string
+      property:
+        description: |
+          The GTM property name.
+        type: string
+        minLength: 1
+      start:
+        description: |
+          An ISO 8601 timestamp indicating when the reporting period starts.
+        type: string
+      uri:
+        description: |
+          The URL of this report.
+        format: uri
+        type: string
     required:
     - domain
     - property
     - uri
     - start
     - end
-    properties:
-      domain:
-        type: string
-      end:
-        type: string
-        format: date-time
-      property:
-        type: string
-      start:
-        type: string
-        format: date-time
-      uri:
-        type: string
-        format: uri
+    type: object
+required:
+- metadata
+- dataRows
+- links
+type: object

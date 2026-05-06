@@ -1,86 +1,129 @@
-type: object
-x-akamai:
-  file-path: schemas/ip-status.yaml
-additionalProperties: true
-required:
-- metadata
-- dataRows
+additionalProperties: false
 properties:
   dataRows:
-    type: array
+    description: |
+      The IP availability data rows for the reporting period.
     items:
-      type: object
       additionalProperties: false
-      required:
-      - timestamp
-      - cutOff
-      - datacenters
       properties:
         cutOff:
+          description: |
+            The cutoff score threshold. Servers with a score above this value are considered down.
           type: number
         datacenters:
-          type: array
+          description: |
+            The data centers included in this IP availability row.
           items:
-            type: object
             additionalProperties: false
-            required:
-            - datacenterId
-            - nickname
-            - trafficTargetName
-            - IPs
             properties:
               IPs:
-                type: array
+                description: |
+                  The IP addresses for this traffic target and their availability scores.
                 items:
-                  type: object
                   additionalProperties: false
+                  properties:
+                    alive:
+                      description: |
+                        Whether GTM considered this IP address alive.
+                      type: boolean
+                    handedOut:
+                      description: |
+                        Whether this IP address was handed out to resolvers.
+                      type: boolean
+                    ip:
+                      description: |
+                        The IP address of the server.
+                      type: string
+                      minLength: 1
+                    score:
+                      description: |
+                        The server availability score.
+                      type: number
                   required:
                   - ip
                   - handedOut
                   - score
                   - alive
-                  properties:
-                    alive:
-                      type: boolean
-                    handedOut:
-                      type: boolean
-                    ip:
-                      type: string
-                    score:
-                      type: number
+                  type: object
+                type: array
               datacenterId:
+                description: |
+                  The data center ID.
                 type: integer
               nickname:
+                description: |
+                  The data center nickname.
                 type: string
+                minLength: 1
               trafficTargetName:
+                description: |
+                  The name of the traffic target.
                 type: string
+                minLength: 1
+            required:
+            - datacenterId
+            - nickname
+            - trafficTargetName
+            - IPs
+            type: object
+          type: array
         timestamp:
+          description: |
+            An ISO 8601 timestamp indicating when this data row was recorded.
           type: string
-          format: date-time
+      required:
+      - timestamp
+      - cutOff
+      - datacenters
+      type: object
+    type: array
   metadata:
-    type: object
+    description: |
+      Report metadata describing the query parameters and resource URI.
     additionalProperties: false
+    properties:
+      datacenterId:
+        description: |
+          The ID of the data center filtered on, if applicable.
+        type: integer
+      domain:
+        description: |
+          The GTM domain name.
+        type: string
+        minLength: 1
+      end:
+        description: |
+          An ISO 8601 timestamp indicating when the reporting period ends.
+        type: string
+      ip:
+        description: |
+          The IP address filtered on, if applicable.
+        type: string
+        minLength: 1
+      mostRecent:
+        description: |
+          Whether only the most recent data point was returned.
+        type: boolean
+      property:
+        description: |
+          The GTM property name.
+        type: string
+        minLength: 1
+      start:
+        description: |
+          An ISO 8601 timestamp indicating when the reporting period starts.
+        type: string
+      uri:
+        description: |
+          The URL of this report.
+        format: uri
+        type: string
     required:
     - domain
     - property
     - uri
-    properties:
-      datacenterId:
-        type: integer
-      domain:
-        type: string
-      end:
-        type: string
-        format: date-time
-      ip:
-        type: string
-      mostRecent:
-        type: boolean
-      property:
-        type: string
-      start:
-        type: string
-        format: date-time
-      uri:
-        type: string
-        format: uri
+    type: object
+required:
+- metadata
+- dataRows
+type: object

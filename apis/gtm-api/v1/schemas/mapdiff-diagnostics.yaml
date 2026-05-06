@@ -1,0 +1,151 @@
+type: object
+additionalProperties: false
+required:
+- metadata
+- dataRows
+- links
+properties:
+  metadata:
+    type: object
+    additionalProperties: false
+    description: |
+      Report metadata describing the query parameters and resource URI.
+    required:
+    - domain
+    - start
+    - end
+    - uri
+    properties:
+      domain:
+        type: string
+        minLength: 1
+        description: |
+          The GTM domain name.
+      start:
+        type: string
+        description: |
+          An ISO 8601 timestamp indicating when the reporting period starts.
+      end:
+        type: string
+        description: |
+          An ISO 8601 timestamp indicating when the reporting period ends.
+      uri:
+        type: string
+        format: uri
+        description: |
+          The URL of this report.
+  dataRows:
+    type: array
+    description: |
+      The map diff rows comparing two map snapshots.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        lhsTimestamp:
+          type: string
+          description: |
+            An ISO 8601 timestamp of the earlier (left-hand side) map snapshot.
+        rhsTimestamp:
+          type: string
+          description: |
+            An ISO 8601 timestamp of the later (right-hand side) map snapshot.
+        type:
+          type: string
+          description: |
+            The category of this diff row, either `OVERALL_AS`, `OVERALL_COUNTRY`, `PER_DC_INGRESS`, `PER_DC_EGRESS`, `PER_DC_PER_AS_INGRESS`, `PER_DC_PER_AS_EGRESS`, `PER_DC_PER_COUNTRY_INGRESS`, `PER_DC_PER_COUNTRY_EGRESS`, `GEO`, or `PING`.
+          enum:
+          - OVERALL_AS
+          - OVERALL_COUNTRY
+          - PER_DC_INGRESS
+          - PER_DC_EGRESS
+          - PER_DC_PER_AS_INGRESS
+          - PER_DC_PER_AS_EGRESS
+          - PER_DC_PER_COUNTRY_INGRESS
+          - PER_DC_PER_COUNTRY_EGRESS
+          - GEO
+          - PING
+        direction:
+          type: string
+          description: |
+            The traffic direction represented by this row, either `BIDIRECTIONAL`, `INGRESS`, or `EGRESS`.
+          enum:
+          - BIDIRECTIONAL
+          - INGRESS
+          - EGRESS
+        percent:
+          type: number
+          description: |
+            The percentage change between the two map snapshots.
+        datacenter:
+          type: object
+          nullable: true
+          additionalProperties: false
+          description: |
+            The datacenter associated with this diff row.
+          properties:
+            name:
+              type: string
+              minLength: 1
+              description: |
+                The datacenter nickname.
+            datacenterId:
+              type: integer
+              description: |
+                The data center ID.
+        autonomousSystem:
+          type: object
+          nullable: true
+          additionalProperties: false
+          description: |
+            The autonomous system associated with this diff row.
+          properties:
+            number:
+              type: integer
+              description: |
+                The autonomous system number.
+            name:
+              type: string
+              minLength: 1
+              description: |
+                The autonomous system name.
+        country:
+          type: object
+          nullable: true
+          additionalProperties: false
+          description: |
+            The country associated with this diff row.
+          properties:
+            code:
+              type: string
+              minLength: 1
+              description: |
+                The two-letter ISO country code.
+            name:
+              type: string
+              minLength: 1
+              description: |
+                The full country name.
+            continentCode:
+              type: string
+              nullable: true
+              description: |
+                The two-letter continent code, either `AF` (Africa), `AN` (Antarctica), `AS` (Asia), `EU` (Europe), `NA` (North America), `OC` (Oceania), or `SA` (South America). `null` if unknown.
+              enum:
+              - AF
+              - AN
+              - AS
+              - EU
+              - NA
+              - OC
+              - SA
+  dataSummary:
+    type: object
+    description: |
+      Summary statistics for the report.
+  links:
+    type: array
+    description: |
+      Hypermedia links to help navigate through the result set, or to identify the current item whose `rel` is `self`.
+    items:
+      $ref: links.yaml

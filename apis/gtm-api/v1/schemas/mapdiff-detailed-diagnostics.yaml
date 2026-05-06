@@ -1,0 +1,68 @@
+type: object
+additionalProperties: false
+required:
+- metadata
+- dataRows
+- links
+properties:
+  metadata:
+    type: object
+    additionalProperties: false
+    description: |
+      Report metadata describing the query parameters and resource URI.
+    required:
+    - domain
+    - start
+    - end
+    - uri
+    properties:
+      domain:
+        type: string
+        minLength: 1
+        description: |
+          The GTM domain name.
+      start:
+        type: string
+        description: |
+          An ISO 8601 timestamp indicating when the reporting period starts.
+      end:
+        type: string
+        description: |
+          An ISO 8601 timestamp indicating when the reporting period ends.
+      uri:
+        type: string
+        format: uri
+        description: |
+          The URL of this report.
+  dataRows:
+    type: array
+    description: |
+      The detailed score rows for the datacenter and AS or country combination.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        timestamp:
+          type: string
+          description: |
+            An ISO 8601 timestamp indicating when this data point was recorded.
+        geoScore:
+          type: number
+          nullable: true
+          description: |
+            The geographic score at this timestamp.
+        pingScore:
+          type: number
+          nullable: true
+          description: |
+            The ping score at this timestamp.
+  dataSummary:
+    type: object
+    description: |
+      Summary statistics for the report.
+  links:
+    type: array
+    description: |
+      Hypermedia links to help navigate through the result set, or to identify the current item whose `rel` is `self`.
+    items:
+      $ref: links.yaml

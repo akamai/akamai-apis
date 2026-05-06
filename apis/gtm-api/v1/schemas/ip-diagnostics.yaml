@@ -1,0 +1,197 @@
+type: object
+additionalProperties: false
+required:
+- metadata
+- dataRows
+- links
+properties:
+  metadata:
+    type: object
+    additionalProperties: false
+    description: |
+      Report metadata describing the query parameters and resource URI.
+    required:
+    - domain
+    - property
+    - ip
+    - start
+    - end
+    - uri
+    properties:
+      domain:
+        type: string
+        minLength: 1
+        description: |
+          The GTM domain name.
+      property:
+        type: string
+        minLength: 1
+        description: |
+          The GTM property name.
+      ip:
+        type: string
+        minLength: 1
+        description: |
+          The IP address filtered on.
+      start:
+        type: string
+        description: |
+          An ISO 8601 timestamp indicating when the reporting period starts.
+      end:
+        type: string
+        description: |
+          An ISO 8601 timestamp indicating when the reporting period ends.
+      uri:
+        type: string
+        format: uri
+        description: |
+          The URL of this report.
+  dataRows:
+    type: array
+    description: |
+      Per-name server diagnostic rows for the reporting period.
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        timestamp:
+          type: string
+          description: |
+            An ISO 8601 timestamp indicating when this data row was recorded.
+        datacenterId:
+          type: integer
+          description: |
+            The ID of the datacenter that was selected for this name server.
+        trafficTargetName:
+          type: string
+          minLength: 1
+          description: |
+            The name of the traffic target selected.
+        trafficMappedToDatacenter:
+          type: boolean
+          description: |
+            Whether the traffic from this name server was mapped to the datacenter.
+        alive:
+          type: boolean
+          nullable: true
+          description: |
+            Whether GTM considered the property server alive.
+        mapType:
+          type: string
+          description: |
+            The mapping mechanism used to select the data center, either `FALLBACK`, `PING`, or `LOADBALANCER`.
+          enum:
+          - FALLBACK
+          - PING
+          - LOADBALANCER
+        propertyType:
+          type: string
+          description: |
+            The type of GTM property, either `FAILOVER`, `QTR`, `ASMAPPING`, `CIDRMAPPING`, `GEOGRAPHIC`, `WEIGHTED_ROUND_ROBIN`, `WEIGHTED_ROUND_ROBIN_LOAD_FEEDBACK`, `WEIGHTED_HASHED`, `PERFORMANCE`, `PERFORMANCE_WITH_LOAD_FEEDBACK`, `PERFORMANCE_WITH_LOAD_FEEDBACK_COMPUTED_TARGETS`, or `PERFORMANCE_WITH_LOAD_FEEDBACK_DOWNLOAD_SCORE`.
+          enum:
+          - FAILOVER
+          - QTR
+          - ASMAPPING
+          - CIDRMAPPING
+          - GEOGRAPHIC
+          - WEIGHTED_ROUND_ROBIN
+          - WEIGHTED_ROUND_ROBIN_LOAD_FEEDBACK
+          - WEIGHTED_HASHED
+          - PERFORMANCE
+          - PERFORMANCE_WITH_LOAD_FEEDBACK
+          - PERFORMANCE_WITH_LOAD_FEEDBACK_COMPUTED_TARGETS
+          - PERFORMANCE_WITH_LOAD_FEEDBACK_DOWNLOAD_SCORE
+        distanceToDatacenter:
+          type: integer
+          nullable: true
+          description: |
+            The distance in kilometers from the name server to the selected datacenter.
+        latency:
+          type: string
+          nullable: true
+          description: |
+            The latency bucket for the name server-to-datacenter path.
+        loss:
+          type: string
+          nullable: true
+          description: |
+            The packet loss bucket for the name server-to-datacenter path.
+        pingScore:
+          type: string
+          nullable: true
+          description: |
+            The ping score used in the mapping decision.
+        corePoint:
+          type: string
+          nullable: true
+          description: |
+            The core point IP used for performance calculations.
+        corePointAutonomousSystem:
+          type: integer
+          nullable: true
+          description: |
+            The autonomous system number of the core point.
+        corePointCountry:
+          type: string
+          nullable: true
+          description: |
+            The country code of the core point.
+        distanceFromCorePointToNameserver:
+          type: integer
+          nullable: true
+          description: |
+            The distance in kilometers from the core point to the name server.
+        score:
+          type: integer
+          description: |
+            The final score used in the mapping decision.
+        nameserver:
+          type: object
+          additionalProperties: false
+          description: |
+            Information about the name server that issued the DNS query.
+          properties:
+            ip:
+              type: string
+              minLength: 1
+              description: |
+                The name server IP address.
+            country:
+              type: string
+              nullable: true
+              description: |
+                The country code of the name server.
+            autonomousSystem:
+              type: integer
+              description: |
+                The autonomous system number of the name server.
+            autonomousSystemName:
+              type: string
+              nullable: true
+              description: |
+                The name of the autonomous system.
+            nsdCount:
+              type: integer
+              nullable: true
+              description: |
+                The name server demand count.
+            nsdAbsoluteRank:
+              type: integer
+              nullable: true
+              description: |
+                The absolute rank of the name server by demand.
+            nsdPercentOfAverage:
+              type: number
+              nullable: true
+              description: |
+                The name server demand as a percentage of the average.
+  dataSummary:
+    type: object
+    description: |
+      Summary statistics for the report.
+  links:
+    type: array
+    description: |
+      Hypermedia links to help navigate through the result set, or to identify the current item whose `rel` is `self`.
+    items:
+      $ref: links.yaml

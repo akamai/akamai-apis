@@ -1,0 +1,31 @@
+x-akamai:
+  path-info: /liveness-tests/domains/{domain}/properties/{property}
+parameters:
+- $ref: ../parameters/property-path.yaml
+- $ref: ../parameters/domain-path.yaml
+get:
+  operationId: get-liveness-tests-property
+  summary: Report liveness per property
+  tags:
+  - Liveness
+  description: |
+    This operation returns a collection of reports containing logs of individual liveness tests which have failed. Liveness Tests are run periodically by Web Agents installed in customer data centers. Liveness scores are used by GTM to decide whether a data center is alive or not.
+
+    Liveness tests which fail in succession (tests that run from the same testing agent to the same origin server, which fail with the same error code) are grouped together and represented with a duration. This duration value is in seconds and can sustain for up to 86400 seconds (one day). If it crosses that boundary, GTM logs it as a new failure at the beginning of the next day (00:00 UTC), with the duration reset to that point.
+  parameters:
+  - $ref: ../parameters/date-query.yaml
+  - $ref: ../parameters/agent-ip-query.yaml
+  - $ref: ../parameters/target-ip-query.yaml
+  responses:
+    200:
+      description: |
+        Successful response.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/list-liveness-tests-for-a-property-200.json
+          schema:
+            $ref: ../schemas/liveness-tests.yaml
+        text/csv:
+          example:
+            $ref: ../examples/list-liveness-tests-for-a-property-200.csv

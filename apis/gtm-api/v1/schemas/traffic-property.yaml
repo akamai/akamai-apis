@@ -1,78 +1,110 @@
-type: object
-x-akamai:
-  file-path: schemas/traffic-property.yaml
-additionalProperties: true
-required:
-- metadata
-- dataRows
-- links
+additionalProperties: false
 properties:
   dataRows:
-    type: array
+    description: |
+      The traffic data rows for the reporting period.
     items:
-      type: object
       additionalProperties: false
-      required:
-      - timestamp
-      - datacenters
       properties:
         datacenters:
-          type: array
+          description: |
+            The data centers that received traffic for this property during this interval.
           items:
-            type: object
             additionalProperties: false
+            properties:
+              datacenterId:
+                description: |
+                  The data center ID.
+                type: integer
+              nickname:
+                description: |
+                  The data center nickname.
+                type: string
+                minLength: 1
+              requests:
+                description: |
+                  The number of DNS requests received during this interval.
+                type: number
+              status:
+                description: |
+                  The status code for this data center during this interval.
+                type: string
+                minLength: 1
+              trafficTargetName:
+                description: |
+                  The name of the traffic target.
+                type: string
+                minLength: 1
             required:
             - datacenterId
             - nickname
             - trafficTargetName
             - requests
             - status
-            properties:
-              datacenterId:
-                type: number
-              nickname:
-                type: string
-              requests:
-                type: number
-              status:
-                type: string
-              trafficTargetName:
-                type: string
+            type: object
+          type: array
         timestamp:
+          description: |
+            An ISO 8601 timestamp indicating when this data row was recorded.
           type: string
-          format: date-time
+      required:
+      - timestamp
+      - datacenters
+      type: object
+    type: array
   dataSummary:
+    description: |
+      Summary statistics for the report.
     type: object
   links:
+    items:
+      $ref: links.yaml
     type: array
     description: |
       Hypermedia links to help navigate through the result set, or to identify the current item whose `rel` is `self`.
-    items:
-      $ref: links.yaml
   metadata:
-    type: object
+    description: |
+      Report metadata describing the query parameters and resource URI.
     additionalProperties: false
+    properties:
+      domain:
+        description: |
+          The GTM domain name.
+        type: string
+        minLength: 1
+      end:
+        description: |
+          An ISO 8601 timestamp indicating when the reporting period ends.
+        type: string
+      interval:
+        description: |
+          The reporting interval. Always `FIVE_MINUTE`.
+        enum:
+        - FIVE_MINUTE
+        type: string
+      property:
+        description: |
+          The GTM property name.
+        type: string
+        minLength: 1
+      start:
+        description: |
+          An ISO 8601 timestamp indicating when the reporting period starts.
+        type: string
+      uri:
+        description: |
+          The URL of this report.
+        format: uri
+        type: string
     required:
     - uri
     - domain
     - property
     - start
     - end
-    properties:
-      domain:
-        type: string
-      end:
-        type: string
-        format: date-time
-      interval:
-        type: string
-        enum:
-        - FIVE_MINUTE
-      property:
-        type: string
-      start:
-        type: string
-        format: date-time
-      uri:
-        type: string
-        format: uri
+    type: object
+required:
+- metadata
+- dataRows
+- links
+type: object

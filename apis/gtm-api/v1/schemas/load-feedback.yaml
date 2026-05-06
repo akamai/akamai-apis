@@ -1,71 +1,99 @@
-type: object
-x-akamai:
-  file-path: schemas/load-feedback.yaml
-additionalProperties: true
-required:
-- metadata
-- dataRows
-- links
+additionalProperties: false
 properties:
   dataRows:
-    type: array
+    description: |
+      The load feedback data rows for the reporting period.
     items:
-      type: object
       additionalProperties: false
       properties:
         datacenters:
-          type: array
+          description: |
+            The data centers included in this load feedback row.
           items:
-            type: object
             additionalProperties: false
+            properties:
+              currentLoad:
+                description: |
+                  The current load reported by this data center.
+                type: number
+              datacenterId:
+                description: |
+                  The data center ID.
+                type: integer
+              maximumLoad:
+                description: |
+                  The maximum load capacity of this data center.
+                type: number
+              nickname:
+                description: |
+                  The data center nickname.
+                type: string
+                minLength: 1
+              targetLoad:
+                description: |
+                  The target load for this data center.
+                type: number
             required:
             - datacenterId
             - nickname
             - currentLoad
             - targetLoad
             - maximumLoad
-            properties:
-              currentLoad:
-                type: number
-              datacenterId:
-                type: integer
-              maximumLoad:
-                type: number
-              nickname:
-                type: string
-              targetLoad:
-                type: number
+            type: object
+          type: array
         timestamp:
+          description: |
+            An ISO 8601 timestamp indicating when this data row was recorded.
           type: string
-          format: date-time
+      type: object
+    type: array
   dataSummary:
+    description: |
+      Summary statistics for the report.
     type: object
   links:
+    items:
+      $ref: links.yaml
     type: array
     description: |
       Hypermedia links to help navigate through the result set, or to identify the current item whose `rel` is `self`.
-    items:
-      $ref: links.yaml
   metadata:
-    type: object
+    description: |
+      Report metadata describing the query parameters and resource URI.
     additionalProperties: false
+    properties:
+      domain:
+        description: |
+          The GTM domain name.
+        type: string
+        minLength: 1
+      end:
+        description: |
+          An ISO 8601 timestamp indicating when the reporting period ends.
+        type: string
+      resource:
+        description: |
+          The load-feedback resource name.
+        type: string
+        minLength: 1
+      start:
+        description: |
+          An ISO 8601 timestamp indicating when the reporting period starts.
+        type: string
+      uri:
+        description: |
+          The URL of this report.
+        format: uri
+        type: string
     required:
     - domain
     - resource
     - start
     - end
     - uri
-    properties:
-      domain:
-        type: string
-      end:
-        type: string
-        format: date-time
-      resource:
-        type: string
-      start:
-        type: string
-        format: date-time
-      uri:
-        type: string
-        format: uri
+    type: object
+required:
+- metadata
+- dataRows
+- links
+type: object
