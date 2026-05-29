@@ -1,0 +1,97 @@
+title: Property v1.6
+allOf:
+- $ref: property-vnd-config-gtm-nested-not-versioned.v1.0.yaml
+- type: object
+  description: |
+    The entire GTM property configuration.
+  additionalProperties: true
+  required:
+  - type
+  - trafficTargets
+  - livenessTests
+  - handoutLimit
+  properties:
+    type:
+      type: string
+      description: |
+        Specifies the load balancing behavior for the property. Possible values are: `failover`, `geographic`, `cidrmapping`, `weighted-round-robin`, `weighted-hashed`, `weighted-round-robin-load-feedback`, `qtr`, `performance`, `performance-with-load-feedback`, `asmapping`, `static`, or `ranked-failover`. See [API versioning](ref:api-versioning) for more information.
+      enum:
+      - failover
+      - geographic
+      - cidrmapping
+      - weighted-round-robin
+      - weighted-hashed
+      - weighted-round-robin-load-feedback
+      - qtr
+      - performance
+      - performance-with-load-feedback
+      - asmapping
+      - static
+      - ranked-failover
+    livenessTests:
+      type: array
+      description: |
+        Liveness tests, which run periodically to determine whether your servers respond to requests, as discussed in [API concepts](ref:api-concepts).
+      items:
+        $ref: liveness-test-v1.6.yaml
+    trafficTargets:
+      type: array
+      description: |
+        This specifies where to direct data center traffic. For geographic mapped properties, it's always a `cname`. For mirror failover properties, it can be any set of servers. For load balanced properties, this is a set of servers that are all within the same data center. You can assign multiple traffic targets to the same data center.
+      items:
+        $ref: traffic-target-v1.6.yaml
+    minLiveFraction:
+      type: number
+      description: |
+        Specifies what fraction of the servers need to respond to requests so GTM considers the data center up and able to receive traffic. For example, if your data center contains eight servers, and the `minLiveFraction` value is `0.5`, then at least four servers need to respond to requests.  Conversely, if five servers are down, and three servers are up, then GTM considers the entire data center down. Optional when a `minLiveFraction` value exists or not `null`.
+      x-akamai:
+        labels:
+        - v1.3
+      nullable: true
+      minimum: 0
+      maximum: 1
+    handoutLimit:
+      type: integer
+      description: |
+        Indicates the limit for the number of live IPs handed out to a DNS request. The `handoutLimit` applies only if `handoutMode` is set to either `normal` or `persistent` for the property. If applicable, the `handoutLimit` default value is `8` or `null` if not.
+      x-akamai:
+        labels:
+        - v1.3
+      nullable: true
+      minimum: 1
+    ghostDemandReporting:
+      type: boolean
+      description: |
+        Enables reporting of unmet content requests received by edge servers, analyzing demand for unserved content.
+      x-akamai:
+        labels:
+        - v1.3
+    staticRRSets:
+      type: array
+      description: |
+        Static recordsets. Use this instead of `mxRecords` and `staticTTL`, which were deprecated in version 1.4.
+      x-akamai:
+        labels:
+        - v1.4
+      items:
+        type: object
+        additionalProperties: false
+        required:
+        - type
+        - ttl
+        - rdata
+        properties:
+          type:
+            type: string
+            description: |
+              The record type.
+          ttl:
+            type: integer
+            description: |
+              The number of seconds that this record should live in a resolver's cache before being refetched.
+          rdata:
+            type: array
+            description: |
+              An array of data strings, representing multiple records within a set. The format of the `rdata` strings are dependent on the `type` of this record.
+            items:
+              type: string

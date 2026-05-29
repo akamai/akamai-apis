@@ -1,0 +1,35 @@
+type: object
+description: |
+  This specifies where to direct data center traffic. For geographic mapped properties, it's always a `cname`. For mirror failover properties, it can be any set of servers. For load balanced properties, this is a set of servers that are all within the same data center. You can assign multiple traffic targets to the same data center.
+additionalProperties: true
+properties:
+  servers:
+    type: array
+    description: |
+      Identifies the IP address or the hostnames of the servers. For hostnames that return IP addresses, tests all IP addresses for liveness.
+    items:
+      type: string
+  name:
+    type: string
+    description: |
+      An alternative label for the traffic target.
+    nullable: true
+  datacenterId:
+    type: integer
+    description: |
+      A unique identifier for an existing data center in the domain.
+  enabled:
+    type: boolean
+    description: |
+      Indicates whether the traffic target is used. You can also omit the traffic target, which has the same result as the `false` value. However, when the value is `false`, GTM continues to store the other traffic target fields in the database. There's no need to store them locally should you want to use the traffic target at a later time.
+  handoutCName:
+    type: string
+    description: |
+      Specifies an optional data center for the property. Uses the `handoutCName` when there are no servers configured for the property. Maximum 63 characters for the labels, 255 characters overall. May contain alphanumeric, hyphens, and underscores, but not literal IP addresses. Leading or trailing hyphens aren't allowed.
+    nullable: true
+    maxLength: 255
+  weight:
+    type: number
+    description: |
+      Specifies the traffic weight for the target. This is required when the enclosing property is `failover`, `weighted`, `weighted-with-load-feedback`, or `performance`. The sum of this value, for all enabled targets, can be any number, percentage, or ratio. For example, you can express a traffic split as 60/40, 120/80, or 3/2, all equivalent values. For `failover` properties, set this value to `1` for the traffic target you want to mark as _primary_.
+    minimum: 0

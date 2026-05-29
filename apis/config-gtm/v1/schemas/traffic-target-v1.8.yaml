@@ -1,0 +1,65 @@
+title: traffic target v1.8
+allOf:
+- $ref: traffic-target-v1.7.yaml
+- type: object
+  description: |
+    This specifies where to direct data center traffic. For geographic mapped properties, it's always a `cname`. For mirror failover properties, it can be any set of servers. For load balanced properties, this is a set of servers that are all within the same data center. You can assign multiple traffic targets to the same data center.
+  additionalProperties: true
+  properties:
+    handoutCName:
+      type: string
+      description: |
+        Use `handoutRRSets` instead. Specifies an optional data center for the property. Uses the `handoutCName` when there are no servers configured for the property. If both `handoutCName` and `handoutRRSets` are set, `handoutRRSets` must contain a single CNAME record matching the `handoutCName` value.
+      x-akamai:
+        status: DEPRECATED
+      deprecated: true
+      nullable: true
+      maxLength: 255
+    handoutRRSets:
+      type: array
+      description: |
+        An array of DNS recordsets to hand out for this traffic target. Each recordset contains a DNS record `type`, an array of `rdata` strings, and a `ttl`. Replaces the recated `handoutCName` field, enabling richer DNS responses such as A, AAAA, TXT, and other record types in addition to CNAME. If `handoutCName` is also set, `handoutRRSets` must contain a single CNAME record matching the `handoutCName` value. For non-CNAME handouts, `handoutCName` must be `null`.
+      x-akamai:
+        labels:
+        - v1.8
+      nullable: true
+      items:
+        type: object
+        additionalProperties: false
+        required:
+        - type
+        - rdata
+        - ttl
+        properties:
+          type:
+            type: string
+            description: |
+              The DNS record type. Valid values are: `A`, `AAAA`, `AFSDB`, `CAA`, `CNAME`, `HINFO`, `HTTPS`, `LOC`, `MX`, `NAPTR`, `NS`, `PTR`, `RP`, `SOA`, `SVCB`, or `TXT`.
+            enum:
+            - A
+            - AAAA
+            - AFSDB
+            - CAA
+            - CNAME
+            - HINFO
+            - HTTPS
+            - LOC
+            - MX
+            - NAPTR
+            - NS
+            - PTR
+            - RP
+            - SOA
+            - SVCB
+            - TXT
+          rdata:
+            type: array
+            description: |
+              An array of data strings for this recordset. The format depends on the record `type`.
+            items:
+              type: string
+          ttl:
+            type: integer
+            description: |
+              The time to live in seconds for this recordset.
+            minimum: 0

@@ -1,0 +1,39 @@
+title: livenessTest v1.4
+allOf:
+- $ref: liveness-test-v1.3.yaml
+- type: object
+  description: |
+    Liveness tests, which run periodically to determine whether your servers respond to requests, as discussed in [API concepts](ref:api-concepts).
+  additionalProperties: true
+  properties:
+    disabled:
+      type: boolean
+      description: |
+        Disables the liveness test. When disabled, GTM stops running the test, treating it as if it no longer exists. The default is `false`.
+      x-akamai:
+        labels:
+        - v1.4
+      default: false
+    httpHeaders:
+      type: array
+      description: |
+        HTTP headers to send if the `testObjectProtocol` is `http` or `https`. This `hostHeader` is deprecated as of version 1.4.
+      x-akamai:
+        labels:
+        - v1.4
+      items:
+        type: object
+        additionalProperties: false
+        required:
+        - name
+        - value
+        properties:
+          name:
+            type: string
+            description: |
+              Name of the HTTP header.
+            minLength: 1
+          value:
+            type: string
+            description: |
+              Value of the HTTP header.

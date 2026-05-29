@@ -1,0 +1,193 @@
+type: object
+description: |
+  The entire GTM property configuration.
+additionalProperties: true
+required:
+- backupCName
+- backupIp
+- dynamicTTL
+- failbackDelay
+- failoverDelay
+- handoutMode
+- ipv6
+- mapName
+- mxRecords
+- name
+- scoreAggregationType
+- staticTTL
+properties:
+  name:
+    description: |
+      The value, together with the full GTM `domainName`, forms the property's hostname. The value should not begin or end with a dot character and needs to be a valid [RFC 1123](https://tools.ietf.org/html/rfc1123) hostname. Set the name to `@` if the property is to be located at the apex of the domain.
+    oneOf:
+    - title: Hostname
+      type: string
+      format: hostname
+    - title: apex
+      type: string
+      enum:
+      - '@'
+  backupCName:
+    type: string
+    description: |
+      Specifies a `backupCName`. If GTM declares that all of the servers configured for your property are down, and you configured a `backupCName`, then queries for the property return the `backupCName`. If a `backupCName` is set, don't set a `backupIp`.
+    nullable: true
+  backupIp:
+    type: string
+    description: |
+      Specifies a backup IP. When GTM declares that all of the targets are down, it hands out the `backupIP`. The IP type coincides with the property's `iPv6` setting. If a `backupIp` is set, don't set a `backupCName`.
+    nullable: true
+  balanceByDownloadScore:
+    type: boolean
+    description: |
+      Indicates whether download score based load balancing is enabled. GTM estimates the load on your data centers based on how long they take to respond to GTM liveness tests. The advantage: you don't need to implement a load object. The disadvantage: it's a very crude measure of load, and usually highly nonlinear. As load increases, download times don't increase significantly, until there's too much load. When that happens, the download times skyrocket. This can easily cause erratic load balancing or load oscillations.
+  cname:
+    type: string
+    description: |
+      Indicates the fully qualified name aliased to a particular property. The public name of the property.
+    nullable: true
+  comments:
+    type: string
+    description: |
+      Provides information about the purpose of the property.
+    nullable: true
+  dynamicTTL:
+    type: integer
+    default: 60
+    description: |
+      Indicates the TTL in seconds for records that might change dynamically based on liveness and load balancing such as A and AAAA records, and CNAMEs. The value ranges from `30` to `3600` and can change on request. The default is `60`.
+    minimum: 30
+    maximum: 3600
+  failbackDelay:
+    type: integer
+    description: |
+      Specifies the failback delay in seconds. The minimum value is `0`. If specified, when a server has been down and comes back up, (that is, its liveness test starts succeeding again), GTM only considers it up after the failback delay has elapsed and tests continue to succeed.
+    nullable: true
+    minimum: 0
+  failoverDelay:
+    type: integer
+    description: |
+      Specifies the failover delay in seconds. The minimum value is `0`. If specified, when a server begins failing its liveness test, GTM only considers it down after the failover delay has elapsed and the errors persist.
+    nullable: true
+    minimum: 0
+  handoutMode:
+    type: string
+    description: |
+      Specifies how IPs are returned when more than one IP is alive and available. Possible values are: `normal`, `persistent`, `one-ip`, `one-ip-hashed`, or `all-live-ips`. The default is `normal`. Handout mode is relevant only when you have more than one server IP in a data center.
+    default: normal
+    enum:
+    - normal
+    - persistent
+    - one-ip
+    - one-ip-hashed
+    - all-live-ips
+  healthMax:
+    type: number
+    description: |
+      Defines the absolute limit beyond which IPs are declared unhealthy. If backup CNAMEs are provided for a property, then it's reasonable for all IPs to be declared unhealthy. The `healthMax` value is multiplied by the smaller of the `timeoutPenalty` and the `errorPenalty`. This check declares as down any server with a score greater than this product. The default value is `null`.
+    nullable: true
+  healthMultiplier:
+    type: number
+    description: |
+      Configures a cutoff value that's computed from the median scores. Any server with a score over the cutoff value is considered down, and load isn't sent to it. The cutoff is computed from the minimum score across all data centers, for a given property and two object fields: `healthMultiplier` and `healthThreshold`. The cutoff is either `healthMultiplier` (default value: 1.5) times the minimum score, or the `healthThreshold` (default value: 4), whichever is greater. See also `healthThreshold` within this object. For more information on how to determine server liveness, see the [Global Traffic Management User Guide](https://techdocs.akamai.com/gtm/docs/welcome-to-global-traffic-management).
+    nullable: true
+  healthThreshold:
+    type: number
+    description: |
+      Configures a cutoff value that's computed from the median scores. Any server with a score over the cutoff value is considered down, and load isn't sent to it. See also `healthMultiplier` within this object. For more information on how to determine server liveness, see the [Global Traffic Management User Guide](https://techdocs.akamai.com/gtm/docs/welcome-to-global-traffic-management).
+    nullable: true
+  ipv6:
+    type: boolean
+    description: |
+      Indicates the type of IP address handed out by a property. A `true` value indicates that all IP addresses specified are IPv6, and all hostnames need to resolve to AAAA records. A `false` value indicates IPv4 addresses, and all hostnames need to resolve to A records.
+  loadImbalancePercentage:
+    type: number
+    # default: 10.0
+    description: |
+      Indicates the percent of load imbalance factor (LIF) for the domain. It lets GTM exceed the value configured for traffic distribution. For example, if the data center's traffic allocation is 25 percent and the LIF is 1.5, the demand can grow to 37.5 percent (25% &times; 1.5) before the load balancer starts shifting load away from it. If the LIF is `0`, no load imbalance is allowed. However, internally, GTM adds one to the LIF to allow its use as a multiplier. The default LIF is 1.1, which is displayed as `10.0` percent. The value ranges from `0` to `1000000` percent.
+    nullable: true
+    minimum: 0
+    maximum: 1000000
+  mapName:
+    type: string
+    description: |
+      A descriptive label for a geographic map or a CIDR map that's required if the property is either  `geographic` or `cidrmapping`, in which case `mapName` needs to reference either an existing geographic map or CIDR map in the same domain.
+    nullable: true
+  maxUnreachablePenalty:
+    type: number
+    description: |
+      For `performance` domains, this specifies a penalty value that's added to liveness test scores when data centers show an aggregated loss fraction higher than the penalty value. The penalty value is either `maxUnreachablePenalty` (minimum value is `0` and the default is `null`) or `unreachableThreshold` (decimal between `0` and `1`. A value of 1.0 or `null` disables an unreachable penalty). See also `unreachableThreshold` within this object.
+    nullable: true
+    minimum: 0
+  mxRecords:
+    type: array
+    description: |
+      Specifies the MX records handed out to `MX` record type queries. Note that mapping and liveness testing aren't done. The same MX records are handed out for every request.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - exchange
+      - preference
+      properties:
+        exchange:
+          type: string
+          description: |
+            MX record exchange field.
+        preference:
+          type: number
+          description: |
+            MX record preference field.
+  scoreAggregationType:
+    type: string
+    description: |
+      Specifies how GTM aggregates liveness test scores across different tests, when multiple tests are configured. Possible values are: `mean`, `median`, `best`, or the default `worst`.
+    default: worst
+    enum:
+    - mean
+    - median
+    - best
+    - worst
+  staticTTL:
+    type: integer
+    description: |
+      Specifies the TTL in seconds for static resource records that don't change based on the requesting name server IP. This includes MX, TXT, and SPF records.
+    nullable: true
+    minimum: 30
+    maximum: 3600
+  stickinessBonusPercentage:
+    type: integer
+    description: |
+      Specifies a percentage used to configure data center affinity. This only applies if the property `type` is `performance` and the domain `type` is `full`. The value ranges from `0` to `100`. See also `stickinessBonusConstant` within this object. To learn more about how these object fields relate to each other, see [API concepts](ref:api-concepts).
+    nullable: true
+    minimum: 0
+    maximum: 100
+  stickinessBonusConstant:
+    type: integer
+    description: |
+      Specifies a constant used to configure data center affinity. This only applies if the property `type` is `performance` and the domain `type` is `full`. The value ranges from `0` to `30000`. See also `stickinessBonusPercentage` within this object. To learn more about how these object fields relate to each other, see [API concepts](ref:api-concepts).
+    nullable: true
+    minimum: 0
+    maximum: 30000
+  unreachableThreshold:
+    type: number
+    description: |
+      For `performance` domains, this specifies a penalty value that's added to liveness test scores when data centers have an aggregated loss fraction higher than this value. The value is a decimal between `0` and `1`. A value of `1.0` or `null` disables an unreachable penalty. See also `maxUnreachablePenalty` within this object.
+    nullable: true
+    minimum: 0
+    maximum: 1
+  useComputedTargets:
+    type: boolean
+    description: |
+      For `load-feedback` domains only, this specifies that you want GTM to automatically compute target load. Report only the current load objects, either by omission, or by using non-XML load objects.
+  lastModified:
+    type: string
+    description: |
+      An ISO 8601 timestamp indicating when the property was last changed.
+    nullable: true
+  links:
+    type: array
+    description: |
+      A URL path that allows direct navigation to the property.
+    items:
+      $ref: link.yaml
