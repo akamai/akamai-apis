@@ -1,9 +1,6 @@
 type: object
-description: |-
+description: |
   An Edge DNS zone. This object contains zone settings, but not record sets.
-  
-x-akamai:
-  file-path: schemas/zone-post.yaml
 additionalProperties: false
 required:
 - zone
@@ -12,25 +9,64 @@ properties:
   type:
     type: string
     description: |
-      The zone type. A `PRIMARY` zone's records are stored in the Akamai Portal. A `SECONDARY` zone's records are stored on the customer's nameservers. `ALIAS` zones allow users to duplicate the configuration of an existing zone.
+      The zone type. A `PRIMARY` zone's records are stored in Control Center. A `SECONDARY` zone's records are stored on the customer's name servers. `ALIAS` zones allow users to duplicate the configuration of an existing zone.
     enum:
     - PRIMARY
     - SECONDARY
     - ALIAS
+  zone:
+    type: string
+    description: |
+      The name of the zone.
+  category:
+    type: string
+    description: |
+      The zone category.
+    readOnly: true
   comment:
     type: string
     description: |
       Free-form user comments.
+  contractId:
+    type: string
+    description: |
+      The contract for this zone.
   endCustomerId:
     type: string
     description: |
       Free-form user identifier for this zone, often used by resellers.
+  versionId:
+    type: string
+    description: |
+      The UUID of the most recently activated version.
+  lastActivationDate:
+    type: string
+    description: |
+      PRIMARY and SECONDARY zones only. An ISO 8601 timestamp showing when the latest version was activated.
+    format: date-time
+  lastModifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp marking when zone's last modification.
+    format: date-time
+  lastModifiedBy:
+    type: string
+    description: |
+      The user that last edited this zone.
+  target:
+    type: string
+    description: |
+      For `ALIAS` zones only. The name of the zone whose configuration this zone copies.
+  tsigKey:
+    $ref: tsigkey-get.yaml
   masters:
     type: array
     description: |
-      For `SECONDARY` zones only. The names or addresses of the customer's nameservers that the zone data should be retrieved from.
+      For `SECONDARY` zones only. The names or addresses of the customer's name servers that the zone data should be retrieved from.
     items:
       type: string
+  multiProviderDnssec:
+    $ref: multi-provider-dnssec.yaml
   signAndServe:
     type: boolean
     description: |
@@ -38,22 +74,16 @@ properties:
   signAndServeAlgorithm:
     type: string
     description: |
-      The algorithm currently or last used for DNSSEC Sign&Serve. Absent if no algorithm has ever been assigned to this zone.
+      The algorithm currently or last used for DNSSEC Sign&Serve, either `RSA_SHA1`, `RSA_SHA256`, `RSA_SHA512`, `ECDSA_P256_SHA256`, or `ECDSA_P384_SHA384`. Absent if no algorithm has ever been assigned to this zone.
     enum:
     - RSA_SHA1
     - RSA_SHA256
     - RSA_SHA512
     - ECDSA_P256_SHA256
     - ECDSA_P384_SHA384
-  target:
-    type: string
+  subzoneGrants:
+    type: boolean
     description: |
-      For `ALIAS` zones only. The name of the zone whose configuration this zone will copy.
-  tsigKey:
-    description: |
-      For `SECONDARY` zones only. The TSIG key used for zone transfers.
-    $ref: tsigkey-get.yaml
-  zone:
-    type: string
-    description: |
-      The name of the zone.
+      Determines if cross-account subzones are enabled. This doesn't impact the ability to create subzones that you're presently authorized to edit.
+  outboundZoneTransfer:
+    $ref: outbound-zone-transfer.yaml

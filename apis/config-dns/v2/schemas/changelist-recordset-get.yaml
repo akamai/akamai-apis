@@ -1,9 +1,6 @@
 type: object
-description: |-
+description: |
   A modification of a record set inside a change list.
-  
-x-akamai:
-  file-path: schemas/changelist-recordset-get.yaml
 additionalProperties: false
 required:
 - name
@@ -23,13 +20,13 @@ properties:
   rdata:
     type: array
     description: |
-      An array of data strings, representing multiple records within a set. The format of the `rdata` strings are dependent on the `type` of this record. Not used When the `op` value for the PATCH request is DELETE.
+      Data strings, representing multiple records within a set. The format of the `rdata` strings depend on the `type` of this record. Not used When the `op` value for the PATCH request is DELETE.
     items:
       type: string
   state:
     type: string
     description: |
-      The state of this record in the change list. A `PRISTINE` record has not been changed, otherwise it has been `ADDED`, `EDITED`, or `DELETED`.
+      The state of this record in the change list. A `PRISTINE` record hasn't been changed, otherwise it has been `ADDED`, `EDITED`, or `DELETED`.
     enum:
     - PRISTINE
     - ADDED
@@ -37,5 +34,6 @@ properties:
     - DELETED
   ttl:
     type: integer
+    minimum: 0
     description: |
-      The number of seconds that this record should live in a resolver's cache before being refetched. Not used When the `op` value for the PATCH request is DELETE.
+      The number of seconds this record should live in a resolver's cache before being refetched. A value of `0` means the record is uncached. Not used when the `op` value for the PATCH request is `DELETE`.
