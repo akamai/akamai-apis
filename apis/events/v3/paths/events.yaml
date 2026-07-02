@@ -1,0 +1,63 @@
+x-akamai:
+  file-path: paths/events.yaml
+  path-info: /events
+post:
+  operationId: post-events
+  summary: Create an event
+  tags:
+  - Events
+  description: |
+    Creates an event with the specified parameters.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/event-post.json
+        schema:
+          $ref: ../schemas/event-post.yaml
+  responses:
+    200:
+      description: |
+        Successful response.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/event-post-200.json
+          schema:
+            $ref: ../schemas/event-post-200.yaml
+    400:
+      $ref: ../errors/400-constraint.yaml
+    403:
+      $ref: ../errors/403-cpcode.yaml
+    409:
+      $ref: ../errors/409-duplicate.yaml
+get:
+  operationId: get-events
+  summary: List events
+  tags:
+  - Events
+  description: |
+    Returns a list of events for the current account and contract type. This call supports paging and sorting of the result data.
+  parameters:
+  - $ref: ../parameters/min-start-query.yaml
+  - $ref: ../parameters/max-start-query.yaml
+  - $ref: ../parameters/min-end-query.yaml
+  - $ref: ../parameters/max-end-query.yaml
+  - $ref: ../parameters/tag-query.yaml
+  - $ref: ../parameters/customer-event-id-query.yaml
+  - $ref: ../parameters/page-query.yaml
+  - $ref: ../parameters/page-size-query.yaml
+  - $ref: ../parameters/sort-query.yaml
+  responses:
+    200:
+      description: |
+        List events.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/event-page-200.json
+          schema:
+            $ref: ../schemas/event-page-200.yaml
+    400:
+      $ref: ../errors/400.yaml
