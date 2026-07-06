@@ -1,9 +1,6 @@
 type: object
-description: |-
+description: |
   Proxy properties.
-  
-x-akamai:
-  file-path: schemas/proxy-put.yaml
 additionalProperties: false
 required:
 - name
@@ -20,6 +17,10 @@ properties:
     type: string
     description: |
       The proxy name.
+  contractId:
+    type: string
+    description: |
+      The contract for this proxy.
   activationState:
     description: |
       The current proxy activation status. Either `NEW`, `PENDING`, `ACTIVE`, `LOCKED`, `DELETED`, or `ERROR`.
@@ -30,41 +31,20 @@ properties:
     - LOCKED
     - DELETED
     - ERROR
-  authorities:
-    type: array
-    description: |
-      The authoritative service IPs controlled by Akamai.  Authority updates by customer are ignored.
-    items:
-      type: string
-  contractId:
-    type: string
-    description: |
-      The contract for this proxy.
   createdTime:
     type: string
     description: |
       An ISO 8601 timestamp showing when the proxy was created.
     format: date-time
-  healthCheck:
-    $ref: proxy-healthcheck-get.yaml
   lastModifiedTime:
     type: string
     description: |
       An ISO 8601 timestamp showing when the proxy was last modified.
     format: date-time
-  originNameserverZoneTransferTargets:
-    type: array
-    description: |
-      __Deprecated__ The names or addresses to perform outbound zone transfers with AUTOMATIC filter_mode. If this field is omitted the `originNameservers` section is used.
-    x-akamai:
-      status: DEPRECATED
-    items:
-      type: string
-    deprecated: true
   originNameservers:
     type: array
     description: |
-      The names or addresses of the master nameservers to protect.
+      The names or addresses of the master name servers to protect.
     items:
       $ref: nameserver-get.yaml
   zoneTransferNameservers:
@@ -72,4 +52,22 @@ properties:
     description: |
       The names or addresses to perform outbound zone transfers with `filter_mode` of `AUTOMATIC`. If this field is omitted the `originNameserverZoneTransferTargets` section is used.
     items:
-      $ref: nameserver-get.yaml
+      $ref:
+        nameserver-get.yaml
+  originNameserverZoneTransferTargets:
+    type: array
+    deprecated: true
+    x-akamai:
+      status: DEPRECATED
+    description: |
+      The names or addresses to perform outbound zone transfers with AUTOMATIC filter_mode. If this field is omitted the `originNameservers` section is used.
+    items:
+      type: string
+  authorities:
+    type: array
+    description: |
+      The authoritative service IPs controlled by Akamai.  Authority updates by customer are ignored.
+    items:
+      type: string
+  healthCheck:
+    $ref: proxy-healthcheck-get.yaml

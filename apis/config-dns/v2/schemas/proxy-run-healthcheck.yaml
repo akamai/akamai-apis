@@ -1,0 +1,71 @@
+type: object
+description: Results of running a proxy health check.
+additionalProperties: true
+required:
+  - status
+  - tests
+  - failures
+  - proxyActivationStatus
+  - healthCheck
+  - healthcheckResults
+properties:
+  status:
+    type: string
+    description: |
+      A set of health check status, any of these values: `OK`, `WARNING`, and `ERROR`.
+    enum:
+      - OK
+      - WARNING
+      - ERROR
+  tests:
+    type: integer
+    description: Number of health check tests run.
+  failures:
+    type: integer
+    description: Number of failed health check tests.
+  proxyActivationStatus:
+    type: string
+    description: |
+      A set of Proxy activation status, any of these values: `NEW`, `PENDING`, `ACTIVE`, `LOCKED`, `DELETED`, and `ERROR`.
+    enum:
+      - NEW
+      - PENDING
+      - ACTIVE
+      - LOCKED
+      - DELETED
+      - ERROR
+  healthCheck:
+    $ref: proxy-healthcheck-get.yaml
+  healthcheckResults:
+    type: array
+    description: Health check results.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+        - resolved
+        - port
+        - sourceIp
+        - responseCode
+      properties:
+        name:
+          type: string
+          description: Name or address checked.
+        resolved:
+          type: string
+          description: Resolved IP address.
+        port:
+          type: integer
+          description: Port used for the health check.
+        sourceIp:
+          type: string
+          description: Source IP address of the health check.
+        responseCode:
+          type: string
+          description: |
+            A set of DNS response code, any of these values: `NOERROR`, `NXDOMAIN`, and `SERVFAIL`.
+          enum:
+            - NOERROR
+            - NXDOMAIN
+            - SERVFAIL

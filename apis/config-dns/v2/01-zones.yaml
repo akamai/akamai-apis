@@ -2,9 +2,6 @@ openapi: 3.0.0
 info:
   title: Zones
   version: v2
-  license:
-    name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
 - url: https://{hostname}/config-dns/v2
 tags:
@@ -12,6 +9,8 @@ tags:
   name: Zones
 - description: Groups operations to get the current DNSSEC status for zones.
   name: DNSSEC status
+- description: Groups operations to get the current DNSSEC DNSKEY records for zones.
+  name: DNSSEC keys
 - description: Groups operations to get results of the most recent zone transfer attempts.
   name: Zone transfer status
 - description: Groups operations to get details about the contract that  zone belongs
@@ -19,12 +18,13 @@ tags:
   name: Zone contracts
 x-akamai:
   auth-type: EDGE_GRID
-  file-path: 01-zones.yaml
 paths:
   /zones:
     $ref: paths/zones.yaml
   /zones/dns-sec-status:
     $ref: paths/dns-sec-status.yaml
+  /zones/{zone}/dnskeys:
+    $ref: paths/dnskeys.yaml
   /zones/zone-transfer-status:
     $ref: paths/zone-transfer-status.yaml
   /zones/{zone}:
@@ -33,3 +33,11 @@ paths:
     $ref: paths/aliases.yaml
   /zones/{zone}/contract:
     $ref: paths/contract.yaml
+  /zones/edit-secondary-zones:
+    $ref: paths/edit-secondary-zones.yaml
+  /zones/propagation-status:
+    $ref: paths/propagation-status.yaml
+  /zones/{zone}/schedule-immediate-transfer:
+    $ref: paths/zone-schedule-transfer.yaml
+  /zones/{zone}/matching-ds-record-key-tags:
+    $ref: paths/zone-matching-ds-record-key-tags.yaml

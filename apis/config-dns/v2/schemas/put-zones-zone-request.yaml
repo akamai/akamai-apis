@@ -1,22 +1,25 @@
 type: object
-description: |-
+description: |
   An Edge DNS zone. This object contains zone settings, but not record sets.
-  
-x-akamai:
-  file-path: schemas/put-zones-zone-request.yaml
 additionalProperties: false
 required:
 - zone
 - type
+- signAndServe
 properties:
   type:
     type: string
     description: |
-      The zone type. A `PRIMARY` zone's records are stored in the Akamai Portal. A `SECONDARY` zone's records are stored on the customer's nameservers. `ALIAS` zones allow users to duplicate the configuration of an existing zone.
+      The zone type. A `PRIMARY` zone's records are stored in Control Center. A `SECONDARY` zone's records are stored on the customer's name servers. `ALIAS` zones allow users to duplicate the configuration of an existing zone.
     enum:
     - PRIMARY
     - SECONDARY
     - ALIAS
+  category:
+    type: string
+    description: |
+      The zone category.
+    readOnly: true
   comment:
     type: string
     description: |
@@ -29,20 +32,44 @@ properties:
     type: string
     description: |
       Free-form user identifier for this zone, often used by resellers.
+  versionId:
+    type: string
+    description: |
+      The UUID of the most recently activated version.
+    readOnly: true
+  lastActivationDate:
+    type: string
+    description: |
+      Used for primary and secondary zones only. An ISO 8601 timestamp showing when the latest version was activated.
+    readOnly: true
+    format: date-time
+  lastModifiedDate:
+    type: string
+    description: |
+      ISO 8601 timestamp marking the zone's last modification.
+    readOnly: true
+    format: date-time
+  lastModifiedBy:
+    type: string
+    description: |
+      The user that last edited this zone.
+    readOnly: true
   masters:
     type: array
     description: |
-      For `SECONDARY` zones only. The names or addresses of the customer's nameservers from which the zone data should be retrieved.
+      For secondary zones only. The names or addresses of the customer's name servers from which the zone data should be retrieved.
     items:
       type: string
+  multiProviderDnssec:
+    $ref: multi-provider-dnssec.yaml
   signAndServe:
     type: boolean
     description: |
-      Whether DNSSEC Sign&Serve is enabled. Applies to `PRIMARY` and `SECONDARY` zones only.
+      Whether DNSSEC Sign&Serve is enabled. Applies to primary and secondary zones only.
   signAndServeAlgorithm:
     type: string
     description: |
-      The algorithm currently or last used for DNSSEC Sign&Serve. Absent if no algorithm has ever been assigned to this zone.
+      The algorithm currently or last used for DNSSEC Sign&Serve, either `RSA_SHA1`, `RSA_SHA256`, `RSA_SHA512`, `ECDSA_P256_SHA256`, or `ECDSA_P384_SHA384`. Absent if no algorithm has ever been assigned to this zone.
     enum:
     - RSA_SHA1
     - RSA_SHA256
@@ -52,7 +79,9 @@ properties:
   subzoneGrants:
     type: boolean
     description: |
-      Determines if cross-account subzones are enabled. This does not impact the ability to create subzones that you are presently authorized to edit.
+      Determines if cross-account subzones are enabled. This doesn't impact the ability to create subzones that you're presently authorized to edit.
+  outboundZoneTransfer:
+    $ref: outbound-zone-transfer.yaml
   target:
     type: string
     description: |
