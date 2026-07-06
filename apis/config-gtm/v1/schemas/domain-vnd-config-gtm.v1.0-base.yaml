@@ -1,0 +1,125 @@
+type: object
+description: |
+  The basic building block of a traffic management configuration. Each domain object represents a complete GTM domain such as `example.akadns.net`.
+additionalProperties: true
+required:
+- cidrMaps
+- defaultErrorPenalty
+- defaultSslClientCertificate
+- defaultSslClientPrivateKey
+- defaultTimeoutPenalty
+- emailNotificationList
+- geographicMaps
+- lastModified
+- lastModifiedBy
+- loadFeedback
+- loadImbalancePercentage
+- modificationComments
+- name
+- resources
+- type
+properties:
+  name:
+    type: string
+    description: |
+      The full GTM domain name that needs to end in `.akadns.net`, up to 100 characters.
+    minLength: 1
+    maxLength: 100
+  type:
+    type: string
+    description: |
+      Indicates the type of domain available based on your contract. Possible values are: `failover-only`, `static`, `weighted`, `basic`, or `full`.
+    enum:
+    - failover-only
+    - static
+    - weighted
+    - basic
+    - full
+  cidrMaps:
+    type: array
+    description: |
+      The set of CIDR maps assigned to this domain.
+    items:
+      $ref: cidr-dto.yaml
+  defaultErrorPenalty:
+    type: integer
+    default: 75
+    description: |
+      Specifies the download penalty score. If the download encounters an error, the web agent computes a score that's either the download time in seconds or a penalty score. The default penalty is `75`.
+  defaultSslClientCertificate:
+    type: string
+    description: |
+      Specifies an optional Base64-encoded certificate that corresponds with the private key for TLS-based liveness tests (HTTPS, SMTPS, POPS, and TCPS). When the liveness test doesn't contain `sslClientCertificate` and `sslClientPrivateKey` values, use this and the `defaultSslClientPrivateKey` object fields to generate a certificate. In this case, use a separate, throwaway private key when generating a certificate or certificate signing request (CSR). You shouldn't use this key for any other purpose. See also `defaultSslClientPrivateKey` within this object.
+    nullable: true
+  defaultSslClientPrivateKey:
+    type: string
+    description: |
+      Specifies an optional Base64-encoded private key that corresponds with the TLS certificate for TLS-based liveness tests (HTTPS, SMTPS, POPS, and TCPS). See also `defaultSslClientCertificate` within this object.
+    nullable: true
+  defaultTimeoutPenalty:
+    type: integer
+    default: 25
+    description: |
+      Specifies the timeout penalty score. The web agent then computes a score that's either the download time in seconds or a penalty score if the download request times out. The default penalty for a time out is `25`.
+  emailNotificationList:
+    type: array
+    description: |
+      Email addresses to notify when a change is made to the domain.
+    items:
+      type: string
+      format: email
+  lastModified:
+    type: string
+    description: |
+      An ISO 8601 timestamp indicating when the domain was last changed.
+    readOnly: true
+  lastModifiedBy:
+    type: string
+    description: |
+      The email address of the administrator who made the last change to the domain.
+    nullable: true
+    readOnly: true
+    maxLength: 256
+  loadFeedback:
+    type: boolean
+    description: |
+      Indicates whether you're using `resources` to control load balancing.  Resources represent a constraint on how much load a data center can absorb. The value is `true` if you're using load feedback.
+  loadImbalancePercentage:
+    type: number
+    # default: 10.0
+    description: |
+      Indicates the percent of load imbalance factor (LIF) for the domain. It lets GTM exceed the value configured for traffic distribution. For example, if the data center's traffic allocation is 25 percent and the LIF is 1.5, the demand can grow to 37.5 percent (25% &times; 1.5) before the load balancer starts shifting load away from it. If the LIF is `0`, no load imbalance is allowed. However, internally, GTM adds one to the LIF to allow its use as a multiplier. The default LIF is 1.1, which is displayed as `10.0` percent. The value ranges from `0` to `1000000` percent.
+    nullable: true
+    minimum: 0
+    maximum: 1000000
+  modificationComments:
+    type: string
+    description: |
+      A descriptive note about changes to the domain. The maximum is 4000 characters.
+    nullable: true
+    maxLength: 4000
+  resources:
+    type: array
+    description: |
+      The resources in the GTM domain.
+    items:
+      $ref: resource.yaml
+  status:
+    $ref: status.yaml
+  geographicMaps:
+    type: array
+    description: |
+      The set of geographic maps assigned to this domain.
+    items:
+      $ref: geographic-map.yaml
+  deleteRequestId:
+    type: string
+    description: |
+      Unique identifier of the request to delete the domain. This ID can be used to track the status or audit the deletion process.
+    nullable: true
+  links:
+    type: array
+    description: |
+      A URL path that allows direct navigation to the domain.
+    items:
+      $ref: link.yaml

@@ -1,0 +1,134 @@
+title: Property v1.8
+allOf:
+- $ref: property-vnd-config-gtm-nested-not-versioned.v1.0.yaml
+- type: object
+  description: |
+    The entire GTM property configuration.
+  additionalProperties: true
+  required:
+  - type
+  - trafficTargets
+  - livenessTests
+  - handoutLimit
+  properties:
+    type:
+      type: string
+      description: |
+        Specifies the load balancing behavior for the property. Possible values are: `failover`, `geographic`, `cidrmapping`, `weighted-round-robin`, `weighted-hashed`, `weighted-round-robin-load-feedback`, `qtr`, `performance`, `performance-with-load-feedback`, `asmapping`, `static`, or `ranked-failover`. See [API versioning](ref:api-versioning) for more information.
+      enum:
+      - failover
+      - geographic
+      - cidrmapping
+      - weighted-round-robin
+      - weighted-hashed
+      - weighted-round-robin-load-feedback
+      - qtr
+      - performance
+      - performance-with-load-feedback
+      - asmapping
+      - static
+      - ranked-failover
+    livenessTests:
+      type: array
+      description: |
+        Liveness tests, which run periodically to determine whether your servers respond to requests, as discussed in [API concepts](ref:api-concepts).
+      items:
+        $ref: liveness-test-v1.8.yaml
+    trafficTargets:
+      type: array
+      description: |
+        This specifies where to direct data center traffic. For geographic mapped properties, it's always a `cname`. For mirror failover properties, it can be any set of servers. For load balanced properties, this is a set of servers that are all within the same data center. You can assign multiple traffic targets to the same data center.
+      items:
+        $ref: traffic-target-v1.8.yaml
+    minLiveFraction:
+      type: number
+      description: |
+        Specifies what fraction of the servers need to respond to requests so GTM considers the data center up and able to receive traffic. For example, if your data center contains eight servers, and the `minLiveFraction` value is `0.5`, then at least four servers need to respond to requests.  Conversely, if five servers are down, and three servers are up, then GTM considers the entire data center down. Optional when a `minLiveFraction` value exists or not `null`.
+      x-akamai:
+        labels:
+        - v1.3
+      nullable: true
+      minimum: 0
+      maximum: 1
+    handoutLimit:
+      type: integer
+      description: |
+        Indicates the limit for the number of live IPs handed out to a DNS request. The `handoutLimit` applies only if `handoutMode` is set to either `normal` or `persistent` for the property. If applicable, the `handoutLimit` default value is `8` or `null` if not.
+      x-akamai:
+        labels:
+        - v1.3
+      nullable: true
+      minimum: 1
+    ghostDemandReporting:
+      type: boolean
+      description: |
+        Enables reporting of unmet content requests received by edge servers, analyzing demand for unserved content.
+      x-akamai:
+        labels:
+        - v1.3
+    minActiveDatacenterFraction:
+      type: number
+      description: |
+        The fraction of data centers that must be passing their liveness tests in order for the selection of live data centers to occur. For example, if this is set to `0.75` and only half the data centers are passing their liveness tests, then all data centers are handed out regardless of liveness test results. A `null` or `0` value means the feature is disabled and behavior is unchanged. The default value is `null`.
+      x-akamai:
+        labels:
+        - v1.7
+      nullable: true
+      default: null
+      minimum: 0
+      maximum: 1
+    stateChangeNotificationWebhook:
+      type: object
+      description: |
+        Configures a webhook to receive notifications when the property's state changes. Set to `null` to disable notifications.
+      x-akamai:
+        labels:
+        - v1.7
+      nullable: true
+      additionalProperties: false
+      required:
+      - url
+      properties:
+        url:
+          type: string
+          description: |
+            The URL to send the notification to. Only `http`, `https`, and `mailto` schemes are allowed. If the host is a name, it must resolve to a routable address. If the host is an IP address, it must be routable.
+          maxLength: 1024
+        format:
+          type: string
+          description: |
+            The format of the notification payload. Possible values are: `json-compact`, `json-pretty`, or `slack-mrkdwn`. The default value is `json-compact`.
+          default: json-compact
+          enum:
+          - json-compact
+          - json-pretty
+          - slack-mrkdwn
+    staticRRSets:
+      type: array
+      description: |
+        Static recordsets. Use this instead of `mxRecords` and `staticTTL`, which were deprecated in version 1.4.
+      x-akamai:
+        labels:
+        - v1.4
+      items:
+        type: object
+        additionalProperties: false
+        required:
+        - type
+        - ttl
+        - rdata
+        properties:
+          type:
+            type: string
+            description: |
+              The record type.
+          ttl:
+            type: integer
+            description: |
+              The number of seconds that this record should live in a resolver's cache before being refetched.
+          rdata:
+            type: array
+            description: |
+              An array of data strings, representing multiple records within a set. The format of the `rdata` strings are dependent on the `type` of this record.
+            items:
+              type: string

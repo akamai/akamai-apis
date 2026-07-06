@@ -1,0 +1,133 @@
+type: object
+description: |
+  Liveness tests, which run periodically to determine whether your servers respond to requests, as discussed in [API concepts](ref:api-concepts).
+additionalProperties: true
+required:
+- disableNonstandardPortWarning
+- hostHeader
+- httpError3xx
+- httpError4xx
+- httpError5xx
+- name
+- requestString
+- responseString
+- sslClientCertificate
+- sslClientPrivateKey
+- testInterval
+- testObject
+- testObjectPassword
+- testObjectPort
+- testObjectProtocol
+- testObjectUsername
+- testTimeout
+properties:
+  name:
+    type: string
+    description: |
+      A descriptive name for the liveness test.
+    minLength: 1
+    maxLength: 128
+  disableNonstandardPortWarning:
+    type: boolean
+    description: |
+      Disables warnings when non-standard ports are used. For example, GTM doesn't emit a warning to specify port 1234 when the `testObjectProtocol` is `http`, as HTTP typically uses port 80. The default is `false`.
+    default: false
+  hostHeader:
+    type: string
+    description: |
+      Sent if the `testObjectProtocol` is `http` or `https`, up to 256 non-space, alphanumeric characters. Obsolete as of version 1.4. You should use `hostHeaders` instead.
+    nullable: true
+    minLength: 1
+    maxLength: 256
+  httpError3xx:
+    type: boolean
+    description: |
+      Treats a 3xx HTTP response as a failure if the `testObjectProtocol` is `http`, `https`, or `ftp`.
+  httpError4xx:
+    type: boolean
+    description: |
+      Treats a 4xx HTTP response as a failure if the `testObjectProtocol` is `http`, `https`, or `ftp`.
+  httpError5xx:
+    type: boolean
+    description: |
+      Treats a 5xx HTTP response as a failure if the `testObjectProtocol` is `http`, `https`, or `ftp`.
+  requestString:
+    type: string
+    description: |
+      Specifies a request string. Required if `testObjectProtocol` is `tcp` or `tcps`. The value is a maximum of 4000 non-space, alphanumeric characters.
+    nullable: true
+    minLength: 1
+    maxLength: 4000
+  responseString:
+    type: string
+    description: |
+      Specifies a response string. Required if `testObjectProtocol` is `tcp` or `tcps`. Maximum 4000 characters.
+    nullable: true
+    maxLength: 4000
+  sslClientCertificate:
+    type: string
+    description: |
+      Indicates a Base64-encoded certificate. SSL client certificates are available for `livenessTests` that use secure protocols.
+    nullable: true
+  sslClientPrivateKey:
+    type: string
+    description: |
+      Indicates a Base64-encoded private key. The private key used to generate or request a certificate for `livenessTests` can't have a passphrase nor be used for any other purpose.
+    nullable: true
+  testInterval:
+    type: integer
+    description: |
+      Indicates the interval at which the liveness test is run, in seconds. Requires a minimum of 10 seconds.
+    minimum: 10
+  testObject:
+    type: string
+    description: |
+      Specifies the static text that acts as a stand-in for the data that you're sending on the network.
+    nullable: true
+    minLength: 1
+    maxLength: 256
+  testObjectPassword:
+    type: string
+    description: |
+      Specifies the test object's password. It's required if `testObjectProtocol` is `ftp`. Maximum is 128 characters.
+    nullable: true
+    minLength: 1
+    maxLength: 128
+  testObjectPort:
+    type: integer
+    description: |
+      Specifies the port number for the `testObject`. Value from `1` to `65535`.
+    minimum: 1
+    maximum: 65535
+  testObjectProtocol:
+    type: string
+    description: |
+      Specifies the test protocol. Possible values are: `DNS`, `DOH`, `DOT`, `HTTP`, `HTTPS`, `HTTP2`, `HTTP2S`, `FTP`, `POP`, `POPS`, `SMTP`, `SMTPS`, `TCP`, or `TCPS`. To enable `testObjectProtocol` for `DNS`, `DOH`, or `DOT` requires `application/vnd.config-gtm.v1.3+json`.
+    enum:
+    - DNS
+    - DOH
+    - DOT
+    - HTTP
+    - HTTPS
+    - HTTP2
+    - HTTP2S
+    - FTP
+    - POP
+    - POPS
+    - SMTP
+    - SMTPS
+    - TCP
+    - TCPS
+  testObjectUsername:
+    type: string
+    description: |
+      A descriptive name for the `testObject`. If `testObjectProtocol` is `ftp`, then you need to specify a `testObjectUsername`. The value is a maximum of 256 non-space, alphanumeric characters.
+    nullable: true
+    minLength: 1
+    maxLength: 512
+  testTimeout:
+    type: number
+    description: |
+      Specifies the duration of the liveness test before it fails. The range is from `0.001` to `60` seconds.
+    minimum: 0.001
+    maximum: 60
