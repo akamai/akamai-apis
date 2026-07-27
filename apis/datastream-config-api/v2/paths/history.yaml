@@ -1,0 +1,26 @@
+x-akamai:
+  path-info: /log/streams/{streamId}/history
+parameters:
+- $ref: ../parameters/stream-id-path.yaml
+get:
+  operationId: get-stream-history
+  summary: View history
+  tags:
+  - History
+  description: |
+    Returns details about all versions of a given stream. It helps you track changes between the versions of the stream, including monitored properties, logged data set fields, and log delivery destinations. Optionally, set both the `startVersion` and `endVersion` parameters to get details on all stream versions for a given range. For example, setting `startVersion` to `1` and `endVersion` to `3` returns details on the `1`, `2`, and `3` versions of the stream.
+  x-akamai:
+    supports-account-switch-key: false
+  parameters:
+  - $ref: ../parameters/history-start-version-query.yaml
+  - $ref: ../parameters/history-end-version-query.yaml
+  responses:
+    200:
+      description: |
+        The response returns details of all versions of the stream.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/example-stream-histories.json
+          schema:
+            $ref: ../schemas/stream-histories.yaml
