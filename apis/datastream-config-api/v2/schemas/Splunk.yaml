@@ -1,9 +1,6 @@
 type: object
-description: |-
+description: |
   Provides detailed information about the Splunk destination that you can use in your stream. Note that DataStream 2 currently supports only endpoint URLs ending with `collector/raw`. If you choose this destination, the stream pushes a sample POST request to the endpoint to validate write access. For `STRUCTURED` logs, the data is sent as `0,access_validation`, and for `JSON` it's `{"access_validation":true}`. You can see the data only if the destination validates, and you can access the destination storage.
-  
-x-akamai:
-  file-path: schemas/Splunk.yaml
 title: SPLUNK
 additionalProperties: false
 required:
@@ -12,31 +9,6 @@ required:
 - endpoint
 - eventCollectorToken
 properties:
-  caCert:
-    type: string
-    description: |
-      The certification authority (CA) certificate used to verify the origin server's certificate. If the certificate is not signed by a well-known certification authority, enter the CA certificate in the PEM format for verification. If you set this member, the `mTlsEnabled` property replaces it in the response as `true`.
-  clientCert:
-    type: string
-    description: |
-      The digital certificate in the PEM format that authenticates requests to your destination. If you want to use mutual authentication, you need to provide both the client certificate and the client key.
-  clientKey:
-    type: string
-    description: |
-      The private key in the non-encrypted PKCS8 format that authenticates with the back-end server. If you want to use mutual authentication, you need to provide both the client certificate and the client key.
-  compressLogs:
-    type: boolean
-    description: |
-      Enables gzip compression for a log file sent to a destination. If not set, this member's value is `true `by default.
-    default: true
-  customHeaderName:
-    type: string
-    description: |
-      A human-readable name for the request's custom header, containing only alphanumeric, dash, and underscore characters. For details, see the additional options discussed in [Additional options](https://techdocs.akamai.com/datastream2/v2/docs/stream-splunk#additional-options).
-  customHeaderValue:
-    type: string
-    description: |
-      The custom header's contents passed with the request that contains information about the client connection. For details, see the additional options discussed in [Additional options](https://techdocs.akamai.com/datastream2/v2/docs/stream-splunk#additional-options).
   destinationType:
     type: string
     description: |
@@ -47,6 +19,11 @@ properties:
     type: string
     description: |
       The name of the destination.
+  compressLogs:
+    type: boolean
+    description: |
+      Enables gzip compression for a log file sent to a destination. If not set, this field's value is `true `by default.
+    default: true
   endpoint:
     type: string
     description: |
@@ -59,3 +36,23 @@ properties:
     type: string
     description: |
       The hostname that verifies the server's certificate and matches the Subject Alternative Names (SANs) in the certificate. If not provided, DataStream fetches the hostname from the endpoint URL.
+  caCert:
+    type: string
+    description: |
+      The certification authority (CA) certificate used to verify the origin server's certificate. If the certificate is not signed by a well-known certification authority, enter the CA certificate in the PEM format for verification. If you set this field, the `mTlsEnabled` property replaces it in the response as `true`.
+  clientCert:
+    type: string
+    description: |
+      The digital certificate in the PEM format that authenticates requests to your destination. If you want to use mutual authentication, you need to provide both the client certificate and the client key.
+  clientKey:
+    type: string
+    description: |
+      The private key in the non-encrypted PKCS8 format that authenticates with the back-end server. If you want to use mutual authentication, you need to provide both the client certificate and the client key.
+  customHeaderName:
+    type: string
+    description: |
+      A human-readable name for the request's custom header, containing only alphanumeric, dash, and underscore characters. Provide a `customHeaderValue` along with this field. For details, see the additional options discussed in [Additional options](https://techdocs.akamai.com/datastream2/v2/docs/stream-splunk#additional-options).
+  customHeaderValue:
+    type: string
+    description: |
+      The custom header's contents passed with the request that contains information about the client connection. Provide a `customHeaderName` along with this field. For details, see the additional options discussed in [Additional options](https://techdocs.akamai.com/datastream2/v2/docs/stream-splunk#additional-options).

@@ -1,0 +1,31 @@
+type: object
+description: |
+  Provides the information you need to specify when patching a stream configuration using [JSON Patch](http://jsonpatch.com/) semantics.
+additionalProperties: false
+required:
+- op
+- path
+- value
+properties:
+  value:
+    description: |
+      Specifies the data to replace at the `path` location, any type of data including objects and arrays. Pass complete objects to avoid overwriting current details with default values for omitted fields.
+    oneOf:
+    - $ref: save-stream-request.yaml#/properties/streamName
+    - $ref: save-stream-request.yaml#/properties/contractId
+    - $ref: save-stream-request.yaml#/properties/properties
+    - $ref: save-stream-request.yaml#/properties/datasetFields
+    - $ref: save-stream-request.yaml#/properties/destination
+    - $ref: save-stream-request.yaml#/properties/deliveryConfiguration
+    - $ref: save-stream-request.yaml#/properties/notificationEmails
+    - $ref: save-stream-request.yaml#/properties/collectMidgress
+  op:
+    type: string
+    description: |
+      The JSON patch operation type. `REPLACE` is the only supported operation.
+    enum:
+    - REPLACE
+  path:
+    type: string
+    description: |
+      A JSON Pointer that identifies the values you want to replace in the stream configuration. This field's value is `/` followed by any of the configuration object's top-level field name. See [Edit a stream](ref:put-stream) for available fields.

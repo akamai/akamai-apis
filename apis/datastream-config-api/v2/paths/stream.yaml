@@ -1,0 +1,154 @@
+x-akamai:
+  path-info: /log/streams/{streamId}
+parameters:
+- $ref: ../parameters/stream-id-path.yaml
+get:
+  operationId: get-stream
+  summary: Get a stream
+  tags:
+  - Streams
+  description: |
+    Returns information about any version of a stream, including details about the monitored properties, logged data set fields, and log delivery destination. If you omit the `version` query parameter, this operation returns the last version of the stream.
+  x-akamai:
+    supports-account-switch-key: false
+  parameters:
+  - $ref: ../parameters/version-query.yaml
+  responses:
+    200:
+      description: |
+        The response returns stream version details.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/stream-detail-example.json
+          schema:
+            $ref: ../schemas/stream-detail.yaml
+put:
+  operationId: put-stream
+  summary: Edit a stream
+  tags:
+  - Streams
+  description: |
+    Updates the latest version of a stream. Running this operation creates a version of the stream that replaces the existing one. Note that only active streams collect and send logs to their destinations. You need to set the `activate` parameter to `true` while patching active streams, and optionally for inactive streams if you want to activate them upon request. See [Version management](ref:version-management) and [Activate a stream](ref:post-stream-activate).
+  x-akamai:
+    supports-account-switch-key: false
+  parameters:
+  - $ref: ../parameters/activate-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        examples:
+          azure:
+            summary: Azure
+            value:
+              $ref: ../examples/put-body-azure.json
+          datadog:
+            summary: Datadog
+            value:
+              $ref: ../examples/put-body-datadog.json
+          elasticsearch:
+            summary: Elasticsearch
+            value:
+              $ref: ../examples/put-body-elasticsearch.json
+          google-cloud-storage:
+            summary: Google Cloud Storage
+            value:
+              $ref: ../examples/put-body-gcs.json
+          https:
+            summary: HTTPS
+            value:
+              $ref: ../examples/put-body-https.json
+          loggly:
+            summary: Loggly
+            value:
+              $ref: ../examples/put-body-loggly.json
+          newrelic:
+            summary: Newrelic
+            value:
+              $ref: ../examples/put-body-newrelic.json
+          oracle-cloud-storage:
+            summary: Oracle Cloud Storage
+            value:
+              $ref: ../examples/put-body-oracle.json
+          s3:
+            summary: S3
+            value:
+              $ref: ../examples/put-body-s3.json
+          splunk:
+            summary: Splunk
+            value:
+              $ref: ../examples/put-body-splunk.json
+          sumo-logic:
+            summary: Sumo Logic
+            value:
+              $ref: ../examples/put-body-sumologic.json
+        schema:
+          $ref: ../schemas/edit-stream-request.yaml
+  responses:
+    200:
+      description: |
+        The response confirms the stream has been updated and returns its details.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/stream-detail-example.json
+          schema:
+            $ref: ../schemas/stream-detail.yaml
+patch:
+  operationId: patch-stream
+  summary: Patch a stream
+  tags:
+  - Streams
+  description: |
+    Updates selected details of an existing stream. Running this operation using [JSON Patch](http://jsonpatch.com) syntax creates a stream version that replaces the current one. Currently you can patch a stream using only the `REPLACE` operation. When updating configuration objects such as `destination` or `deliveryConfiguration`, pass a complete object to avoid overwriting current details with default values for omitted fields such as `tags`, `uploadFilePrefix`, and `uploadFileSuffix`. Note that only active streams collect and send logs to their destinations. You need to set the `activate` parameter to `true` while patching active streams, and optionally for inactive streams if you want to activate them upon request. See [Patching streams](ref:patching-streams) for details.
+  x-akamai:
+    supports-account-switch-key: false
+  parameters:
+  - $ref: ../parameters/activate-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/json-patch+json:
+        examples:
+          update-data-set-fields-and-stream-name:
+            summary: Update data set fields and stream name
+            value:
+              $ref: ../examples/patch-dataset-example.json
+          update-delivery-configuration:
+            summary: Update delivery configuration
+            value:
+              $ref: ../examples/patch-delivery-config-example.json
+          update-destination:
+            summary: Update destination
+            value:
+              $ref: ../examples/patch-destination-example.json
+          update-properties-and-notification-emails:
+            summary: Update properties and notification emails
+            value:
+              $ref: ../examples/patch-properties-example.json
+        schema:
+          $ref: ../schemas/patch-stream-request.yaml
+  responses:
+    200:
+      description: |
+        The response confirms the stream has been patched and returns its details.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/stream-detail-example.json
+          schema:
+            $ref: ../schemas/stream-detail.yaml
+delete:
+  operationId: delete-stream
+  summary: Delete a stream
+  tags:
+  - Streams
+  description: |
+    Deletes a deactivated stream. Deleting a stream means that you can't activate this stream again, and that you stop receiving logs for the properties that this stream monitors. Before deleting any stream, you need to deactivate it first. See [Deactivate a stream](ref:post-stream-activate).
+  x-akamai:
+    supports-account-switch-key: false
+  responses:
+    204:
+      description: |
+        The response confirms the stream has been deleted.

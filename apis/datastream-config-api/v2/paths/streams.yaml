@@ -1,0 +1,96 @@
+x-akamai:
+  path-info: /log/streams
+post:
+  operationId: post-stream
+  summary: Create a stream
+  tags:
+  - Streams
+  description: |
+    Creates a stream configuration. Within a stream configuration, you can select properties to monitor in the stream, data set fields to collect in logs, and a destination to send these log files to. Get the `streamId` value from the response to use in the `https://{hostname}/datastream-config-api/v2/log/streams/{streamId}` endpoint URL. Apart from the log and delivery frequency configurations, you can decide whether to activate the stream on making the request or later using the `activate` parameter. Note that only active streams collect and send logs to their destinations. See [Activate a stream](ref:post-stream-activate).
+  x-akamai:
+    supports-account-switch-key: false
+  parameters:
+  - $ref: ../parameters/activate-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        examples:
+          azure:
+            summary: Azure
+            value:
+              $ref: ../examples/post-body-azure.json
+          datadog:
+            summary: Datadog
+            value:
+              $ref: ../examples/post-body-datadog.json
+          elasticsearch:
+            summary: Elasticsearch
+            value:
+              $ref: ../examples/post-body-elasticsearch.json
+          google-cloud-storage:
+            summary: Google Cloud Storage
+            value:
+              $ref: ../examples/post-body-gcs.json
+          https:
+            summary: HTTPS
+            value:
+              $ref: ../examples/post-body-https.json
+          loggly:
+            summary: Loggly
+            value:
+              $ref: ../examples/post-body-loggly.json
+          newrelic:
+            summary: Newrelic
+            value:
+              $ref: ../examples/post-body-newrelic.json
+          oracle-cloud-storage:
+            summary: Oracle Cloud Storage
+            value:
+              $ref: ../examples/post-body-oracle.json
+          s3:
+            summary: S3
+            value:
+              $ref: ../examples/post-body-s3.json
+          splunk:
+            summary: Splunk
+            value:
+              $ref: ../examples/post-body-splunk.json
+          sumo-logic:
+            summary: Sumo Logic
+            value:
+              $ref: ../examples/post-body-sumologic.json
+        schema:
+          $ref: ../schemas/save-stream-request.yaml
+  responses:
+    201:
+      description: |
+        The response confirms the stream has been created and returns its details.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/stream-detail-example.json
+          schema:
+            $ref: ../schemas/stream-detail.yaml
+get:
+  operationId: get-streams
+  summary: List streams
+  tags:
+  - Streams
+  description: |
+    Returns the latest versions of the stream configurations for all groups within your account. You can use the `groupId` parameter to view the latest versions of all configurations in a specific group, and up to five property names as the `propertyName` parameter to get streams for specific properties.
+  x-akamai:
+    supports-account-switch-key: false
+  parameters:
+  - $ref: ../parameters/group-id-query.yaml
+  - $ref: ../parameters/property-name-query.yaml
+  responses:
+    200:
+      description: |
+        The response lists streams.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/streams-example.json
+          schema:
+            $ref: ../schemas/streams.yaml
