@@ -1,9 +1,6 @@
 type: object
-description: |-
-  If you use domain validation, the CA that issued the certificate validates that you have control of the domain. CPS supports DV certificates issued by Let's Encrypt, an automated, and open CA, run for public benefit. Domain validation history allows you to view the history and errors associated with your Akamai managed DV certificates. These certificates expire in 90 days.
-  
-x-akamai:
-  file-path: schemas/dv-history.v1.yaml
+description: |
+  If you use domain validation, the CA that issued the certificate validates that you have control of the domain. CPS supports DV certificates issued by Let's Encrypt, an automated, and open CA, run for public benefit. Use the domain validation history to view your Akamai managed DV certificates' history and errors. These certificates expire in 90 days.
 additionalProperties: false
 required:
 - results
@@ -12,6 +9,7 @@ properties:
     type: array
     description: |
       Domain Validation (DV) challenges are used by Let's Encrypt to verify domain control.
+    minItems: 0
     items:
       type: object
       additionalProperties: false
@@ -23,10 +21,12 @@ properties:
           type: string
           description: |
             The domain being validated.
+          minLength: 1
         domainHistory:
           type: array
           description: |
             A history record for a single domain.
+          minItems: 0
           items:
             type: object
             additionalProperties: false
@@ -38,6 +38,7 @@ properties:
                 type: array
                 description: |
                   Challenges used for validation.
+                minItems: 0
                 items:
                   type: object
                   additionalProperties: false
@@ -48,147 +49,192 @@ properties:
                       type: string
                       description: |
                         Challenge type. Current types include `http-01` and `dns-01`.
+                      minLength: 1
                     error:
                       type: string
                       description: |
                         Validation status for this challenge.
                       nullable: true
+                      minLength: 1
                     fullPath:
                       type: string
                       description: |
                         Path where Let's Encrypt respects and expects to find `token` as content.
+                      minLength: 1
                     redirectFullPath:
                       type: string
                       description: |
-                        The URL where Akamai publishes `responseBody` for Let's Encrypt to validate `http-01` challenges. The client can configure a redirect at `fullPath` to redirect requests to this `redirectFullPath` URL, keeping in mind that the token may change over time.
+                        The URL where Akamai publishes `responseBody` for Let's Encrypt to validate `http-01` challenges. The client can configure a redirect at `fullPath` to redirect requests to this URL, keeping in mind that the token may change over time.
+                      minLength: 0
                     responseBody:
                       type: string
                       description: |
                         The data Let's Encrypt expects to find served at `fullPath` URL.
+                      minLength: 1
                     status:
                       type: string
                       description: |
                         The domain validation status. Status include `valid` and `pending`.
+                      minLength: 1
                     token:
                       type: string
                       description: |
                         The validation token issued by Let's Encrypt.
+                      minLength: 1
                     validationRecords:
                       type: array
                       description: |
                         The records that you send to Let's Encrypt to validate your domain.
+                      minItems: 0
                       items:
                         type: object
                         additionalProperties: false
+                        required:
+                        - authorities
+                        - hostname
+                        - port
+                        - resolvedIp
+                        - triedIp
+                        - url
+                        - usedIp
                         properties:
-                          authorities:
-                            type: array
-                            description: |
-                              Validation authorities.
-                            items:
-                              type: string
-                          hostname:
-                            type: string
-                            description: |
-                              The name being validated.
-                          port:
-                            type: string
-                            description: |
-                              Port used for validation.
-                          resolvedIp:
-                            type: array
-                            description: |
-                              IPs resolved for name being validated.
-                            items:
-                              type: string
-                          triedIp:
-                            type: string
-                            description: |
-                              IP from `resolvedIp` tried for this validation.
                           url:
                             type: string
                             description: |
                               URL attempted validated.
+                            minLength: 1
+                          authorities:
+                            type: array
+                            description: |
+                              Validation authorities.
+                            minItems: 0
+                            items:
+                              type: string
+                              minLength: 1
+                          hostname:
+                            type: string
+                            description: |
+                              The name being validated.
+                            minLength: 1
+                          port:
+                            type: string
+                            description: |
+                              Port used for validation.
+                            minLength: 1
+                          resolvedIp:
+                            type: array
+                            description: |
+                              IPs resolved for name being validated.
+                            minItems: 0
+                            items:
+                              type: string
+                              minLength: 1
+                          triedIp:
+                            type: string
+                            description: |
+                              IP from `resolvedIp` tried for this validation.
+                            minLength: 1
                           usedIp:
                             type: string
                             description: |
                               IP from `resolvedIp` used for this validation.
+                            minLength: 1
               domain:
                 type: string
                 description: |
                   Domain which is being validated.
+                minLength: 1
               error:
                 type: string
                 description: |
                   Current validation status for domains not yet validated.
                 nullable: true
+                minLength: 1
               expires:
                 type: string
                 description: |
-                  Timestamp when this token or validation will expire. Sample 2017-12-05T18:57:07z.
+                  Timestamp when this token or validation expires. Sample 2017-12-05T18:57:07z.
+                minLength: 1
               fullPath:
                 type: string
                 description: |
                   The URL that Let's Encrypt returns for the `token`.
+                minLength: 1
               redirectFullPath:
                 type: string
                 description: |
                   The URL that Let's Encrypt returns. This is the path to the server to which you want to redirect and find the token.
+                minLength: 1
               requestTimestamp:
                 type: string
                 description: |
                   The timestamp when the domain was successfully requested. Sample 2014-08-12T18:57:07z.
+                minLength: 1
               responseBody:
                 type: string
                 description: |
                   The data Let's Encrypt expects to find served at `fullPath` URL.
+                minLength: 1
               status:
                 type: string
                 description: |
                   The domain validation status.
+                minLength: 1
               token:
                 type: string
                 description: |
                   The validation token issued by Let's Encrypt.
+                minLength: 1
               validatedTimestamp:
                 type: string
                 description: |
                   The timestamp when the domain was successfully validated. Sample 2014-08-12T18:57:07z.
+                minLength: 1
               validationRecords:
                 type: array
                 description: |
                   Validation attempts and status.
+                minItems: 0
                 items:
                   type: object
-                  description: |
-                    Validation attempt.
                   additionalProperties: false
+                  required:
+                  - hostname
+                  - port
+                  - resolvedIp
+                  - url
+                  - usedIp
                   properties:
-                    hostname:
-                      type: string
-                      description: |
-                        The records that Let's Encrypt returns to you to validate your domain.
-                    port:
-                      type: string
-                      description: |
-                        Port used for validation.
-                    resolvedIp:
-                      type: array
-                      description: |
-                        IPs resolved for name being validated.
-                      items:
-                        type: string
-                        description: |
-                          IP address.
                     url:
                       type: string
                       description: |
                         URL attempted validated.
+                      minLength: 1
+                    hostname:
+                      type: string
+                      description: |
+                        The records that Let's Encrypt returns to you to validate your domain.
+                      minLength: 1
+                    port:
+                      type: string
+                      description: |
+                        Port used for validation.
+                      minLength: 1
+                    resolvedIp:
+                      type: array
+                      description: |
+                        IPs resolved for name being validated.
+                      minItems: 0
+                      items:
+                        type: string
+                        minLength: 1
                     usedIp:
                       type: string
                       description: |
                         IP from `resolvedIp` used for this validation.
+                      minLength: 1
               validationStatus:
                 type: string
                 description: |
                   Status of the domain validation process.
+                minLength: 1
