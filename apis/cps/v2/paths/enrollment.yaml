@@ -1,0 +1,95 @@
+x-akamai:
+  path-info: /enrollments/{enrollmentId}
+parameters:
+- $ref: ../parameters/enrollment-id-path.yaml
+get:
+  operationId: get-enrollment
+  summary: Get an enrollment
+  tags:
+  - Enrollments
+  description: |
+    Gets an enrollment.
+  responses:
+    200:
+      description: |
+        The response reflects the enrollment's details.
+      content:
+        application/vnd.akamai.cps.enrollment.v12+json:
+          example:
+            $ref: ../examples/enrollment.v12.json
+          schema:
+            $ref: ../schemas/enrollment.v12.yaml
+put:
+  operationId: put-enrollment
+  summary: Update an enrollment
+  tags:
+  - Enrollments
+  description: |
+    Updates an enrollment with changes. Response type varies depending on the type and impact of change. For example, changing SANs list may return HTTP 202 Accepted since the operation requires a new certificate and network deployment operations, and thus can't be completed without a change. On the contrary, for example a Technical Contact name change may return HTTP 200 OK assuming there are no active change and when the operation does not require a new certificate.
+
+    Note that `fipsMode` requires that TLS 1.2, TLS 1.3, or both are enabled on the certificate. You can’t list these TLS versions as disabled in the `disallowedTlsVersions` deployment object. When `fipsMode` is enabled, you need to use an active (non-deprecated) cipher profile for both `mustHaveCiphers` and `preferredCiphers`. For details, see [Update SSL/TLS cipher profiles](doc:cipher-profiles).
+  parameters:
+  - $ref: ../parameters/allow-cancel-pending-changes-query.yaml
+  - $ref: ../parameters/allow-staging-bypass-query.yaml
+  - $ref: ../parameters/deploy-not-after-query.yaml
+  - $ref: ../parameters/deploy-not-before-query.yaml
+  - $ref: ../parameters/force-renewal-query.yaml
+  - $ref: ../parameters/renewal-date-check-override-query.yaml
+  - $ref: ../parameters/allow-missing-certificate-addition-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/vnd.akamai.cps.enrollment.v12+json:
+        example:
+          $ref: ../examples/enrollment.v12.json
+        schema:
+          $ref: ../schemas/enrollment.v12.yaml
+  responses:
+    200:
+      description: |
+        The response reflects the modified enrollment.
+      content:
+        application/vnd.akamai.cps.enrollment-status.v1+json:
+          example:
+            $ref: ../examples/enrollment-status.v1.json
+          schema:
+            $ref: ../schemas/enrollment-status.v1.yaml
+    202:
+      description: |
+        The response reflects the resource was accepted.
+      content:
+        application/vnd.akamai.cps.enrollment-status.v1+json:
+          example:
+            $ref: ../examples/enrollment-status.v1.json
+          schema:
+            $ref: ../schemas/enrollment-status.v1.yaml
+delete:
+  operationId: delete-enrollment
+  summary: Remove an enrollment
+  tags:
+  - Enrollments
+  description: |
+    Removes an enrollment from CPS. The response code varies depending on the state of the enrollment. Deleting an enrollment in the future, or deleting when the enrollment has a certificate deployed to the network, may result in a 202 response. Deleting an enrollment that hasn't yet deployed any certificate to the network responds immediately with a 200 code.
+  parameters:
+  - $ref: ../parameters/allow-cancel-pending-changes-query.yaml
+  - $ref: ../parameters/deploy-not-after-query.yaml
+  - $ref: ../parameters/deploy-not-before-query.yaml
+  responses:
+    200:
+      description: |
+        The response reflects the enrollment was removed from CPS.
+      content:
+        application/vnd.akamai.cps.enrollment-status.v1+json:
+          example:
+            $ref: ../examples/enrollment-status.v1.json
+          schema:
+            $ref: ../schemas/enrollment-status.v1.yaml
+    202:
+      description: |
+        The response reflects the resource was accepted.
+      content:
+        application/vnd.akamai.cps.enrollment-status.v1+json:
+          example:
+            $ref: ../examples/enrollment-status.v1.json
+          schema:
+            $ref: ../schemas/enrollment-status.v1.yaml

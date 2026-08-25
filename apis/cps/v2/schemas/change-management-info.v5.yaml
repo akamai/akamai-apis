@@ -1,9 +1,6 @@
 type: object
-description: |-
+description: |
   After you create an enrollment, you can have CPS halt deployment when the certificate becomes available, so that you can test and view the certificate on a staging server prior to deployment in the production network. If you do not want CPS to automatically deploy the certificate to the production network after it receives the signed certificate from the CA, you can turn change management on for the enrollment. This stops CPS from deploying the certificate to the network until you acknowledge that you are ready to deploy the certificate.
-  
-x-akamai:
-  file-path: schemas/change-management-info.v5.yaml
 additionalProperties: false
 required:
 - pendingState
@@ -12,8 +9,9 @@ properties:
   acknowledgementDeadline:
     type: string
     description: |
-      The timestamp of the deadline for the user to acknowledge the change management validation result, before CPS automatically proceeds with attempting to deploy the pending state to the live network. The format of the timestamp is ISO-8601. This field is only populated when there's an existing certificate on network for the current enrollment, it's `null` otherwise.
+      ISO 8601 timestamp for the user's deadline to acknowledge the change management validation result, before CPS attempts to deploy the pending state to the live network. The value is `null` if there's no existing certificate on the network for the current enrollment.
     nullable: true
+    minLength: 1
   pendingState:
     type: object
     description: |
@@ -27,6 +25,7 @@ properties:
         type: array
         description: |
           The snapshot of the pending certificate for the enrollment when this change takes effect.
+        minItems: 0
         items:
           type: object
           additionalProperties: false
@@ -38,7 +37,7 @@ properties:
             certificateType:
               type: string
               description: |
-                Either `san`, `single`, `wildcard`, `wildcard-san`, or `third-party`.
+                Determines the certificate's validation type and number of domains the certificate supports. This is either `san`, `single`, `wildcard`, `wildcard-san`, or `third-party`.
               enum:
               - san
               - single
@@ -49,29 +48,35 @@ properties:
               type: string
               description: |
                 Displays the contents of the certificate.
+              minLength: 1
             keyAlgorithm:
               type: string
               description: |
-                Displays the key algorithm of the certificate.
+                Displays the key algorithm of the certificate. This is either `ECDSA` or `RSA`.
               enum:
               - ECDSA
               - RSA
             ocspStapled:
               type: boolean
               description: |
-                OCSP Stapling improves performance by including a valid OCSP response in every TLS handshake. We recommend all customers enable this feature.
+                OCSP Stapling improves performance by including a valid OCSP response in every TLS handshake. You should enable this feature.
             ocspUris:
               type: array
               description: |
                 URI used for OCSP stapling validation.
               nullable: true
+              minItems: 0
               items:
                 type: string
+                minLength: 1
             signatureAlgorithm:
               type: string
               description: |
-                Displays the signature algorithm.
+                Displays the signature algorithm. Either `SHA-1` or `SHA-256`.
               nullable: true
+              enum:
+              - SHA-1
+              - SHA-256
       pendingNetworkConfiguration:
         type: object
         description: |
@@ -87,8 +92,10 @@ properties:
             type: array
             description: |
               Disallowed TLS protocols.
+            minItems: 0
             items:
               type: string
+              minLength: 1
           dnsNameSettings:
             type: object
             description: |
@@ -101,34 +108,40 @@ properties:
               cloneDnsNames:
                 type: boolean
                 description: |
-                  All certificate SANs are included in `dnsNames` when `cloneDnsNames` is true.
+                  When `true`, all certificate SANs are included in `dnsNames`.
               dnsNames:
                 type: array
                 description: |
                   Names served by SNI-only enabled enrollments.
+                nullable: true
+                minItems: 0
                 items:
                   type: string
+                  minLength: 1
           mustHaveCiphers:
             type: string
             description: |
               Ciphers included for your enrollment while deploying it on the network.
+            minLength: 1
           networkType:
             type: string
             description: |
               Enrollment network type.
             nullable: true
+            minLength: 1
           ocspStapling:
             type: string
             description: |
-              OCSP stapling setting for the deployment.
+              Indicates the OCSP stapling setting for the deployment. Use `on` to enable OCSP stapling, `off` to disable it, or `not-set` to ignore it.
             enum:
-            - on
-            - off
+            - "on"
+            - "off"
             - not-set
           preferredCiphers:
             type: string
             description: |
               Ciphers included for your enrollment while deploying it on the network.
+            minLength: 1
           quicEnabled:
             type: boolean
             description: |
@@ -140,14 +153,18 @@ properties:
   validationResult:
     type: object
     description: |
-      The hash of `validationResult`. It always has a value, even when `validationResult` is `null`. The hash result of the validation result as of the time of the most recent validation check. It is used in the `change-management-ack` API call to further specify the state of the change that is being acknowledged. We recommend you use the `change-management-info` API call, review the `validationResult` with its hash, and then acknowledge change-management using the same hash retrieved when running the Change Management Acknowledgment operation.
+      Provides information about the hash's most recent validation check, indicating the change's current job state. This object appears in the response, even when its value is `null`. Before you run the [Update a change](ref:post-change-allowed-input-param) operation, review the change's validation results and resolve any issues.
     additionalProperties: false
+    required:
+    - errors
+    - warnings
     properties:
       errors:
         type: array
         description: |
           Validation errors of the current job state. Errors prevent a change from proceeding until you resolve them. They are optional and only appear if there are any errors.
         nullable: true
+        minItems: 0
         items:
           type: object
           additionalProperties: false
@@ -159,14 +176,17 @@ properties:
               type: string
               description: |
                 The description of the message.
+              minLength: 1
             messageCode:
               type: string
               description: |
                 The unique code of the message.
+              minLength: 1
       warnings:
         type: array
         description: |
           Validation warnings of the current job state. Warnings suspend the execution of a change. You can acknowledge or deny warnings. If you acknowledge them, the change proceeds with its operation. They are optional and only appear if there are any warnings.
+        minItems: 0
         items:
           type: object
           additionalProperties: false
@@ -178,11 +198,14 @@ properties:
               type: string
               description: |
                 The description of the message.
+              minLength: 1
             messageCode:
               type: string
               description: |
                 The unique code of the message.
+              minLength: 1
   validationResultHash:
     type: string
     description: |
       The hash of `validationResult`.
+    minLength: 1

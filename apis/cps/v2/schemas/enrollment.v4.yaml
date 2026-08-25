@@ -1,9 +1,6 @@
 type: object
-description: |-
+description: |
   An enrollment displays all the information about the process that your certificate goes through from the time you request it, through renewal, and as you obtain subsequent versions. CPS is a certificate life cycle management tool. Once you obtain a certificate, you use it until it expires, in most cases a year from the date the CA issued the certificate. CPS automatically starts the renewal process 90 days before the old certificate expires. It then automatically deploys the renewed certificate when it receives it from the CA.
-  
-x-akamai:
-  file-path: schemas/enrollment.v4.yaml
 additionalProperties: false
 required:
 - adminContact
@@ -82,7 +79,7 @@ properties:
   certificateType:
     type: string
     description: |
-      Either `san`, `single`, `wildcard`, `wildcard-san`, or `third-party`. See [Enrollment.validationType Values](ref:get-enrollment) for details.
+      Specifies the kind of certificate in the enrollment. Either san`, `single`, `wildcard`, `wildcard-san`, or `third-party. For details, see `validationType` in the [Enrollment object's versioned schema members](ref:enrollment#versioned-schema-members).
     enum:
     - san
     - single
@@ -108,7 +105,7 @@ properties:
       cn:
         type: string
         description: |
-          The common name (CN) you want to use for the certificate in the Common Name field. The domain name you specify here must be owned or have legal rights to use the domain by the company you enter in the Organization field in this tab. The company that owns the domain name must be a legally incorporated entity and be active and in good standing.
+          The domain name to use for the certificate, also known as the _common name_. Note that the organization specified as the `o` needs to own or have legal rights to this domain name.
       l:
         type: string
         description: |
@@ -125,7 +122,7 @@ properties:
       sans:
         type: array
         description: |
-          Additional common names (CN) to create a Subject Alternative Names (SAN) list.
+          Additional `cn` values to create a Subject Alternative Names (SAN) list. If there are no SANs, the response shows an empty list. Removing a SAN list from an enrollment may disrupt your service for TLS connections.
         items:
           type: string
       st:
@@ -154,7 +151,7 @@ properties:
       geography:
         type: string
         description: |
-          Set to the enum `core` to specify worldwide (includes China and Russia). Set to the enum `china+core` to specify worldwide and  China. Set to the enum `russia+core` to specify worldwide and Russia. You can only use this setting to include China and Russia if your Akamai contract specifies your ability to do so and you have approval from the Chinese and Russian government.
+          Specifies the type of network where you want to deploy your certificate.  Use `core` to deploy across most of the world except for specially licensed areas.  Use `china+core` to include China, or `russia+core` to include Russia. Any non-`core` deployment needs to be enabled on your contract based on approval from the Chinese or Russian governments.
         enum:
         - core
         - china+core
@@ -162,11 +159,11 @@ properties:
       mustHaveCiphers:
         type: string
         description: |
-          Ciphers that you definitely want to include for your enrollment while deploying it on the network. Defaults to `ak-akamai-default` when it is not set. For more information on cipher profiles, see [Akamai community](https://community.akamai.com/customers/s/article/SSL-TLS-Cipher-Profiles-for-Akamai-Secure-CDNrxdxm).
+          Ciphers that you definitely want to include for your enrollment while deploying it on the network. Defaults to `ak-akamai-default` when it is not set. For more information on cipher profiles, see [Update SSL/TLS cipher profiles](doc:cipher-profiles).
       preferredCiphers:
         type: string
         description: |
-          Ciphers that you preferably want to include for your enrollment while deploying it on the network. Defaults to `ak-akamai-default` when it is not set. For more information on cipher profiles, see [Akamai community](https://community.akamai.com/customers/s/article/SSL-TLS-Cipher-Profiles-for-Akamai-Secure-CDNrxdxm).
+          Ciphers that you preferably want to include for your enrollment while deploying it on the network. Defaults to `ak-akamai-default` when it is not set. For more information on cipher profiles, see [Update SSL/TLS cipher profiles](doc:cipher-profiles).
       secureNetwork:
         type: string
         description: |
@@ -251,7 +248,7 @@ properties:
   signatureAlgorithm:
     type: string
     description: |
-      The SHA (Secure Hash Algorithm) function. NSA designed this function to produce a hash of certificate contents, which is used in a digital signature.  Specify either `SHA-1` or `SHA-256`. We recommend you use SHA-256.
+      Identifies the SHA (Secure Hash Algorithm) function. The NSA (National Security Agency) designed this function to produce a hash of certificate contents, for use in a digital signature. This is either `SHA-1` for a 160-bit (20-byte) hash or `SHA-256` for a 256-bit (32-byte) hash. To ensure a secure hash function, use `SHA-256`.
     nullable: true
     enum:
     - SHA-1
@@ -331,11 +328,11 @@ properties:
       excludeSans:
         type: boolean
         description: |
-          If this is true, then the SANs in the enrollment do not appear in the CSR that CPS submits to the CA.
+          When `true`, the SANs in the enrollment don't appear in the CSR that CPS submits to the CA.
   validationType:
     type: string
     description: |
-      There are three types of validation. Domain Validation (DV), which is the lowest level of validation. The CA validates that you have control of the domain. CPS supports DV certificates issued by Let's Encrypt, a free, automated, and open CA, run for public benefit. Organization Validation (OV), which is the next level of validation. The CA validates that you have control of the domain. Extended Validation (EV), which is the highest level of validation in which you must have signed letters and notaries sent to the CA before signing. You can also specify third party as a type of validation, if you want to use a signed certificate obtained by you from a CA not supported by CPS.  Either `dv`, `ev`, `ov`, or `third-party`.
+      CPS supports several types of validation: `dv`, `ev`, `ov`, or `third-party`. Domain Validation (`dv`) offers the lowest level of validation. The CA validates that you have control of the domain. CPS supports DV certificates issued by Let's Encrypt, a free, automated, and open CA, run for public benefit. Organization Validation (`ov`) offers the next level of validation. The CA validates that you have control of the domain. Extended Validation (`ev`) offers the highest level of validation, in which you need to have signed letters and notaries sent to the CA before signing. You can also specify `third-party` if you want to use a signed certificate you obtain from a CA that CPS doesn't directly support.
     enum:
     - dv
     - ev

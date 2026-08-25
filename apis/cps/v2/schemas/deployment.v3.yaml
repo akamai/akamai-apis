@@ -1,9 +1,6 @@
 type: object
-description: |-
+description: |
   Deploys your certificate to a network.
-  
-x-akamai:
-  file-path: schemas/deployment.v3.yaml
 additionalProperties: false
 required:
 - certificate
@@ -15,22 +12,32 @@ properties:
     description: |
       The certificate text.
     nullable: true
+    minLength: 1
   networkConfiguration:
     type: object
     description: |
       Information about how you want to deploy your certificate.
     additionalProperties: false
+    required:
+    - disallowedTlsVersions
+    - geography
+    - mustHaveCiphers
+    - preferredCiphers
+    - secureNetwork
+    - sni
     properties:
       disallowedTlsVersions:
         type: array
         description: |
           Disallowed TLS versions.
+        minItems: 0
         items:
           type: string
+          minLength: 1
       geography:
         type: string
         description: |
-          Type of the network that you want to deploy your certificate. `core` is worldwide (includes China and Russia). `china+core` is worldwide and China. `russia+core` is worldwide and Russia.
+          Specifies the type of network where you want to deploy your certificate. Use `core` to deploy across most of the world except for specially licensed areas.  Use `china+core` to include China, or `russia+core` to include Russia. Any non-`core` deployment needs to be enabled on your contract based on approval from the Chinese or Russian governments.
         enum:
         - core
         - china+core
@@ -39,14 +46,17 @@ properties:
         type: string
         description: |
           Ciphers that you definitely want to include for your enrollment while deploying it on the network. Defaults to `ak-akamai-default` when it is not set.
+        minLength: 1
       preferredCiphers:
         type: string
         description: |
           Ciphers that you preferably want to include for your enrollment while deploying it on the network. Defaults to `ak-akamai-default` when it is not set.
+        minLength: 1
       secureNetwork:
         type: string
         description: |
           The type of deployment network you want to use. Specify Standard TLS as the enum `standard-tls` to deploy your certificate to Akamai's standard secure network. It is not PCI compliant. Specify Enhanced TLS as the enum `enhanced-tls` to deploy your certificate to Akamai's more secure network with PCI compliance capability.
+        minLength: 1
       sni:
         type: object
         description: |
@@ -64,12 +74,14 @@ properties:
             type: array
             description: |
               Names served by SNI-only enabled enrollments.
+            minItems: 0
             items:
               type: string
+              minLength: 1
   signatureAlgorithm:
     type: string
     description: |
-      The SHA (Secure Hash Algorithm) function. Current values include `SHA-1` & `SHA-256`.
+      Identifies the SHA (Secure Hash Algorithm) function. The NSA (National Security Agency) designed this function to produce a hash of certificate contents, which is used in a digital signature. This is either `SHA-1` for a 160-bit (20-byte) hash or `SHA-256` for a 256-bit (32-byte) hash. To ensure a secure hash function, use `SHA-256`.
     nullable: true
     enum:
     - SHA-1
@@ -79,3 +91,4 @@ properties:
     description: |
       The trust chain text. You may have any number of trust chains.
     nullable: true
+    minLength: 1
