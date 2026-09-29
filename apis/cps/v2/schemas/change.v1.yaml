@@ -1,9 +1,6 @@
 type: object
-description: |-
+description: |
   Any change that you want to make to the network deployment of an enrollment.
-  
-x-akamai:
-  file-path: schemas/change.v1.yaml
 additionalProperties: false
 required:
 - allowedInput
@@ -12,7 +9,8 @@ properties:
   allowedInput:
     type: array
     description: |
-      The resource locations (path) of data inputs allowed by this change. These could be required or optional for this change to proceed.
+      The resource path locations of data inputs allowed by this change. These could be required or optional for this change to proceed.
+    minItems: 0
     items:
       type: object
       additionalProperties: false
@@ -26,18 +24,21 @@ properties:
           type: string
           description: |
             The resource location for the description of the allowed input.
+          minLength: 1
         type:
           type: string
           description: |
-            The type input. For more information see the [Overview](ref:overview).
+            The type input. For more information, see the [Change control](ref:change-input-content-type-mapping).
+          minLength: 1
         requiredToProceed:
           type: boolean
           description: |
-            If true, this input is required for the Change to proceed.
+            If `true`, this input is required for the change to proceed.
         update:
           type: string
           description: |
             The resource location that you can use to make a call for this input.
+          minLength: 1
   statusInfo:
     type: object
     description: |
@@ -52,23 +53,29 @@ properties:
       description:
         type: string
         description: |
-          A description of the current status of the change.
+          A description of the change's current status.
+        minLength: 1
       deploymentSchedule:
         type: object
         description: |
           The schedule for when you want this change deploy.
         additionalProperties: false
+        required:
+        - notAfter
+        - notBefore
         properties:
           notAfter:
             type: string
             description: |
               Do not deploy the certificate after this date.
             nullable: true
+            minLength: 1
           notBefore:
             type: string
             description: |
               Do not deploy the certificate before this date.
             nullable: true
+            minLength: 1
       error:
         type: object
         description: |
@@ -84,18 +91,21 @@ properties:
             type: string
             description: |
               The detailed description for this error.
+            minLength: 1
           code:
             type: string
             description: |
               The unique identifier code for this error.
+            minLength: 1
           timestamp:
             type: string
             description: |
               The timestamp of the occurrence for this error.
+            minLength: 1
       state:
         type: string
         description: |
-          The change request's state. Possible values are: `new`, `running`, `awaiting-input`, `error`, `suspended`, `cancelled`, and `completed`. A value of `new` means the certificate is processed but the renewal process didn't start. `awaiting-input` means the process is waiting on a user input, for example the approval or denial of a change management item. `suspended` indicates the process didn't complete. A value of `cancelled` means that the process has been cancelled permanently.
+          The change request's state. Possible values are: `new`, `running`, `awaiting-input`, `error`, `suspended`, `cancelled`, and `completed`. A value of `new` means the certificate is processed but the renewal process didn't start. An `awaiting-input` value means the process is waiting on a user input, for example the approval or denial of a change management item. A `suspended` value indicates the process didn't complete. A value of `cancelled` means that the process has been cancelled permanently.
         enum:
         - new
         - running
@@ -108,3 +118,4 @@ properties:
         type: string
         description: |
           The general status of the change. This is a high level of description of the status for the change. [Status values and descriptions](ref:status-values-and-descriptions)
+        minLength: 1
