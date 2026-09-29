@@ -1,9 +1,6 @@
 type: object
-description: |-
+description: |
   You can view the current and previous certificates as part of the certificate history. You retrieve each iteration in the history of your certificate by certificate type, and also view the status, expiration date, and certificate authority for the certificate. You can take actions on each activity of the certificate, including, view the certificate and view the trust chain for the certificate.
-  
-x-akamai:
-  file-path: schemas/certificate-history.v2.yaml
 additionalProperties: false
 required:
 - certificates
@@ -11,7 +8,8 @@ properties:
   certificates:
     type: array
     description: |
-      The type of certificate. This could be a single certificate, which associates a property hostname with a single name. It could be a wildcard certificate, which secures an entire property hostname. It could be a SAN certificate, which uses Subject Alternative Names and allows you to secure up to 100 property hostnames with one certificate. It could also be a wildcard SAN certificate, which is a SAN certificate that can have up to 100 SANs with 25 wildcard entries in the SAN list. Lastly, you can have a third-party certificate, which is a signed certificate obtained by you from an external certificate authority.
+      The type of certificate. This could be a single certificate, which associates a property hostname with a single name. It could be a wildcard certificate, which secures an entire property hostname. It could be a SAN certificate, in which case you can use Subject Alternative Names to secure up to 100 property hostnames with one certificate. It could also be a wildcard SAN certificate, which is a SAN certificate that can have up to 100 SANs with 25 wildcard entries in the SAN list. Or you can have a third-party certificate, a signed certificate you obtain from an external certificate authority.
+    minItems: 0
     items:
       type: object
       additionalProperties: false
@@ -26,7 +24,7 @@ properties:
         type:
           type: string
           description: |
-            Either `san`, `single`, `wildcard`, `wildcard-san`, or `third-party`.
+            Determines the certificate's validation type and number of domains the certificate supports. This is either `san`, `single`, `wildcard`, `wildcard-san`, or `third-party`.
           enum:
           - san
           - single
@@ -43,32 +41,40 @@ properties:
         geography:
           type: string
           description: |
-            Lists where you can deploy the certificate. If it is `standard-worldwide`, you can deploy everywhere except China. If it is `worldwide`, you can deploy everywhere including China. If it is `worldwide-russia`, you can deploy everywhere including Russia. Geography is dependent on your network type. If your network type is `standard-tls`, then you can deploy in Russia and `worldwide-russia` is the same as `standard-worldwide`.
+            Specifies the type of network where you want to deploy your certificate.  Use `core` to deploy across most of the world except for specially licensed areas.  Use `china+core` to include China, or `russia+core` to include Russia. Any non-`core` deployment needs to be enabled on your contract based on approval from the Chinese or Russian governments.
           enum:
-          - standard-worldwide
-          - worldwide
-          - worldwide-russia
+          - core
+          - china+core
+          - russia+core
         multiStackedCertificates:
           type: array
           description: |
-            Enables an ECDSA certificate in addition to an RSA certificate. CPS automatically performs all certificate operations on both certificates, and will use the best certificate for each client connection to your secure properties. Customers who are pinning certificates will need to pin both the RSA and the ECDSA certificate. We recommend all customers enable this feature. If its Third Party Dual Stack Certificate, fallback RSA certificate information will be present in this.
+            Enables an ECDSA certificate in addition to an RSA certificate. CPS automatically performs all certificate operations on both certificates, and uses the best certificate for each client connection to your secure properties. Customers pinning certificates need to pin both the RSA and the ECDSA certificate. You should enable this feature. If its Third Party Dual Stack Certificate, fallback RSA certificate information is present in this.
+          minItems: 0
           items:
             type: object
             additionalProperties: false
+            required:
+            - certificate
+            - expiry
+            - keyAlgorithm
+            - trustChain
             properties:
               certificate:
                 type: string
                 description: |
                   The certificate text for the multi-stacked certificate.
                 nullable: true
+                minLength: 1
               expiry:
                 type: string
                 description: |
                   The expiration date for the multi-stacked certificate.
+                minLength: 1
               keyAlgorithm:
                 type: string
                 description: |
-                  The key algorithm for the multi-stacked certificate, either `ECDSA` or `RSA`.
+                  The key algorithm for the multi-stacked certificate. This is either `ECDSA` or `RSA`.
                 enum:
                 - ECDSA
                 - RSA
@@ -77,11 +83,17 @@ properties:
                 description: |
                   The trust chain for the multi-stacked certificate.
                 nullable: true
+                minLength: 1
         primaryCertificate:
           type: object
           description: |
             Primary certificate for Enrollment.
           additionalProperties: false
+          required:
+          - certificate
+          - expiry
+          - keyAlgorithm
+          - trustChain
           nullable: true
           properties:
             certificate:
@@ -89,14 +101,16 @@ properties:
               description: |
                 The primary certificate in the multi-stacked certificate.
               nullable: true
+              minLength: 1
             expiry:
               type: string
               description: |
                 The expiration date for the primary certificate.
+              minLength: 1
             keyAlgorithm:
               type: string
               description: |
-                The key algorithm for the primary certificate.
+                The key algorithm for the primary certificate. This is either `ECDSA` or `RSA`.
               enum:
               - ECDSA
               - RSA
@@ -105,16 +119,20 @@ properties:
               description: |
                 The trust chain for the primary certificate.
               nullable: true
+              minLength: 1
         ra:
           type: string
           description: |
             The certificate registration authority of the primary certificate.
+          minLength: 1
         slots:
           type: array
           description: |
             The slot numbers of the primary certificate.
+          minItems: 0
           items:
             type: integer
+            minimum: 0
         stagingStatus:
           type: string
           description: |

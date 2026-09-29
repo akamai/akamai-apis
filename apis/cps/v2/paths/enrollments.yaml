@@ -1,0 +1,50 @@
+x-akamai:
+  path-info: /enrollments
+post:
+  operationId: post-enrollment
+  summary: Create an enrollment
+  tags:
+  - Enrollments
+  description: |
+    Creates an enrollment that contains all the information about the process that your certificate goes through from the time you request it, through renewal, and as you obtain subsequent versions. To select a Client TLS Renegotiation option, use the CPS user interface. For details, see [Edit deployment settings](doc:view-edit-network-deploy-settings). Note that you can create one certificate every five minutes, per account. Creating a certificate for the same contract within the five-minute interval results in a 409 response.
+  parameters:
+  - $ref: ../parameters/contract-id-query.yaml
+  - $ref: ../parameters/deploy-not-after-query.yaml
+  - $ref: ../parameters/deploy-not-before-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/vnd.akamai.cps.enrollment.v12+json:
+        example:
+          $ref: ../examples/enrollment.v12.json
+        schema:
+          $ref: ../schemas/enrollment.v12.yaml
+  responses:
+    202:
+      description: |
+        The response reflects the enrollment and pending changes.
+      content:
+        application/vnd.akamai.cps.enrollment-status.v1+json:
+          example:
+            $ref: ../examples/enrollment-status.v1.json
+          schema:
+            $ref: ../schemas/enrollment-status.v1.yaml
+get:
+  operationId: get-enrollments
+  summary: List enrollments
+  tags:
+  - Enrollments
+  description: |
+    A list of the names of each enrollment.
+  parameters:
+  - $ref: ../parameters/contract-id-query.yaml
+  responses:
+    200:
+      description: |
+        The response reflects the enrollments.
+      content:
+        application/vnd.akamai.cps.enrollments.v11+json:
+          example:
+            $ref: ../examples/enrollments.v11.json
+          schema:
+            $ref: ../schemas/enrollments.v11.yaml

@@ -1,9 +1,6 @@
 type: object
-description: |-
-  You can view all the changes associated with a certificate as part of the change history. This is the equivalent of viewing the certificate activity in the CPS UI. You can view each change to your certificate, the status of your change, the last updated date, the date the change was created, and who created the change. You can also take actions on each change of the certificate, including viewing the CSR for the certificate, viewing the certificate, and viewing the trust chain for the certificate.
-  
-x-akamai:
-  file-path: schemas/change-history.v5.yaml
+description: |
+  The change history includes all changes to a certificate. This is the equivalent of viewing the certificate activity in the CPS UI. You can view each change to your certificate, the status of your change, the last updated date, the date the change was created, and who created the change. You can also take actions on each change of the certificate, including viewing the CSR for the certificate, viewing the certificate, and viewing the trust chain for the certificate.
 additionalProperties: false
 required:
 - changes
@@ -12,6 +9,7 @@ properties:
     type: array
     description: |
       Change history items.
+    minItems: 0
     items:
       type: object
       additionalProperties: false
@@ -38,15 +36,18 @@ properties:
           type: string
           description: |
             A description of each change.
+          minLength: 1
         businessCaseId:
           type: string
           description: |
-            SalesForce ID associated with this change.
+            The company name appears to be **Salesforce**.
           nullable: true
+          minLength: 1
         createdBy:
           type: string
           description: |
             The username of the user who initiated the change.
+          minLength: 1
         createdOn:
           type: string
           description: |
@@ -57,37 +58,53 @@ properties:
           description: |
             A date and timestamp when the change was last updated.
           nullable: true
+          minLength: 1
         multiStackedCertificates:
           type: array
           description: |
             Dual-stacked certificates.
+          minItems: 0
           items:
             type: object
             additionalProperties: false
+            required:
+            - certificate
+            - csr
+            - keyAlgorithm
+            - trustChain
             properties:
               certificate:
                 type: string
                 description: |
                   Certificate text.
                 nullable: true
+                minLength: 1
               csr:
                 type: string
                 description: |
                   Certificate CSR.
+                minLength: 1
               keyAlgorithm:
                 type: string
                 description: |
                   Key algorithm of the certificate.
+                minLength: 1
               trustChain:
                 type: string
                 description: |
                   Certificate trust chain.
                 nullable: true
+                minLength: 1
         primaryCertificate:
           type: object
           description: |
             Primary Certificate.
           additionalProperties: false
+          required:
+          - certificate
+          - csr
+          - keyAlgorithm
+          - trustChain
           nullable: true
           properties:
             certificate:
@@ -95,34 +112,42 @@ properties:
               description: |
                 Certificate text.
               nullable: true
+              minLength: 1
             csr:
               type: string
               description: |
                 Certificate CSR.
+              minLength: 1
             keyAlgorithm:
               type: string
               description: |
                 Key algorithm of the certificate.
+              minLength: 1
             trustChain:
               type: string
               description: |
                 Certificate trust chain.
               nullable: true
+              minLength: 1
         primaryCertificateOrderDetails:
           type: object
           description: |
             CA order details for this Change.
           additionalProperties: false
+          required:
+          - orderId
           nullable: true
           properties:
             orderId:
               type: string
               description: |
                 Order ID.
+              minLength: 1
         ra:
           type: string
           description: |
             The certificate authority that issued the certificate.
+          minLength: 1
         status:
           type: string
           description: |

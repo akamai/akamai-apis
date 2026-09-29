@@ -1,0 +1,409 @@
+type: object
+description: |
+  An enrollment with the information about your certificates. CPS is a certificate life cycle management tool. Once you obtain a certificate, you use it until it expires, in most cases a year from the date the CA issued the certificate. CPS automatically starts the renewal process 90 days before the old certificate expires. It then automatically deploys the renewed certificate when it receives it from the CA.
+additionalProperties: false
+properties:
+  id:
+    type: integer
+    description: |
+      The unique identifier of the enrollment.
+    nullable: false
+    minimum: 1
+  stagingSlots:
+    type: array
+    description: |
+      Slots where the certificate deploys on the staging network.
+    nullable: true
+    minItems: 0
+    items:
+      type: integer
+      minimum: 0
+  assignedSlots:
+    type: array
+    description: |
+      Slots where the certificate is either deployed or about to deploy.
+    nullable: true
+    minItems: 0
+    items:
+      type: integer
+      minimum: 0
+  productionSlots:
+    type: array
+    description: |
+      Slots where the certificate is deployed on the production network.
+    nullable: true
+    minItems: 0
+    items:
+      type: integer
+      minimum: 0
+  location:
+    type: string
+    description: |
+      The URL path where you can GET the enrollment.
+    nullable: true
+    minLength: 1
+  enableMultiStackedCertificates:
+    type: boolean
+    description: |
+      Enable dual-stacked certificate deployment for this enrollment. The next renewal includes the change. Note that this value only appears for third-party certificates.
+  certificateType:
+    type: string
+    description: |
+      Specifies the kind of certificate in the enrollment. Either `san`, `single`, `wildcard`, `wildcard-san`, or `third-party`. For details, see `validationType` in the [Enrollment object's versioned schema members](ref:enrollment#versioned-schema-members).
+    enum:
+    - san
+    - single
+    - wildcard
+    - wildcard-san
+    - third-party
+  csr:
+    type: object
+    description: |
+      When you create an enrollment, CPS also generates a certificate signing request (CSR). CPS signs the CSR with the private key. The CSR contains all the information the CA needs to issue your certificate.
+    additionalProperties: false
+    properties:
+      cn:
+        type: string
+        description: |
+          The domain name to use for the certificate, also known as the _common name_. Note that the organization specified as the `o` needs to own or have legal rights to this domain name.
+        minLength: 1
+      sans:
+        type: array
+        description: |
+          Additional `cn` values to create a Subject Alternative Names (SAN) list.
+        nullable: true
+        minItems: 0
+        items:
+          type: string
+          minLength: 1
+  pendingChanges:
+    type: array
+    description: |
+      Currently pending changes. The last item in the array is the most recent change.
+    nullable: true
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        changeType:
+          type: string
+          description: |
+            Indicates the certificate's pending change action. This is either `new-certificate`, `modify-certificate`, `modify-san`, or `renewal`.
+          nullable: true
+          enum:
+          - new-certificate
+          - modify-certificate
+          - modify-san
+          - renewal
+        location:
+          type: string
+          description: |
+            URL to fetch related change information.
+          minLength: 1
+  production:
+    type: object
+    description: |
+      Production deployment information.
+    additionalProperties: false
+    properties:
+      location:
+        type: string
+        description: |
+          The URL path where you can GET the production deployment.
+        nullable: true
+        minLength: 1
+      networkConfiguration:
+        type: object
+        description: |
+          Network configuration properties.
+        additionalProperties: false
+        properties:
+          disallowedTlsVersions:
+            type: array
+            description: |
+              Disallowed TLS protocols.
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          dnsNames:
+            type: array
+            description: |
+              Names served by SNI-only enabled enrollments.
+            nullable: true
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          geography:
+            type: string
+            description: |
+              Specifies the type of network where you want to deploy your certificate.  Use `core` to deploy across most of the world except for specially licensed areas.  Use `china+core` to include China, or `russia+core` to include Russia. Any non-`core` deployment needs to be enabled on your contract based on approval from the Chinese or Russian governments.
+            enum:
+            - core
+            - china+core
+            - russia+core
+          mustHaveCiphers:
+            type: string
+            description: |
+              Ciphers that you definitely want to include for your enrollment while deploying it on the network. For more information on cipher profiles, see [Update SSL/TLS cipher profiles](doc:cipher-profiles).
+            minLength: 1
+          ocspStapling:
+            type: string
+            description: |
+              Indicates the OCSP stapling setting for the deployment. Use `on` to enable OCSP stapling, `off` to disable it, or `not-set` to ignore it.
+            enum:
+            - "on"
+            - "off"
+            - not-set
+          preferredCiphers:
+            type: string
+            description: |
+              Ciphers that you preferably want to include for your enrollment while deploying it on the network. For more information on cipher profiles, see [Update SSL/TLS cipher profiles](doc:cipher-profiles).
+            minLength: 1
+          quicEnabled:
+            type: boolean
+            description: |
+              QUIC transport layer network protocol.
+          secureNetwork:
+            type: string
+            description: |
+              Identifies the type of deployment network. An `enhanced-tls` value means Akamai's more secure network with PCI compliance capability, while `standard-tls` means Akamai's standard secure network.
+            enum:
+            - enhanced-tls
+            - standard-tls
+          sniOnly:
+            type: boolean
+            description: |
+              Server Name Indication (SNI) is an extension of the Transport Layer Security (TLS) networking protocol. It allows a server to present many certificates on the same IP address. All modern web browsers support the SNI extension. If you have the same SAN on two or more certificates with the SNI-only option set, Akamai may serve traffic using any certificate which matches the requested SNI hostname. You should avoid any certificates with overlapping SAN names when using SNI-only.
+      primaryCertificate:
+        type: object
+        description: |
+          Primary certificate for Enrollment.
+        additionalProperties: false
+        properties:
+          serial:
+            type: string
+            description: |
+              Serial number that uniquely identifies each certificate.
+            nullable: true
+            minLength: 1
+          sha256Fingerprint:
+            type: string
+            description: |
+              A digital fingerprint, formatted as 32 pairs of hexadecimal digits separated by ':'.
+            minLength: 1
+          expiry:
+            type: string
+            description: |
+              The expiration date for the certificate.
+            format: date-time
+          keyAlgorithm:
+            type: string
+            description: |
+              The key algorithm of the certificate. This is either `ECDSA` or `RSA`.
+            enum:
+            - ECDSA
+            - RSA
+          signatureAlgorithm:
+            type: string
+            description: |
+              Indicates the SHA (Secure Hash Algorithm) function. You can use either `SHA-1` for a 160-bit (20-byte) hash or `SHA-256` for a 256-bit (32-byte) hash.
+            nullable: true
+            enum:
+            - SHA-1
+            - SHA-256
+      multiStackedCertificates:
+        type: array
+        description: |
+          Dual-stacked certificates today include an ECDSA certificate in addition to an RSA certificate. Deployments may include many dual-stacked certificates.
+        minItems: 0
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            serial:
+              type: string
+              description: |
+                Serial number that uniquely identifies each certificate.
+              nullable: true
+              minLength: 1
+            sha256Fingerprint:
+              type: string
+              description: |
+                A digital fingerprint, formatted as 32 pairs of hexadecimal digits separated by ':'.
+              minLength: 1
+            expiry:
+              type: string
+              description: |
+                The expiration date for the certificate.
+              minLength: 1
+            keyAlgorithm:
+              type: string
+              description: |
+                The key algorithm of the certificate. This is either `ECDSA` or `RSA`.
+              enum:
+              - ECDSA
+              - RSA
+            signatureAlgorithm:
+              type: string
+              description: |
+                Indicates the SHA (Secure Hash Algorithm) function. You can use either `SHA-1` for a 160-bit (20-byte) hash or `SHA-256` for a 256-bit (32-byte) hash.
+              nullable: true
+              enum:
+              - SHA-1
+              - SHA-256
+  staging:
+    type: object
+    description: |
+      Staging deployment information.
+    additionalProperties: false
+    properties:
+      location:
+        type: string
+        description: |
+          The URL path where you can GET the staging deployment.
+        nullable: true
+        minLength: 1
+      networkConfiguration:
+        type: object
+        description: |
+          Network configuration properties.
+        additionalProperties: false
+        properties:
+          disallowedTlsVersions:
+            type: array
+            description: |
+              Disallowed TLS protocols.
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          dnsNames:
+            type: array
+            description: |
+              Names served by SNI-only enabled enrollments.
+            nullable: true
+            minItems: 0
+            items:
+              type: string
+              minLength: 1
+          geography:
+            type: string
+            description: |
+              Specifies the type of network where you want to deploy your certificate.  Use `core` to deploy across most of the world except for specially licensed areas.  Use `china+core` to include China, or `russia+core` to include Russia. Any non-`core` deployment needs to be enabled on your contract based on approval from the Chinese or Russian governments.
+            enum:
+            - core
+            - china+core
+            - russia+core
+          mustHaveCiphers:
+            type: string
+            description: |
+              Ciphers that you definitely want to include for your enrollment while deploying it on the network. For more information on cipher profiles, see [Update SSL/TLS cipher profiles](doc:cipher-profiles).
+            minLength: 1
+          ocspStapling:
+            type: string
+            description: |
+              Indicates the OCSP stapling setting for the deployment. Use `on` to enable OCSP stapling, `off` to disable it, or `not-set` to ignore it.
+            enum:
+            - "on"
+            - "off"
+            - not-set
+          preferredCiphers:
+            type: string
+            description: |
+              Ciphers that you preferably want to include for your enrollment while deploying it on the network. For more information on cipher profiles, see [Update SSL/TLS cipher profiles](doc:cipher-profiles).
+            minLength: 1
+          quicEnabled:
+            type: boolean
+            description: |
+              QUIC transport layer network protocol.
+          secureNetwork:
+            type: string
+            description: |
+              Identifies the type of deployment network. An `enhanced-tls` value means Akamai's more secure network with PCI compliance capability, while `standard-tls` means Akamai's standard secure network.
+            enum:
+            - enhanced-tls
+            - standard-tls
+          sniOnly:
+            type: boolean
+            description: |
+              Server Name Indication (SNI) is an extension of the Transport Layer Security (TLS) networking protocol. It allows a server to present many certificates on the same IP address. All modern web browsers support the SNI extension. If you have the same SAN on two or more certificates with the SNI-only option set, Akamai may serve traffic using any certificate that matches the requested SNI hostname. You should avoid any certificates with overlapping SAN names when using SNI-only.
+      primaryCertificate:
+        type: object
+        description: |
+          Primary certificate for the enrollment.
+        additionalProperties: false
+        properties:
+          serial:
+            type: string
+            description: |
+              Serial number that uniquely identifies each certificate.
+            nullable: true
+            minLength: 1
+          sha256Fingerprint:
+            type: string
+            description: |
+              A digital fingerprint, formatted as 32 pairs of hexadecimal digits separated by ':'.
+            minLength: 1
+          expiry:
+            type: string
+            description: |
+              The expiration date for the certificate.
+            minLength: 1
+          keyAlgorithm:
+            type: string
+            description: |
+              The key algorithm of the certificate. This is either `ECDSA` or `RSA`.
+            enum:
+            - ECDSA
+            - RSA
+          signatureAlgorithm:
+            type: string
+            description: |
+              Indicates the SHA (Secure Hash Algorithm) function. You can use either `SHA-1` for a 160-bit (20-byte) hash or `SHA-256` for a 256-bit (32-byte) hash.
+            nullable: true
+            enum:
+            - SHA-1
+            - SHA-256
+      multiStackedCertificates:
+        type: array
+        description: |
+          Dual-stacked certificates today include an ECDSA certificate in addition to an RSA certificate. Deployment may include many dual-stacked certificates.
+        minItems: 0
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            serial:
+              type: string
+              description: |
+                Serial number that uniquely identifies each certificate.
+              nullable: true
+              minLength: 1
+            sha256Fingerprint:
+              type: string
+              description: |
+                A digital fingerprint, formatted as 32 pairs of hexadecimal digits separated by ':'.
+              minLength: 1
+            expiry:
+              type: string
+              description: |
+                The expiration date for the certificate.
+              minLength: 1
+            keyAlgorithm:
+              type: string
+              description: |
+                The key algorithm of the certificate. This is either `ECDSA` or `RSA`.
+              enum:
+              - ECDSA
+              - RSA
+            signatureAlgorithm:
+              type: string
+              description: |
+                Indicates the SHA (Secure Hash Algorithm) function. You can use either `SHA-1` for a 160-bit (20-byte) hash or `SHA-256` for a 256-bit (32-byte) hash.
+              nullable: true
+              enum:
+              - SHA-1
+              - SHA-256
