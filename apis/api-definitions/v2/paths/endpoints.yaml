@@ -1,0 +1,74 @@
+x-akamai:
+  path-info: /endpoints
+post:
+  operationId: post-endpoints
+  summary: Register an endpoint
+  tags:
+  - Endpoints
+  description: |
+    Creates the first version of an API endpoint configuration. You can specify the new endpoint's full set of resources. Alternatively, you can create them later either by modifying the endpoint object, or separately with the [Create a resource](ref:post-resource) operation. The endpoint's name needs to be unique within an account.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/api-endpoint-with-resource-dto-post-example.json
+        schema:
+          $ref: ../schemas/api-endpoint-with-resource-dto-recurse-request.yaml
+  responses:
+    201:
+      description: |
+        New resource successfully created.
+      headers:
+        Location:
+          description: |
+            Relative URL for the created API endpoint.
+          schema:
+            type: string
+      content:
+        application/json:
+          example:
+            $ref: ../examples/api-endpoint-with-resource-dto-postresult-example.json
+          schema:
+            $ref: ../schemas/api-endpoint-with-resource-dto-recurse-response.yaml
+    400:
+      description: |
+        [Bad request](ref:400). Invalid data input.
+      $ref: ../errors/400.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to the contract and group.
+      $ref: ../errors/403.yaml
+get:
+  operationId: get-endpoints
+  summary: List endpoints
+  tags:
+  - Endpoints
+  description: |
+    Lists the available API endpoints, with results optionally paginated, sorted, and filtered. If no endpoints are available, the operation responds with an empty array.
+  parameters:
+  - $ref: ../parameters/pii-query.yaml
+  - $ref: ../parameters/page-query.yaml
+  - $ref: ../parameters/page-size-query.yaml
+  - $ref: ../parameters/category-query.yaml
+  - $ref: ../parameters/contains-query.yaml
+  - $ref: ../parameters/sort-by-query.yaml
+  - $ref: ../parameters/sort-order-query.yaml
+  - $ref: ../parameters/version-preference-query.yaml
+  - $ref: ../parameters/show-query.yaml
+  - $ref: ../parameters/contract-id-query.yaml
+  - $ref: ../parameters/group-id-query.yaml
+  responses:
+    200:
+      description: |
+        Lists API Endpoints you can access.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/api-endpoint-list-dto-example.json
+          schema:
+            $ref: ../schemas/api-endpoint-list-dto.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to get the API endpoint list.
+      $ref: ../errors/403.yaml

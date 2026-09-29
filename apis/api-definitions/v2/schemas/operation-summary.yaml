@@ -1,0 +1,129 @@
+type: object
+description: |
+  Collects data for an operation.
+additionalProperties: false
+required:
+- apiEndPointId
+- apiResourceId
+- apiResourceLogicId
+- link
+- operationId
+- operationName
+- operationPurpose
+- method
+properties:
+  operationId:
+    type: string
+    description: |
+      Identifies the operation.
+    readOnly: true
+  apiEndPointId:
+    type: integer
+    description: |
+      Identifies the API endpoint.
+  apiResourceId:
+    type: integer
+    description: |
+      Identifies the API resource.
+  apiResourceLogicId:
+    type: integer
+    description: |
+      The unique identifier for the resource across all endpoint versions.
+  link:
+    type: string
+    description: |
+      The location of the navigable resource within this API, for use by API clients.
+    minLength: 1
+  conditions:
+    type: array
+    description: |
+      Specify the parameter values to match with.
+    nullable: true
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - apiParameterId
+      properties:
+        value:
+          type: string
+          description: |
+            The parameter value to match with.
+          nullable: true
+        apiParameterId:
+          type: integer
+          description: |
+            Identifies the API parameter.
+  failureConditions:
+    type: array
+    description: |
+      Specify conditions to capture data on unsuccessful attempts to use the resource. You can set up failure reporting for every operation `type` except `SEARCH` and `ADD_TO_CART`.
+    nullable: true
+    items:
+      $ref: response-condition-dto.yaml
+  method:
+    type: string
+    description: |
+      The HTTP method used in combination with the resource. Choose between `HEAD`, `GET`, `POST`, `PUT`, `DELETE`, `PATCH`, or `OPTIONS`.
+    enum:
+    - HEAD
+    - GET
+    - POST
+    - PUT
+    - DELETE
+    - PATCH
+    - OPTIONS
+  multistepGroupId:
+    type: string
+    description: |
+      Identifies the multistep group for the operation.
+    readOnly: true
+  multistepGroupName:
+    type: string
+    description: |
+      Identifies the multistep group name.
+    readOnly: true
+  operationName:
+    type: string
+    description: |
+      The name of the operation. Use the same name you gave to the resource if you only specify one operation.
+    minLength: 1
+  operationPurpose:
+    type: string
+    description: |
+      The task this operation serves. Choose between `LOGIN`, `ACCOUNT_VERIFICATION`, `ACCOUNT_CREATION`, `ACCOUNT_UPDATE`, `PASSWORD_RESET`, `PASSWORD_CHANGE`,  `PAYMENT`, `GIFTCARD_BALANCE_CHECK`, `LOYALTY_POINTS`, `SEARCH`, `ADD_TO_CART`, or `OTHER`.
+    enum:
+    - LOGIN
+    - ACCOUNT_VERIFICATION
+    - ACCOUNT_CREATION
+    - ACCOUNT_UPDATE
+    - PASSWORD_RESET
+    - PASSWORD_CHANGE
+    - PAYMENT
+    - GIFTCARD_BALANCE_CHECK
+    - LOYALTY_POINTS
+    - SEARCH
+    - ADD_TO_CART
+    - OTHER
+  successConditions:
+    type: array
+    description: |
+      Specify conditions to capture data on successful attempts to use the resource. You can set up success reporting for every operation `type` except `SEARCH` and `ADD_TO_CART`.
+    nullable: true
+    items:
+      $ref: response-condition-dto.yaml
+  originUserIdCondition:
+    $ref: response-condition-dto.yaml
+  operationParameter:
+    $ref: operation-parameter.yaml
+  metadata:
+    type: object
+    description: |
+      Additional information about the operation.
+    additionalProperties: false
+    nullable: true
+    properties:
+      isActive:
+        type: boolean
+        description: |
+          Informs you if the operation is currently active in production or staging.

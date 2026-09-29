@@ -1,0 +1,105 @@
+type: object
+description: |
+  Collects data about a resource.
+additionalProperties: false
+required:
+- apiEndPointId
+- apiResourceId
+- apiResourceLogicId
+- apiResourceName
+- link
+- metadata
+- resourcePath
+properties:
+  description:
+    type: string
+    description: |
+      The description to clarify the resource's function within the API. If you specify `null` in the request or omit this field from the object, the JSON response reflects it as an empty string.
+    nullable: true
+    minLength: 1
+  apiEndPointId:
+    type: integer
+    description: |
+      Identifies the API endpoint.
+  apiResourceId:
+    type: integer
+    description: |
+      Identifies the API resource.
+  apiResourceName:
+    type: string
+    description: |
+      The name of the resource.
+  resourcePath:
+    type: string
+    description: |
+      The resource's path, with the API base path omitted. For example, `/login`.
+    minLength: 1
+  link:
+    type: string
+    description: |
+      The location of the navigable resource within this API, for use by API clients. Don't include hostnames.
+    nullable: true
+    minLength: 1
+  apiResourceClonedFromId:
+    type: integer
+    description: |
+      For cloned resources, the unique identifier for the source resource.
+    nullable: true
+  apiResourceLogicId:
+    type: integer
+    description: |
+      The unique identifier for the resource across all endpoint versions.
+  lockVersion:
+    type: integer
+    description: |
+      The identifier used for optimistic locking. See [Concurrency control](#concurrencycontrol) for details.
+  private:
+    type: boolean
+    description: |
+      Whether the resource is private. API consumers can access private resources only if they identify with an appropriate API key.
+  apiResourceMethods:
+    type: array
+    description: |
+      Method objects that represent HTTP methods the resource may respond to.
+    nullable: true
+    items:
+      $ref: api-resource-methods.yaml
+  createdBy:
+    type: string
+    description: |
+      The identifier for the user who created the resource.
+  updatedBy:
+    type: string
+    description: |
+      The identifier for the user who last modified the resource.
+  createDate:
+    type: string
+    description: |
+      The ISO 8601 timestamp indicating when you created the resource.
+  updateDate:
+    type: string
+    description: |
+      The ISO 8601 timestamp indicating when you last modified the resource.
+  metadata:
+    type: object
+    description: |
+      Information about the number of methods enabled, methods with assigned operations, and operations.
+    additionalProperties: false
+    required:
+    - methodsEnabled
+    - methodsWithOperations
+    - operationCount
+    nullable: true
+    properties:
+      methodsEnabled:
+        type: integer
+        description: |
+          The number of methods enabled for the resource.
+      methodsWithOperations:
+        type: integer
+        description: |
+          The number of methods that have assigned operations.
+      operationCount:
+        type: integer
+        description: |
+          The total number of operations assigned to the resource.

@@ -1,0 +1,48 @@
+type: object
+description: |
+  Collects data used for generating operations reports filtered based on the specified criteria.
+additionalProperties: false
+required:
+- queryType
+properties:
+  activeEndTime:
+    type: string
+    description: |
+      If the `queryType` is `ACTIVE_WITHIN_DATE_RANGE`, specify the ISO 8601 timestamp for the end of the date range. Specify `null` to use the current time.
+    nullable: true
+    minLength: 1
+  activeStartTime:
+    type: string
+    description: |
+      If the `queryType` is `ACTIVE_WITHIN_DATE_RANGE`, specify the ISO 8601 timestamp for the start of the date range.
+    nullable: true
+    minLength: 1
+  apiEndPointHosts:
+    type: array
+    description: |
+      Specify a list of API endpoint hostnames to filter on. Users access the Akamai-deployed API using these hostnames.
+    nullable: true
+    items:
+      type: string
+      minLength: 1
+  resourcePaths:
+    type: array
+    description: |
+      Specify the URL paths relative to the hostnames on which the resource resides. The path is the hostname, followed by the base path. When entering a resource path, you can use curly brackets (`{}`) to define path parameters (for example, `/path/{pathParam}`). If you decide to do so, ensure that the value of the `apiParameterName` field in the corresponding parameter definition matches the name that you specified in the resource path.
+    nullable: true
+    items:
+      type: string
+      minLength: 1
+  queryType:
+    type: string
+    description: |
+      Filter the results for an operation report. Choose `ACTIVE_IN_PRODUCTION`, `ACTIVE_IN_STAGING`, or `ACTIVE_WITHIN_DATE_RANGE`.
+    enum:
+    - ACTIVE_IN_PRODUCTION
+    - ACTIVE_IN_STAGING
+    - ACTIVE_WITHIN_DATE_RANGE
+  includeDetails:
+    type: boolean
+    description: |
+      Specify `true` to include all the resource and operation details.
+    nullable: true

@@ -1,0 +1,60 @@
+x-akamai:
+  path-info: /categories
+post:
+  operationId: post-category
+  summary: Create a category
+  tags:
+  - Categories
+  description: |
+    Creates a category that you can use to tag endpoints. The request's `apiCategoryName` needs to be unique per account.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/category-dto-post-example.json
+        schema:
+          $ref: ../schemas/category-dto.yaml
+  responses:
+    201:
+      description: |
+        New resource successfully created.
+      headers:
+        Location:
+          description: |
+            Relative URL for created API endpoint category.
+          schema:
+            type: string
+      content:
+        application/json:
+          example:
+            $ref: ../examples/category-dto-example.json
+          schema:
+            $ref: ../schemas/category-dto.yaml
+    400:
+      description: |
+        [Bad request](ref:400). Some of the request input is invalid.
+      $ref: ../errors/400.yaml
+get:
+  operationId: get-categories
+  summary: List categories
+  tags:
+  - Categories
+  description: |
+    Lists all categories available to tag endpoints and optionally indicates the number of endpoints tagged under each category.
+  parameters:
+  - $ref: ../parameters/with-usage-info-query.yaml
+  responses:
+    200:
+      description: |
+        The response lists unique categories, or an empty list if there are none.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/category-dtos-example.json
+          schema:
+            $ref: ../schemas/category-dtos.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to get the API endpoint category list.
+      $ref: ../errors/403.yaml

@@ -1,0 +1,28 @@
+x-akamai:
+  path-info: /endpoints/{apiEndPointId}/versions/{versionNumber}/piis
+parameters:
+- $ref: ../parameters/api-end-point-id-path.yaml
+- $ref: ../parameters/version-number-path.yaml
+get:
+  operationId: get-endpoint-version-piis
+  summary: List parameters with PII for an endpoint version
+  tags:
+  - Personally identifiable information
+  description: |
+    Returns all PII objects for an endpoint version. This includes parameters with PII already in your API definition, as well as parameters with PII the network discovers on your behalf. You can return this information for both active and inactive endpoint versions. All operations for PII are per endpoint version. Run [Enable PII learning settings for a configuration](https://techdocs.akamai.com/application-security/reference/put-advanced-settings-pii-learning) to use this feature.
+  parameters:
+  - $ref: ../parameters/pii-status-query.yaml
+  responses:
+    200:
+      description: |
+        Successfully retrieved parameters with PII for this version.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/pii-list-dto-example.json
+          schema:
+            $ref: ../schemas/pii-list-dto.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to access the API endpoint PII list.
+      $ref: ../errors/403.yaml

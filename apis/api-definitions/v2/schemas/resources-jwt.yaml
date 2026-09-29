@@ -1,14 +1,11 @@
 type: object
-description: |-
-  Contains information about JWT validation settings for each resource assigned to an endpoint version. The resources are available through a map of `resourceId` keys.
-  
-x-akamai:
-  file-path: schemas/resources-jwt.yaml
+description: |
+  JWT validation settings for each resource assigned to an endpoint version. The resources are available through a map of `resourceId` keys.
 title: The map of resource ID to settings.
 additionalProperties:
   type: object
   description: |
-    Contains information about JWT settings configured for a resource.
+    JWT settings configured for a resource.
   additionalProperties: false
   required:
   - enabled
@@ -17,10 +14,16 @@ additionalProperties:
       type: boolean
       description: |
         Whether you enabled JWT validation for the resource.
-    inheritsFromEndpoint:
-      type: boolean
+    path:
+      type: string
       description: |
-        Whether the resource inherits the top-level JWT settings.
+        The URL path relative to the hostnames on which the resource resides.
+      readOnly: true
+    notes:
+      type: string
+      description: |
+        The description of the resource.
+      nullable: true
       readOnly: true
     methods:
       type: array
@@ -37,14 +40,8 @@ additionalProperties:
         - OPTIONS
         - PUT
         - PATCH
-    notes:
-      type: string
+    inheritsFromEndpoint:
+      type: boolean
       description: |
-        The description of the resource.
-      nullable: true
-      readOnly: true
-    path:
-      type: string
-      description: |
-        The URL path relative to the hostnames on which the resource resides.
+        Whether the resource inherits the top-level JWT settings.
       readOnly: true

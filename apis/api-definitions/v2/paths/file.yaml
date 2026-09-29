@@ -1,0 +1,34 @@
+x-akamai:
+  path-info: /endpoints/{apiEndPointId}/versions/{versionNumber}/file
+parameters:
+- $ref: ../parameters/version-number-path.yaml
+- $ref: ../parameters/api-end-point-id-path.yaml
+post:
+  operationId: post-endpoint-version-file
+  summary: Edit an endpoint from an API definition file
+  tags:
+  - Versions
+  description: |
+    Imports an API definition file with details about an endpoint. Unlike [Register an endpoint from an API definition file](ref:post-endpoints-file), this operation doesn't create a new endpoint, but updates details of an existing endpoint. You can run this operation in two ways. To POST JSON data, see [Make a JSON request to edit an endpoint from an API definition file](ref:endpoint-edit-json). To make a form request using these parameters, see [Make a form request to edit an endpoint from an API definition file](ref:endpoint-edit-form). Once you submit the POST request, to finish modifying the endpoint version, you need to take the response data and submit it as a request to the [Edit a version](ref:put-endpoint-version) operation.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/import-file-dto-example.json
+        schema:
+          $ref: ../schemas/import-file-dto.yaml
+  responses:
+    200:
+      description: |
+        Operation succeeded.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/api-endpoint-with-resource-dto-example.json
+          schema:
+            $ref: ../schemas/api-endpoint-with-resource-dto-recurse-response.yaml
+    400:
+      description: |
+        [Bad request](ref:400). Some of the file input data is invalid.
+      $ref: ../errors/400-import.yaml

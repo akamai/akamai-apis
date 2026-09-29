@@ -1,0 +1,59 @@
+x-akamai:
+  path-info: /endpoints/{apiEndPointId}/versions/{versionNumber}/resources
+parameters:
+- $ref: ../parameters/version-number-path.yaml
+- $ref: ../parameters/api-end-point-id-path.yaml
+post:
+  operationId: post-resource
+  summary: Create a resource
+  tags:
+  - Resources
+  description: |
+    Creates a resource in an endpoint version. The resource's full URL (concatenated hostname, `basePath`, and `resourcepath`) needs to be unique within the account. You can only create resources for versions that have never been activated on the staging or production network.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/api-resource-meth-params-dto-post-example.json
+        schema:
+          $ref: ../schemas/api-resource-meth-params-dto-request.yaml
+  responses:
+    201:
+      description: |
+        Saved API Endpoint Resource data.
+      headers:
+        Location:
+          description: |
+            Relative URL for created API resource.
+          schema:
+            type: string
+      content:
+        application/json:
+          example:
+            $ref: ../examples/api-resource-meth-params-dto-example.json
+          schema:
+            $ref: ../schemas/api-resource-meth-params-dto-response.yaml
+get:
+  operationId: get-endpoint-version-resources
+  summary: List resources
+  tags:
+  - Resources
+  description: |
+    Lists all resources assigned to an endpoint version. You can use the `apiResourceId` of each returned resource to modify resources individually through the [Edit a resource](ref:put-version-resource) operation, or run the [Edit a version](ref:put-endpoint-version) operation to batch-modify a group of resources.
+  responses:
+    200:
+      description: |
+        The response lists API endpoint resources you have access to.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/api-resources-list-dto-example.json
+          schema:
+            type: array
+            items:
+              $ref: ../schemas/api-resource-meth-params-dto-response.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to access the API endpoint.
+      $ref: ../errors/403.yaml

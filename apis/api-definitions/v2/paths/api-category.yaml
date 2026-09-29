@@ -1,0 +1,77 @@
+x-akamai:
+  path-info: /categories/{apiCategoryId}
+parameters:
+- $ref: ../parameters/api-category-id-path.yaml
+get:
+  operationId: get-category
+  summary: Get a category
+  tags:
+  - Categories
+  description: |
+    Returns a specific category that you can use to tag endpoints.
+  responses:
+    200:
+      description: |
+        Response data shows the category.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/category-dto-example.json
+          schema:
+            $ref: ../schemas/category-dto.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to get the API endpoint category.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The API endpoint category doesn't exist.
+      $ref: ../errors/404.yaml
+put:
+  operationId: put-category
+  summary: Edit a category
+  tags:
+  - Categories
+  description: |
+    Updates a category's description or unique name.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/category-dto-example.json
+        schema:
+          $ref: ../schemas/category-dto-put.yaml
+  responses:
+    200:
+      description: |
+        The response shows the updated category.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/category-dto-example.json
+          schema:
+            $ref: ../schemas/category-dto.yaml
+    400:
+      description: |
+        [Bad request](ref:400). Some of the request input is invalid.
+      $ref: ../errors/400.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to edit API endpoint category.
+      $ref: ../errors/403.yaml
+delete:
+  operationId: delete-category
+  summary: Delete a category
+  tags:
+  - Categories
+  description: |
+    Removes an unassigned category. If you assigned the category to at least one endpoint, the operation returns a 403 error.
+  responses:
+    204:
+      description: |
+        Category successfully deleted.
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to edit the API endpoint category.
+      $ref: ../errors/403.yaml
