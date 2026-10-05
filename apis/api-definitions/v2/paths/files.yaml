@@ -1,0 +1,40 @@
+x-akamai:
+  path-info: /endpoints/files
+post:
+  operationId: post-endpoints-file
+  summary: Register an endpoint from an API definition file
+  tags:
+  - Endpoints
+  description: |
+    Imports an API definition file and creates a new endpoint based on the file contents, optionally stripping out request or response body specifications. You can run this operation in two ways. To POST JSON data, see [Make a JSON request to register an endpoint from an API definition file](ref:endpoint-request-json). To make a form request using these parameters, see [Make a form request to register an endpoint from an API definition file](ref:endpoint-request-form).
+  parameters:
+  - $ref: ../parameters/exclude-request-content-query.yaml
+  - $ref: ../parameters/exclude-response-content-query.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/import-file-dto-example.json
+        schema:
+          $ref: ../schemas/import-file-dto.yaml
+  responses:
+    201:
+      description: |
+        New resource successfully created.
+      headers:
+        Location:
+          description: |
+            Relative URL for the newly created API endpoint.
+          schema:
+            type: string
+      content:
+        application/json:
+          example:
+            $ref: ../examples/api-endpoint-with-resource-dto-example.json
+          schema:
+            $ref: ../schemas/api-endpoint-with-resource-dto-recurse-response.yaml
+    400:
+      description: |
+        [Bad request](ref:400). Some of the file input data is invalid.
+      $ref: ../errors/400-import.yaml

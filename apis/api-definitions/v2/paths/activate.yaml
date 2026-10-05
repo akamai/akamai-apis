@@ -1,0 +1,34 @@
+x-akamai:
+  path-info: /endpoints/{apiEndPointId}/versions/{versionNumber}/activate
+parameters:
+- $ref: ../parameters/version-number-path.yaml
+- $ref: ../parameters/api-end-point-id-path.yaml
+post:
+  operationId: post-endpoint-version-activate
+  summary: Activate a version
+  tags:
+  - Versions
+  description: |
+    Activates an endpoint version on the staging or production network. If another version of the endpoint is already active on the specified network, that version automatically deactivates and the newly activated version takes its place. If an active version of another endpoint shares any hostnames with the version you activate, the API automatically deactivates the version with conflicting hostnames, creates a new version of the impacted endpoint, migrates the non-conflicting hostnames and other API details to the new version, and activates the new version.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/activation-dto-example.json
+        schema:
+          $ref: ../schemas/activation-dto.yaml
+  responses:
+    200:
+      description: |
+        Returns the activated entity.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/activation-dto-example.json
+          schema:
+            $ref: ../schemas/activation-dto.yaml
+    400:
+      description: |
+        [Bad request](ref:400). Some of the input is invalid.
+      $ref: ../errors/400.yaml

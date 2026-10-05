@@ -1,0 +1,59 @@
+type: object
+description: |
+  GraphQL caching settings configured for an endpoint. GraphQL caching settings specify properties such as the query and body parameters that contain GraphQL queries, maximum age of cached content, and downstream cacheability. You can configure GraphQL caching settings if the API Gateway product is in your contract.
+additionalProperties: false
+required:
+- enabled
+- bodyParamName
+- queryParamName
+- maxAge
+- downstreamCaching
+- detectError
+properties:
+  bodyParamName:
+    type: string
+    description: |
+      The name of the JSON body parameter that contains a GraphQL query in an incoming POST request. If the request's content type is `application/json`, this is the name of the key that contains a GraphQL query as its value. If the request's content type is `application/graphql`, edge servers treat the entire request body as a GraphQL query.
+  cacheResponseOnError:
+    type: boolean
+    description: |
+      Whether edge servers should cache the response to a GraphQL-type request in case errors are present in the response body.
+    nullable: true
+  detectError:
+    type: boolean
+    description: |
+      By default, GraphQL queries return partial data if only a portion of a request fails. In such cases, status codes don't indicate errors. Instead, an `errors` array in a response body contains error details. This indicates whether edge servers should inspect the response body for the `errors` array.
+  downstreamCaching:
+    $ref: cache-downstream-dto.yaml
+  enabled:
+    type: boolean
+    description: |
+      Whether you enabled GraphQL caching for the endpoint.
+  maxAge:
+    $ref: duration-dto.yaml
+  maxQuerySize:
+    type: integer
+    description: |
+      The maximum size of the query. A post body or a get response can't exceed 4 KBs.
+    nullable: true
+  nestingLevel:
+    type: string
+    description: |
+      The number of supported nesting levels within a query. The maximum number is 100.
+    nullable: true
+  queryParamName:
+    type: string
+    description: |
+      The name of the query parameter that contains a GraphQL query in an incoming GET or POST request.
+  preRefreshing:
+    $ref: pre-refreshing.yaml
+  cacheOrigin:
+    type: boolean
+    description: |
+      Whether to set the maximum age for caching GraphQL responses (TTL) to the value specified in your origin’s `Cache-Control` HTTP response header.
+    nullable: true
+  serveStale:
+    type: boolean
+    description: |
+      Whether to serve stale responses when the origin is unreachable and content revalidation isn't possible.
+    nullable: true

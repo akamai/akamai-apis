@@ -1,0 +1,80 @@
+x-akamai:
+  path-info: /endpoints/{apiEndPointId}/versions/{versionNumber}/piis/settings
+parameters:
+- $ref: ../parameters/api-end-point-id-path.yaml
+- $ref: ../parameters/version-number-path.yaml
+post:
+  operationId: post-endpoint-version-pii-settings
+  summary: Modify PII settings for an endpoint version
+  tags:
+  - Personally identifiable information
+  description: |
+    Update the PII settings in an endpoint version. These settings are for a PII object per endpoint version, so if you have the same object in multiple endpoint versions, you'll need to run the operation for each version.  This includes parameters with PII already in your API definition, as well as parameters with PII the network discovers on your behalf. You can return this information for both active and inactive endpoint versions. All operations for PII are per endpoint version. Run [Enable PII learning settings for a configuration](https://techdocs.akamai.com/application-security/reference/put-advanced-settings-pii-learning) to use this feature.
+  requestBody:
+    content:
+      application/json:
+        example:
+          $ref: ../examples/pii-settings-dto-update-example.json
+        schema:
+          $ref: ../schemas/pii-settings-dto.yaml
+  responses:
+    200:
+      description: |
+        Successfully updated the endpoint version.
+      content:
+        application/json:
+          examples:
+            2-all-enabled:
+              summary: All enabled
+              value:
+                $ref: ../examples/pii-settings-dto-all-enabled-example.json
+            3-all-disabled:
+              summary: All disabled
+              value:
+                $ref: ../examples/pii-settings-dto-all-disabled-example.json
+            4-partially-enabled:
+              summary: Partially enabled
+              value:
+                $ref: ../examples/pii-settings-dto-partially-enabled-example.json
+          schema:
+            $ref: ../schemas/pii-settings-dto.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to update PII settings.
+      $ref: ../errors/403.yaml
+get:
+  operationId: get-endpoint-version-pii-settings
+  summary: List PII settings for an endpoint version
+  tags:
+  - Personally identifiable information
+  description: |
+    Returns the PII settings in an endpoint version, including the inspection scope and constraints, and how you want the network to handle PII.
+  responses:
+    200:
+      description: |
+        Successfully fetched PII settings.
+      content:
+        application/json:
+          examples:
+            1-security-config:
+              summary: Security config
+              value:
+                $ref: ../examples/pii-settings-dto-security-config-example.json
+            2-all-enabled:
+              summary: All enabled
+              value:
+                $ref: ../examples/pii-settings-dto-all-enabled-example.json
+            3-all-disabled:
+              summary: All disabled
+              value:
+                $ref: ../examples/pii-settings-dto-all-disabled-example.json
+            4-partially-enabled:
+              summary: Partially enabled
+              value:
+                $ref: ../examples/pii-settings-dto-partially-enabled-example.json
+          schema:
+            $ref: ../schemas/pii-settings-dto.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to get API endpoint PII settings.
+      $ref: ../errors/403.yaml

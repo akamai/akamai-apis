@@ -1,6 +1,6 @@
 type: object
-x-akamai:
-  file-path: schemas/routing-rule.yaml
+description: |
+  Criteria that identifies which incoming requests to process for an endpoint.
 additionalProperties: false
 required:
 - name
@@ -16,6 +16,32 @@ properties:
     type: string
     description: |
       Descriptive text for the rule.
+    nullable: true
+  forwardPath:
+    type: string
+    description: |
+      Specifies the request's forward path mode, either `DEFAULT_PATH` or `CUSTOM_PATH`.
+    enum:
+    - DEFAULT_PATH
+    - CUSTOM_PATH
+  origin:
+    type: string
+    description: |
+      Specifies the request's new origin server destination.
+  customForwardPath:
+    type: string
+    description: |
+      Specifies the request's new forward path when the `forwardPath` value is `CUSTOM_PATH`.
+    nullable: true
+  forwardPort:
+    type: number
+    description: |
+      Specifies the request's new port number.
+    nullable: true
+  forwardHostHeader:
+    type: string
+    description: |
+      Specifies the request's new host header.
     nullable: true
   conditions:
     type: array
@@ -37,39 +63,13 @@ properties:
           description: |
             Specifies the string you're trying to match. For flexible URL path matching, use `*` and `?`.
           oneOf:
-          - title: String
-            type: string
-          - title: Number
-            type: number
+          - type: string
+            title: String
+          - type: number
+            title: Number
         operator:
           type: string
           description: |
-            Compares the incoming request to the `type` and `value` members. The only value currently available is `IS`.
+            Compares the incoming request to the `type` and `value` fields. The API supports only `IS` as a value.
           enum:
           - IS
-  customForwardPath:
-    type: string
-    description: |
-      Specifies the request's new forward path when the `forwardPath` value is `CUSTOM_PATH`.
-    nullable: true
-  forwardHostHeader:
-    type: string
-    description: |
-      Specifies the request's new host header.
-    nullable: true
-  forwardPath:
-    type: string
-    description: |
-      Specifies the request's forward path mode, either `CUSTOM_PATH` or `DEFAULT_PATH`.
-    enum:
-    - DEFAULT_PATH
-    - CUSTOM_PATH
-  forwardPort:
-    type: number
-    description: |
-      Specifies the request's new port number.
-    nullable: true
-  origin:
-    type: string
-    description: |
-      Specifies the request's new origin server destination.

@@ -1,0 +1,90 @@
+x-akamai:
+  path-info: /endpoints/{apiEndPointId}/versions/{versionNumber}
+parameters:
+- $ref: ../parameters/version-number-path.yaml
+- $ref: ../parameters/api-end-point-id-path.yaml
+get:
+  operationId: get-endpoint-version
+  summary: Get a version summary
+  tags:
+  - Versions
+  description: |
+    Returns a summary for a specific endpoint version. The summary is for purely informational purposes, and you shouldn't use this operation's response in the corresponding [Edit a version](ref:put-endpoint-version) PUT request. For the PUT request, use the response object of [Get a version](ref:get-endpoint-version-resource).
+  responses:
+    200:
+      description: |
+        API Endpoint version summary defined by API Endpoint ID and Version Number.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/api-version-summary-dto-example.json
+          schema:
+            $ref: ../schemas/api-version-summary-dto.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to the endpoint.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The API endpoint doesn't exist.
+      $ref: ../errors/404.yaml
+put:
+  operationId: put-endpoint-version
+  summary: Edit a version
+  tags:
+  - Versions
+  description: |
+    Updates details about an endpoint version that has never been activated on the staging or production network. You can configure the endpoint's security settings and other top-level metadata, or modify the endpoint's entire set of resources as an alternative to separate calls to [Edit a resource](ref:put-version-resource). Note that the corresponding [Get a version](ref:get-endpoint-version-resource) operation you need to run to GET the data uses a different URL.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/api-endpoint-with-resource-dto-putresult-example.json
+        schema:
+          $ref: ../schemas/api-endpoint-with-resource-dto-recurse-request.yaml
+  responses:
+    200:
+      description: |
+        Modify details of an endpoint version.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/api-endpoint-with-resource-dto-putresult-example.json
+          schema:
+            $ref: ../schemas/api-endpoint-with-resource-dto-recurse-response.yaml
+    400:
+      description: |
+        [Bad request](ref:400). Some of the request input is invalid.
+      $ref: ../errors/400.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to the endpoint.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The API endpoint doesn't exist.
+      $ref: ../errors/404.yaml
+    409:
+      description: |
+        [Conflict](ref:409)
+      $ref: ../errors/409.yaml
+delete:
+  operationId: delete-endpoint-version
+  summary: Delete a version
+  tags:
+  - Versions
+  description: |
+    Removes an endpoint version from API Gateway if the version has never been activated on the staging or production network. This is a soft delete operation that preserves the version's information, such as its number, in the database. You can't remove the permanent number assigned to each endpoint version, even if you remove that version. A removed endpoint version no longer appears in the [List versions](ref:get-endpoint-versions) operation's response object.
+  responses:
+    204:
+      description: |
+        Resource successfully deleted.
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to the endpoint.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The API endpoint doesn't exist.
+      $ref: ../errors/404.yaml

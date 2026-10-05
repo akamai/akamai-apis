@@ -1,9 +1,6 @@
 type: object
-description: |-
-  Contains information about caching settings for each resource.
-  
-x-akamai:
-  file-path: schemas/resources-cache.yaml
+description: |
+  Caching settings for each resource.
 title: Resource's caching settings
 additionalProperties: false
 required:
@@ -16,18 +13,12 @@ required:
 - preRefreshing
 - inheritsFromEndpoint
 properties:
-  cacheKey:
+  path:
+    type: string
     description: |
-      Contains information about cache key settings.
-    $ref: cacheKeyDto.yaml
-  inheritsFromEndpoint:
-    type: boolean
-    description: |
-      Whether the resource inherits the top-level API caching settings.
-  maxAge:
-    description: |
-      Contains information about the maximum duration of keeping content in a cache. If set, overwrites the max age instructions set at the endpoint level.
-    $ref: durationDto.yaml
+      The URL path relative to the hostnames on which the resource resides.
+    readOnly: true
+    minLength: 1
   methods:
     type: array
     description: |
@@ -52,21 +43,26 @@ properties:
     default: CACHE
     enum:
     - CACHE
-    - NO_STORE
     - BYPASS_CACHE
+    - NO_STORE
     - HONOR_ORIGIN_CACHE_CONTROL
-    - HONOR_ORIGIN_CACHE_CONTROL_AND_EXPIRES
     - HONOR_ORIGIN_EXPIRES
-  path:
-    type: string
+    - HONOR_ORIGIN_CACHE_CONTROL_AND_EXPIRES
+  maxAge:
     description: |
-      The URL path relative to the hostnames on which the resource resides.
-    readOnly: true
-    minLength: 1
-  preRefreshing:
-    nullable: true
-    $ref: preRefreshing.yaml
+      The maximum duration of keeping content in a cache. If set, overwrites the max age instructions set at the endpoint level.
+    $ref: duration-dto.yaml
   serveStale:
     type: boolean
     description: |
-      Whether to serve stale objects when the origin is unreachable and content revalidation is not possible.
+      Whether to serve stale objects when the origin is unreachable and content revalidation isn't possible.
+  cacheKey:
+    description: |
+      Cache key settings.
+    $ref: cache-key-dto.yaml
+  preRefreshing:
+    $ref: pre-refreshing.yaml
+  inheritsFromEndpoint:
+    type: boolean
+    description: |
+      Whether the resource inherits the top-level API caching settings.

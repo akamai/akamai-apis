@@ -1,0 +1,61 @@
+type: object
+description: |
+  Collects data for response conditions.
+additionalProperties: false
+required:
+- type
+nullable: true
+properties:
+  type:
+    type: string
+    description: |
+      Specify the type of condition you want to match on. These conditions capture data on successful and unsuccessful attempts to use the resource. Choose `COOKIE_NAME`, `HEADER_VALUE`, `HEADER_VALUE_GREATER_THAN`, `HEADER_VALUE_LESS_THAN`, `HEADER_VALUE_BETWEEN`, `HTTP_STATUS`, `HEADER_NAME`, `BODY_XPATH`, or `BODY_XPATH_JSON`.
+    enum:
+    - COOKIE_NAME
+    - HEADER_VALUE
+    - HEADER_VALUE_GREATER_THAN
+    - HEADER_VALUE_LESS_THAN
+    - HEADER_VALUE_BETWEEN
+    - HTTP_STATUS
+    - HEADER_NAME
+    - BODY_XPATH
+    - BODY_XPATH_JSON
+  headerName:
+    type: string
+    description: |
+      Specify the header's name. Only applicable for `HEADER_*` types.
+  positiveMatch:
+    type: boolean
+    description: |
+      Enable to match on the condition.
+    nullable: true
+  suppressFromClientResponse:
+    type: boolean
+    description: |
+      Enable to not send the response header to the requesting client. Only applicable for `HEADER_*` and `COOKIE_NAME` types.
+  valueCase:
+    type: boolean
+    description: |
+      Whether to consider the case sensitivity of the provided values. Only applicable for `HEADER_VALUE`, `COOKIE_NAME`, `BODY_XPATH` and `BODY_XPATH_JSON`.
+    nullable: true
+  valueWildcard:
+    type: boolean
+    description: |
+      Whether to interpret `*` and `?` as wildcards. Only applicable for `HEADER_VALUE`, `BODY_XPATH` and `BODY_XPATH_JSON`.
+    nullable: true
+  values:
+    type: array
+    description: |
+      Values to match on. Specify one or more value if the `type` is `HTTP_STATUS`, `COOKIE_NAME`, `HEADER_VALUE`, `HEADER_VALUE_BETWEEN`, `BODY_XPATH`, or `BODY_XPATH_JSON`. Specify two values if the `type` is `HEADER_VALUE_BETWEEN`. Otherwise, specify only one value to match on.
+    nullable: true
+    items:
+      type: string
+      description: |
+        A value to match on.
+      minLength: 1
+      maxLength: 255
+  xPath:
+    type: string
+    description: |
+      A path in the response body to search at for a match. Only applicable for `BODY_XPATH` and `BODY_XPATH_JSON`.
+    nullable: true

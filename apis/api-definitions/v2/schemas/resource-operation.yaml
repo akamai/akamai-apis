@@ -1,0 +1,131 @@
+type: object
+description: |
+  Collects data for resource operations.
+additionalProperties: false
+required:
+- apiResourceId
+- method
+- operationName
+- operationPurpose
+properties:
+  operationId:
+    type: string
+    description: |
+      Identifies the operation.
+    readOnly: true
+  apiResourceId:
+    type: integer
+    description: |
+      Identifies the API resource.
+  conditions:
+    type: array
+    description: |
+      Specify the parameter values to match with.
+    nullable: true
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - apiParameterId
+      properties:
+        value:
+          type: string
+          description: |
+            The parameter value to match with.
+          nullable: true
+          x-akamai:
+            status: DEPRECATED
+          deprecated: true
+        apiParameterId:
+          type: integer
+          description: |
+            Identifies the API parameter.
+        values:
+          type: array
+          description: |
+            The parameter values to match with.
+          nullable: true
+          items:
+            type: string
+            description: |
+              A value to match on.
+            minLength: 1
+        positiveMatch:
+          type: boolean
+          description: |
+            Indicates if the value matches the specified parameter value.
+          nullable: true
+        arrayIndexes:
+          type: array
+          description: |
+            Indexes for corresponding array parameters to find the data parameter.
+          items:
+            $ref: operation-atomic-condition-array-index.yaml
+  failureConditions:
+    type: array
+    description: |
+      Specify conditions to capture data on unsuccessful attempts to use the resource. You can set up failure reporting for every operation `type` except `SEARCH` and `ADD_TO_CART`.
+    nullable: true
+    items:
+      $ref: response-condition-dto.yaml
+  method:
+    type: string
+    description: |
+      HTTP method used to call the resource. Choose either `HEAD`, `GET`, `POST`, `PUT`, `DELETE`, `PATCH`, or `OPTIONS`.
+    enum:
+    - HEAD
+    - GET
+    - POST
+    - PUT
+    - DELETE
+    - PATCH
+    - OPTIONS
+  multistepGroupId:
+    type: string
+    description: |
+      Identifies the multistep group.
+    nullable: true
+  multiFactorAuthentication:
+    type: boolean
+    description: |
+      Identifies multifactor authenticated operations. It's valid only for `PASSWORD_RESET` and `LOGIN` operations.
+    nullable: true
+  operationName:
+    type: string
+    description: |
+      The name of the operation. Use the same name you gave to the resource if you only specify one operation.
+    minLength: 1
+  operationPurpose:
+    type: string
+    description: |
+      The task this operation serves. Choose either `LOGIN`, `ACCOUNT_UPDATE`, `ACCOUNT_VERIFICATION`, `ACCOUNT_CREATION`, `PASSWORD_CHANGE`, `PASSWORD_RESET`, `PAYMENT`, `GIFTCARD_BALANCE_CHECK`, `LOYALTY_POINTS`, `SEARCH`, or `ADD_TO_CART`. See [Operation purposes](ref:operation-purposes) for details.
+    enum:
+    - LOGIN
+    - ACCOUNT_UPDATE
+    - ACCOUNT_VERIFICATION
+    - ACCOUNT_CREATION
+    - PASSWORD_CHANGE
+    - PASSWORD_RESET
+    - PAYMENT
+    - GIFTCARD_BALANCE_CHECK
+    - LOYALTY_POINTS
+    - SEARCH
+    - ADD_TO_CART
+  successConditions:
+    type: array
+    description: |
+      Specify conditions to capture data on successful attempts to use the resource. You can set up success reporting for every operation `type` except `SEARCH` and `ADD_TO_CART`.
+    nullable: true
+    items:
+      $ref: response-condition-dto.yaml
+  stepSuccessConditions:
+    type: array
+    description: |
+      Specify conditions to capture data on successful attempts to use the resource. You can set up success reporting for every operation `type` except `SEARCH` and `ADD_TO_CART`. This is allowed only for operations in a multistep group.
+    nullable: true
+    items:
+      $ref: response-condition-dto.yaml
+  originUserIdCondition:
+    $ref: response-condition-dto.yaml
+  operationParameter:
+    $ref: operation-parameter.yaml

@@ -1,0 +1,118 @@
+type: object
+description: |
+  Contains summary information about a specific endpoint version.
+additionalProperties: false
+properties:
+  description:
+    type: string
+    description: |
+      The description of the endpoint.
+  apiCategoryIds:
+    type: array
+    description: |
+      The category identifiers that apply to the endpoint. The value is `null` for uncategorized endpoints.
+    nullable: true
+    items:
+      type: integer
+  apiEndPointHosts:
+    type: array
+    description: |
+      The hostname strings that may receive traffic for the endpoint.
+    items:
+      type: string
+  apiEndPointVersionId:
+    type: integer
+    description: |
+      The unique identifier for the endpoint version.
+  apiResourceNames:
+    type: array
+    description: |
+      Resource names defined for the endpoint. The value is `null` for endpoints without any resources.
+    nullable: true
+    items:
+      type: string
+  availableActions:
+    type: array
+    description: |
+      Available [actions](https://techdocs.akamai.com/api-definitions/docs/api-config-version-mgmt#actions) that you can perform on the version depending on the version's activation status.
+    items:
+      type: string
+      enum:
+      - CLONE_ENDPOINT
+      - CLONE_VERSION
+      - DELETE
+      - RESOURCES
+      - COMPARE_ENDPOINT
+      - COMPARE_AAG_SETTINGS
+      - COMPARE_RAPID_SETTINGS
+      - COMPARE_RESOURCE_PURPOSES
+      - VIEW_AAG_SETTINGS
+      - EDIT_AAG_SETTINGS
+      - EDIT_ENDPOINT_DEFINITION
+      - ACTIVATE_ON_STAGING
+      - ACTIVATE_ON_PRODUCTION
+      - DEACTIVATE_ON_STAGING
+      - DEACTIVATE_ON_PRODUCTION
+      - HIDE_VERSION
+      - SHOW_VERSION
+    x-akamai:
+      enum-descriptions:
+        CLONE_ENDPOINT: |
+          Clone the endpoint from another existing endpoint.
+        CLONE_VERSION: |
+          Clone a new version from another existing version.
+        DELETE: |
+          Delete the version. Only available for inactive versions.
+        RESOURCES: |
+          View resources.
+        COMPARE_ENDPOINT: |
+          Compare the endpoint between different versions.
+        COMPARE_AAG_SETTINGS: |
+          Compare AAG settings between different versions.
+        COMPARE_RESOURCE_PURPOSES: |
+          Compare resource purposes between different versions.
+        COMPARE_RAPID_SETTINGS: |
+          Compare RAPID settings between different versions.
+        VIEW_AAG_SETTINGS: |
+          View AAG settings.
+        EDIT_AAG_SETTINGS: |
+          Edit AAG settings.
+        EDIT_ENDPOINT_DEFINITION: |
+          Edit the endpoint definition.
+        ACTIVATE_ON_STAGING: |
+          Activate on staging. Available when version is inactive or deactivated.
+        ACTIVATE_ON_PRODUCTION: |
+          Activate on production. Available when version is inactive or deactivated.
+        DEACTIVATE_ON_STAGING: |
+          Deactivate on staging. Available when version is active.
+        DEACTIVATE_ON_PRODUCTION: |
+          Deactivate on production. Available when version is active.
+        HIDE_VERSION: |
+          Hide the version so that it no longer appears in the version history. You can't activate or delete hidden versions.
+        SHOW_VERSION: |
+          Reveal the version so that it becomes visible in the version history.
+  basePath:
+    type: string
+    description: |
+      The URL path that serves as a root prefix for all resources' `resourcePath` values. This is `/` if empty. Do not append a `/` character to the path. If you specify `null` in the request or omit this field from the object, the JSON response reflects it as an empty string.
+    nullable: true
+  productionStatus:
+    type: string
+    description: |
+      The version activation status in the production network, either `PENDING` if the version contains changes that are being propagated to the network, `ACTIVE` if the version is active, `DEACTIVATED` if the version was once active but is deactivated, or `FAILED` if an activation or deactivation attempt for this version has failed. The value is `null` for versions that have never been activated in this network.
+    nullable: true
+    enum:
+    - PENDING
+    - ACTIVE
+    - DEACTIVATED
+    - FAILED
+  stagingStatus:
+    type: string
+    description: |
+      The version activation status in the staging network, either `PENDING` if the version contains changes that are being propagated to the network, `ACTIVE` if the version is active, `DEACTIVATED` if the version was once active but now inactive, or `FAILED` if an activation or deactivation attempt for this version has failed. The value is `null` for versions that have never been activated in this network.
+    nullable: true
+    enum:
+    - PENDING
+    - ACTIVE
+    - DEACTIVATED
+    - FAILED

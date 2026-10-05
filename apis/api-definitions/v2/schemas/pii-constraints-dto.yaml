@@ -1,0 +1,84 @@
+type: object
+description: |
+  Describes how and where to look for personally identifiable information (PII) in your API payloads.
+additionalProperties: false
+required:
+- scope
+- requestEnabled
+- responseEnabled
+- types
+- resources
+properties:
+  scope:
+    type: string
+    description: |
+      The extent to which the network should inspect your API and enforce constraints you set. Use `NONE` to let all traffic though as if PII discovery is disabled. Use `API` to inspect and enforce constraints for every resource and method in your API. Use `RESOURCES_AND_METHODS` to inspect specific resources and methods within your API.
+    enum:
+    - NONE
+    - API
+    - RESOURCES_AND_METHODS
+  requestEnabled:
+    type: boolean
+    description: |
+      Whether the network looks for PII in the request payloads.
+  responseEnabled:
+    type: boolean
+    description: |
+      Whether the network looks for PII in the response payloads.
+  types:
+    type: object
+    description: |
+      Use `allTypes` to identify all PII types in a parameter, or `specific` to identify individual PII types you choose. Email and credit or debit cards are supported.
+    additionalProperties: false
+    required:
+    - allTypes
+    - specific
+    properties:
+      allTypes:
+        type: boolean
+        description: |
+          Whether the network looks for all PII types.
+      specific:
+        description: |
+          The PII types to inspect, either `PERSONAL_EMAIL` or `CREDIT_OR_DEBIT_CARD_NUMBER`.
+        type: array
+        items:
+          $ref: pii-type.yaml
+  resources:
+    type: array
+    description: |
+      Resources you want the network to inspect.
+    items:
+      type: object
+      description: |
+        The resource you want network to inspect.
+      additionalProperties: false
+      required:
+      - resourceId
+      - allMethods
+      - methods
+      properties:
+        resourceId:
+          type: integer
+          description: |
+            A unique identifier for a resource.
+        allMethods:
+          type: boolean
+          description: |
+            Whether the network looks for PII in all methods.
+        methods:
+          type: array
+          description: |
+            The methods you want the network to inspect. Supported values are `get`, `put`, `post`, `delete`, `head`, `patch`, and `options`.
+          items:
+            type: string
+            description: |
+              A unique identifier for a method.
+            enum:
+            - get
+            - put
+            - post
+            - delete
+            - head
+            - patch
+            - options

@@ -1,0 +1,66 @@
+x-akamai:
+  path-info: /endpoints/{endpointId}/versions/{versionNumber}/resources/{apiResourceId}/operations
+parameters:
+- $ref: ../parameters/endpoint-id.yaml
+- $ref: ../parameters/version-number.yaml
+- $ref: ../parameters/api-resource-id.yaml
+post:
+  operationId: post-resource-operation
+  summary: Create a resource operation
+  tags:
+  - Resource operations
+  description: |
+    Create a resource operation. These operations define the purposes of your API resources. Use them to identify the expected usage of your resources to protect endpoints from bot traffic.
+  requestBody:
+    content:
+      application/json:
+        example:
+          $ref: ../examples/resource-operation-post.json
+        schema:
+          $ref: ../schemas/resource-operation.yaml
+  responses:
+    201:
+      description: |
+        Successful response.
+      headers:
+        Location:
+          $ref: ../headers/location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/resource-operation.json
+          schema:
+            $ref: ../schemas/resource-operation.yaml
+    400:
+      description: |
+        [Bad request](ref:400). The request body has invalid fields.
+      $ref: ../errors/400-resource.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to create this resource.
+      $ref: ../errors/403-error.yaml
+get:
+  operationId: get-resource-operations
+  summary: List resource operations
+  tags:
+  - Resource operations
+  description: |
+    List all of your resource operations and their resources.
+  responses:
+    200:
+      description: |
+        Successful response.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/resource-operation-list.json
+          schema:
+            $ref: ../schemas/resource-operation-list.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to access the resource.
+      $ref: ../errors/403-error.yaml
+    404:
+      description: |
+        [Not found](ref:404). The resource doesn't exist.
+      $ref: ../errors/404-version.yaml

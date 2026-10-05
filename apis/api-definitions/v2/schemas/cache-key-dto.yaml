@@ -1,0 +1,36 @@
+type: object
+description: |
+  The cache key settings configured for an endpoint or resource.
+additionalProperties: false
+required:
+- customize
+properties:
+  parameters:
+    type: array
+    description: |
+      Parameters to include in or exclude from cache keys, depending on the `option` you selected. This is only relevant if you set the corresponding `option` to either `INCLUDE` or `IGNORE`.
+    nullable: true
+    minItems: 0
+    items:
+      type: string
+      minLength: 1
+  customize:
+    type: boolean
+    description: |
+      Whether you want to customize cache key settings for an endpoint. You can set this independently from the root `customize` field.
+  option:
+    type: string
+    description: |
+      The configuration option to customize cache keys. You can `INCLUDE` only the specified set of `parameters` in the cache key, or set `IGNORE` to exclude them. `IGNORE_ALL` excludes all parameters from the cache key. Set `INCLUDE_ALL_PRESERVE_ORDER` to key on the full set of parameters in the request's order, or `INCLUDE_ALL_ALPHABETIZE_ORDER` to ignore the original order.
+    nullable: true
+    enum:
+    - INCLUDE
+    - IGNORE
+    - IGNORE_ALL
+    - INCLUDE_ALL_PRESERVE_ORDER
+    - INCLUDE_ALL_ALPHABETIZE_ORDER
+  exactMatch:
+    type: boolean
+    description: |
+      Whether the query parameters in the requests match exactly the string items in the corresponding `parameters`. When `false`, substrings match the start of the string. Relevant only if you set the corresponding `option` to either `INCLUDE` or `IGNORE`.
+    nullable: true

@@ -1,0 +1,66 @@
+x-akamai:
+  path-info: /endpoints/{endpointId}/versions/{versionNumber}/multistep-groups
+parameters:
+- $ref: ../parameters/endpoint-id.yaml
+- $ref: ../parameters/version-number.yaml
+post:
+  operationId: post-multistep-group-details
+  summary: Create a multistep group
+  tags:
+  - Multistep groups
+  description: |
+    Create a multistep group with a chosen name. To add operations and create a multistep flow, you need to [list](ref:get-resources-and-operations) resource operations, and then [get](ref:get-resource-operation) and [update](ref:put-resource-operation) each applicable operation to assign it a `multistepGroupId`. 
+  requestBody:
+    content:
+      application/json:
+        example:
+          $ref: ../examples/multistep-group-request.json
+        schema:
+          $ref: ../schemas/multistep-group-request.yaml
+  responses:
+    201:
+      description: |
+        Successful response.
+      headers:
+        Location:
+          $ref: ../headers/location.yaml
+      content:
+        application/json:
+          example:
+            $ref: ../examples/multistep-group.json
+          schema:
+            $ref: ../schemas/multistep-group.yaml
+    400:
+      description: |
+        [Bad request](ref:400). The request body has invalid fields.
+      $ref: ../errors/400-multistep.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to create this resource.
+      $ref: ../errors/403.yaml
+get:
+  operationId: get-multistep-group-details
+  summary: List multistep group details
+  tags:
+  - Multistep groups
+  description: |
+    Get the multistep group's name. To find out which operations are a part of this multistep group,[list](ref:get-resources-and-operations) resource operations and check their `multistepGroupId`.  
+
+  responses:
+    200:
+      description: |
+        Successful response.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/multistep-group-list.json
+          schema:
+            $ref: ../schemas/multistep-group-list.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to access the resource.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The resource doesn't exist.
+      $ref: ../errors/404-version.yaml

@@ -1,0 +1,100 @@
+type: object
+description: |
+  Describes a personally identifiable information (PII) object.
+additionalProperties: false
+required:
+- type
+- parameterId
+properties:
+  id:
+    type: integer
+    description: |
+      The unique identifier for a PII object.
+  type:
+    $ref: pii-type.yaml
+  status:
+    $ref: pii-status.yaml
+  userCreated:
+    type: boolean
+    description: |
+      When `true`, you defined PII using the API or Control Center. When `false`, the PII is discovered by the network.
+  parameterPath:
+    type: string
+    description: |
+      The parameter path where the PII exists, with segments delimited by `/`.
+  parameterName:
+    type: string
+    description: |
+      The name of the parameter that contains PII.
+    nullable: true
+  location:
+    type: string
+    description: |
+      The payload location where the parameter with PII exists, the `path`, `header`, `cookie`, `query`, or `body`.
+    enum:
+    - path
+    - header
+    - cookie
+    - query
+    - body
+  response:
+    type: boolean
+    description: |
+      Whether the PII is registered in the response. When `false`, the parameter is in the request.
+  statusCodes:
+    type: array
+    description: |
+      Status codes for which PII exists. If the response contains PII, it lists the possible response codes. For a request the array is empty.
+    items:
+      type: integer
+  contentType:
+    type: string
+    description: |
+      The content type of the payload in which PII exists. Supported values are `json`, `xml`, and `urlencoded`.
+    enum:
+    - json
+    - xml
+    - urlencoded
+  resourcePath:
+    type: string
+    description: |
+      The URL path in which PII exists.
+  resourceName:
+    type: string
+    description: |
+      The name of the resource in which PII exists.
+    nullable: true
+  method:
+    type: string
+    description: |
+      The HTTP method for the call in which PII exists.
+  dateFirstSeen:
+    type: string
+    description: |
+      The date when PII was added to an API endpoint definition either by you or the network.
+    format: date
+  newPii:
+    type: boolean
+    description: |
+      Whether the PII is new. The new PII found by the network has a status of `discovered` until any action changes it.
+  lastAction:
+    type: object
+    description: |
+      Describes the last action made by an end user.
+    additionalProperties: false
+    nullable: true
+    properties:
+      date:
+        type: string
+        description: |
+          The ISO 8601 timestamp the action was taken.
+        format: date
+      by:
+        type: string
+        description: |
+          The username of the person who made the change.
+  parameterId:
+    type: integer
+    description: |
+      Uniquely identifies parameters containing PII.
+    nullable: true

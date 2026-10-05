@@ -1,0 +1,91 @@
+x-akamai:
+  path-info: /endpoints/{apiEndPointId}/versions/{versionNumber}/resources/{apiResourceId}
+parameters:
+- $ref: ../parameters/api-resource-id-path.yaml
+- $ref: ../parameters/version-number-path.yaml
+- $ref: ../parameters/api-end-point-id-path.yaml
+get:
+  operationId: get-endpoint-version-resource
+  summary: Get a resource
+  tags:
+  - Resources
+  description: |
+    Returns a resource within an endpoint version.
+  responses:
+    200:
+      description: |
+        API Endpoint Resource details defined by API Endpoint ID and API Resource ID.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/api-resource-meth-params-dto-example.json
+          schema:
+            $ref: ../schemas/api-resource-meth-params-dto-response.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to access the API endpoint.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The required resource doesn't exist.
+      $ref: ../errors/404.yaml
+put:
+  operationId: put-version-resource
+  summary: Edit a resource
+  tags:
+  - Resources
+  description: |
+    Updates a resource within an endpoint version. You can edit information about a resource, the methods, and the parameters assigned to a resource. You can only modify resources assigned to versions that have never been activated on the staging or production network.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/api-resource-meth-params-dto-example.json
+        schema:
+          $ref: ../schemas/api-resource-meth-params-dto-request.yaml
+  responses:
+    200:
+      description: |
+        Updated API Endpoint Resource Details.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/api-resource-meth-params-dto-example.json
+          schema:
+            $ref: ../schemas/api-resource-meth-params-dto-response.yaml
+    400:
+      description: |
+        [Bad request](ref:400). Some of the request input is invalid.
+      $ref: ../errors/400.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to access the API endpoint.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The required resource doesn't exist.
+      $ref: ../errors/404.yaml
+    409:
+      description: |
+        [Conflict](ref:409). After you get the data, you modify the API endpoint resource. You have to retrieve the updated data before update.
+      $ref: ../errors/409.yaml
+delete:
+  operationId: delete-endpoint-version-resource
+  summary: Delete a resource
+  tags:
+  - Resources
+  description: |
+    Removes a resource from an endpoint version. You can only remove resources assigned to versions that have never been activated on the staging or production network.
+  responses:
+    204:
+      description: |
+        Resource successfully deleted.
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have access to the endpoint.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The API endpoint or resource doesn't exist.
+      $ref: ../errors/404.yaml

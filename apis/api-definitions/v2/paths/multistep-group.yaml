@@ -1,0 +1,87 @@
+x-akamai:
+  path-info: /endpoints/{endpointId}/versions/{versionNumber}/multistep-groups/{multistepGroupId}
+parameters:
+- $ref: ../parameters/endpoint-id.yaml
+- $ref: ../parameters/version-number.yaml
+- $ref: ../parameters/multistep-group-id.yaml
+get:
+  operationId: get-multistep-groups
+  summary: Get a multistep group
+  tags:
+  - Multistep groups
+  description: |
+    Get the multistep group's name. To find out which operations are a part of this multistep group, [list](ref:get-resources-and-operations) resource operations and check their 'multistepGroupId'.
+  responses:
+    200:
+      description: |
+        Successful response.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/multistep-group.json
+          schema:
+            $ref: ../schemas/multistep-group.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to access the resource. 
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The resource doesn't exist.
+      $ref: ../errors/404-multistep.yaml
+put:
+  operationId: put-multistep-groups
+  summary: Update a multistep group
+  tags:
+  - Multistep groups
+  description: |
+    Change the multistep group's name. To assign an operation to a multistep group, modify its 'multistepGroupId' value. You can only add any given operation to a single group.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        example:
+          $ref: ../examples/multistep-group-request.json
+        schema:
+          $ref: ../schemas/multistep-group-request.yaml
+  responses:
+    200:
+      description: |
+        Successful response.
+      content:
+        application/json:
+          example:
+            $ref: ../examples/multistep-group.json
+          schema:
+            $ref: ../schemas/multistep-group.yaml
+    400:
+      description: |
+        [Bad request](ref:400). The request body has invalid fields.
+      $ref: ../errors/400-multistep.yaml
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to access the resource.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The requested resource operation doesn't exist.
+      $ref: ../errors/404-multistep.yaml
+delete:
+  operationId: delete-multistep-groups
+  summary: Delete a multistep group
+  tags:
+  - Multistep groups
+  description: |
+    Remove a specific multistep group. This also deletes all operations in this group. 
+  responses:
+    204:
+      description: |
+        Successful response.
+    403:
+      description: |
+        [Forbidden](ref:403). You don't have permission to access the resource.
+      $ref: ../errors/403.yaml
+    404:
+      description: |
+        [Not found](ref:404). The requested multistep group doesn't exist.
+      $ref: ../errors/404-multistep.yaml
